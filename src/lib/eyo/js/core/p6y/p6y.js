@@ -71,13 +71,13 @@ eYo.p6y.makeBaseC9r(true, {
     this.stored__ = eYo.NA // this may be useless in some situations
     Object.defineProperties(this, {
       value: eYo.descriptorR({
-          lazy () {
-            return `....value = ... forbidden for ${this.eyo.name} instances.`
-          },
+        lazy () {
+          return `....value = ... forbidden for ${this.eyo.name} instances.`
         },
-        {$ () {
-          return this.getValueRO()
-        }}.$,
+      },
+      {$ () {
+        return this.getValueRO()
+      }}.$,
       ),
     })
     //<<< mochai: eYo.p6y.BaseC9r_p, init
@@ -208,7 +208,7 @@ eYo.p6y.makeBaseC9r(true, {
           //... flag.expect(823923)
         } else {
           Object.keys(what).forEach(k => {
-            if (what.hasOwnProperty(k)) {
+            if (eYo.objectHasOwnProperty(what, k)) {
               this.__disposeStored(what[k], ...$)
             }
           })
@@ -706,7 +706,7 @@ eYo.p6y.Dlgt_p.modelHandleCheck = function (key, model) {
     //...   reset_ () {},
     //...   lazy: 123,
     //... },{
-    } else if (eYo.isDef(lazy_m)) {
+  } else if (eYo.isDef(lazy_m)) {
     eYo.isNA(value_m) || eYo.throw(`Bad model (${this.name}/${key}): unexpected value`)
     model.value = model.lazy
     //...   lazy: 421,
@@ -1192,10 +1192,10 @@ eYo.p6y.Dlgt_p.modelHandleGetSet = function (key, model, io) {
     let set_p = _p[setK]
     if (set_m.length > 1) {
       if (XRegExp.exec(set_m.toString(), eYo.xre.function_stored_after)) {
-          _p[setK] = eYo.decorate.reentrant(setK, function (after) {
-            let before = this.stored__
-            let ans = set_m.call(this.owner, this.stored__, after)
-            return eYo.isDef(ans) ? ans : before
+        _p[setK] = eYo.decorate.reentrant(setK, function (after) {
+          let before = this.stored__
+          let ans = set_m.call(this.owner, this.stored__, after)
+          return eYo.isDef(ans) ? ans : before
         })
         //... var p6y = eYo.p6y.new({
         //...   set (stored, after) {
@@ -1526,7 +1526,7 @@ eYo.p6y.handler.makeBaseC9r({
   },
   methods: {
     get (target, prop) {
-      if (this.cover__.hasOwnProperty(prop)) {
+      if (eYo.objectHasOwnProperty(this.cover__, prop)) {
         return this.cover__[prop]
         //... restart()
         //... for (let [k, v] of Object.entries(handler.cover__)) {
@@ -1603,8 +1603,8 @@ eYo.p6y.handler.makeBaseC9r({
     getOwnPropertyDescriptor (target, name) {
       return Object.getOwnPropertyDescriptor(
         this.isOwnedKey(name) || name === eYo.$$.target
-        ? this
-        : target,
+          ? this
+          : target,
         name
       )
       //... restart()
@@ -1651,7 +1651,7 @@ eYo.p6y.handler.makeBaseC9r({
     },
     deleteProperty (target, prop) {
       let x = this.isOwnedKey(prop) ? this : this.cover__
-      let ans = x.hasOwnProperty(prop)
+      let ans = eYo.objectHasOwnProperty(x, prop)
       if (ans) {
         delete x[prop]
       }
@@ -1676,13 +1676,13 @@ eYo.p6y.handler.makeBaseC9r({
     isOwnedKey (key) {
       return this.keys_owned.includes(key)
     },
-    doGet (target, prop) {
+    doGet (target, prop) { // eslint-disable-line
       return eYo.NA
     },
-    doSet (target, prop, value) {
+    doSet (target, prop, value) { // eslint-disable-line
       return false
     },
-    doDelete (target, prop) {
+    doDelete (target, prop) { // eslint-disable-line
       return false
     },
   }
@@ -1792,11 +1792,11 @@ eYo.p6y._p.aliasNew = function (key, owner, target, target_key) {
         },
         doSet (target, prop, value) {
           let p6y = target[source_p]
-            if (eYo.isDef(p6y)) {
-              p6y[prop] = value
-              return true
-            }
-          },
+          if (eYo.isDef(p6y)) {
+            p6y[prop] = value
+            return true
+          }
+        },
         doDelete (target, prop) {
           let p6y = target[source_p]
           if (eYo.isDef(p6y)) {
@@ -1828,7 +1828,7 @@ eYo.p6y._p.aliasNew = function (key, owner, target, target_key) {
           return true
         },
         doDelete (target, prop) {
-          if (keys_owned.includes(prop)) {
+          if (this.keys_owned.includes(prop)) {
             delete this[prop]
           } else {
             this.cover__.delete(prop)
@@ -1842,7 +1842,7 @@ eYo.p6y._p.aliasNew = function (key, owner, target, target_key) {
     //... }, 'bar', onr)
     //... var alias = eYo.p6y.aliasNew('p', onr, bar_p)
     //... // key
-    //... chai.expect(alias.hasOwnProperty('key')).true
+    //... eYo.objectHasOwnProperty(chai.expect(alias, 'key')).true
     //... chai.expect(alias.key).equal('p')
     //... chai.expect(() => alias.key = 0).throw()
     //... alias.key_ = 'foo'
@@ -1859,14 +1859,14 @@ eYo.p6y._p.aliasNew = function (key, owner, target, target_key) {
     //... bar_p.owner__ = eYo.c9r.new('onr')
     //... chai.expect(alias.owner).equal(0)
     //... alias = eYo.p6y.aliasNew('p', onr, bar_p)
-    //... chai.expect(alias.hasOwnProperty(eYo.$next)).false
+    //... eYo.objectHasOwnProperty(chai.expect(alias, eYo.$next)).false
     //... Object.defineProperties(alias, {
     //...   [eYo.$next]: {
     //...     value: 1,
     //...     configurable: true,
     //...   }
     //... })
-    //... chai.expect(alias.hasOwnProperty(eYo.$next)).true
+    //... eYo.objectHasOwnProperty(chai.expect(alias, eYo.$next)).true
     //... chai.expect(alias[eYo.$next]).equal(1)
     //... chai.expect(bar_p[eYo.$next]).not.equal(1)
     //... chai.expect(() => alias[eYo.$next] = 2).throw()
@@ -1884,9 +1884,9 @@ eYo.p6y._p.aliasNew = function (key, owner, target, target_key) {
     //...     configurable: true,
     //...   }
     //... })
-    //... chai.expect(bar_p.hasOwnProperty(eYo.$next)).true
+    //... eYo.objectHasOwnProperty(chai.expect(bar_p, eYo.$next)).true
     //... chai.expect(bar_p[eYo.$next]).equal(1)
-    //... chai.expect(alias.hasOwnProperty(eYo.$next)).false
+    //... eYo.objectHasOwnProperty(chai.expect(alias, eYo.$next)).false
     //... chai.expect(alias[eYo.$next]).not.equal(1)
     //>>>
   } else {

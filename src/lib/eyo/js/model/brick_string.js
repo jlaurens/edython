@@ -52,7 +52,7 @@ eYo.provide('brick.string')
       title: key
     }
   }
-/*
+  /*
     'ascii_letters': 0,
     'ascii_lowercase': 1,
     'ascii_uppercase': 2,
@@ -77,46 +77,46 @@ eYo.provide('brick.string')
     template: 21,
     'capwords': 22
   */
-eYo.library.DATA.Basic_string__module = [
-  {
-    type: eYo.t3.stmt.import_stmt,
-    variant_p: eYo.key.FROM_MODULE_IMPORT_STAR,
-    from_p: 'string',
-    title: 'string__import_stmt'
-  },
-  F_k('ascii_letters', '\'ascii_lowercase\' et \'ascii_uppercase\' concaténées.'),
-  F_k('ascii_lowercase', '\'abcdefghijklmnopqrstuvwxyz\''),
-  F_k('ascii_uppercase', '\'ABCDEFGHIJKLMNOPQRSTUVWXYZ\''),
-  F_k('hexdigits', '\'0123456789abcdefABCDEF\''),
-  F_k('octdigits', '\'01234567\''),
-  F_k('punctuation', 'Une chaîne composée des caractères de ponctuation'),
-  F_k('printable', 'Une chaîne composée des caractères imprimables'),
-  F_k('whitespace', 'Une chaîne composée des caractères d\'espacement'),
-  {
-    type: eYo.t3.stmt.assignment_stmt,
-    value_s: {
-      slots: {
-        O: {
-          type: eYo.t3.expr.call_expr,
-          name_p: 'Formatter',
-          holder_p: 'string',
-          dotted_p: 0
-        }
-      },
+  eYo.library.DATA.Basic_string__module = [
+    {
+      type: eYo.t3.stmt.import_stmt,
+      variant_p: eYo.key.FROM_MODULE_IMPORT_STAR,
+      from_p: 'string',
+      title: 'string__import_stmt'
     },
-    title: 'string__assigned_from_formatter'
-  },
-  F('format', ''),
-  F('vformat', ''),
-  F('parse', ''),
-  F('get_field', ''),
-  F('get_value', ''),
-  F('check_unused_args', ''),
-  F('format_field', ''),
-  F('convert_field', '')
-]
+    F_k('ascii_letters', '\'ascii_lowercase\' et \'ascii_uppercase\' concaténées.'),
+    F_k('ascii_lowercase', '\'abcdefghijklmnopqrstuvwxyz\''),
+    F_k('ascii_uppercase', '\'ABCDEFGHIJKLMNOPQRSTUVWXYZ\''),
+    F_k('hexdigits', '\'0123456789abcdefABCDEF\''),
+    F_k('octdigits', '\'01234567\''),
+    F_k('punctuation', 'Une chaîne composée des caractères de ponctuation'),
+    F_k('printable', 'Une chaîne composée des caractères imprimables'),
+    F_k('whitespace', 'Une chaîne composée des caractères d\'espacement'),
+    {
+      type: eYo.t3.stmt.assignment_stmt,
+      value_s: {
+        slots: {
+          O: {
+            type: eYo.t3.expr.call_expr,
+            name_p: 'Formatter',
+            holder_p: 'string',
+            dotted_p: 0
+          }
+        },
+      },
+      title: 'string__assigned_from_formatter'
+    },
+    F('format', ''),
+    F('vformat', ''),
+    F('parse', ''),
+    F('get_field', ''),
+    F('get_value', ''),
+    F('check_unused_args', ''),
+    F('format_field', ''),
+    F('convert_field', '')
+  ]
 
-  var F = (name, title) => {
+  F = (name, title) => {
     var key = 'string__'+name
     title && (eYo.tooltip.TITLE[key] = title)
     return {
@@ -129,7 +129,7 @@ eYo.library.DATA.Basic_string__module = [
       title: key
     }
   }
-  var F_k = (name, title) => {
+  F_k = (name, title) => {
     var key = 'string__'+name
     title && (eYo.tooltip.TITLE[key] = title)
     return {
@@ -143,51 +143,51 @@ eYo.library.DATA.Basic_string__module = [
     }
   }
 
-eYo.library.DATA.String__module = [
-  {
-    type: eYo.t3.stmt.import_stmt,
-    variant_p: eYo.key.IMPORT,
-    import_module_s: {
-      slots: {
-        O: {
-          type: eYo.t3.expr.identifier,
-          name_p: 'string'
-        }
-      }
-    },
-    title: 'string__import_stmt'
-  },
-  F_k('ascii_letters', '\'ascii_lowercase\' et \'ascii_uppercase\' concaténées.'),
-  F_k('ascii_lowercase', '\'abcdefghijklmnopqrstuvwxyz\''),
-  F_k('ascii_uppercase', '\'ABCDEFGHIJKLMNOPQRSTUVWXYZ\''),
-  F_k('hexdigits', '0123456789abcdefABCDEF\''),
-  F_k('octdigits', '01234567\''),
-  F_k('punctuation', 'Une chaîne composée des caractères de ponctuation'),
-  F_k('printable', 'Une chaîne composée des caractères imprimables'),
-  F_k('whitespace', 'Une chaîne composée des caractères d\'espacement'),
-  {
-    type: eYo.t3.stmt.assignment_stmt,
-    value_s: {
-      slots: {
-        O: {
-          type: eYo.t3.expr.call_expr,
-          name_p: 'Formatter',
-          holder_p: 'string',
-          dotted_p: 1
+  eYo.library.DATA.String__module = [
+    {
+      type: eYo.t3.stmt.import_stmt,
+      variant_p: eYo.key.IMPORT,
+      import_module_s: {
+        slots: {
+          O: {
+            type: eYo.t3.expr.identifier,
+            name_p: 'string'
+          }
         }
       },
+      title: 'string__import_stmt'
     },
-    title: 'string__assigned_from_formatter'
-  },
-  F('format', ''),
-  F('vformat', ''),
-  F('parse', ''),
-  F('get_field', ''),
-  F('get_value', ''),
-  F('check_unused_args', ''),
-  F('format_field', ''),
-  F('convert_field', '')
-]
+    F_k('ascii_letters', '\'ascii_lowercase\' et \'ascii_uppercase\' concaténées.'),
+    F_k('ascii_lowercase', '\'abcdefghijklmnopqrstuvwxyz\''),
+    F_k('ascii_uppercase', '\'ABCDEFGHIJKLMNOPQRSTUVWXYZ\''),
+    F_k('hexdigits', '0123456789abcdefABCDEF\''),
+    F_k('octdigits', '01234567\''),
+    F_k('punctuation', 'Une chaîne composée des caractères de ponctuation'),
+    F_k('printable', 'Une chaîne composée des caractères imprimables'),
+    F_k('whitespace', 'Une chaîne composée des caractères d\'espacement'),
+    {
+      type: eYo.t3.stmt.assignment_stmt,
+      value_s: {
+        slots: {
+          O: {
+            type: eYo.t3.expr.call_expr,
+            name_p: 'Formatter',
+            holder_p: 'string',
+            dotted_p: 1
+          }
+        },
+      },
+      title: 'string__assigned_from_formatter'
+    },
+    F('format', ''),
+    F('vformat', ''),
+    F('parse', ''),
+    F('get_field', ''),
+    F('get_value', ''),
+    F('check_unused_args', ''),
+    F('format_field', ''),
+    F('convert_field', '')
+  ]
 
 })()
 

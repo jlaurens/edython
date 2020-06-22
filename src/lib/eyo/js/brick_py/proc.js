@@ -134,8 +134,8 @@ eYo.stmt.newC9r('decorator_stmt', true, {
       placeholder () /** @suppress {globalThis} */ {
         var b3k = this.brick
         return b3k.variant === eYo.key.PROPERTY && b3k.Property_p !== eYo.key.GETTER
-        ? eYo.msg.placeholder.IDENTIFIER
-        : eYo.msg.placeholder.DECORATOR
+          ? eYo.msg.placeholder.IDENTIFIER
+          : eYo.msg.placeholder.DECORATOR
       },
       validate (after) /** @suppress {globalThis} */ {
         var p5e = eYo.t3.profile.get(after, null)
@@ -252,19 +252,19 @@ eYo.stmt.newC9r('decorator_stmt', true, {
       didChange (builtin, after) /** @suppress {globalThis} */ {
         builtin()
         switch(after) {
-          case eYo.key.NONE:
+        case eYo.key.NONE:
           this.brick.variant_ = eYo.key.NONE
           this.brick.Decorator_p = this.brick.Saved_p || ''
           break
-          case eYo.key.N_ARY:
+        case eYo.key.N_ARY:
           if(this.brick.variant !== eYo.key.NONE) {
             this.brick.Decorator_p = this.brick.Saved_p || ''
           }
           this.brick.variant_ = eYo.key.N_ARY
           this.brick.MainChooser_p = eYo.key.NONE
           break
-          case eYo.key.SETTER:
-          case eYo.key.DELETER:
+        case eYo.key.SETTER:
+        case eYo.key.DELETER:
           this.brick.MainChooser_p = eYo.key.NONE
           this.brick.Decorator_p = this.brick.Saved_p + '.' + after
           break
@@ -294,8 +294,8 @@ eYo.stmt.newC9r('decorator_stmt', true, {
               eYo.key.STATICMETHOD,
               eYo.key.CLASSMETHOD
             ].indexOf(this.brick.Decorator_p) >= 0
-            ? 'eyo-code-reserved'
-            : 'eyo-code'
+              ? 'eyo-code-reserved'
+              : 'eyo-code'
           }
         }
       }
@@ -367,13 +367,13 @@ eYo.stmt.decorator_stmt.prototype.populateContextMenuFirst_ = function (mngr) {
     if (builtin !== this.Target_p) {
       var content = eYo.do.CreateSPAN('@' + builtin, 'eyo-code-reserved')
       mngr.addChild(mngr.newMenuItem(content, () => {
-          this.Chooser_p = builtin
-        }
+        this.Chooser_p = builtin
+      }
       ))
     }
   })
   if (variant_p !== eYo.key.N_ARY) {
-    var content = eYo.dom.createDom(eYo.dom.TagName.SPAN, null,
+    content = eYo.dom.createDom(eYo.dom.TagName.SPAN, null,
       eYo.do.CreateSPAN('@', 'eyo-code-reserved'),
       eYo.do.CreateSPAN(eYo.msg.placeholder.DECORATOR, 'eyo-code-placeholder'),
       eYo.do.CreateSPAN('(…)', 'eyo-code')

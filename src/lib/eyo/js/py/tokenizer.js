@@ -51,9 +51,8 @@ eYo.py.parser.newC9r('Scan', {
  */
 eYo.py.parser.Scan_p.tokenize = function (str, start) {
   this.reset(str, start)
-  var t
-  while ((t = this.nextToken())) {
-    // console.log(t.string, t.type, t.subtype)
+  while (this.nextToken()) {
+    //
   }
   return this.last
 }
@@ -159,7 +158,7 @@ eYo.mixinRO(eYo.py.XRE, {
     "'": XRegExp(
       '(?:[\\x00-\\x26\\x28-\\x5B\\x5D-\\x7F]|\\\\[\\x00-\\x09\\x0B\\x0C\\x0E-\\xFF])+'),
     '"': XRegExp(
-     '(?:[\\x00-\\x21\\x23-\\x5B\\x5D-\\x7F]|\\\\[\\x00-\\x09\\x0B\\x0C\\x0E-\\xFF])+')
+      '(?:[\\x00-\\x21\\x23-\\x5B\\x5D-\\x7F]|\\\\[\\x00-\\x09\\x0B\\x0C\\x0E-\\xFF])+')
   },// Ll | Lm | Lo | Lt | Lu
   id_start: XRegExp('_|\\p{L}|\\p{Nl}|\\u1885|\\u1886|\\u2118|\\u212E|\\u309B|\\u309C', 'A'),
   id_continue: XRegExp('(?:_|\\p{L}|\\p{Nl}|\\p{Mn}|\\p{Mc}|\\p{Nd}|\\p{Pc}|\\u1885|\\u1886|\\u2118|\\u212E|\\u309B|\\u309C|\\u00B7|\\u0387|\\u1369|\\u136A|\\u136B|\\u136C|\\u136D|\\u136E|\\u136F|\\u1370|\\u1371|\\u19DA)+', 'A'),
@@ -252,7 +251,7 @@ eYo.py.parser.Scan_p.nextToken = function () {
     }
     var ans = this.end
     if (scan_digits()) {
-      while (true) {
+      while (true) { // eslint-disable-line
         ans = this.end
         if (scan_s('_')) {
           if(scan_digits()) {
@@ -381,7 +380,7 @@ eYo.py.parser.Scan_p.nextToken = function () {
     return token
   }
 
-   /**
+  /**
    * Creates a dedent token and push it.
    * There is a one tot one correspondance between
    * dedent and indent tokens.
@@ -395,7 +394,7 @@ eYo.py.parser.Scan_p.nextToken = function () {
     }
   }
 
- /**
+  /**
    * Create an NAME token and push it.
    * Scans the id_continue characters first.
    */
@@ -438,7 +437,7 @@ eYo.py.parser.Scan_p.nextToken = function () {
     return new_Token(eYo.py.tkn.NEWLINE)
   }
 
- /**
+  /**
    * An EOL without a NEWLINE Token, for line continuation (not only?).
    */
   var do_EOL = () => {
@@ -517,7 +516,9 @@ eYo.py.parser.Scan_p.nextToken = function () {
 
   var read_space = () => {
     if (scan_s(' ') || scan_s('\t') || scan_s(0o14)) {
-      while (scan_s(' ') || scan_s('\t') || scan_s(0o14)) {}
+      while (scan_s(' ') || scan_s('\t') || scan_s(0o14)) {
+        //
+      }
       do_space()
       return true
     }
@@ -536,9 +537,9 @@ eYo.py.parser.Scan_p.nextToken = function () {
   var new_box_literal = (x, X, reader, subtype, MSG) => {
     if (scan(x) || scan(X)) {
       scan_s('_')
-      while (true) {
+      while (true) { // eslint-disable-line
         if (reader()) {
-          while (reader()) {}
+          while (reader()) {} // eslint-disable-line
           if (scan_s('_')) {
             continue
           }
@@ -571,8 +572,8 @@ eYo.py.parser.Scan_p.nextToken = function () {
       }
       return new_Token(eYo.py.tkn.NUMBER,
         scan('j') || scan('J')
-        ? 'imagnumber'
-        : 'floatnumber')
+          ? 'imagnumber'
+          : 'floatnumber')
     }
     else if (scan('j') || scan('J')) {
       return new_Token(eYo.py.tkn.NUMBER, 'imagnumber')
@@ -599,7 +600,7 @@ eYo.py.parser.Scan_p.nextToken = function () {
     }
   }
 
-/**
+  /**
  * Scan a comment.
  * 2 situations, reading the comment from indentation lookup
  * or reading comment after something else.
@@ -619,8 +620,8 @@ eYo.py.parser.Scan_p.nextToken = function () {
       if (m) {
         forward(m[0].length)
         var tkn = new_Token(m.ignore
-            ? eYo.py.tkn.TYPE_IGNORE
-            : eYo.py.tkn.TYPE_COMMENT)
+          ? eYo.py.tkn.TYPE_IGNORE
+          : eYo.py.tkn.TYPE_COMMENT)
         tkn.continuation = !this.level
         tkn.blank = col !== eYo.NA
         if (scan('\r')) {
@@ -633,7 +634,7 @@ eYo.py.parser.Scan_p.nextToken = function () {
         }
       } else {
         // advance to the EOL
-        while (true) {
+        while (true) { // eslint-disable-line
           if (scan('\r')) {
             scan('\n')
             var after = do_EOL
@@ -653,7 +654,7 @@ eYo.py.parser.Scan_p.nextToken = function () {
       }
     }
   }
- /**
+  /**
    * Reads a literal string, since the quote.
    */
   var anchor_letter_quote = () => {
@@ -729,7 +730,7 @@ eYo.py.parser.Scan_p.nextToken = function () {
   }
 
   /* Begin(ning of line) */
-  bol: while(true) {
+  bol: while(true) { // eslint-disable-line
 
     if (this.list.length > 0) {
       return shift()
@@ -742,7 +743,7 @@ eYo.py.parser.Scan_p.nextToken = function () {
       var col = 0
       var altcol = 0
       this.at_bol = false
-      while (true) {
+      while (true) { // eslint-disable-line
         if (scan(' ')) {
           col++ , altcol++
         }
@@ -790,14 +791,14 @@ eYo.py.parser.Scan_p.nextToken = function () {
             /* Indent -- always one */
             if (altcol <= indent.altcol) {
               new_Error(eYo.py.E.INCONSISTENT_INDENTATION)
-              scathisn.done = eYo.e.TABSPACE
+              this.done = eYo.e.TABSPACE
             }
             new_Indent(col, altcol)
             // continue
           } else {
             /* Dedent -- any number, must be consistent */
             var indent2 = indent
-            while (true) {
+            while (true) { // eslint-disable-line
               if (this.indent_stack.length > 1) {
                 indent = this.indent_stack[this.indent_stack.length - 2]
                 if (col === indent.col) {
@@ -841,15 +842,15 @@ eYo.py.parser.Scan_p.nextToken = function () {
     again:  do {
 
       /* Check for EOF and errors now */
-  //   /* Check for EOF and errors now */
-  //   if (c == EOF) {
-  //     return tok->done == E_EOF ? ENDMARKER : ERRORTOKEN;
-  // }
+      //   /* Check for EOF and errors now */
+      //   if (c == EOF) {
+      //     return tok->done == E_EOF ? ENDMARKER : ERRORTOKEN;
+      // }
       if (!this.c) {
         new_EOF()
         return shift()
       }
-    /* Set start of current token */
+      /* Set start of current token */
       this.start = this.end // usefull ?
 
       /* Keywords */
@@ -870,7 +871,7 @@ eYo.py.parser.Scan_p.nextToken = function () {
           return shift()
         } else if (scan('s')) {
           if (new_KeyWord('assert', 2) ||
-            new_KeyWord('async', 2)) {
+            new_KeyWord('async', 2)) { //
           } else {
             var m = exec(eYo.py.XRE.id_continue)
             if (m) {
@@ -1023,7 +1024,7 @@ eYo.py.parser.Scan_p.nextToken = function () {
         /* in any case, allow '0' and variants as a literal */
         var nonzero = false
         scan_s('0')
-        while (true) {
+        while (true) { // eslint-disable-line
           d = this.end
           if (scan_s('_')) {
             if (scan_s('0')) {
@@ -1114,58 +1115,58 @@ eYo.py.parser.Scan_p.nextToken = function () {
     var c = this.c
     forward()
     switch (c) {
-      case '(':
+    case '(':
       ++i
-      case '[':
+    case '[': // eslint-disable-line
       ++i
-      case '{':
-        this.paren_stack.push(new_Token([
-          eYo.py.tkn.LBRACE,
-          eYo.py.tkn.LSQB,
-          eYo.py.tkn.LPAR
-        ][i]))
-        break
-      case ')':
-        ++i
-      case ']':
-        ++i
-      case '}':
-        var opening = this.paren_stack.pop()
-        if (!opening) {
-          new_Error([
-            eYo.py.E.UNEXPECTED_RBRACE,
-            eYo.py.E.UNEXPECTED_RSQB,
-            eYo.py.E.UNEXPECTED_RPAR
-          ][i])
-        } else if (opening.type !== [
-          eYo.py.tkn.LBRACE,
-          eYo.py.tkn.LSQB,
-          eYo.py.tkn.LPAR
-        ][i]) {
-          new_Error(eYo.py.E.UNMATCHED_PAREN)
-        }
-        new_Token([
-          eYo.py.tkn.RBRACE,
-          eYo.py.tkn.RSQB,
-          eYo.py.tkn.RPAR
-        ][i]).be_close(opening)
-        break
+    case '{': // eslint-disable-line
+      this.paren_stack.push(new_Token([
+        eYo.py.tkn.LBRACE,
+        eYo.py.tkn.LSQB,
+        eYo.py.tkn.LPAR
+      ][i]))
+      break
+    case ')':
+      ++i
+    case ']': // eslint-disable-line
+      ++i
+    case '}': // eslint-disable-line
+      var opening = this.paren_stack.pop()
+      if (!opening) {
+        new_Error([
+          eYo.py.E.UNEXPECTED_RBRACE,
+          eYo.py.E.UNEXPECTED_RSQB,
+          eYo.py.E.UNEXPECTED_RPAR
+        ][i])
+      } else if (opening.type !== [
+        eYo.py.tkn.LBRACE,
+        eYo.py.tkn.LSQB,
+        eYo.py.tkn.LPAR
+      ][i]) {
+        new_Error(eYo.py.E.UNMATCHED_PAREN)
+      }
+      new_Token([
+        eYo.py.tkn.RBRACE,
+        eYo.py.tkn.RSQB,
+        eYo.py.tkn.RPAR
+      ][i]).be_close(opening)
+      break
       // case '%':
       // case '&':
       // case '(':
       // case ')':
       // case '*':
       // case '+':
-      case ',':
-        new_Token(eYo.py.tkn.COMMA)
-        break
+    case ',':
+      new_Token(eYo.py.tkn.COMMA)
+      break
       // case '-':
       // case '.':
       // case '/':
       // case ':':
-      case ';':
-        new_Token(eYo.py.tkn.SEMI)
-        break
+    case ';':
+      new_Token(eYo.py.tkn.SEMI)
+      break
       // case '<':
       // case '=':
       // case '>':
@@ -1176,88 +1177,88 @@ eYo.py.parser.Scan_p.nextToken = function () {
       // case '{':
       // case '|':
       // case '}':
-      case '~':
-        new_Token(eYo.py.tkn.TILDE)
-        break
-      case '!':
-        new_TokenIf(eYo.py.tkn.NOTEQUAL, '=')
+    case '~':
+      new_Token(eYo.py.tkn.TILDE)
+      break
+    case '!':
+      new_TokenIf(eYo.py.tkn.NOTEQUAL, '=')
           || new_Error(eYo.py.E.UNEXPECTED_CHARACTER)
-        break;
-      case '%':
-        new_TokenIf(eYo.py.tkn.PERCENTEQUAL, '=')
+      break;
+    case '%':
+      new_TokenIf(eYo.py.tkn.PERCENTEQUAL, '=')
           || new_Token(eYo.py.tkn.PERCENT)
-        break;
-      case '&':
-        new_TokenIf(eYo.py.tkn.AMPEREQUAL, '=')
+      break;
+    case '&':
+      new_TokenIf(eYo.py.tkn.AMPEREQUAL, '=')
           || new_Token(eYo.py.tkn.AMPER)
-        break;
-      case '*':
-        new_TokenIf(eYo.py.tkn.STAREQUAL, '=')
+      break;
+    case '*':
+      new_TokenIf(eYo.py.tkn.STAREQUAL, '=')
           || new_TokenIf(eYo.py.tkn.DOUBLESTAREQUAL, '*', '=')
           || new_TokenIf(eYo.py.tkn.DOUBLESTAR, '*')
           || new_Token(eYo.py.tkn.STAR)
-        break;
-      case '+':
-        new_TokenIf(eYo.py.tkn.PLUSEQUAL, '=')
+      break;
+    case '+':
+      new_TokenIf(eYo.py.tkn.PLUSEQUAL, '=')
           || new_Token(eYo.py.tkn.PLUS)
-        break;
-      case '-':
-        new_TokenIf(eYo.py.tkn.MINEQUAL, '=')
+      break;
+    case '-':
+      new_TokenIf(eYo.py.tkn.MINEQUAL, '=')
           || new_TokenIf(eYo.py.tkn.RARROW, '>')
           || new_Token(eYo.py.tkn.MINUS)
-        break;
-      case '/':
-        new_TokenIf(eYo.py.tkn.SLASHEQUAL, '=')
+      break;
+    case '/':
+      new_TokenIf(eYo.py.tkn.SLASHEQUAL, '=')
           || new_TokenIf(eYo.py.tkn.DOUBLESLASHEQUAL, '/', '=')
           || new_TokenIf(eYo.py.tkn.DOUBLESLASH, '/')
           || new_Token(eYo.py.tkn.SLASH)
-        break;
-      case ':':
-        new_TokenIf(eYo.py.tkn.COLONEQUAL, '=')
+      break;
+    case ':':
+      new_TokenIf(eYo.py.tkn.COLONEQUAL, '=')
           || new_Token(eYo.py.tkn.COLON)
-        break;
-      case '<':
-        new_TokenIf(eYo.py.tkn.LESSEQUAL, '=')
+      break;
+    case '<':
+      new_TokenIf(eYo.py.tkn.LESSEQUAL, '=')
           || new_TokenIf(eYo.py.tkn.LEFTSHIFTEQUAL, '<', '=')
           || new_TokenIf(eYo.py.tkn.LEFTSHIFT, '<')
           || new_TokenIf(eYo.py.tkn.NOTEQUAL, '>')
           || new_Token(eYo.py.tkn.LESS)
-        break;
-      case '=':
-        new_TokenIf(eYo.py.tkn.EQEQUAL, '=')
+      break;
+    case '=':
+      new_TokenIf(eYo.py.tkn.EQEQUAL, '=')
           || new_Token(eYo.py.tkn.EQUAL)
-        break;
-      case '>':
-        new_TokenIf(eYo.py.tkn.GREATEREQUAL, '=')
+      break;
+    case '>':
+      new_TokenIf(eYo.py.tkn.GREATEREQUAL, '=')
           || new_TokenIf(eYo.py.tkn.RIGHTSHIFTEQUAL, '>', '=')
           || new_TokenIf(eYo.py.tkn.RIGHTSHIFT, '>')
           || new_Token(eYo.py.tkn.GREATER)
-        break;
-      case '@':
-        new_TokenIf(eYo.py.tkn.ATEQUAL, '=')
+      break;
+    case '@':
+      new_TokenIf(eYo.py.tkn.ATEQUAL, '=')
           || new_Token(eYo.py.tkn.AT)
-        break;
-      case '^':
-        new_TokenIf(eYo.py.tkn.CIRCUMFLEXEQUAL, '=')
+      break;
+    case '^':
+      new_TokenIf(eYo.py.tkn.CIRCUMFLEXEQUAL, '=')
           || new_Token(eYo.py.tkn.CIRCUMFLEX)
-        break;
-      case '|':
-        new_TokenIf(eYo.py.tkn.VBAREQUAL, '=')
+      break;
+    case '|':
+      new_TokenIf(eYo.py.tkn.VBAREQUAL, '=')
           || new_Token(eYo.py.tkn.VBAR)
-        break;
-      case '.':
-        new_TokenIf(eYo.py.tkn.ELLIPSIS, '.', '.')
+      break;
+    case '.':
+      new_TokenIf(eYo.py.tkn.ELLIPSIS, '.', '.')
           || new_Token(eYo.py.tkn.DOT)
-        break;
+      break;
       // case '#':
       // case '\\':
       // case '\r':
       // case '\n':
-      case eYo.NA:
-        new_EOF()
-        break
-      default:
-        new_Error(eYo.py.E.UNEXPECTED_CHARACTER)
+    case eYo.NA:
+      new_EOF()
+      break
+    default:
+      new_Error(eYo.py.E.UNEXPECTED_CHARACTER)
     }
     break
   }

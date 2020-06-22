@@ -46,16 +46,16 @@ eYo.test.common_PID = setTimeout(() => {
 eYo.test.extend = function (_p, key, before, after) {
   let f_p = _p[key]
   _p[key] = eYo.isF(after)
-  ? function (...$) {
-    eYo.isF(before) && before.call(this, ...$)
-    var ans = eYo.isF(f_p) && f_p.call(this, ...$)
-    eYo.isF(after) && after.call(this, ...$)
-    return ans
-  } : function (...$) {
-    var ans = eYo.isDoIt(f_p) && f_p.call(this, ...$)
-    eYo.isDoIt(before) && before.call(this, ...$)
-    return ans
-  }
+    ? function (...$) {
+      eYo.isF(before) && before.call(this, ...$)
+      var ans = eYo.isF(f_p) && f_p.call(this, ...$)
+      eYo.isF(after) && after.call(this, ...$)
+      return ans
+    } : function (...$) {
+      var ans = eYo.isDoIt(f_p) && f_p.call(this, ...$)
+      eYo.isDoIt(before) && before.call(this, ...$)
+      return ans
+    }
 }
 
 eYo.test.makeTestDesk = (id) => {
@@ -568,10 +568,10 @@ eYo.test.Span = (b, span) => {
   span.hole || (span.hole = b.isGroup && (!b.right || b.right.isComment) ? 1 : 0)
   span.l || (span.l = 
     b.isGroup
-    ? span.main + span.hole + span.suite
-    : b.isStmt
-      ? span.header + span.main + span.footer
-      : span.main
+      ? span.main + span.hole + span.suite
+      : b.isStmt
+        ? span.header + span.main + span.footer
+        : span.main
   )
   ;[
     'c_min',

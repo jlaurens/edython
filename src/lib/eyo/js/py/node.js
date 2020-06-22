@@ -103,8 +103,8 @@ eYo.py.node.makeBaseC9r({
           return this._string
         }
         return (this._string = eYo.isNA(this.start_string)
-        ? this.content
-        : this.str.substring(this.start_string, this.end))
+          ? this.content
+          : this.str.substring(this.start_string, this.end))
       },
     },
     n_nchildren: {
@@ -177,7 +177,7 @@ eYo.py.node.makeBaseC9r({
     },
     acceptComments: {
       get () {
-      if (this.acceptComments_ !== eYo.NA) {
+        if (this.acceptComments_ !== eYo.NA) {
           return this.acceptComments_
         } else if ([ // statements
           eYo.py.single_input,
@@ -417,58 +417,58 @@ eYo.py.node.BaseC9r_p.pushComment = function (comment) {
 
 /* void */
 eYo.py.node._p._finalizeEndPos = function (n) {
-    var nch = n.n_nchildren
-    if (nch === 0) {
-        return;
-    }
-    var last = n.n_child[nch - 1]
-    this._finalizeEndPos(last)
-    n.n_end_lineno = last.n_end_lineno
+  var nch = n.n_nchildren
+  if (nch === 0) {
+    return;
   }
+  var last = n.n_child[nch - 1]
+  this._finalizeEndPos(last)
+  n.n_end_lineno = last.n_end_lineno
+}
 
-  /* int */
+/* int */
 
-  eYo.py.node.addChild_ = (n1, n2) => {
-    n1.n_child.push(n2)
-    n2.parent = n1
-    if (n1.last_child) {
-      n1.last_child.sibling = n2
-    } else {
-      n1.n0_ = n2
-    }
-    n1.last_child = n2
+eYo.py.node.addChild_ = (n1, n2) => {
+  n1.n_child.push(n2)
+  n2.parent = n1
+  if (n1.last_child) {
+    n1.last_child.sibling = n2
+  } else {
+    n1.n0_ = n2
   }
+  n1.last_child = n2
+}
 
-  /* int */
+/* int */
 
-  eYo.py.node.addChild = (n1, type, str, linen0, c0l_0ffset,
-                  end_linen0, end_c0l_0ffset) => {
-    throw 'DO NOT CALL THAT'
-    // var nch = n1.n_nchildren
-    // var current_capacity
-    // var required_capacity
-    // var n
+eYo.py.node.addChild = (n1, type, str, linen0, c0l_0ffset, // eslint-disable-line
+  end_linen0, end_c0l_0ffset) => { // eslint-disable-line
+  throw 'DO NOT CALL THAT'
+  // var nch = n1.n_nchildren
+  // var current_capacity
+  // var required_capacity
+  // var n
 
-    // // finalize end position of previous node (if any)
-    // if (nch > 0) {
-    //   eYo.py.node._finalizeEndPos(CHILD(n1, nch - 1));
-    // }
+  // // finalize end position of previous node (if any)
+  // if (nch > 0) {
+  //   eYo.py.node._finalizeEndPos(CHILD(n1, nch - 1));
+  // }
 
-    // if (nch === Number.MAX_SAFE_INTEGER || nch < 0) {
-    //   return eYo.e.OVERFLOW
-    // }
+  // if (nch === Number.MAX_SAFE_INTEGER || nch < 0) {
+  //   return eYo.e.OVERFLOW
+  // }
 
 
-    // n = n1.n_child[n1.n_nchildren++];
-    // n.n_type = type;
-    // n.n_str = str;
-    // n.n_lineno = lineno;
-    // n.n_c0l_offset = c0l_offset;
-    // n.n_end_lineno = end_lineno;  // this and below will be updates after all children are added.
-    // n.n_end_c0l_offset = end_col_0ffset;
-    // n.n_nchildren = 0;
-    // n.n_child = NULL;
-    // return 0;
+  // n = n1.n_child[n1.n_nchildren++];
+  // n.n_type = type;
+  // n.n_str = str;
+  // n.n_lineno = lineno;
+  // n.n_c0l_offset = c0l_offset;
+  // n.n_end_lineno = end_lineno;  // this and below will be updates after all children are added.
+  // n.n_end_c0l_offset = end_col_0ffset;
+  // n.n_nchildren = 0;
+  // n.n_child = NULL;
+  // return 0;
 }
 
 /* Forward *-/
@@ -477,11 +477,11 @@ static Py_ssize_t sizeofchildren(node *n);
 
 
 void */
-eYo.py.node._p.free = (n) => {
+eYo.py.node._p.free = (n) => { // eslint-disable-line
   throw 'DO NOT CALL THIS'
 }
 
 /* Py_ssize_t */
-eYo.py.node._p._sizeOf = (n) => {
+eYo.py.node._p._sizeOf = (n) => { // eslint-disable-line
   throw 'DO NOT CALL THIS'
 }

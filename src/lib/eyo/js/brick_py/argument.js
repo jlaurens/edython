@@ -107,14 +107,14 @@ eYo.consolidator.Arguments.prototype.doCleanup = (() => {
       switch ((io.slot.parameter_type_ = getCheckType(io))) {
       case Type.ARGUMENT:
         io.last_expression = io.i
-      case Type.STAR:
+      case Type.STAR: // eslint-disable-line
         io.last_positional = io.i
         break
       case Type.STAR_STAR:
         if (io.first_star_star === Infinity) {
           io.first_star_star = io.i
         }
-      case Type.KEYWORD:
+      case Type.KEYWORD: // eslint-disable-line
         if (io.first_keyword_star_star === Infinity) {
           io.first_keyword_star_star = io.i
         }

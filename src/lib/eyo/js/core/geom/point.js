@@ -60,10 +60,10 @@ eYo.forward('geom.Rect')
  */
 eYo.geom.newC9r('Point', {
   //<<< mochai: Point
-    //<<< mochai: Basics
-    //... P = new eYo.geom.Point()
-    //... chai.expect(P).property('snap_p')
-    //>>>
+  //<<< mochai: Basics
+  //... P = new eYo.geom.Point()
+  //... chai.expect(P).property('snap_p')
+  //>>>
   /**
    * Initialize the point forwarding to `set`.
    * @param {Boolean|eYo.geom.PointLike} [snap] - Defaults to true
@@ -319,11 +319,11 @@ eYo.geom.newC9r('Point', {
         //... chai.expect(() => P.set(mmClient, 1)).throw()
       } else {
         eYo.isaP6y(c)
-        ? this[this.p6y$.replace]('c', c)
-        : (this.c_ = c)
+          ? this[this.p6y$.replace]('c', c)
+          : (this.c_ = c)
         eYo.isaP6y(l)
-        ? this[this.p6y$.replace]('l', l)
-        : (this.l_ = l || 0)
+          ? this[this.p6y$.replace]('l', l)
+          : (this.l_ = l || 0)
         return this
         //... let c_p = eYo.p6y.new('c', onr)
         //... let l_p = eYo.p6y.new('l', onr)
@@ -361,7 +361,7 @@ eYo.geom.newC9r('Point', {
         //... P = new eYo.geom.Point()
         //... P.pSet({clientX: mm.x, clientY: mm.y})
         //... chai.expect(P).almost.eql(m)
-        ;[x, y] = [x.clientX, x.clientY]
+        [x, y] = [x.clientX, x.clientY]
       } else if (eYo.isDef(x.c) && eYo.isDef(x.l)) {
         eYo.isDef(y) && eYo.throw(`Unexpected last argument ${this.eyo.name}/pSet (2): ${y}`)
         //... P = new eYo.geom.Point()
@@ -745,26 +745,26 @@ eYo.c9r.Dlgt_p.makePointed = function (key) {
     aliases: {
       //<<< mochai: aliases
       [key + '.c']: ['c', 'c_min'],
-        //<<< mochai: c, c_min
-        //... R = ns.new('foo', onr)
-        //... chai.expect(R.origin.c).equal(R.c).equal(R.c_min)
-        //... R.c_ += 1
-        //... chai.expect(R.origin.c).equal(R.c).equal(R.c_min)
-        //... R.c_min_ -= 1
-        //... chai.expect(R.origin.c).equal(R.c).equal(R.c_min)
-        //... R.origin_.c_ += 1
-        //... chai.expect(R.origin.c).equal(R.c).equal(R.c_min)
-        //>>>
+      //<<< mochai: c, c_min
+      //... R = ns.new('foo', onr)
+      //... chai.expect(R.origin.c).equal(R.c).equal(R.c_min)
+      //... R.c_ += 1
+      //... chai.expect(R.origin.c).equal(R.c).equal(R.c_min)
+      //... R.c_min_ -= 1
+      //... chai.expect(R.origin.c).equal(R.c).equal(R.c_min)
+      //... R.origin_.c_ += 1
+      //... chai.expect(R.origin.c).equal(R.c).equal(R.c_min)
+      //>>>
       [key + '.l']: ['l', 'l_min'],
-        //<<< mochai: l, l_min
-        //... chai.expect(R.origin.l).equal(R.l).equal(R.l_min)
-        //... R.l_ += 1
-        //... chai.expect(R.origin.l).equal(R.l).equal(R.l_min)
-        //... R.l_min_ -= 1
-        //... chai.expect(R.origin.l).equal(R.l).equal(R.l_min)
-        //... R.origin_.l_ += 1
-        //... chai.expect(R.origin.l).equal(R.l).equal(R.l_min)
-        //>>>
+      //<<< mochai: l, l_min
+      //... chai.expect(R.origin.l).equal(R.l).equal(R.l_min)
+      //... R.l_ += 1
+      //... chai.expect(R.origin.l).equal(R.l).equal(R.l_min)
+      //... R.l_min_ -= 1
+      //... chai.expect(R.origin.l).equal(R.l).equal(R.l_min)
+      //... R.origin_.l_ += 1
+      //... chai.expect(R.origin.l).equal(R.l).equal(R.l_min)
+      //>>>
       //>>> 
     },
     //>>>
@@ -778,35 +778,35 @@ eYo.c9r.Dlgt_p.makePointed = function (key) {
       //... R.origin_.set(m)
       // basic properties in board dimensions
       [key + '.x']: ['x', 'x_min'],
-        //<<< mochai: x, x_min
-        //... chai.expect(R.origin.x).almost.equal(m.c * eYo.geom.X)
-        //... chai.expect(R.origin.x).almost.equal(R.x).almost.equal(R.x_min)
-        //... R.x_ += 2 * eYo.geom.X
-        //... chai.expect(R.origin.x).almost.equal(R.x).almost.equal(R.x_min)
-        //... R.x_min_ -= eYo.geom.X
-        //... chai.expect(R.origin.x).almost.equal(R.x).almost.equal(R.x_min)
-        //... R.origin_.x_ -= eYo.geom.X
-        //... chai.expect(R.origin.x).almost.equal(R.x).almost.equal(R.x_min).almost.equal(m.c * eYo.geom.X)
-        // Convenient setters in board coordinates
-        //... R.x_ += 5 * eYo.geom.X
-        //... m.c += 5
-        //... chai.expect(R.x).almost.equal(m.c * eYo.geom.X)
-        //>>>
+      //<<< mochai: x, x_min
+      //... chai.expect(R.origin.x).almost.equal(m.c * eYo.geom.X)
+      //... chai.expect(R.origin.x).almost.equal(R.x).almost.equal(R.x_min)
+      //... R.x_ += 2 * eYo.geom.X
+      //... chai.expect(R.origin.x).almost.equal(R.x).almost.equal(R.x_min)
+      //... R.x_min_ -= eYo.geom.X
+      //... chai.expect(R.origin.x).almost.equal(R.x).almost.equal(R.x_min)
+      //... R.origin_.x_ -= eYo.geom.X
+      //... chai.expect(R.origin.x).almost.equal(R.x).almost.equal(R.x_min).almost.equal(m.c * eYo.geom.X)
+      // Convenient setters in board coordinates
+      //... R.x_ += 5 * eYo.geom.X
+      //... m.c += 5
+      //... chai.expect(R.x).almost.equal(m.c * eYo.geom.X)
+      //>>>
       [key + '.y']: ['y', 'y_min'],
-        //<<< mochai: y, y_min
-        //... chai.expect(R.origin.y).almost.equal(R.y).almost.equal(R.y_min).almost.equal(m.l * eYo.geom.Y)
-        //... chai.expect(R.origin.y).almost.equal(R.y).almost.equal(R.y_min)
-        //... R.y_ += 2 * eYo.geom.Y
-        //... chai.expect(R.origin.y).almost.equal(R.y).almost.equal(R.y_min)
-        //... R.y_min_ -= eYo.geom.Y
-        //... chai.expect(R.origin.y).almost.equal(R.y).almost.equal(R.y_min)
-        //... R.origin_.y_ -= eYo.geom.Y
-        //... chai.expect(R.origin.y).almost.equal(R.y).almost.equal(R.y_min)
-        //... chai.expect(R.y).almost.equal(m.l * eYo.geom.Y)
-        //... R.y_ += 4 * eYo.geom.Y
-        //... m.l += 4
-        //... chai.expect(R.y).almost.equal(m.l * eYo.geom.Y)
-        //>>>
+      //<<< mochai: y, y_min
+      //... chai.expect(R.origin.y).almost.equal(R.y).almost.equal(R.y_min).almost.equal(m.l * eYo.geom.Y)
+      //... chai.expect(R.origin.y).almost.equal(R.y).almost.equal(R.y_min)
+      //... R.y_ += 2 * eYo.geom.Y
+      //... chai.expect(R.origin.y).almost.equal(R.y).almost.equal(R.y_min)
+      //... R.y_min_ -= eYo.geom.Y
+      //... chai.expect(R.origin.y).almost.equal(R.y).almost.equal(R.y_min)
+      //... R.origin_.y_ -= eYo.geom.Y
+      //... chai.expect(R.origin.y).almost.equal(R.y).almost.equal(R.y_min)
+      //... chai.expect(R.y).almost.equal(m.l * eYo.geom.Y)
+      //... R.y_ += 4 * eYo.geom.Y
+      //... m.l += 4
+      //... chai.expect(R.y).almost.equal(m.l * eYo.geom.Y)
+      //>>>
       //>>>
     },
     //>>>

@@ -319,7 +319,7 @@ eYo.py.Exporter_p.exportField_ = function (field) {
  * @param {Object} opt
  * @private
  */
-eYo.py.Exporter_p.exportSlot_ = function (slot, opt) {
+eYo.py.Exporter_p.exportSlot_ = function (slot, opt) { // eslint-disable-line
   if (slot && slot.visible) {
     var m4t = slot.magnet
     if (m4t) {
@@ -361,8 +361,7 @@ eYo.py.Exporter_p.exportSlot_ = function (slot) {
     } while ((field = field.nextField))
   }
   this.exportMagnet_(slot.magnet)
-  var m4t = slot.magnet
-  if (m4t) {
+  if ((m4t = slot.magnet)) {
     var t9k = m4t.targetBrick
     if (t9k) {
       this.exportAsExpression_(t9k)
@@ -409,8 +408,7 @@ eYo.field.Input_p.getPythonText_ = function () {
   var t = eYo.field.Input[eYo.$].C9r_s.getPythonText_.call(this)
   if (!t.length && !this.optional_) {
     if (!this.model.canEmpty && (this.placeholder || (this.data && this.data.placeholder))) {
-      var t = `<missing ${this.getPlaceholderText().trim()}>`.toUpperCase()
-      return t
+      t = `<missing ${this.getPlaceholderText().trim()}>`.toUpperCase()
     }
   }
   return t

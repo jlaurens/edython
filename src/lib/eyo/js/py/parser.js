@@ -92,7 +92,7 @@ eYo.o4t.newC9r(eYo.py, 'Stack', {
       eYo.py.gmr.accelerators.add(g)
     }
     ps.p_grammar = g
-    var s = ps.p_stack = new stack()
+    var s = ps.p_stack = new eYo.py.Stack()
     // #ifdef PY_PARSER_REQUIRES_FUTURE_KEYWORD
     //     ps.p_flags = 0
     // #endif
@@ -103,7 +103,7 @@ eYo.o4t.newC9r(eYo.py, 'Stack', {
   }
 
   /* void */
-  eYo.py.parser.delete = (/* parser_state * */ ps) => {
+  eYo.py.parser.delete = (/* parser_state * */ ps) => { // eslint-disable-line
     throw 'NO CALL'
   }
 
@@ -221,11 +221,11 @@ eYo.o4t.newC9r(eYo.py, 'Stack', {
           }
           /* Pop while we are in an accept-only state */
           while ((s = d.d_state[ps.p_stack.s_top.s_state]),
-              s.s_accept && s.s_narcs === 1) {
+          s.s_accept && s.s_narcs === 1) {
             if (eYo.DEBUG.Py) {
               console.log("  DFA '%s', state %d: \nDirect pop.",
-              d.d_name,
-              ps.p_stack.s_top.s_state)
+                d.d_name,
+                ps.p_stack.s_top.s_state)
             }
             s_pop(ps.p_stack)
             if (s_empty(ps.p_stack)) {
@@ -263,7 +263,7 @@ eYo.o4t.newC9r(eYo.py, 'Stack', {
       if (s.s_lower === s.s_upper - 1) {
         /* Only one possible expected token */
         ans.expected = ps.p_grammar.
-            g_ll.ll_label[s.s_lower].lb_type
+          g_ll.ll_label[s.s_lower].lb_type
       } else {
         ans.expected = -1
       }

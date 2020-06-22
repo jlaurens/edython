@@ -17,7 +17,7 @@ eYo.forward('control.Zoomer')
  * Svg driver for the zoomer.
  */
 eYo.svg.newDriverC9r('Zoomer', {
-    /**
+  /**
    * Initialize the board's controls.
    * @param {eYo.control.Zoomer} constrols
    * @return {!Element} The controls's SVG group.
@@ -50,7 +50,7 @@ eYo.svg.newDriverC9r('Zoomer', {
     </g>
     */
     g = svg.zoom_ = eYo.svg.newElement(
-    'g',
+      'g',
       {class: 'eyo-zoom'},
       svg.group_
     )

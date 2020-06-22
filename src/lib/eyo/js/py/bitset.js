@@ -40,10 +40,11 @@ eYo.py.bitset.makeBaseC9r({
 
 // int
 eYo.py.bitset.addbit = (ss, ibit) => {
-  var i = ss.ra[Math.floor(ibit / 8)]
+  var q = Math.floor(ibit / 8)
+  var i = ss.ra[q]
   var mask = 1 << (ibit % 8)
   if (i & mask) {
-    return
+    return false
   }
   ss.ra[q] = i | mask
   return true
@@ -56,12 +57,12 @@ eYo.py.bitset.testbit = (ss, ibit) => {
 }
 
 eYo.py.bitset.samebitset = (ss1, ss2, nbits) => {
-    for (var i = nbits / 8; --i >= 0; ) {
-      if (ss1.ra[i] !== ss2.ra[i]) {
-        return 0
-      }
+  for (var i = nbits / 8; --i >= 0; ) {
+    if (ss1.ra[i] !== ss2.ra[i]) {
+      return 0
     }
-    return 1;
+  }
+  return 1;
 }
 
 eYo.py.bitset.mergebitset = (ss1, ss2, nbits) => {

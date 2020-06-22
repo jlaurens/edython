@@ -382,10 +382,10 @@ eYo.shape.BaseC9r_p.quarter_circle = function (r, clockwise, part) {
   var dx = 0
   var dy = 0
   switch (part) {
-    case 0: dx = -r; dy = r; break;
-    case 1: dx = -r; dy = -r; break;
-    case 2: dx = r; dy = -r; break;
-    default: dx = r; dy = r; break;
+  case 0: dx = -r; dy = r; break;
+  case 1: dx = -r; dy = -r; break;
+  case 2: dx = r; dy = -r; break;
+  default: dx = r; dy = r; break;
   }
   if (!clockwise) {
     dy = -dy
@@ -422,10 +422,10 @@ eYo.shape.BaseC9r_p.half_circle = function (r, clockwise, part) {
   var dx = 0
   var dy = 0
   switch (part) {
-    case 0: dx = -2 * r; break
-    case 1: dy = 2 * r; break
-    case 2: dx = 2 * r; break
-    default: dy = -2 * r; break
+  case 0: dx = -2 * r; break
+  case 1: dy = 2 * r; break
+  case 2: dx = 2 * r; break
+  default: dy = -2 * r; break
   }
   this.push(`${this.format(dx)},${this.format(dy)}`)
   this.cursor.forward(dx, dy)
@@ -479,7 +479,7 @@ eYo.shape.BaseC9r_p.initWithBrick = (() => {
    * @param {eYo.brick!} brick  Brick
    * @return {!Object} The receiver.
    */
-  var initWithStatementBrick = function(brick, opt) {
+  var initWithStatementBrick = function(brick, opt) { // eslint-disable-line
     // standard statement
     var s = brick.span
     var c = s.c
@@ -577,7 +577,7 @@ eYo.shape.BaseC9r_p.initWithBrick = (() => {
    * @param {eYo.brick!} brick
    * @return {eYo.brick!} The receiver.
    */
-  var initWithExpressionBrick = function(brick, opt) {
+  var initWithExpressionBrick = function(brick, opt) { // eslint-disable-line
     var width = brick.span.width
     var dd = this.caret_extra
     var h = eYo.geom.Y / 2
@@ -754,7 +754,7 @@ eYo.shape.BaseC9r_p.initWithMagnet = function(magnet, opt) {
     this.width = 1 + (magnet.boundField.visible
       ? Math.max(this.width, 1)
       : 2)
-    var w = this.width - 1
+    w = this.width - 1
     this.M(true, x + (w + 1 / 2) * eYo.geom.X - dd, y + (eYo.geom.Y - this.caret_height)/ 2)
     this.arc(this.caret_height, false, true)
     this.h(true, - w * eYo.geom.X + 2 * dd)
@@ -764,7 +764,7 @@ eYo.shape.BaseC9r_p.initWithMagnet = function(magnet, opt) {
       this.arc(this.caret_height, true, false)
     }
   } else if (this.width > 1) {
-    var dd = 2 * this.caret_extra
+    dd = 2 * this.caret_extra
     var p_h = this.caret_height
     this.M(true, x + (this.width - 1 / 2) * eYo.geom.X - dd / 2, y + (eYo.geom.Y - p_h)/ 2)
     this.arc(this.caret_height, false, true)

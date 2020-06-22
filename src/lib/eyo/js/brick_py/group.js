@@ -22,15 +22,15 @@ eYo.forward('msg')
  * For edython.
  */
 eYo.stmt.newC9r('group', {
-  head (type) /** @suppress {globalThis} */ {
+  head (type) /** @suppress {globalThis} */ { // eslint-disable-line
     return null
   },
   left: eYo.NA,
   right: {
-    check (type) /** @suppress {globalThis} */ {
+    check (type) /** @suppress {globalThis} */ { // eslint-disable-line
       return this.brick.suite
-      ? [eYo.t3.stmt.comment_stmt]
-      : eYo.t3.stmt.right.Simple_stmt
+        ? [eYo.t3.stmt.comment_stmt]
+        : eYo.t3.stmt.right.Simple_stmt
     },
     fields: {
       label: { // don't call it 'operator'
@@ -39,12 +39,12 @@ eYo.stmt.newC9r('group', {
       }
     }
   },
-  suite (type) /** @suppress {globalThis} */ {
+  suite (type) /** @suppress {globalThis} */ { // eslint-disable-line
     return this.brick.right
-    ? []
-    : null
+      ? []
+      : null
   },
-  foot (type) /** @suppress {globalThis} */ {
+  foot (type) /** @suppress {globalThis} */ { // eslint-disable-line
     return null
   },
   properties: {
@@ -87,7 +87,7 @@ eYo.stmt.group[eYo.$newSubC9r]('branch', true, {
         }
       },
       xml: {
-        save (element, opt) /** @suppress {globalThis} */ {
+        save (element, opt) /** @suppress {globalThis} */ { // eslint-disable-line
         },
         load (element) /** @suppress {globalThis} */ {
           this.brick.variant_p = element.getAttribute(eYo.key.EYO)

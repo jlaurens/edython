@@ -42,9 +42,9 @@ describe ('Tests: do', function () {
     }
     let expected = new eYo.test.Flag()
     ;[eYo.NA, start_f].forEach(start_f => {
-      ;[eYo.NA, begin_finally_f].forEach(begin_finally_f => {
-        ;[eYo.NA, finally_f].forEach(finally_f => {
-          ;[eYo.NA, end_finally_f].forEach(end_finally_f => {
+      [eYo.NA, begin_finally_f].forEach(begin_finally_f => {
+        [eYo.NA, finally_f].forEach(finally_f => {
+          [eYo.NA, end_finally_f].forEach(end_finally_f => {
             if (begin_finally_f && !end_finally_f) {
               return
             }
@@ -89,9 +89,9 @@ describe ('Tests: do', function () {
     }
     let expected = new eYo.test.Flag()
     ;[eYo.NA, start_f].forEach(start_f => {
-      ;[eYo.NA, begin_finally_f].forEach(begin_finally_f => {
-        ;[eYo.NA, finally_f].forEach(finally_f => {
-          ;[eYo.NA, end_finally_f].forEach(end_finally_f => {
+      [eYo.NA, begin_finally_f].forEach(begin_finally_f => {
+        [eYo.NA, finally_f].forEach(finally_f => {
+          [eYo.NA, end_finally_f].forEach(end_finally_f => {
             flag.reset()
             expected.reset()
             $$this.foo = eYo.do.makeWrapper_(eYo.NA, start_f, begin_finally_f, end_finally_f)
@@ -138,9 +138,9 @@ describe ('Tests: do', function () {
     }
     let expected = new eYo.test.Flag()
     ;[eYo.NA, start_f].forEach(start_f => {
-      ;[eYo.NA, begin_finally_f].forEach(begin_finally_f => {
-        ;[eYo.NA, finally_f].forEach(finally_f => {
-          ;[eYo.NA, end_finally_f].forEach(end_finally_f => {
+      [eYo.NA, begin_finally_f].forEach(begin_finally_f => {
+        [eYo.NA, finally_f].forEach(finally_f => {
+          [eYo.NA, end_finally_f].forEach(end_finally_f => {
             flag.reset()
             expected.reset()
             $$this.foo = eYo.do.makeWrapper_($this, start_f, begin_finally_f, end_finally_f)
@@ -187,9 +187,9 @@ describe ('Tests: do', function () {
     }
     let expected = new eYo.test.Flag()
     ;[eYo.NA, start_f].forEach(start_f => {
-      ;[eYo.NA, begin_finally_f].forEach(begin_finally_f => {
-        ;[eYo.NA, finally_f].forEach(finally_f => {
-          ;[eYo.NA, end_finally_f].forEach(end_finally_f => {
+      [eYo.NA, begin_finally_f].forEach(begin_finally_f => {
+        [eYo.NA, finally_f].forEach(finally_f => {
+          [eYo.NA, end_finally_f].forEach(end_finally_f => {
             flag.reset()
             expected.reset()
             $$this.foo = eYo.do.makeWrapper_($this, start_f, begin_finally_f, end_finally_f)

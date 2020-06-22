@@ -47,9 +47,9 @@ static void listnode(FILE *, node *);
       return;
     }
     if (eYo.py.tkn.ISNONTERMINAL(n.n_type)) {
-        for (var i = 0; i < n.n_nchildren; i++) {
-          list1node(/*fp, */n.n_child[i])
-        }
+      for (var i = 0; i < n.n_nchildren; i++) {
+        list1node(/*fp, */n.n_child[i])
+      }
     }
     else if (eYo.py.tkn.ISTERMINAL(n.n_type)) {
       switch (n.n_type) {

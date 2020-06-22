@@ -36,7 +36,7 @@ eYo.fcls.Brick_p.parentDidChange = eYo.doNothing
  * @param {eYo.brick.BaseC9r} brick - the node the driver acts on
  * @private
  */
-eYo.fcls.Brick_p.getBBox = function (brick) {
+eYo.fcls.Brick_p.getBBox = function (brick) { // eslint-disable-line
   return eYo.NA
 }
 
@@ -46,7 +46,7 @@ eYo.fcls.Brick_p.getBBox = function (brick) {
  * @param {eYo.brick.BaseC9r} brick - the node the driver acts on
  * @private
  */
-eYo.fcls.Brick_p.hasFocus = function (node) {
+eYo.fcls.Brick_p.hasFocus = function (brick) { // eslint-disable-line
   return false
 }
 
@@ -230,7 +230,7 @@ eYo.fcls.Brick_p.statusFocusRemove_ = eYo.doNothing
  * @param {eYo.brick.BaseC9r} brick  the brick the driver acts on
  * @private
  */
-eYo.fcls.Brick_p.canDraw = function (brick) {
+eYo.fcls.Brick_p.canDraw = function (brick) { // eslint-disable-line
   return true
 }
 
@@ -372,7 +372,7 @@ eYo.fcls.Brick_p.statusFocusAdd_ = eYo.doNothing
 /**
  * Reverse `statusFocusAdd_`.
  */
-eYo.brick.BaseC9r_p.statusFocusRemove_ = function (brick) {
+eYo.brick.BaseC9r_p.statusFocusRemove_ = function (brick) { // eslint-disable-line
   this.ui_driver.statusSelectRemove(this)
   this.slotForEach(slot => {
     slot.fieldForEach(field => {

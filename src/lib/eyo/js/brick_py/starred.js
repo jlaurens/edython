@@ -173,12 +173,12 @@ eYo.expr.newC9r('Starred', {
           endEditing: true
         }
       },
-      check (type) /** @suppress {globalThis} */ {
+      check (type) /** @suppress {globalThis} */ { // eslint-disable-line
         return this.brick.Modifier_p === '*'
           ? eYo.t3.expr.check._or_expr_all_or_parameter_or_target
           : eYo.t3.expr.check._expression_or_parameter
       },
-      didConnect (oldTargetM4t, targetOldM4t) /** @suppress {globalThis} */ {
+      didConnect (oldTargetM4t, targetOldM4t) /** @suppress {globalThis} */ { // eslint-disable-line
         if (eYo.event.recordingUndo) {
           this.brick.variant_ = eYo.key.NONE
         }
@@ -186,7 +186,7 @@ eYo.expr.newC9r('Starred', {
     }
   },
   out: {
-    check (type) /** @suppress {globalThis} */ {
+    check (type) /** @suppress {globalThis} */ { // eslint-disable-line
       // retrieve the brick
       var brick = this.brick
       if (brick.variant === eYo.key.STAR) {

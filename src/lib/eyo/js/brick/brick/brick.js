@@ -90,13 +90,13 @@ eYo.brick.makeBaseC9r({
    * @param {Object} C9r -  the object to which this instance is attached.
    * @param {Object} model -  the model used to create the constructor.
    */
-  [eYo.$$.dlgt] (ns, key, C9r, model) {
+  [eYo.$$.dlgt] (ns, key, C9r, model) { // eslint-disable-line
     this.types = []
   },
   properties: {
     /** @type {string} */
     parent: {
-      willChange(before, after) {
+      willChange(before, after) { // eslint-disable-line
         var f = m4t => m4t && m4t.disconnect()
         f(this.head_m)
           || f(this.left_m)
@@ -224,7 +224,7 @@ eYo.brick.makeBaseC9r({
                 // stop before the black connection found just above
                 previous = next.target
                 do {
-                  var b3k = previous.brick
+                  b3k = previous.brick
                   if (b3k.disabled) {
                     b3k.disabled = false
                     var check = next.checkType_(previous)
@@ -297,7 +297,7 @@ eYo.brick.makeBaseC9r({
         // Show/hide the next statement inputs.
         this.slotForEach(slot => slot.visible = !after)
         eYo.event.fireBrickChange(
-            this, 'collapsed', null, before, after)
+          this, 'collapsed', null, before, after)
       },
       didChange() {
         this.render()
@@ -562,7 +562,7 @@ eYo.brick.makeBaseC9r({
     rootControl: {
       get () {
         var ans = this.owner
-        while (!ans.isControl && (ans = ans.parent)) {}
+        while (!ans.isControl && (ans = ans.parent)) {} // eslint-disable-line
         return ans
       },
     },
@@ -781,7 +781,7 @@ eYo.brick.DEBUG_ = Object.create(null)
    * For edython.
    * @param {*} deep  Whether to propagate the message to children.
    */
-  _p.changeDone = function (deep) {
+  _p.changeDone = function (deep) { // eslint-disable-line
     this.changer.done()
   }
 
@@ -1191,13 +1191,13 @@ eYo.brick.DEBUG_ = Object.create(null)
       } else if (eYo.isDef(data_in)) {
         this.dataForEach(data => {
           var k = data.key
-          if (eYo.hasOwnProperty(data_in, k)) {
+          if (eYo.objectHasOwnProperty(data_in, k)) {
             data.set(data_in[k])
             data.required_from_model_ = true
             done = true
           } else {
             k = k + '_placeholder'
-            if (eYo.hasOwnProperty(data_in, k)) {
+            if (eYo.objectHasOwnProperty(data_in, k)) {
               data.required_from_model_ = true
               // change the place holder in the objects's model
               var m = {}
@@ -1210,7 +1210,7 @@ eYo.brick.DEBUG_ = Object.create(null)
         })
         if (!noCheck) {
           for (var k in data_in) {
-            if (eYo.hasOwnProperty(data_in, k)) {
+            if (eYo.objectHasOwnProperty(data_in, k)) {
               var D = this.data[k]
               if (!D) {
                 console.warn('Unused data:', this.type, k, data_in[k])
@@ -1221,13 +1221,13 @@ eYo.brick.DEBUG_ = Object.create(null)
       }
       this.dataForEach(data => {
         var k = data.key + '_p'
-        if (eYo.hasOwnProperty(model, k)) {
+        if (eYo.objectHasOwnProperty(model, k)) {
           data.set(model[k])
           done = true
           data.required_from_model_ = true
         }
         k = data.key + '_placeholder'
-        if (eYo.hasOwnProperty(model, k)) {
+        if (eYo.objectHasOwnProperty(model, k)) {
           data.customizePlaceholder(model[k])
         }
       })
@@ -1294,13 +1294,13 @@ eYo.brick.DEBUG_ = Object.create(null)
         var insert = model.insert
         var slot, next
         if (insert) {
-          var model = eYo.model.forKey(insert)
+          model = eYo.model.forKey(insert)
           if (model) {
             if ((slot = feedSlots.call(this, model.slots))) {
               next = slot
               do {
                 eYo.assert(!eYo.isDef(slots[next.key]),
-                  'Duplicate inserted slot key %s/%s/%s', next.key, insert, brick.type)
+                  'Duplicate inserted slot key %s/%s/%s', next.key, insert, slot.type)
                 slots[next.key] = next
               } while ((next = next[eYo.$next]))
             } else {
@@ -1613,7 +1613,7 @@ eYo.brick.DEBUG_ = Object.create(null)
    * @param {eYo.magnet.BaseC9r} m4t
    * @param {eYo.magnet.BaseC9r} childM4t
    */
-  _p.willConnect = function (m4t, childM4t) {
+  _p.willConnect = function (m4t, childM4t) { // eslint-disable-line
   }
 
   /**
@@ -1622,7 +1622,7 @@ eYo.brick.DEBUG_ = Object.create(null)
    * @param {eYo.magnet.BaseC9r} oldTargetM4t what was previously connected in the brick
    * @param {eYo.magnet.BaseC9r} targetOldM4t what was previously connected to the new magnet
    */
-  _p.didConnect = function (m4t, oldTargetM4t, targetOldM4t) {
+  _p.didConnect = function (m4t, oldTargetM4t, targetOldM4t) { // eslint-disable-line
     // new connections change the span properties of the superior block.
     // How many lines did I add? where did I add them?
     var t9k = m4t.targetBrick
@@ -1632,7 +1632,7 @@ eYo.brick.DEBUG_ = Object.create(null)
       this.span.black = 0
       this.span.addSuite(t9k.span.l)
     } else if (m4t.isRight) {
-      this.span.resetPadding() && b.updateShape()
+      this.span.resetPadding() && m4t.brick.updateShape()
     }
     this.consolidateType()
     if (m4t.isSlot && m4t.hasFocus) {
@@ -1644,7 +1644,7 @@ eYo.brick.DEBUG_ = Object.create(null)
    * Will disconnect this brick's connection.
    * @param {eYo.magnet.BaseC9r} m4t
    */
-  _p.willDisconnect = function (m4t) {
+  _p.willDisconnect = function (m4t) { // eslint-disable-line
   }
 
   /**
@@ -1676,7 +1676,7 @@ eYo.brick.DEBUG_ = Object.create(null)
    * The connection cannot always establish.
    * @param {eYo.brick.BaseC9r} other  the brick to be replaced
    */
-  _p.canReplaceBrick = function (other) {
+  _p.canReplaceBrick = function (other) { // eslint-disable-line
     return false
   }
 
@@ -1745,7 +1745,7 @@ eYo.brick.DEBUG_ = Object.create(null)
   /**
    * get the error
    * For edython.
-   * @param {eYo.brick.BaseC9r} brick The owner of the receiver.
+   * @param {eYo.brick.BaseC9r} brick - The owner of the receiver.
    * @param {string} key
    * @return true if the given value is accepted, false otherwise
    */
@@ -1767,7 +1767,7 @@ eYo.brick.DEBUG_ = Object.create(null)
   /**
    * get the slot connections, mainly for debugging purposes.
    * For edython.
-   * @param {eYo.brick.BaseC9r} brick
+   * @param {eYo.brick.BaseC9r}brick
    * @return the given brick
    */
   _p.footConnect = function (brick) {
@@ -1967,14 +1967,14 @@ eYo.brick.DEBUG_ = Object.create(null)
         return (me.current = ans)
       }
       if ((ans = me.current.suite)) {
-        parents.push(me.current)
+        me.parents.push(me.current)
         return (me.current = ans)
       }
       if ((ans = me.current.foot)) {
         return (me.current = ans)
       }
       var b3k
-      while ((b3k = parents.pop())) {
+      while ((b3k = me.parents.pop())) {
         if ((ans = b3k.foot)) {
           return (me.current = ans)
         }  
@@ -2045,7 +2045,7 @@ eYo.brick.DEBUG_ = Object.create(null)
   /**
    * Dispose of the ui resource.
    */
-  _p.disposeUI = function (healStack, animate) {
+  _p.disposeUI = function (healStack, animate) { // eslint-disable-line
     this.disposeUI = eYo.doNothing
     this.changer.wrap(() => {
       this.render = eYo.doNothing
@@ -2078,7 +2078,7 @@ eYo.brick.DEBUG_ = Object.create(null)
    * @param {Object} model - for subclassers
    * @return {?eYo.brick.BaseC9r} the created brick
    */
-  _p.insertParentWithModel = function (model) {
+  _p.insertParentWithModel = function (model) { // eslint-disable-line
     eYo.assert(false, 'Must be subclassed')
   }
 
@@ -2391,7 +2391,7 @@ eYo.brick.DEBUG_ = Object.create(null)
         }
       }
     }
-    ;(this.surround || this).render()
+    (this.surround || this).render()
     return ans
   }
   /**
@@ -2404,7 +2404,7 @@ eYo.brick.DEBUG_ = Object.create(null)
   _p.unlock = function (shallow) {
     var ans = 0
     eYo.event.fireBrickChange(
-        this, eYo.const.Event.locked, null, this.locked_, false)
+      this, eYo.const.Event.locked, null, this.locked_, false)
     this.locked_ = false
     // list all the input for connections with a target
     var m4t, t9k
@@ -2416,9 +2416,9 @@ eYo.brick.DEBUG_ = Object.create(null)
         m4t.hidden = false
       }
     })
-    if (!shallow && (m4t = this.right_m)) {
+    if (!shallow && (m4t = this.right_m)) { // eslint-disable-line
     }
-    ;(this.surround || this).render()
+    (this.surround || this).render()
     return ans
   }
 
@@ -2450,7 +2450,7 @@ eYo.brick.DEBUG_ = Object.create(null)
 eYo.brick.newReady = (() => {
   var processModel = (model, id, board, brick) => {
     if (!eYo.isStr(id)) {
-      ;[id, board, brick] = ['', id, board]
+      [id, board, brick] = ['', id, board]
     }
     var dataModel = model // may change below
     if (!brick) {
@@ -2492,7 +2492,7 @@ eYo.brick.newReady = (() => {
       brick.setDataWithModel(dataModel)
       var Vs = model.slots
       for (var k in Vs) {
-        if (eYo.hasOwnProperty(Vs, k)) {
+        if (eYo.objectHasOwnProperty(Vs, k)) {
           var slot = brick.slots[k]
           if (slot && slot.magnet) {
             var t9k = slot.targetBrick
@@ -2512,7 +2512,7 @@ eYo.brick.newReady = (() => {
       if (brick.foot_m) {
         var footModel = dataModel[eYo.$next]
         if (footModel) {
-          var b3k = processModel(footModel, board)
+          b3k = processModel(footModel, board)
           if (b3k && b3k.head_m) {
             try {
               brick.foot_m.connect(b3k.head_m)
@@ -2598,6 +2598,7 @@ eYo.do.defineSlotProperty = (object, k) => {
           return s.targetBrick
         }
       }
+      return eYo.NA
     }
   })
   k_b in object || Object.defineProperty(object, k_b, {

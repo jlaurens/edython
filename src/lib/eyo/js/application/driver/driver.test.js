@@ -39,7 +39,7 @@ describe('driver', function() {
     flag.expect(0)
     chai.expect(fooSubDrvr[eYo.$$.target]).instanceOf(NS.Foo)
     chai.expect(fooSubDrvr).equal(NSNS.getDriver('Foo'))
-   })
+  })
   it ('Driver: newDriverC9r inherits (2)', function () {
     var NS = eYo.driver.newNS()
     NS.newDriverC9r('Foo', {

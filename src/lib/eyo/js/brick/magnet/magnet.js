@@ -225,7 +225,7 @@ eYo.magnet.makeBaseC9r(true, {
         var brick = this.brick
         var t9k = this.targetBrick
         if (t9k && !this.checkType_(this.target)) {
-          ;(this.isSuperior ? t9k : brick).unplug()
+          (this.isSuperior ? t9k : brick).unplug()
           // Bump away.
           brick.bumpNeighbours_()
         }
@@ -248,8 +248,8 @@ eYo.magnet.makeBaseC9r(true, {
         var db = this.db_
         if (db) {
           after
-          ? db.magnetAdd_(this)
-          : db.magnetRemove_(this)
+            ? db.magnetAdd_(this)
+            : db.magnetRemove_(this)
         }
       }
     },
@@ -446,8 +446,8 @@ eYo.magnet.BaseC9r[eYo.$].p6yMerge({
   c: {
     get () { // in text units
       return this.isIn
-      ? this.where.c + this.slot.where.c
-      : this.where.c
+        ? this.where.c + this.slot.where.c
+        : this.where.c
     },
   },
   /**
@@ -458,8 +458,8 @@ eYo.magnet.BaseC9r[eYo.$].p6yMerge({
   l: {
     get () { // in text units
       return this.isIn
-      ? this.where_.l + this.slot.where_.l
-      : this.where_.l
+        ? this.where_.l + this.slot.where_.l
+        : this.where_.l
     },
   },
   /**
@@ -469,8 +469,8 @@ eYo.magnet.BaseC9r[eYo.$].p6yMerge({
   whereInBrick: {
     get () {
       return this.isIn
-      ? this.slot.whereInBrick.forward(this.where)
-      : new eYo.geom.Point(this.where)
+        ? this.slot.whereInBrick.forward(this.where)
+        : new eYo.geom.Point(this.where)
     },
     set (after) {
       this.where_.set(this.isIn
@@ -499,8 +499,8 @@ eYo.magnet.BaseC9r[eYo.$].p6yMerge({
   x: {
     get () { // in board coordinates
       return this.isIn
-      ? this.where_.x + this.slot.where_.x
-      : this.where_.x
+        ? this.where_.x + this.slot.where_.x
+        : this.where_.x
     },
   },
   /**
@@ -511,8 +511,8 @@ eYo.magnet.BaseC9r[eYo.$].p6yMerge({
   y: {
     get () { // in board coordinates
       return this.isIn
-      ? this.where_.y + this.slot.where_.y
-      : this.where_.y
+        ? this.where_.y + this.slot.where_.y
+        : this.where_.y
     },
   },
   /**
@@ -520,13 +520,13 @@ eYo.magnet.BaseC9r[eYo.$].p6yMerge({
   * @readonly
   * @return {Number}
   */
- w: {
-   get () { // in text units
+  w: {
+    get () { // in text units
       return this.boundField
-      ? this.boundField.size_.w + 1
-      : this.optional_ || this.s7r_
-        ? 1
-        : 3
+        ? this.boundField.size_.w + 1
+        : this.optional_ || this.s7r_
+          ? 1
+          : 3
     },
   },
   /**
@@ -590,7 +590,7 @@ eYo.magnet.BaseC9r[eYo.$].p6yMerge({
         if (!brick.isWhite) {
           return t4t
         }
-      } while (true)
+      } while (true) // eslint-disable-line
     },
   },
   /**
@@ -620,7 +620,7 @@ eYo.magnet.BaseC9r[eYo.$].p6yMerge({
         return this
       }
       var magnet
-      while ((magnet = other(brick)) && (magnet = magnet.target) && !magnet.name_ && (!(brick = magnet.brick) || brick.isWhite)) {}
+      while ((magnet = other(brick)) && (magnet = magnet.target) && !magnet.name_ && (!(brick = magnet.brick) || brick.isWhite)) {} // eslint-disable-line
       return magnet
     },
   },
@@ -655,7 +655,7 @@ eYo.magnet.BaseC9r[eYo.$].finalizeC9r((() => {
   let d = eYo.model.manyDescriptorF('willConnect', 'didConnect', 'willDisconnect', 'didDisconnect')
 
   ;['out', 'head', 'left', 'right', 'suite', 'foot'].forEach(k => {
-    ans[k] = eYo.model.manyDescriptorF('willConnect', 'didConnect', 'willDisconnect', 'didDisconnect')
+    ans[k] = d
   })
 })())
 
@@ -666,15 +666,15 @@ eYo.magnet.BaseC9r[eYo.$].finalizeC9r((() => {
 * @param {function} helper
 */
 eYo.magnet.BaseC9r_p.fieldForEach = function (helper) {
-this.fields && (Object.values(this.fields).forEach(f => helper(f)))
+  this.fields && (Object.values(this.fields).forEach(f => helper(f)))
 }
 
 /**
 * `consolidate` the target brick.
 */
 eYo.magnet.BaseC9r_p.consolidate = function (deep, force) {
-var t9k = this.targetBrick
-t9k && (t9k.consolidate(deep, force))
+  var t9k = this.targetBrick
+  t9k && (t9k.consolidate(deep, force))
 }
 
 // ANCHOR: Navigate
@@ -692,7 +692,7 @@ eYo.magnet.BaseC9r[eYo.$].p6yMerge({
           if (!slot.incog && slot.magnet && !slot.magnet.hidden) {
             return slot.magnet
           }
-        }s
+        }
       }
       if (this.isOut) {
         let m4t = m4t.target
@@ -714,7 +714,7 @@ eYo.magnet.BaseC9r[eYo.$].p6yMerge({
         let slot = this.brick.slotHead
         return slot && slot.magnet || this.brick.head_m
       } else if (this.isHead) {
-        var t4t = this.target
+        t4t = this.target
         return t4t && t4t.above || eYo.NA
       } else { // in, left, right
         return this.brick.head_m
@@ -733,7 +733,7 @@ eYo.magnet.BaseC9r[eYo.$].p6yMerge({
         var t4t = this.target
         return t4t && t4t.below || this.brick.foot_m
       } else if (this.isFoot) {
-        var t4t = this.target
+        t4t = this.target
         return t4t && t4t.below || eYo.NA
       } else if (this.isHead) {
         let slot = this.brick.slotHead
@@ -771,7 +771,7 @@ eYo.magnet.BaseC9r[eYo.$].p6yMerge({
  * @param {String} [type] - the expected type
  * @return a magnet, possibly eYo.NA
  */
-eYo.magnet.BaseC9r_p.getBelow = function (type) {
+eYo.magnet.BaseC9r_p.getBelow = function (type) { // eslint-disable-line
   var ans = this.brick.foot
   if (ans) {
     var m5s = ans.magnets
@@ -839,7 +839,7 @@ eYo.magnet.BaseC9r_p.connect_ = function (childM4t) {
           return brick.slotSome(slot => {
             var ans = slot.magnet
             if (ans) {
-              if (brick = ans.targetBrick) {
+              if ((brick = ans.targetBrick)) {
                 return freeMagnet(brick, magnet)
               } else if (ans.checkType_(magnet)) {
                 return ans
@@ -859,10 +859,9 @@ eYo.magnet.BaseC9r_p.connect_ = function (childM4t) {
           parentOldT4t = null
         }
       } else if (parentOldT4t.isLeft) {
-        var brick = child.rightMost
+        brick = child.rightMost
         if ((m4t = brick.right_m) && parentOldT4t.checkType_(m4t)) {
           m4t.connect(parentOldT4t)
-          otherM4t = null
         }
       }
       parentOldT4t && (parentOldT4t.bumpAwayFrom_(parentM4t))
@@ -932,7 +931,8 @@ eYo.magnet.BaseC9r_p.connect_ = function (childM4t) {
                     return
                   }
                   if ((t9k = m4t.targetBrick)) {
-                    if (plug(t9k)) {
+                    //ANCHOR: WHAT IS plug ?
+                    if (plug(t9k)) { // eslint-disable-line
                       return true
                     }
                   } else if (m4t.checkType_(oldChildT4t)) {
@@ -1003,10 +1003,10 @@ eYo.magnet.BaseC9r_p.connect_ = function (childM4t) {
     })
   })
   var ui
-  if (ui = child.ui) {
+  if ((ui = child.ui)) {
     ui.didConnect(childM4t, oldChildT4t, oldParentT4t)
   }
-  if (ui = parent.ui) {
+  if ((ui = parent.ui)) {
     ui.didConnect(parentM4t, oldParentT4t, oldChildT4t)
   }
   if ((unwrappedM4t !== parentM4t) && (ui = unwrappedM4t.ui)) {
@@ -1122,8 +1122,8 @@ eYo.magnet.BaseC9r_p.unhideAll = function() {
   if (this.isSuperior) {
     var t9k = this.targetBrick
     t9k && (t9k.collapsed
-        ? Object.values(t9k.magnets)
-        : t9k.getMagnets_(true)).forEach(m4t => m4t.unhideAll())
+      ? Object.values(t9k.magnets)
+      : t9k.getMagnets_(true)).forEach(m4t => m4t.unhideAll())
   }
 }
 
@@ -1167,7 +1167,7 @@ eYo.magnet.BaseC9r_p.unhideAll = function() {
     var max = closestIndex
     while (max < db.length) {
       temp = db[max++]
-      var radius = where.pDistance(temp.where)
+      radius = where.pDistance(temp.where)
       if (radius < maxRadius && magnet.isConnectionAllowed(temp)) {
         bestMagnet = temp
         bestRadius = radius
@@ -1312,7 +1312,6 @@ eYo.magnet.BaseC9r_p.completeWrap = function () {
       this.completeWrap = eYo.doNothing
       eYo.event.disableWrap(
         () => {
-          let brick = this.brick
           t9k = this.newTargetBrick()
           t9k || eYo.throw(`completeWrap failed: ${this.wrapped_}`)
           t9k.out_m || eYo.throw(`Did you declare an expr brick typed ${t9k.type}`)
@@ -1583,21 +1582,21 @@ eYo.magnet.BaseC9r_p.connect = function(other) {
     return
   }
   switch (this.canConnectWithReason_(other)) {
-    case eYo.magnet.CAN_CONNECT:
-      break
-    case eYo.magnet.REASON_SELF_CONNECTION:
-      throw 'Attempted to connect a brick to itself.'
-    case eYo.magnet.REASON_DIFFERENT_WORKSPACES:
-      // Usually this means one brick has been deleted.
-      throw 'Bricks not on same board.'
-    case eYo.magnet.REASON_WRONG_TYPE:
-      throw 'Attempt to connect incompatible types.'
-    case eYo.magnet.REASON_TARGET_NULL:
-      throw 'Target connection is null.'
-    case eYo.magnet.REASON_CHECKS_FAILED:
-      throw `Connection checks failed. ${this} expected ${this.check_}, but found ${other.check_}`
-    default:
-      throw 'Unknown connection failure: this should never happen!'
+  case eYo.magnet.CAN_CONNECT:
+    break
+  case eYo.magnet.REASON_SELF_CONNECTION:
+    throw 'Attempted to connect a brick to itself.'
+  case eYo.magnet.REASON_DIFFERENT_WORKSPACES:
+    // Usually this means one brick has been deleted.
+    throw 'Bricks not on same board.'
+  case eYo.magnet.REASON_WRONG_TYPE:
+    throw 'Attempt to connect incompatible types.'
+  case eYo.magnet.REASON_TARGET_NULL:
+    throw 'Target connection is null.'
+  case eYo.magnet.REASON_CHECKS_FAILED:
+    throw `Connection checks failed. ${this} expected ${this.check_}, but found ${other.check_}`
+  default:
+    throw 'Unknown connection failure: this should never happen!'
   }
   // Determine which brick is superior (higher in the source stack).
   this.isSuperior
@@ -1622,8 +1621,8 @@ eYo.magnet.BaseC9r_p.canConnectWithReason_ = function(target) {
     var dlgt_A = this.brick
     var dlgt_B = target.brick
   } else {
-    var dlgt_B = this.brick
-    var dlgt_A = target.brick
+    dlgt_B = this.brick
+    dlgt_A = target.brick
   }
   if (dlgt_A && dlgt_A === dlgt_B) {
     return eYo.magnet.REASON_SELF_CONNECTION
@@ -1690,7 +1689,7 @@ eYo.magnet.BaseC9r_p.isConnectionAllowed = function (candidate, maxRadius) {
  * Forwards to the model.
  * @param {eYo.magnet.BaseC9r} targetM4t
  */
-eYo.magnet.BaseC9r_p.willConnect = function (targetM4t) {
+eYo.magnet.BaseC9r_p.willConnect = function (targetM4t) { // eslint-disable-line
   var m = this.model
   var f = eYo.decorate.reentrant_method(this, 'model_willConnect', m && m.willConnect)
   if (f) {
@@ -1707,7 +1706,7 @@ eYo.magnet.BaseC9r_p.willConnect = function (targetM4t) {
  * @param {eYo.magnet.BaseC9r} targetOldM4t
  *     what was previously connected to the actual receiver's target
  */
-eYo.magnet.BaseC9r_p.didConnect = function (oldTargetM4t, targetOldM4t) {
+eYo.magnet.BaseC9r_p.didConnect = function (oldTargetM4t, targetOldM4t) { // eslint-disable-line
   // No need to increment step for the old magnets because
   // if any, they were already disconnected and
   // the step has already been incremented then.

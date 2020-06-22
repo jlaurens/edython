@@ -1,5 +1,5 @@
 describe('Wrapped slots', function() {
-  ;[
+  [
     'target',
     'value'
   ].forEach(k => {

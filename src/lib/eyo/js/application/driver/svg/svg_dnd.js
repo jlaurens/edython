@@ -22,13 +22,13 @@ eYo.svg.newDriverC9r('Dnd', {
    * Initiate the DnD manager UI.
    * @param {eYo.dnd.Mngr} mngr  The DnD manager we must init the UI.
    */
-  initUI (mngr) {
+  initUI (mngr) { // eslint-disable-line
   },
   /**
    * Dispose of the DnD manager UI.
    * @param {eYo.dnd.Mngr} mngr  The DnD manager we must dispose of the UI.
    */
-  disposeUI (mngr) {
+  disposeUI (mngr) { // eslint-disable-line
   },
 })
 

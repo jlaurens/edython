@@ -115,7 +115,7 @@ eYo.stmt.newC9r('turtle__setup_stmt', true, {
     F_stmt('setheading', 'Oriente la tortue dans la direction donnée par l\'angle selon le repère choisi (mode standard et trigonométrique ou mode logo et géographique).')
   ]
 
-  var F_expr = (name, title) => {
+  F_expr = (name, title) => {
     var key = 'turtle__'+name
     title && (eYo.tooltip.TITLE[key] = title)
     return {
@@ -126,7 +126,7 @@ eYo.stmt.newC9r('turtle__setup_stmt', true, {
       title: key
     }
   }
-  var F_stmt = (name, title) => {
+  F_stmt = (name, title) => {
     var key = 'turtle__'+name
     title && (eYo.tooltip.TITLE[key] = title)
     return {

@@ -43,15 +43,15 @@ eYo.TESTING = true
  * @param {String} key
  * @return {Boolean}
  */
-eYo.hasOwnProperty = function (object, key) {
-  return !!object && !!key && (Object.prototype.hasOwnProperty.call(object, key))
-  //<<< mochai: eYo.hasOwnProperty'
-  //... chai.assert(eYo.hasOwnProperty)
-  //... chai.expect(eYo.hasOwnProperty({foo: true}, 'foo')).true
-  //... chai.expect(eYo.hasOwnProperty({}, 'foo')).false
-  //... chai.expect(eYo.hasOwnProperty({}, '')).false
-  //... chai.expect(eYo.hasOwnProperty(eYo.NA, 'foo')).false
-  //... chai.expect(eYo.hasOwnProperty(eYo.NA, [eYo.$])).false
+eYo.objectHasOwnProperty = function (object, key) {
+  return Object.prototype.hasOwnProperty.call(object, key)
+  //<<< mochai: eYo.objectHasOwnProperty'
+  //... chai.assert(eYo.objectHasOwnProperty)
+  //... chai.expect(eYo.objectHasOwnProperty({foo: true}, 'foo')).true
+  //... chai.expect(eYo.objectHasOwnProperty({}, 'foo')).false
+  //... chai.expect(eYo.objectHasOwnProperty({}, '')).false
+  //... chai.expect(eYo.objectHasOwnProperty(eYo.NA, 'foo')).false
+  //... chai.expect(eYo.objectHasOwnProperty(eYo.NA, [eYo.$])).false
   //>>>
 }
 
@@ -232,16 +232,16 @@ eYo.isDef = what => {
  */
 eYo.noGetter = function (msg) {
   return eYo.isStr(msg)
-  ? function () {
-    throw new Error(`Forbidden getter: ${msg}`)
-  } : eYo.isF(msg)
     ? function () {
-      throw new Error(`Forbidden getter ${msg.call(this)}`)
-    } : eYo.isDef(msg)
-      ? eYo.throw(`eYo.noGetter: Bad argument {msg}`)
-      : function () {
-        throw new Error('Forbidden getter')
-      }
+      throw new Error(`Forbidden getter: ${msg}`)
+    } : eYo.isF(msg)
+      ? function () {
+        throw new Error(`Forbidden getter ${msg.call(this)}`)
+      } : eYo.isDef(msg)
+        ? eYo.throw(`eYo.noGetter: Bad argument {msg}`)
+        : function () {
+          throw new Error('Forbidden getter')
+        }
   //<<< mochai: eYo.noGetter
   //... chai.assert(eYo.noGetter)
   //... chai.expect(() => eYo.noGetter(421)).throw()
@@ -257,16 +257,16 @@ eYo.noGetter = function (msg) {
  */
 eYo.noSetter = function (msg) {
   return eYo.isStr(msg)
-  ? function () {
-    throw new Error(`Forbidden setter: ${msg}`)
-  } : eYo.isF(msg)
     ? function () {
-      throw new Error(`Forbidden setter ${msg.call(this)}`)
-    } : eYo.isDef(msg)
-      ? eYo.throw(`eYo.noSetter: Bad argument {msg}`)
-      : function () {
-        throw new Error('Forbidden setter')
-      }
+      throw new Error(`Forbidden setter: ${msg}`)
+    } : eYo.isF(msg)
+      ? function () {
+        throw new Error(`Forbidden setter ${msg.call(this)}`)
+      } : eYo.isDef(msg)
+        ? eYo.throw(`eYo.noSetter: Bad argument {msg}`)
+        : function () {
+          throw new Error('Forbidden setter')
+        }
   //<<< mochai: eYo.noSetter
   //... chai.assert(eYo.noSetter)
   //... chai.expect(() => eYo.noSetter(421)).throw()
@@ -297,7 +297,7 @@ eYo.descriptorR = (msg, getter, configurable) => {
     eYo.isDef(configurable) && eYo.throw(`eYo.descriptorR: Unexpected last argument ${configurable}`)
     ;[msg, getter, configurable] = [eYo.NA, msg, getter]
   } else if (!eYo.isF(getter)) {
-    ;[getter, configurable] = [configurable, getter]
+    [getter, configurable] = [configurable, getter]
     if (!eYo.isF(getter)) {
       console.error('BREAK HERE!')
     }
@@ -382,7 +382,7 @@ eYo.descriptorW = (msg, setter, configurable) => {
     eYo.isNA(configurable) || eYo.throw(`eYo.descriptorW: Unexpected last argument ${configurable}`)
     ;[msg, setter, configurable] = [eYo.NA, msg, setter]
   } else if (!eYo.isF(setter)) {
-    ;[setter, configurable] = [configurable, setter]
+    [setter, configurable] = [configurable, setter]
     if (!eYo.isF(setter)) {
       console.error('BREAK HERE!')
     }
@@ -539,7 +539,7 @@ Object.defineProperty(eYo._p, '$$', {
  */
 eYo._p.new$$ = function (key) {
   //<<< mochai: make$$
-  if (this.$$.hasOwnProperty(key)) {
+  if (eYo.objectHasOwnProperty(this.$$, key)) {
     throw `Do not declare a symbol twice`
   }
   return this.$$[key] = Symbol(key)
@@ -581,9 +581,9 @@ eYo.make$$('target') // used by proxies
  * @return {*} the destination
  */
 eYo.mixinRO = (object, props) => {
-  ;[Object.keys, Object.getOwnPropertySymbols].forEach(f => {
+  [object.keys, object.getOwnPropertySymbols].forEach(f => {
     f(props).forEach(key => {
-      eYo.hasOwnProperty(object, key) && eYo.throw(`Duplicate keys|symbols are forbidden: ${object}, ${key.toString ? key.toString() : keys}`)
+      eYo.objectHasOwnProperty(object, key) && eYo.throw(`Duplicate keys|symbols are forbidden: ${object}, ${key.toString ? key.toString() : key}`)
       var value = props[key]
       Reflect.defineProperty(
         object,
@@ -644,9 +644,9 @@ eYo.mixinRO = (object, props) => {
  * @return {*} the destination
  */
 eYo.mixinFR = (object, props) => {
-  ;[Object.keys, Object.getOwnPropertySymbols].forEach(f => {
+  [Object.keys, Object.getOwnPropertySymbols].forEach(f => {
     f(props).forEach(key => {
-      eYo.hasOwnProperty(object, key) && eYo.throw(`Duplicate keys|symbols are forbidden: ${object}, ${key.toString ? key.toString() : key}`)
+      eYo.objectHasOwnProperty(object, key) && eYo.throw(`Duplicate keys|symbols are forbidden: ${object}, ${key.toString ? key.toString() : key}`)
       let value = props[key]
       Reflect.defineProperty(
         object,
@@ -718,7 +718,7 @@ eYo.mixinFR = (object, props) => {
 eYo.provideRO = (dest, props) => {
   [Object.keys, Object.getOwnPropertySymbols].forEach(f => {
     f(props).forEach(key => {
-      if (!eYo.hasOwnProperty(dest, key)) {
+      if (!eYo.objectHasOwnProperty(dest, key)) {
         let value = props[key]
         let d = eYo.descriptorR(eYo.isF(value) ? value : {$ () {
           return value
@@ -758,9 +758,9 @@ eYo.provideRO = (dest, props) => {
  * @return {*} the destination
  */
 eYo.provideFR = (dest, props) => {
-  ;[Object.keys, Object.getOwnPropertySymbols].forEach(f => {
+  [Object.keys, Object.getOwnPropertySymbols].forEach(f => {
     f(props).forEach(key => {
-      if (!eYo.hasOwnProperty(dest, key)) {
+      if (!eYo.objectHasOwnProperty(dest, key)) {
         let value = props[key]
         let d = eYo.descriptorR({$ () {
           return value
@@ -846,16 +846,16 @@ eYo.mixinFR(eYo, {
    */
   neverShot (msg) {
     return eYo.isStr(msg)
-    ? function () {
-      throw new Error(`Forbidden call: ${msg}`)
-    } : eYo.isF(msg)
       ? function () {
-        throw new Error(`Forbidden call ${msg.call(this)}`)
-      } : eYo.isDef(msg)
-        ? eYo.throw(`eYo.neverShot: Bad argument ${msg}`)
-        : function () {
-          throw new Error('Forbidden shot')
-        }
+        throw new Error(`Forbidden call: ${msg}`)
+      } : eYo.isF(msg)
+        ? function () {
+          throw new Error(`Forbidden call ${msg.call(this)}`)
+        } : eYo.isDef(msg)
+          ? eYo.throw(`eYo.neverShot: Bad argument ${msg}`)
+          : function () {
+            throw new Error('Forbidden shot')
+          }
     //<<< mochai: eYo.neverShot
     //... chai.assert(eYo.neverShot)
     //... chai.expect(() => eYo.neverShot(421)).throw()
@@ -870,16 +870,16 @@ eYo.mixinFR(eYo, {
    */
   oneShot (msg) {
     return eYo.isStr(msg)
-    ? function () {
-      throw new Error(`Forbidden call: ${msg}`)
-    } : eYo.isF(msg)
       ? function () {
-        throw new Error(`Forbidden call ${msg.call(this)}`)
-      } : eYo.isDef(msg)
-        ? eYo.throw(`eYo.oneShot: Bad argument ${msg}`)
-        : function () {
-          throw new Error('Forbidden second shot')
-        }
+        throw new Error(`Forbidden call: ${msg}`)
+      } : eYo.isF(msg)
+        ? function () {
+          throw new Error(`Forbidden call ${msg.call(this)}`)
+        } : eYo.isDef(msg)
+          ? eYo.throw(`eYo.oneShot: Bad argument ${msg}`)
+          : function () {
+            throw new Error('Forbidden second shot')
+          }
     //<<< mochai: eYo.oneShot
     //... chai.assert(eYo.oneShot)
     //... chai.expect(() => eYo.oneShot(421)).throw()
@@ -912,8 +912,8 @@ eYo.mixinFR(eYo, {
    * @param {*} what 
    */
   isObject (what) { // see g@@g.isObject
-    var type = typeof val
-    return type == 'object' && val != null || type == 'function'
+    var type = typeof what
+    return type == 'object' && what != null || type == 'function'
   },
   /**
    * Returns the receiver if it is defined, the fallout otherwise.
@@ -1080,7 +1080,7 @@ eYo.mixinFR(eYo, {
       }
       //... what = []
       //... chai.expect(eYo.toRAF(what)()).equal(what)
-  } else if (eYo.isF(x)) {
+    } else if (eYo.isF(x)) {
       return x
       //... what = function () {}
       //... chai.expect(eYo.toRAF(what)).equal(what)
@@ -1315,7 +1315,7 @@ eYo.mixinFR(eYo._p, {
       }
     }
     if (eYo.isBool(model)) {
-      ;[model, getters] = [getters, model]
+      [model, getters] = [getters, model]
     }
     if (anonymous) {
       ns && key && !eYo.isNA(ns[key]) && eYo.throw(`${ns.name}[${key}] already exists.`)
@@ -1365,8 +1365,8 @@ eYo.mixinFR(eYo._p, {
       })
     }
     model && (getters
-    ? eYo.mixinRO(NS.prototype, model)
-    : eYo.mixinFR(NS.prototype, model))
+      ? eYo.mixinRO(NS.prototype, model)
+      : eYo.mixinFR(NS.prototype, model))
     //... var ns = eYo.newNS(eYo.NULL_NS, 'fu', {
     //...   shi: 421
     //... })
@@ -1379,27 +1379,27 @@ eYo.mixinFR(eYo._p, {
     anonymous && (ans.anonymous = anonymous)
     if (key) {
       if (!anonymous && ns) {
-        ns.hasOwnProperty(key) && eYo.throw(`${this.name}/newNS: already property (${key})`)
+        eYo.objectHasOwnProperty(ns, key) && eYo.throw(`${this.name}/newNS: already property (${key})`)
         Object.defineProperties(ns, {
-          [key]: { value: ans, writable: false, },
-          [key + '_p']: { value: NS.prototype, writable: false, },
-          [key + '_s']: { value: Super.prototype, writable: false, },
+          [key]: { value: ans, writable: false },
+          [key + '_p']: { value: NS.prototype, writable: false },
+          [key + '_s']: { value: Super.prototype, writable: false },
         })
       }
       Object.defineProperties(ans, {
-        key: {value: key, writable: false,},
-        $id: {value: $id, writable: false,},
+        key: {value: key, writable: false},
+        $id: {value: $id, writable: false},
       })
       var parentNS = ns
       if (ns && !eYo.isSym(id)) {
-        while (true) {
+        while (true) { // eslint-disable-line
           if ((parentNS = ns.parentNS)) {
             ns = parentNS
             continue
           }
           if (ns !== eYo) {
             Object.defineProperties(eYo, {
-              [$id]: { value: ans, writable: false, },
+              [$id]: { value: ans, writable: false },
             })
           }
           break
@@ -1706,14 +1706,14 @@ eYo.mixinFR(eYo._p, {
    */
   eYo._p.genUID = (type, length) => {
     if (!eYo.isStr(type)) {
-      ;[length, type] = [type, length]
+      [length, type] = [type, length]
     }
     length || (length = 20)
     if (type === eYo.IDENT) {
       return eYo.genUID(eYo.LETTER, 1) + eYo.genUID(eYo.ALNUM, length - 1)
     }
     let soup = type === eYo.LETTER ? letter :
-    type === eYo.ALNUM ? alnum : all
+      type === eYo.ALNUM ? alnum : all
     let soupLength = soup.length
     let id = []
     var i = length || 20

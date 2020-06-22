@@ -41,10 +41,10 @@ eYo.forward('geom.Rect')
  */
 eYo.geom.newC9r('Size', {
   //<<< mochai: Size
-    //<<< mochai: Basics
-    //... S = new eYo.geom.Size()
-    //... chai.expect(S).property('snap_p')
-    //>>>
+  //<<< mochai: Basics
+  //... S = new eYo.geom.Size()
+  //... chai.expect(S).property('snap_p')
+  //>>>
   /**
    * Initialize the point forwarding to `set`.
    * @param {Boolean|eYo.geom.PointLike|eYo.p6y.BaseC9r} [snap] - Defaults to true
@@ -95,7 +95,7 @@ eYo.geom.newC9r('Size', {
       } else {
         snap = false
       }
-      ;[snap, w, h] = [false, snap, w]
+      [snap, w, h] = [false, snap, w]
     }
     this.snap_ = snap
     this.set(w, h)
@@ -309,11 +309,11 @@ eYo.geom.newC9r('Size', {
         //... chai.expect(() => S.set(mmClient, 1)).throw()
       } else {
         eYo.isaP6y(w)
-        ? this[this.p6y$.replace]('w', w)
-        : (this.w_ = w || 0)
+          ? this[this.p6y$.replace]('w', w)
+          : (this.w_ = w || 0)
         eYo.isaP6y(h)
-        ? this[this.p6y$.replace]('h', h)
-        : (this.h_ = h || 0)
+          ? this[this.p6y$.replace]('h', h)
+          : (this.h_ = h || 0)
         return this
         //... let w_p = eYo.p6y.new('w', onr)
         //... let h_p = eYo.p6y.new('h', onr)
@@ -494,7 +494,7 @@ eYo.geom.newC9r('Size', {
       if (!eYo.isDef(txt)) {
         console.error('BREAK HERE!')
       }
-      var lines = txt.split(/\R\n|[\n\v\f\R\x85\u2028\u2029]/)
+      var lines = txt.split(/\r\n|[\n\v\f\r\x85\u2028\u2029]/)
       var c = 0
       lines.forEach(l => (c < l.length) && (c = l.length) )
       this.set(c, lines.length)
@@ -595,32 +595,32 @@ eYo.c9r.Dlgt_p.makeSized = function (key) {
     aliases: {
       //<<< mochai: aliases
       [key + '.w']: 'w',
-        //<<< mochai: w
-        //... R = ns.new('foo', onr)
-        //... chai.expect(R).property('w_p')
-        //... chai.expect(R.size.w).equal(R.w)
-        //... R.w_ += 1
-        //... chai.expect(R.size.w).equal(R.w)
-        //... R.size_.w_ += 1
-        //... chai.expect(R.size.w).equal(R.w)
-        //>>>
+      //<<< mochai: w
+      //... R = ns.new('foo', onr)
+      //... chai.expect(R).property('w_p')
+      //... chai.expect(R.size.w).equal(R.w)
+      //... R.w_ += 1
+      //... chai.expect(R.size.w).equal(R.w)
+      //... R.size_.w_ += 1
+      //... chai.expect(R.size.w).equal(R.w)
+      //>>>
       [key + '.h']: 'h',
-        //<<< mochai: h
-        //... R = ns.new('foo', onr)
-        //... chai.expect(R).property('h_p')
-        //... chai.expect(R.size.h).equal(R.h)
-        //... R.h_ += 1
-        //... chai.expect(R.size.h).equal(R.h)
-        //... R.size_.h_ -= 1
-        //... chai.expect(R.size.h).equal(R.h)
-        //>>>
-        //<<< mochai: w + h
-        //... R = ns.new('foo', onr)
-        //... R.w_ = W
-        //... isSwh(R.size, W)
-        //... R.h_ = H
-        //... isSwh(R.size, W, H)
-        //>>>
+      //<<< mochai: h
+      //... R = ns.new('foo', onr)
+      //... chai.expect(R).property('h_p')
+      //... chai.expect(R.size.h).equal(R.h)
+      //... R.h_ += 1
+      //... chai.expect(R.size.h).equal(R.h)
+      //... R.size_.h_ -= 1
+      //... chai.expect(R.size.h).equal(R.h)
+      //>>>
+      //<<< mochai: w + h
+      //... R = ns.new('foo', onr)
+      //... R.w_ = W
+      //... isSwh(R.size, W)
+      //... R.h_ = H
+      //... isSwh(R.size, W, H)
+      //>>>
       //>>> 
     },
     //>>>
@@ -632,41 +632,41 @@ eYo.c9r.Dlgt_p.makeSized = function (key) {
       //... R = ns.new('foo', onr)
       // basic properties in board dimensions
       [key + '.width']: 'width',
-        //<<< mochai: width
-        //... R.size_.set(m)
-        //... chai.expect(R.size.width).almost.equal(mm.width)
-        //... R.width_ += eYo.geom.X
-        //... chai.expect(R.size.width).almost.equal(R.width)
-        //... R.size_.width_ -= eYo.geom.X
-        //... chai.expect(R.size.width).almost.equal(R.width).almost.equal(mm.width)
-        // Convenient setters in board coordinates
-        //... R.width_ += 5 * eYo.geom.X
-        //... chai.expect(R.width).almost.equal(mm.width + 5 * eYo.geom.X)
-        //>>>
+      //<<< mochai: width
+      //... R.size_.set(m)
+      //... chai.expect(R.size.width).almost.equal(mm.width)
+      //... R.width_ += eYo.geom.X
+      //... chai.expect(R.size.width).almost.equal(R.width)
+      //... R.size_.width_ -= eYo.geom.X
+      //... chai.expect(R.size.width).almost.equal(R.width).almost.equal(mm.width)
+      // Convenient setters in board coordinates
+      //... R.width_ += 5 * eYo.geom.X
+      //... chai.expect(R.width).almost.equal(mm.width + 5 * eYo.geom.X)
+      //>>>
       [key + '.height']: 'height',
-        //<<< mochai: height
-        //... R.size_.set(m)
-        //... chai.expect(R.size.height).almost.equal(R.height).almost.equal(mm.height)
-        //... R.height_ += eYo.geom.Y
-        //... chai.expect(R.size.height).almost.equal(R.height)
-        //... R.size_.height_ -= eYo.geom.Y
-        //... chai.expect(R.size.height).almost.equal(R.height)
-        //... chai.expect(R.height).almost.equal(mm.height)
-        //... R.height_ += 4 * eYo.geom.Y
-        //... chai.expect(R.height).almost.equal(mm.height + 4 * eYo.geom.Y)
-        //>>>
-        //<<< mochai: width + height
-        //... R = ns.new('foo', onr)
-        //... R.width_ = mm.width
-        //... isSwh(R.size, m.w)
-        //... R.height_ = mm.height
-        //... isSwh(R.size, m.w, m.h)
-        //... R = ns.new('foo', onr)
-        //... R.size_.width_ = mm.width
-        //... chai.expect(R.width).almost.equal(mm.width)
-        //... R.size_.height_ = mm.height
-        //... chai.expect(R.height).almost.equal(mm.height)
-        //>>>
+      //<<< mochai: height
+      //... R.size_.set(m)
+      //... chai.expect(R.size.height).almost.equal(R.height).almost.equal(mm.height)
+      //... R.height_ += eYo.geom.Y
+      //... chai.expect(R.size.height).almost.equal(R.height)
+      //... R.size_.height_ -= eYo.geom.Y
+      //... chai.expect(R.size.height).almost.equal(R.height)
+      //... chai.expect(R.height).almost.equal(mm.height)
+      //... R.height_ += 4 * eYo.geom.Y
+      //... chai.expect(R.height).almost.equal(mm.height + 4 * eYo.geom.Y)
+      //>>>
+      //<<< mochai: width + height
+      //... R = ns.new('foo', onr)
+      //... R.width_ = mm.width
+      //... isSwh(R.size, m.w)
+      //... R.height_ = mm.height
+      //... isSwh(R.size, m.w, m.h)
+      //... R = ns.new('foo', onr)
+      //... R.size_.width_ = mm.width
+      //... chai.expect(R.width).almost.equal(mm.width)
+      //... R.size_.height_ = mm.height
+      //... chai.expect(R.height).almost.equal(mm.height)
+      //>>>
       //>>>
     },
     //>>>

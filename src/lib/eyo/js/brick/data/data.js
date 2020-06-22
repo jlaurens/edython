@@ -147,11 +147,11 @@ eYo.data.BaseC9r[eYo.$].finalizeC9r(
   {
     xml: (() => {
       let ans = eYo.model.manyDescriptorF('save', 'load')
-      ans[eYo.model.VALIDATE] = function (before) {
-        if (xml && ['variant', 'option', 'subtype'].includes(this.parent.key)) {
+      ans[eYo.model.VALIDATE] = {$ (before) {
+        if (before && ['variant', 'option', 'subtype'].includes(this.parent.key)) {
           return eYo.INVALID
         }
-      }
+      }}.$
       return ans
     })(),
   },
@@ -422,7 +422,7 @@ eYo.data.BaseC9r[eYo.$].finalizeC9r(
    * @return eYo.NA
    */
   _p.beforeChange = function(before, after) {
-    ;(!eYo.event.recordingUndo ? this.willChange : this.willUnchange).call(this, before, after)
+    (!eYo.event.recordingUndo ? this.willChange : this.willUnchange).call(this, before, after)
   }
 
   /**
@@ -435,8 +435,8 @@ eYo.data.BaseC9r[eYo.$].finalizeC9r(
    * @param {Object} after
    * @return eYo.NA
    */
-  _p.duringChange = function(before, after) {
-    ;(!eYo.event.recordingUndo ? this.isChanging : this.isUnchanging).apply(this, arguments)
+  _p.duringChange = function(before, after) { // eslint-disable-line
+    (!eYo.event.recordingUndo ? this.isChanging : this.isUnchanging).apply(this, arguments)
   }
 
   /**
@@ -448,7 +448,7 @@ eYo.data.BaseC9r[eYo.$].finalizeC9r(
    * @return eYo.NA
    */
   _p.afterChange = function(before, after) {
-    ;(eYo.event.recordingUndo ? this.didChange : this.didUnchange).call(before, after)
+    (eYo.event.recordingUndo ? this.didChange : this.didUnchange).call(before, after)
     this.synchronize(before, after)
   }
 
@@ -534,7 +534,7 @@ eYo.data.BaseC9r[eYo.$].finalizeC9r(
    * @param {Object} after
    * @param {Boolean} noRender
    */
-  _p.setTrusted = eYo.decorate.reentrant('setTrusted', function (..._$) {
+  _p.setTrusted = eYo.decorate.reentrant('setTrusted', function (...$) {
     this.setTrusted_.call(this, ...$)
   })
 
@@ -571,7 +571,7 @@ eYo.data.BaseC9r[eYo.$].finalizeC9r(
    */
   _p.set = function (after, validate = true) {
     after = this.filter(after)
-    if ((this.stored__ === after) || (validate && (!eYo.isVALID(after = this.validate (before, after))))) {
+    if ((this.stored__ === after) || (validate && (!eYo.isVALID(after = this.validate (before, after))))) { // eslint-disable-line
       return false
     }
     this.error = false
@@ -631,7 +631,7 @@ eYo.data.BaseC9r[eYo.$].finalizeC9r(
    * @param {boolean} noUndo  true when no undo tracking should be performed.
    * @private
    */
-  _p.setMainFieldValue = function (after, fieldKey, noUndo) {
+  _p.setMainFieldValue = function (after, fieldKey, noUndo) { // eslint-disable-line
     var field = this.fields[fieldKey || this.key]
     if (field) {
       eYo.event.disableWrap(() => {
@@ -1096,32 +1096,29 @@ eYo.data.BaseC9r[eYo.$].finalizeC9r(
   _p.handle_change = function (K, key, model) {
     let _p = this.C9r_p
     let f_m = model[K]
-    var alt_f = eYo.doNothing
     if (eYo.isDoIt(f_m)) {
       let f_p = _p[K]
-      var f
-      var alt_f = f_p
       if (f_m.length > 2) { // f_m arguments are builtin, before, after
         _p[K] = eYo.decorate.reentrant(K, eYo.isDoIt(f_p)
-        ? function (before, after) {
-          f_m.call(this, () => {
-            f_p.call(this, before, after)
-          }, before, after)
-        } : function (before, after) {
-          f_m.call(this, eYo.doNothing, before, after)
-        })
+          ? function (before, after) {
+            f_m.call(this, () => {
+              f_p.call(this, before, after)
+            }, before, after)
+          } : function (before, after) {
+            f_m.call(this, eYo.doNothing, before, after)
+          })
         return
       } else if (f_m.length > 1) {
         let m = XRegExp.exec(f_m.toString(), eYo.xre.function_builtin)
         if (m) { // f_m arguments are builtin, after
           _p[K] = eYo.decorate.reentrant(K, eYo.isDoIt(f_p)
-          ? function (before, after) {
-            f_m.call(this, () => {
-              f_p.call(this, before, after)
-            }, after)
-          } : function (before, after) {
-            f_m.call(this, eYo.doNothing, after)
-          })
+            ? function (before, after) {
+              f_m.call(this, () => {
+                f_p.call(this, before, after)
+              }, after)
+            } : function (before, after) {
+              f_m.call(this, eYo.doNothing, after)
+            })
           return
         }
         // f_m arguments are before, after

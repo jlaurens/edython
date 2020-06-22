@@ -94,8 +94,8 @@ describe('Tokenizer', function() {
 
   describe('Scan(ENDMARKER)', function() {
     var tester = new Tester(
-        'NEWLINE', '',
-        'ENDMARKER')
+      'NEWLINE', '',
+      'ENDMARKER')
     it('ENDMARKER', function() {
       tester.test()
     });
@@ -104,8 +104,8 @@ describe('Tokenizer', function() {
   describe('Scan(COMMENT)', function() {
     it('COMMENT', function() {
       var tester = new Tester(
-          'NEWLINE', '#',
-          'ENDMARKER')
+        'NEWLINE', '#',
+        'ENDMARKER')
       tester.test()
       assert(tester.scan.first.start_string === 0, `Comment is not parsed: ${tester.scan.first.start_string}`)
     });
@@ -132,23 +132,23 @@ describe('Tokenizer', function() {
   describe('Scan(NAME)', function() {
     it('abc', function() {
       var tester = new Tester(
-          'NAME', 'abc',
-          'NEWLINE', '',
-          'ENDMARKER')
+        'NAME', 'abc',
+        'NEWLINE', '',
+        'ENDMARKER')
       tester.test()
     });
     it('a1\u09B2\uff4d', function() {
       var tester = new Tester(
-          'NAME', 'a1\u09B2\uff4d',
-          'NEWLINE', '',
-          'ENDMARKER')
+        'NAME', 'a1\u09B2\uff4d',
+        'NEWLINE', '',
+        'ENDMARKER')
       tester.test()
     });
     it('__a1', function() {
       var tester = new Tester(
-          'NAME', '__a1',
-          'NEWLINE', '',
-          'ENDMARKER')
+        'NAME', '__a1',
+        'NEWLINE', '',
+        'ENDMARKER')
       tester.test()
     });
   });
@@ -156,32 +156,32 @@ describe('Tokenizer', function() {
   describe('Scan(DOTS)', function() {
     it('.', function() {
       var tester = new Tester(
-          'DOT', '.',
-          'NEWLINE', '',
-          'ENDMARKER')
+        'DOT', '.',
+        'NEWLINE', '',
+        'ENDMARKER')
       tester.test()
     });
     it('..', function() {
       var tester = new Tester(
-          'DOT', '.',
-          'DOT', '.',
-          'NEWLINE', '',
-          'ENDMARKER')
+        'DOT', '.',
+        'DOT', '.',
+        'NEWLINE', '',
+        'ENDMARKER')
       tester.test()
     });
     it('...', function() {
       var tester = new Tester(
-          'ELLIPSIS', '...',
-          'NEWLINE', '',
-          'ENDMARKER')
+        'ELLIPSIS', '...',
+        'NEWLINE', '',
+        'ENDMARKER')
       tester.test()
     });
     it('....', function() {
       var tester = new Tester(
-          'ELLIPSIS', '...',
-          'DOT', '.',
-          'NEWLINE', '',
-          'ENDMARKER')
+        'ELLIPSIS', '...',
+        'DOT', '.',
+        'NEWLINE', '',
+        'ENDMARKER')
       tester.test()
     });
   });
@@ -189,114 +189,114 @@ describe('Tokenizer', function() {
   describe('Scan(NUMBER)', function() {
     it('7', function() {
       var tester = new Tester(
-          'NUMBER', '7',
-          'NEWLINE', '',
-          'ENDMARKER')
+        'NUMBER', '7',
+        'NEWLINE', '',
+        'ENDMARKER')
       tester.test()
     });
     it('2147483647', function() {
       var tester = new Tester(
-          'NUMBER', '2147483647',
-          'NEWLINE', '',
-          'ENDMARKER')
+        'NUMBER', '2147483647',
+        'NEWLINE', '',
+        'ENDMARKER')
       tester.test()
     });
     it('0o177', function() {
       var tester = new Tester(
-          'NUMBER', '0o177',
-          'NEWLINE', '',
-          'ENDMARKER')
+        'NUMBER', '0o177',
+        'NEWLINE', '',
+        'ENDMARKER')
       tester.test()
     });
     it('0b100110111', function() {
       var tester = new Tester(
-          'NUMBER', '0b100110111',
-          'NEWLINE', '',
-          'ENDMARKER')
+        'NUMBER', '0b100110111',
+        'NEWLINE', '',
+        'ENDMARKER')
       tester.test()
     });
     it('79228162514264337593543950336', function() {
       var tester = new Tester(
-          'NUMBER', '79228162514264337593543950336',
-          'NEWLINE', '',
-          'ENDMARKER')
+        'NUMBER', '79228162514264337593543950336',
+        'NEWLINE', '',
+        'ENDMARKER')
       tester.test()
     });
     it('0o377', function() {
       var tester = new Tester(
-          'NUMBER', '0o377',
-          'NEWLINE', '',
-          'ENDMARKER')
+        'NUMBER', '0o377',
+        'NEWLINE', '',
+        'ENDMARKER')
       tester.test()
     });
     it('0xdeadbeef', function() {
       var tester = new Tester(
-          'NUMBER', '0xdeadbeef',
-          'NEWLINE', '',
-          'ENDMARKER')
+        'NUMBER', '0xdeadbeef',
+        'NEWLINE', '',
+        'ENDMARKER')
       tester.test()
     });
     it('100_000_000_000', function() {
       var tester = new Tester(
-          'NUMBER', '100_000_000_000',
-          'NEWLINE', '',
-          'ENDMARKER')
+        'NUMBER', '100_000_000_000',
+        'NEWLINE', '',
+        'ENDMARKER')
       tester.test()
     });
     it('0b_1110_0101', function() {
       var tester = new Tester(
-          'NUMBER', '0b_1110_0101',
-          'NEWLINE', '',
-          'ENDMARKER')
+        'NUMBER', '0b_1110_0101',
+        'NEWLINE', '',
+        'ENDMARKER')
       tester.test()
     });
     it('3.14', function() {
       var tester = new Tester(
-          'NUMBER', '3.14',
-          'NEWLINE', '',
-          'ENDMARKER')
+        'NUMBER', '3.14',
+        'NEWLINE', '',
+        'ENDMARKER')
       tester.test()
     });
     it('10.', function() {
       var tester = new Tester(
-          'NUMBER', '10.',
-          'NEWLINE', '',
-          'ENDMARKER')
+        'NUMBER', '10.',
+        'NEWLINE', '',
+        'ENDMARKER')
       tester.test()
     });
     it('.001', function() {
       var tester = new Tester(
-          'NUMBER', '.001',
-          'NEWLINE', '',
-          'ENDMARKER')
+        'NUMBER', '.001',
+        'NEWLINE', '',
+        'ENDMARKER')
       tester.test()
     });
     it('1e100', function() {
       var tester = new Tester(
-          'NUMBER', '1e100',
-          'NEWLINE', '',
-          'ENDMARKER')
+        'NUMBER', '1e100',
+        'NEWLINE', '',
+        'ENDMARKER')
       tester.test()
     });
     it('3.14e-10', function() {
       var tester = new Tester(
-          'NUMBER', '3.14e-10',
-          'NEWLINE', '',
-          'ENDMARKER')
+        'NUMBER', '3.14e-10',
+        'NEWLINE', '',
+        'ENDMARKER')
       tester.test()
     });
     it('0e0', function() {
       var tester = new Tester(
-          'NUMBER', '0e0',
-          'NEWLINE', '',
-          'ENDMARKER')
+        'NUMBER', '0e0',
+        'NEWLINE', '',
+        'ENDMARKER')
       tester.test()
     });
     it('3.14_15_93', function() {
       var tester = new Tester(
-          'NUMBER', '3.14_15_93',
-          'NEWLINE', '',
-          'ENDMARKER')
+        'NUMBER', '3.14_15_93',
+        'NEWLINE', '',
+        'ENDMARKER')
       tester.test()
     });
   });
@@ -304,37 +304,37 @@ describe('Tokenizer', function() {
   describe('Scan(STRING)', function() {
     it(`''`, function() {
       var tester = new Tester(
-          'STRING', `''`,
-          'NEWLINE', '',
-          'ENDMARKER')
+        'STRING', `''`,
+        'NEWLINE', '',
+        'ENDMARKER')
       tester.test()
     });
     it(`''''''`, function() {
       var tester = new Tester(
-          'STRING', `''''''`,
-          'NEWLINE', '',
-          'ENDMARKER')
+        'STRING', `''''''`,
+        'NEWLINE', '',
+        'ENDMARKER')
       tester.test()
     });
     it('""', function() {
       var tester = new Tester(
-          'STRING', '""',
-          'NEWLINE', '',
-          'ENDMARKER')
+        'STRING', '""',
+        'NEWLINE', '',
+        'ENDMARKER')
       tester.test()
     });
     it('""""""', function() {
       var tester = new Tester(
-          'STRING', '""""""',
-          'NEWLINE', '',
-          'ENDMARKER')
+        'STRING', '""""""',
+        'NEWLINE', '',
+        'ENDMARKER')
       tester.test()
     });
     it(`'abc'`, function() {
       var tester = new Tester(
-          'STRING', `'abc'`,
-          'NEWLINE', '',
-          'ENDMARKER')
+        'STRING', `'abc'`,
+        'NEWLINE', '',
+        'ENDMARKER')
       tester.test()
     });
     it(`"""
@@ -342,12 +342,12 @@ describe('Tokenizer', function() {
     klm
     """`, function() {
       var tester = new Tester(
-          'STRING', `"""
+        'STRING', `"""
       dfg
       klm
       """`,
-      'NEWLINE', '',
-      'ENDMARKER')
+        'NEWLINE', '',
+        'ENDMARKER')
       tester.test()
     });
     it(`"""
@@ -355,12 +355,12 @@ describe('Tokenizer', function() {
     klm
     """`, function() {
       var tester = new Tester(
-          'STRING', `f"""
+        'STRING', `f"""
       dfg
       klm
       """`,
-      'NEWLINE', '',
-      'ENDMARKER')
+        'NEWLINE', '',
+        'ENDMARKER')
       tester.test()
     });
   });
@@ -372,7 +372,7 @@ describe('Tokenizer', function() {
       dfg
       klm
       """`,
-      'NEWLINE', `
+        'NEWLINE', `
   `,
         'ENDMARKER'
       )
@@ -689,9 +689,9 @@ describe('Tokenizer', function() {
     });
     it('LESS', function() {
       var tester = new Tester(
-          'NOTEQUAL', '<>',
-          'NEWLINE', '',
-          'ENDMARKER')
+        'NOTEQUAL', '<>',
+        'NEWLINE', '',
+        'ENDMARKER')
       tester.test()
     });
   });
@@ -703,7 +703,7 @@ describe('Tokenizer', function() {
         'RPAR', '\n)',
         'NEWLINE', '',
         'ENDMARKER'
-        )
+      )
       tester.test()
     });
     it('(()⏎)', function() {
@@ -714,7 +714,7 @@ describe('Tokenizer', function() {
         'RPAR', '\n)',
         'NEWLINE', '',
         'ENDMARKER'
-        )
+      )
       tester.test()
     });
     it('(()⏎)⏎', function() {
@@ -725,7 +725,7 @@ describe('Tokenizer', function() {
         'RPAR', '\n)',
         'NEWLINE', '\n',
         'ENDMARKER'
-        )
+      )
       tester.test()
     });
   });
@@ -773,9 +773,9 @@ describe('Tokenizer', function() {
       var f = kw => {
         return function() {
           var tester = new Tester(
-              'NAME', kw,
-              'NEWLINE', '',
-              'ENDMARKER')
+            'NAME', kw,
+            'NEWLINE', '',
+            'ENDMARKER')
           tester.test(function (scan) {
             assert(scan.first.is_keyword, `Not a key word ?`)
           })
@@ -807,7 +807,7 @@ describe('Tokenizer', function() {
         'NEWLINE', '',
         'DEDENT', '',
         'ENDMARKER'
-        )
+      )
       tester.test()
     });
   });
@@ -815,12 +815,12 @@ describe('Tokenizer', function() {
   describe('Scan(Expressions)', function() {
     it('foo(1)', function() {
       var tester = new Tester(
-      'NAME', 'foo',
-      'LPAR', '\(',
-      'NUMBER', '1',
-      'RPAR', ')',
-      'NEWLINE', '',
-      'ENDMARKER')
+        'NAME', 'foo',
+        'LPAR', '\(',
+        'NUMBER', '1',
+        'RPAR', ')',
+        'NEWLINE', '',
+        'ENDMARKER')
       tester.test()
     });
   });

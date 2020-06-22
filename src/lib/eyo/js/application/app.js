@@ -84,10 +84,10 @@ eYo.app.newC9r('Options', {
       var hasDisable = false
       var hasSounds = false
     } else {
-      var hasTrashcan = eYo.asDef(options.trashCan, true)
-      var hasCollapse = eYo.asDef(options.collapse, true)
-      var hasDisable = eYo.asDef(options.disable, true)
-      var hasSounds = eYo.asDef(options.sounds, true)
+      hasTrashcan = eYo.asDef(options.trashCan, true)
+      hasCollapse = eYo.asDef(options.collapse, true)
+      hasDisable = eYo.asDef(options.disable, true)
+      hasSounds = eYo.asDef(options.sounds, true)
     }
     this.readOnly = readOnly
     this.hasTrashcan = hasTrashcan
@@ -105,7 +105,7 @@ eYo.app.newC9r('Options', {
     this.backgroundClass = eYo.asDef(options.backgroundClass,'eyo-main-board-background')
     var pathToMedia = options.media || './static/media'
     // Strip off any trailing slash (either Unix or Windows).
-    pathToMedia = pathToMedia.replace(/[\\\/]$/, '')
+    pathToMedia = pathToMedia.replace(/[\\/]$/, '')
     this.pathToMedia = pathToMedia
     this.zoom = eYo.app.parseZoom_(options)
     this.faceless = false
@@ -121,8 +121,8 @@ eYo.app.newC9r('Options', {
  * @private
  */
 eYo.app._p.parseZoom_ = function (options) {
+  options || (options = {})
   var zoom = options.zoom || {}
-  var options = {}
   if (zoom.controls === eYo.NA) {
     options.controls = false
   } else {
@@ -136,7 +136,7 @@ eYo.app._p.parseZoom_ = function (options) {
   if (zoom.startScale === eYo.NA) {
     options.startScale = 1
   } else {
-    options.startScale = parseFloat(zoom.startScale);
+    options.startScale = parseFloat(zoom.startScale)
   }
   if (zoom.maxScale === eYo.NA) {
     options.maxScale = 3
@@ -146,7 +146,7 @@ eYo.app._p.parseZoom_ = function (options) {
   if (zoom.minScale === eYo.NA) {
     options.minScale = 0.1
   } else {
-    options.minScale = parseFloat(zoom.minScale);
+    options.minScale = parseFloat(zoom.minScale)
   }
   if (zoom.scaleSpeed === eYo.NA) {
     options.scaleSpeed = 1.2

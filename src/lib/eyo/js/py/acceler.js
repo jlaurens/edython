@@ -50,11 +50,11 @@ static void fixstate(/* grammar * *-/ , state *)
     }
     var a = s.s_arc
     for (k = s.s_narcs; --k >= 0; a++) {
-      var a = s.s_arc[k]
-      var lbl = a.a_lbl
+      var arc = s.s_arc[k]
+      var lbl = arc.a_lbl
       var l = g.g_ll.ll_label[lbl]
       var type = l.lb_type
-      if (a.a_arrow >= (1 << 7)) {
+      if (arc.a_arrow >= (1 << 7)) {
         console.log("XXX too many states!")
         continue
       }
@@ -62,14 +62,14 @@ static void fixstate(/* grammar * *-/ , state *)
         var d1 = eYo.py.gmr.findDFA(g, type)
         if (type - eYo.py.tkn.NT_OFFSET >= (1 << 7)) {
           console.log("XXX too high nonterminal number!")
-            continue
+          continue
         }
         for (var ibit = 0; ibit < g.g_ll.ll_nlabels; ibit++) {
           if (eYo.bitSet.testbit(d1.d_first, ibit)) {
             if (accel[ibit] != -1) {
               console.log("XXX ambiguity!")
             }
-            accel[ibit] = a.a_arrow | (1 << 7) |
+            accel[ibit] = arc.a_arrow | (1 << 7) |
                 ((type - eYo.py.tkn.NT_OFFSET) << 8)
           }
         }
@@ -78,7 +78,7 @@ static void fixstate(/* grammar * *-/ , state *)
         s.s_accept = 1
       }
       else if (lbl >= 0 && lbl < nl) {
-        accel[lbl] = a.a_arrow
+        accel[lbl] = arc.a_arrow
       }
     }
     while (nl > 0 && accel[nl-1] === -1) {

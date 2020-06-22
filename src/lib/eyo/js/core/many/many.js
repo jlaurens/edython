@@ -67,7 +67,7 @@ eYo.mixinFR(eYo.many, {
   link (p, n) {
     if (eYo.isDef(p) && p[eYo.$next] !== n) {
       // remove old link
-      if (p.hasOwnProperty(eYo.$next) && eYo.isDef(p[eYo.$next])) {
+      if (eYo.objectHasOwnProperty(p, eYo.$next) && eYo.isDef(p[eYo.$next])) {
         Object.defineProperties(p[eYo.$next], {
           [eYo.$previous]: {
             value: eYo.NA,
@@ -84,7 +84,7 @@ eYo.mixinFR(eYo.many, {
     }
     if (eYo.isDef(n) && n[eYo.$previous] !== p) {
       // remove old link
-      if (n.hasOwnProperty('eYo.$previous') && eYo.isDef(n[eYo.$previous])) {
+      if (eYo.objectHasOwnProperty(n, 'eYo.$previous') && eYo.isDef(n[eYo.$previous])) {
         Object.defineProperties(n[eYo.$previous], {
           [eYo.$next]: {
             value: eYo.NA,
@@ -128,13 +128,13 @@ eYo.dlgt.BaseC9r_p.manyEnhanced = function (id, type, path, manyModel) {
   if (!eYo.isStr(path)) {
     eYo.isNA(manyModel) || eYo.throw(`${this.eyo.name}/manyEnhanced: Unexpected last argument`)
     //... chai.expect(() => eYo.C9r[eYo.$].manyEnhanced(1, 2, 3, 4)).throw()
-    ;[id, type, path, manyModel] = [id, id, type, path || {}]
+    ;[path, manyModel] = [eYo.NA, path || {}]
   } else if (!manyModel) {
     manyModel = {}
   }
   var _p = this._p
   let id$ = id + '$'
-  _p.hasOwnProperty(id$) && eYo.throw(`${this.eyo.name}/manyEnhanced: Already used (${id$})`)
+  eYo.objectHasOwnProperty(_p, id$) && eYo.throw(`${this.eyo.name}/manyEnhanced: Already used (${id$})`)
   //... preparator()()
   //... var foo$ = C9r[eYo.$].manyEnhanced('foo', 'foo')
   //... chai.expect(() => C9r[eYo.$].manyEnhanced('foo', 'foo')).throw()
@@ -178,7 +178,7 @@ eYo.dlgt.BaseC9r_p.manyEnhanced = function (id, type, path, manyModel) {
     get () {
       let model = this.model || Object.create(null)
       for (let k of path.split('.')) {
-        if (model = model[k]) {
+        if ((model = model[k])) {
           continue
         } else {
           model = Object.create(null)
@@ -272,7 +272,7 @@ eYo.dlgt.BaseC9r_p.manyEnhanced = function (id, type, path, manyModel) {
       let again = []
       var more = false
       var k
-      while (true) {
+      while (true) { // eslint-disable-line
         if ((k = todo.pop())) {
           let model = map.get(k)
           if (model && model.after) {
@@ -290,9 +290,9 @@ eYo.dlgt.BaseC9r_p.manyEnhanced = function (id, type, path, manyModel) {
           done.push(k)
           more = true
         } else if (more) {
-          ;[more, todo, again] = [false, again, todo]
+          [more, todo, again] = [false, again, todo]
         } else {
-          again.length && eYo.throw(`Cycling/Missing properties in ${object.eyo.name}: ${again}`)
+          again.length && eYo.throw(`Cycling/Missing properties in ${this.eyo.name}: ${again}`)
           break
         }
       }
@@ -344,21 +344,21 @@ eYo.dlgt.BaseC9r_p.manyEnhanced = function (id, type, path, manyModel) {
    * @param{*} object - An instance being created.
    */
   _p[type$.prepare] = manyModel.prepare
-  ? function (object, ...$) {
+    ? function (object, ...$) {
       //<<< mochai: prepare
-      if (!this.hasOwnProperty(type$.merge)) {
-      this[type$.merge] = function () {
-        eYo.throw(`Do not change the model of ${this.name} once an instance has been created`)
-      }
-      var $super = this
-      while (($super = $super.super)) {
-        if ($super.hasOwnProperty(type$.merge)) {
-          break
+      if (!eYo.objectHasOwnProperty(this, type$.merge)) {
+        this[type$.merge] = function () {
+          eYo.throw(`Do not change the model of ${this.name} once an instance has been created`)
         }
-        $super[type$.merge] = this[type$.merge]
+        var $super = this
+        while (($super = $super.super)) {
+          if (eYo.objectHasOwnProperty($super, type$.merge)) {
+            break
+          }
+          $super[type$.merge] = this[type$.merge]
+        }
       }
-    }
-    manyModel.prepare.call(this, object, ...$)
+      manyModel.prepare.call(this, object, ...$)
     //... preparator()()
     //... var foo$ = C9r[eYo.$].manyEnhanced('foo', 'foo', {
     //...   prepare (object) {
@@ -368,37 +368,37 @@ eYo.dlgt.BaseC9r_p.manyEnhanced = function (id, type, path, manyModel) {
     //... var o = {}
     //... C9r[eYo.$][foo$.prepare](o)
     //... flag.expect(12)
-  } : function (object, ...$) {
-    if (!this.hasOwnProperty(type$.merge)) {
-      this[type$.merge] = eYo.neverShot(`Do not change the model of ${this.name} once an instance has been created`)
-      var $super = this
-      while (($super = $super.super)) {
-        if ($super.hasOwnProperty(type$.merge)) {
-          break
+    } : function (object, ...$) {
+      if (!eYo.objectHasOwnProperty(this, type$.merge)) {
+        this[type$.merge] = eYo.neverShot(`Do not change the model of ${this.name} once an instance has been created`)
+        var $super = this
+        while (($super = $super.super)) {
+          if (eYo.objectHasOwnProperty($super, type$.merge)) {
+            break
+          }
+          $super[type$.merge] = this[type$.merge]
         }
-        $super[type$.merge] = this[type$.merge]
-      }
       //... preparator()()
       //... var foo$ = C9r[eYo.$].manyEnhanced('foo', 'foo')
       //... var o = {}
       //... C9r[eYo.$][foo$.prepare](o)
       //... chai.expect(() => C9r[eYo.$][foo$.merge]()).throw()
       //... // Not tested for $super
-    }
-    //... preparator()()
-    //... var foo$ = C9r[eYo.$].manyEnhanced('foo', 'foo', {
-    //...   make: flagor(1, true),
-    //...   suffix: '_x',
-    //...   model: {
-    //...     foo: 421,
-    //...   },
-    //... })
-    //... var o = {}
-    //... C9r[eYo.$][foo$.prepare](o)
-    //... flag.expect(1)
-    let attributes = []
-    var map = object[type$.map]
-    if (map) {
+      }
+      //... preparator()()
+      //... var foo$ = C9r[eYo.$].manyEnhanced('foo', 'foo', {
+      //...   make: flagor(1, true),
+      //...   suffix: '_x',
+      //...   model: {
+      //...     foo: 421,
+      //...   },
+      //... })
+      //... var o = {}
+      //... C9r[eYo.$][foo$.prepare](o)
+      //... flag.expect(1)
+      let attributes = []
+      var map = object[type$.map]
+      if (map) {
       //... preparator()()
       //... var foo$ = C9r[eYo.$].manyEnhanced('foo', 'foo')
       //... var o = {
@@ -410,35 +410,35 @@ eYo.dlgt.BaseC9r_p.manyEnhanced = function (id, type, path, manyModel) {
       //... }
       //... C9r[eYo.$][foo$.prepare](o)
       //... flag.expect(987)
-      for (let k of [...map.keys()].reverse()) {
-        let attr = map.get(k)
-        eYo.isaC9r(attr) && attr.dispose()
+        for (let k of [...map.keys()].reverse()) {
+          let attr = map.get(k)
+          eYo.isaC9r(attr) && attr.dispose()
+        }
       }
-    }
-    //... preparator()()
-    //... var foo$ = C9r[eYo.$].manyEnhanced('foo', 'foo', {
-    //...   make: flagor(1, true),
-    //...   model: {
-    //...     foo: 421,
-    //...   },
-    //... })
-    //... o = {}
-    //... C9r[eYo.$][foo$.prepare](o)
-    //... flag.expect(1)
-    map = object[type$.map] = new Map()
-    /**
+      //... preparator()()
+      //... var foo$ = C9r[eYo.$].manyEnhanced('foo', 'foo', {
+      //...   make: flagor(1, true),
+      //...   model: {
+      //...     foo: 421,
+      //...   },
+      //... })
+      //... o = {}
+      //... C9r[eYo.$][foo$.prepare](o)
+      //... flag.expect(1)
+      map = object[type$.map] = new Map()
+      /**
      * The maker is responsible of making new `key` objects from a model.
      */
-    let make = manyModel.make || function (...$) {
-      return eYo[type].new(...$)
-    }
-    for (let [k, model] of this[type$.modelMap]) {
-      let attr = make(model, k, object, ...$)
-      if (attr) {
-        map.set(k, attr)
-        attributes.push(attr)
+      let make = manyModel.make || function (...$) {
+        return eYo[type].new(...$)
       }
-    }
+      for (let [k, model] of this[type$.modelMap]) {
+        let attr = make(model, k, object, ...$)
+        if (attr) {
+          map.set(k, attr)
+          attributes.push(attr)
+        }
+      }
     //... preparator()()
     //... var foo$ = C9r[eYo.$].manyEnhanced('foo', 'foo', {
     //...   make (model, k, object) {
@@ -459,7 +459,7 @@ eYo.dlgt.BaseC9r_p.manyEnhanced = function (id, type, path, manyModel) {
     //... C9r[eYo.$][foo$.prepare](o)
     //... C9r[eYo.$][foo$.shortcuts](o)
     //>>>
-  }
+    }
 
   /**
    * Prepares the *key* properties of the given object.
@@ -476,8 +476,8 @@ eYo.dlgt.BaseC9r_p.manyEnhanced = function (id, type, path, manyModel) {
    * @param{*} object - An instance being created.
    */
   _p[type$.links] = manyModel.links
-  ? function (object) {
-    manyModel.links.call(this, object)
+    ? function (object) {
+      manyModel.links.call(this, object)
     //<<< mochai: links (1)
     //... preparator()()
     //... var foo$ = C9r[eYo.$].manyEnhanced('foo', 'foo', {
@@ -489,54 +489,54 @@ eYo.dlgt.BaseC9r_p.manyEnhanced = function (id, type, path, manyModel) {
     //... C9r[eYo.$][foo$.links](o)
     //... flag.expect(12)
     //>>>
-  } : function (object) {
+    } : function (object) {
     //<<< mochai: links (2)
-    let attributes = [...object[type$.map].values()]
-    //... preparator()()
-    //... var foo$ = C9r[eYo.$].manyEnhanced('foo', 'foo', {
-    //...   make (model, k, object) {
-    //...     return eYo.o3d.new(model, k, object)
-    //...   },
-    //...   model: {
-    //...     foo: {
-    //...       after: 'chi'
-    //...     },
-    //...     chi: {
-    //...       after: 'mi'
-    //...     },
-    //...     mi: {},
-    //...   },
-    //...   suffix: '_x',
-    //... })
-    //... o = eYo.c9r.new('onr')
-    //... C9r[eYo.$][foo$.prepare](o)
-    //... C9r[eYo.$][foo$.links](o)
-    //... C9r[eYo.$][foo$.shortcuts](o)
-    //... chai.expect(o[foo$.head]).equal(o.mi_x)
-    //... chai.expect(o[foo$.tail]).equal(o.foo_x)
-    //... chai.expect(o.foo_x[eYo.$next]).undefined
-    //... chai.expect(o.foo_x[eYo.$previous]).equal(o.chi_x)
-    //... chai.expect(o.chi_x[eYo.$next]).equal(o.foo_x)
-    //... chai.expect(o.chi_x[eYo.$previous]).equal(o.mi_x)
-    //... chai.expect(o.mi_x[eYo.$next]).equal(o.chi_x)
-    //... chai.expect(o.mi_x[eYo.$previous]).undefined
-    var attr = object[type$.head] = attributes.shift()
-    eYo.many.link(eYo.NA, attr)
-    attributes.forEach(a => {
-      eYo.many.link(attr, a)
-      attr = a
-    })
-    eYo.many.link(attr, eYo.NA)
-    object[type$.tail] = attributes.pop() || object[type$.head]
+      let attributes = [...object[type$.map].values()]
+      //... preparator()()
+      //... var foo$ = C9r[eYo.$].manyEnhanced('foo', 'foo', {
+      //...   make (model, k, object) {
+      //...     return eYo.o3d.new(model, k, object)
+      //...   },
+      //...   model: {
+      //...     foo: {
+      //...       after: 'chi'
+      //...     },
+      //...     chi: {
+      //...       after: 'mi'
+      //...     },
+      //...     mi: {},
+      //...   },
+      //...   suffix: '_x',
+      //... })
+      //... o = eYo.c9r.new('onr')
+      //... C9r[eYo.$][foo$.prepare](o)
+      //... C9r[eYo.$][foo$.links](o)
+      //... C9r[eYo.$][foo$.shortcuts](o)
+      //... chai.expect(o[foo$.head]).equal(o.mi_x)
+      //... chai.expect(o[foo$.tail]).equal(o.foo_x)
+      //... chai.expect(o.foo_x[eYo.$next]).undefined
+      //... chai.expect(o.foo_x[eYo.$previous]).equal(o.chi_x)
+      //... chai.expect(o.chi_x[eYo.$next]).equal(o.foo_x)
+      //... chai.expect(o.chi_x[eYo.$previous]).equal(o.mi_x)
+      //... chai.expect(o.mi_x[eYo.$next]).equal(o.chi_x)
+      //... chai.expect(o.mi_x[eYo.$previous]).undefined
+      var attr = object[type$.head] = attributes.shift()
+      eYo.many.link(eYo.NA, attr)
+      attributes.forEach(a => {
+        eYo.many.link(attr, a)
+        attr = a
+      })
+      eYo.many.link(attr, eYo.NA)
+      object[type$.tail] = attributes.pop() || object[type$.head]
     //>>>
-  }
+    }
 
   _p[type$.shortcuts] = manyModel.shortcuts || function (object) {
     //<<< mochai: shortcuts
     let suffix = (manyModel.suffix || `_${type[0]}`)
     for (let k of object[type$.map].keys()) {
       if (eYo.isSym(k)) {
-        object.hasOwnProperty(k) && eYo.throw(`${this.eyo.name}/${id}$.shortcuts: Already property ${object.eyo.name}/${k.toString()}`)
+        eYo.objectHasOwnProperty(object, k) && eYo.throw(`${this.eyo.name}/${id}$.shortcuts: Already property ${object.eyo.name}/${k.toString()}`)
         eYo.mixinRO(object, {
           [k] () {
             return this[type$.map].get(k).value
@@ -545,10 +545,10 @@ eYo.dlgt.BaseC9r_p.manyEnhanced = function (id, type, path, manyModel) {
         continue
       }
       let k_p = k + suffix
-      if (object.hasOwnProperty(k_p)) {
+      if (eYo.objectHasOwnProperty(object, k_p)) {
         console.error(`BREAK HERE!!! ALREADY object ${object.eyo.name}/${k_p}`)
       }
-      object.hasOwnProperty(k_p) && eYo.throw(`${this.eyo.name}/${id}$.shortcuts: Already property ${object.eyo.name}/${k_p}`)
+      eYo.objectHasOwnProperty(object, k_p) && eYo.throw(`${this.eyo.name}/${id}$.shortcuts: Already property ${object.eyo.name}/${k_p}`)
       eYo.mixinRO(object, {
         [k_p] () {
           return this[type$.map].get(k)
@@ -669,7 +669,7 @@ eYo.dlgt.BaseC9r_p.manyEnhanced = function (id, type, path, manyModel) {
     //>>>
   }
   // methods defined on the object
-  var _p = this.C9r_p
+  _p = this.C9r_p
   eYo.mixinRO(_p, {
     [id$]: type$,
     //<<< mochai: id$ (instance)
@@ -682,7 +682,7 @@ eYo.dlgt.BaseC9r_p.manyEnhanced = function (id, type, path, manyModel) {
   _p[type$.forEach] = function ($this, f) {
     //<<< mochai: forEach
     if (eYo.isF($this)) {
-      ;[$this, f] = [f, $this]
+      [$this, f] = [f, $this]
     }
     for (let v of this[type$.map].values()) {
       f.call($this, v)
@@ -726,7 +726,7 @@ eYo.dlgt.BaseC9r_p.manyEnhanced = function (id, type, path, manyModel) {
   _p[type$.some] = function ($this, f) {
     //<<< mochai: some
     if (eYo.isF($this)) {
-      ;[$this, f] = [f, $this]
+      [$this, f] = [f, $this]
     }
     for (let v of this[type$.map].values()) {
       if (f.call($this, v)) {

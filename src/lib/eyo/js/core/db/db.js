@@ -28,7 +28,7 @@ eYo.o3d.newC9r('DB', {
   init (key, owner, id_key, is_owner) {
     //<<< mochai: init
     if (!eYo.isStr(id_key)) {
-      ;[id_key, is_owner] = ['id', id_key]
+      [id_key, is_owner] = ['id', id_key]
     }
     this.id_key__ = id_key
     this.is_owner__ = !!is_owner
@@ -265,15 +265,15 @@ eYo.o3d.newC9r('DB', {
       //... flag.expect(134234)
       //>>>
     }
-      //<<< mochai: not owner
+    //<<< mochai: not owner
     this.map__.clear()
     this.map__ = this.id_key__ = eYo.NA
-      //... var db = new eYo.o3d.DB('db', onr, 'key', true)
-      //... var a = eYo.o3d.new('3', onr)
-      //... var b = eYo.o3d.new('4', onr)
-      //... db.add(a, b)
-      //... db.dispose()
-      //>>>
+    //... var db = new eYo.o3d.DB('db', onr, 'key', true)
+    //... var a = eYo.o3d.new('3', onr)
+    //... var b = eYo.o3d.new('4', onr)
+    //... db.add(a, b)
+    //... db.dispose()
+    //>>>
     //>>>
   },
 })

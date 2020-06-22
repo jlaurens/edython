@@ -215,10 +215,10 @@ eYo.xml.domToBoard = function (xml, owner) {
           xy.c = xmlChild.hasAttribute('c')
             ? parseInt(xmlChild.getAttribute('c'), 10)
             : 1
-            xy.l = xmlChild.hasAttribute('l')
+          xy.l = xmlChild.hasAttribute('l')
             ? parseInt(xmlChild.getAttribute('l'), 10)
             : 1
-          if (!isNaN(c) && !isNaN(l)) {
+          if (!isNaN(xy.c) && !isNaN(xy.l)) {
             brick.moveBy(xy)
           }
         }
@@ -248,7 +248,7 @@ eYo.xml.domToBoard = function (xml, owner) {
         })
       } else if (name === eYo.xml.sTMT || name === eYo.xml.EXPR) {
         // for edython
-        ;(brick = brickMaker(child)) && (newBlockIds.push(brick.id))
+        (brick = brickMaker(child)) && (newBlockIds.push(brick.id))
       }
     })
   }, () => {
@@ -588,7 +588,7 @@ eYo.xml.registerAllTags = function () {
   var register = (mode) => {
     var where = eYo.t3[mode]
     for (var key in where) {
-      if (!eYo.hasOwnProperty(where, key)) {
+      if (!eYo.objectHasOwnProperty(where, key)) {
         continue
       }
       var type = where[key]
@@ -707,15 +707,10 @@ eYo.xml.Recover.prototype.resitWrap = function (dom, try_f, finally_f) {
     var ans
     try {
       ans = try_f()
-    } catch (err) {
-      console.error(err)
-      throw err
+      return ans
     } finally {
       try {
         finally_f && (ans = finally_f(ans))
-      } catch (err) {
-        console.error(err)
-        throw err
       } finally {
         this.recovered.length = 0
         var dom
@@ -725,13 +720,9 @@ eYo.xml.Recover.prototype.resitWrap = function (dom, try_f, finally_f) {
         }
         try {
           this.recovered_f && (this.recovered.forEach(this.recovered_f))
-        } catch (err) {
-          console.error(err)
-          throw err
         } finally {
           this.recovered.length = 0
           this.to_resit = this.to_resit_stack.pop()
-          return ans
         }
       }
     }
@@ -813,18 +804,18 @@ eYo.xml.Recover.prototype.domToBrick = function (dom, owner) {
           : owner.foot_m
         // return the first brick that would connect to the owner
         if (!best.types.some(type => {
-            var b3k = eYo.brick.newReady(type, board)
-            var m4t = b3k && b3k.out_m
-            if (slot_m4t && m4t && slot_m4t.checkType_(m4t)) {
-              ans = b3k
-              return true
-            }
-            m4t = b3k.head_m
-            if (flow_m4t && m4t && flow_m4t.checkType_(m4t)) {
-              ans = b3k
-              return true
-            }
-          })) {
+          var b3k = eYo.brick.newReady(type, board)
+          var m4t = b3k && b3k.out_m
+          if (slot_m4t && m4t && slot_m4t.checkType_(m4t)) {
+            ans = b3k
+            return true
+          }
+          m4t = b3k.head_m
+          if (flow_m4t && m4t && flow_m4t.checkType_(m4t)) {
+            ans = b3k
+            return true
+          }
+        })) {
           fallback = best.types[0]
         }
       }
@@ -894,20 +885,20 @@ eYo.xml.domToBrick = (() => {
             if (prototypeName.length === 1) {
               prototypeName = prototypeName[0]
             } else if (!(prototypeName = (() => {
-                var where = dom.tagName.toLowerCase() === eYo.xml.EXPR ? eYo.t3.expr : eYo.t3.stmt
-                for (var i = 0; i < prototypeName.length; i++) {
-                  var candidate = prototypeName[i]
-                  var C9r = eYo.model.forType(candidate)
-                  if (C9r && where[C9r[eYo.$].key]) {
-                    return candidate
-                  }
+              var where = dom.tagName.toLowerCase() === eYo.xml.EXPR ? eYo.t3.expr : eYo.t3.stmt
+              for (var i = 0; i < prototypeName.length; i++) {
+                var candidate = prototypeName[i]
+                var C9r = eYo.model.forType(candidate)
+                if (C9r && where[C9r[eYo.$].key]) {
+                  return candidate
                 }
-              }) ())) {
+              }
+            }) ())) {
               // no prototype found, bail out.
               return
             }
           }
-          brick = eYo.brick.newReady(prototypeName, id, boards)
+          brick = eYo.brick.newReady(prototypeName, id, board)
         } else {
           if (!name) {
             name = dom.tagName.toLowerCase() === 's' ? 'expression_stmt': 'any_expression'
@@ -1130,10 +1121,10 @@ eYo.expr.primary_p.xmlAttr = function () {
  */
 eYo.stmt.assignment_stmt_p.xmlAttr = function () {
   return this.type === eYo.t3.stmt.augmented_assignment_stmt
-  ? this.Operator_p
-  : this.type === eYo.t3.stmt.annotated_stmt || this.variant === eYo.key.NONE || this.variant === eYo.key.VALUED || this.variant === eYo.key.EXPRESSION
-    ? 'x'
-    : '='
+    ? this.Operator_p
+    : this.type === eYo.t3.stmt.annotated_stmt || this.variant === eYo.key.NONE || this.variant === eYo.key.VALUED || this.variant === eYo.key.EXPRESSION
+      ? 'x'
+      : '='
 }
 
 /**
@@ -1181,12 +1172,11 @@ eYo.xml.comparison.domToComplete = function (element, owner) {
       && (model.all.indexOf(op) >= 0)) {
       var b3k = eYo.brick.newReady(owner, type, id)
     } else if ((type = eYo.t3.expr.object_comparison)
-      && (C9r = eYo.model.forType(type))
       && (model = C9r[eYo.$].model.data)
       && (model = model.operator)
       && model.all
       && (model.all.indexOf(op) >= 0)) {
-        b3k = eYo.brick.newReady(owner, type, id)
+      b3k = eYo.brick.newReady(owner, type, id)
     }
     return b3k
   }

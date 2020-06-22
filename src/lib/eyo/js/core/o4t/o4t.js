@@ -90,8 +90,8 @@ eYo.dlgt.BaseC9r_p.p6yEnhanced = function (id = 'p6y') {
      */
     make (model, key, owner) {
       return model && model.source
-      ? eYo.p6y.aliasNew(key, owner, ...model.source)
-      : eYo.p6y.prepare(model || {}, key, owner)
+        ? eYo.p6y.aliasNew(key, owner, ...model.source)
+        : eYo.p6y.prepare(model || {}, key, owner)
     },
     allow: {
       //<<< mochai: p6yEnhanced/allow
@@ -117,7 +117,7 @@ eYo.dlgt.BaseC9r_p.p6yEnhanced = function (id = 'p6y') {
     //<<< mochai: p6y$.shortcuts
     let _p = this.C9r_p
     for (let k of this[this.p6y$.modelMap].keys()) {
-      if (_p.hasOwnProperty(k)) {
+      if (eYo.objectHasOwnProperty(_p, k)) {
         continue
       }
       if (eYo.isSym(k)) {
@@ -135,7 +135,7 @@ eYo.dlgt.BaseC9r_p.p6yEnhanced = function (id = 'p6y') {
             //...   [$foo]: 421,
             //... })
             //... let _p = eyo.C9r_p
-            //... chai.expect(_p.hasOwnProperty($foo)).true
+            //... eYo.objectHasOwnProperty(chai.expect(_p, $foo)).true
             //... let o = ns.new('bar')
             //... eyo[eyo.p6y$.prepare](o)
             //... chai.expect(o[$foo]).undefined
@@ -159,7 +159,7 @@ eYo.dlgt.BaseC9r_p.p6yEnhanced = function (id = 'p6y') {
           //...   foo: 421,
           //... })
           //... let _p = eyo.C9r_p
-          //... chai.expect(_p.hasOwnProperty('foo_p')).true
+          //... eYo.objectHasOwnProperty(chai.expect(_p, 'foo_p')).true
           //... let o = ns.new('bar')
           //... eyo[eyo.p6y$.prepare](o)
           //... chai.expect(o.foo_p.value).undefined
@@ -188,7 +188,7 @@ eYo.dlgt.BaseC9r_p.p6yEnhanced = function (id = 'p6y') {
           //...   foo: 421,
           //... })
           //... let _p = eyo.C9r_p
-          //... chai.expect(_p.hasOwnProperty('foo_t')).true
+          //... eYo.objectHasOwnProperty(chai.expect(_p, 'foo_t')).true
           //... let o = ns.new('bar')
           //... eyo[eyo.p6y$.prepare](o)
           //... eyo[eyo.p6y$.init](o)
@@ -243,7 +243,7 @@ eYo.dlgt.BaseC9r_p.p6yEnhanced = function (id = 'p6y') {
         //...   this.flag(6, ...$)
         //... }
         [k]: eYo.descriptorR({$ () {
-          //... chai.expect(_p.hasOwnProperty('foo')).true
+          //... eYo.objectHasOwnProperty(chai.expect(_p, 'foo')).true
           let p6y = this[this.p6y$.map].get(k)
           if (!p6y) {
             console.error('TOO EARLY OR INAPPROPRIATE! BREAK HERE!')
@@ -257,7 +257,7 @@ eYo.dlgt.BaseC9r_p.p6yEnhanced = function (id = 'p6y') {
           //... flag.expect(12)
         }}.$),
         [k + '_']: {
-          //... chai.expect(_p.hasOwnProperty('foo_')).true
+          //... eYo.objectHasOwnProperty(chai.expect(_p, 'foo_')).true
           get: function () {
             let p6y = this[this.p6y$.map].get(k)
             if (!p6y.getValue) {
@@ -275,7 +275,7 @@ eYo.dlgt.BaseC9r_p.p6yEnhanced = function (id = 'p6y') {
           },
         },
         [k + '__']: {
-          //... chai.expect(_p.hasOwnProperty('foo__')).true
+          //... eYo.objectHasOwnProperty(chai.expect(_p, 'foo__')).true
           get: function () {
             let p6y = this[this.p6y$.map].get(k)
             if (!p6y.getStored) {
@@ -638,22 +638,22 @@ eYo.dlgt.BaseC9r_p.o4tEnhanced = function () {
       let consolidate_m = this.modelExpand(model)
       let consolidate_s = C9r_s[kC]
       C9r_p[kC] = consolidators[k] = consolidate_m
-      ? consolidate_s
-        ? function (...$init) {
-          consolidate_s.call(this, ...$)
-          consolidate_m.call(this, ...$)
-          this.ownedForEach(x => {
-            let f = x[kC] ; f && f.call(this, ...$)
-          })
-        } : function (...$init) {
-          consolidate_m.call(this, ...$next)
-          this.ownedForEach(x => {
-            let f = x[kC] ; f && f.call(this, ...$)
-          })
+        ? consolidate_s
+          ? function (...$) {
+            consolidate_s.call(this, ...$)
+            consolidate_m.call(this, ...$)
+            this.ownedForEach(x => {
+              let f = x[kC] ; f && f.call(this, ...$)
+            })
+          } : function (...$) {
+            consolidate_m.call(this, ...$)
+            this.ownedForEach(x => {
+              let f = x[kC] ; f && f.call(this, ...$)
+            })
+          }
+        : consolidate_s || function () {
+          this[k + '_'] = eYo.NA
         }
-      : consolidate_s || function () {
-        this[k + '_'] = eYo.NA
-      }
       //>>>
     },
     //// Properties and methods
@@ -668,7 +668,7 @@ eYo.dlgt.BaseC9r_p.o4tEnhanced = function () {
       //<<< mochai: p6y$.valueForEach
       //... chai.expect(eyo[p6y$.valueForEach]).eyo_F
       if (eYo.isF($this)) {
-        ;[f, owned, $this] = [$this, f, owned]
+        [f, owned, $this] = [$this, f, owned]
       }
       if (owned) {
         for (let p6y of object[this.p6y$.map].values()) {
@@ -735,7 +735,7 @@ eYo.dlgt.BaseC9r_p.o4tEnhanced = function () {
       //<<< mochai: p6y$.ownedValueForEach
       //... chai.expect(o[eyo.p6y$.ownedValueForEach]).eyo_F
       if (eYo.isF($this)) {
-        ;[$this, f] = [f, $this]
+        [$this, f] = [f, $this]
       }
       return this.eyo[this.p6y$.valueForEach](this, $this, f, true)
       //>>>
@@ -749,7 +749,7 @@ eYo.dlgt.BaseC9r_p.o4tEnhanced = function () {
       //<<< mochai: p6y$.ownedValueSome
       //... chai.expect(o[eyo.p6y$.ownedValueSome]).eyo_F
       if (eYo.isF($this)) {
-        ;[$this, f] = [f, $this]
+        [$this, f] = [f, $this]
       }
       return this.eyo[this.p6y$.valueSome](this, $this, f, true)
       //>>>
@@ -778,12 +778,12 @@ eYo.mixinFR(eYo.o4t._p, {
     if (eYo.isStr(key)) {
       key = key + 'Merge'
     } else if (eYo.isStr(model)) {
-      ;[key, model] = [model + 'Merge', key]
+      [key, model] = [model + 'Merge', key]
     } else {
-      ;[model, key] = [key, 'merge']
+      [model, key] = [key, 'merge']
     }
     let _p = this._p
-    _p.hasOwnProperty(key) && eYo.throw(`Already done`)
+    eYo.objectHasOwnProperty(_p, key) && eYo.throw(`Already done`)
     _p[key] = function (C9r) {
       C9r[eYo.$].modelMerge(model)
     }

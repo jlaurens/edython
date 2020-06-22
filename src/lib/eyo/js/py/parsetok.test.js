@@ -19,7 +19,7 @@ describe('Test', function() {
     n_test(n, eYo.py.single_input, null)
     n = n.n_child[0]
     n_test(n, eYo.py.tkn.NEWLINE, '')
-//    eYo.py.node.listTree(n)
+    //    eYo.py.node.listTree(n)
   })
 
   var ra_test = (name, str_s) => {
@@ -705,7 +705,7 @@ describe('Test', function() {
       return os.path.join(list[0], module)
 
       `
-      src = `
+  src = `
       class PyBuildExt(build_ext):
 
           def __init__(self, dist):

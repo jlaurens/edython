@@ -20,7 +20,7 @@ describe ('Tests: magnet', function () {
 
   it ('Magnet: basic', function () {
     chai.expect(!eYo.magnet).false
-    chai.expect(eYo.magnet._p.hasOwnProperty('BaseC9r')).true
+    eYo.objectHasOwnProperty(chai.expect(eYo.magnet._p, 'BaseC9r')).true
   })
   describe('eYo.magnet.BaseC9r', function () {
     it ('eYo.magnet.new({})', function () {

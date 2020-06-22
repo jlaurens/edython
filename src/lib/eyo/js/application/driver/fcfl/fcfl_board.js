@@ -57,12 +57,13 @@ eYo.board.BaseC9r[eYo.$].p6yMerge({
   },
   bBox: {
     get () {
-      return this.rendered && (this.driver.getBBox(board))
+      //TODO: ?
+      return this.rendered && (this.driver.getBBox(this))
     },
   },
   hasSelect: {
     get () {
-      return this.rendered && (this.driver.hasFocus(board))
+      return this.rendered && (this.driver.hasFocus(this))
     },
   },
   visible: {
@@ -78,8 +79,8 @@ eYo.board.BaseC9r[eYo.$].p6yMerge({
      * Forwards to the driver.
      * @param {boolean} visible
      */
-    set (after) {
-      this.driver.displayedSet(this, visible)
+    set (after) { // eslint-disable-line
+      this.driver.displayedSet(this, after)
     }
   },
 })
@@ -336,7 +337,7 @@ eYo.fcfl.Board._p.render = function (board, bbbl, recorder) {
     } else if (eYo.magnet.disconnectedParent && board.foot_m === eYo.magnet.disconnectedParent) {
       // this is the parent one
       // but it may belong to a suite
-      var io = this.willShortRender_(board, recorder)
+      io = this.willShortRender_(board, recorder)
       this.layoutMagnets_(io)
       this.drawFoot_(io)
       this.renderMove_(io)
@@ -346,7 +347,7 @@ eYo.fcfl.Board._p.render = function (board, bbbl, recorder) {
       return
     } else if (eYo.magnet.connectedParent) {
       if (board.head_m && eYo.magnet.connectedParent === board.head_m.target) {
-        var io = this.willShortRender_(board, recorder)
+        io = this.willShortRender_(board, recorder)
         this.layoutMagnets_(io)
         this.drawFoot_(io)
         this.renderMove_(io)
@@ -354,7 +355,7 @@ eYo.fcfl.Board._p.render = function (board, bbbl, recorder) {
         board.changer.save.render = board.changer.count
         this.drawParent_(io, bbbl) || this.alignRightEdges_(io)
       } else if (board.foot_m && eYo.magnet.connectedParent === board.foot_m) {
-        var io = this.willShortRender_(board, recorder)
+        io = this.willShortRender_(board, recorder)
         this.layoutMagnets_(io)
         this.drawFoot_(io)
         this.renderMove_(io)
@@ -362,7 +363,7 @@ eYo.fcfl.Board._p.render = function (board, bbbl, recorder) {
         board.changer.save.render = board.changer.count
         this.drawParent_(io, bbbl) || this.alignRightEdges_(io)
       } else if (board.suite_m && eYo.magnet.connectedParent === board.suite_m) {
-        var io = this.willShortRender_(board, recorder)
+        io = this.willShortRender_(board, recorder)
         this.layoutMagnets_(io)
         this.drawFoot_(io)
         this.renderMove_(io)
@@ -400,7 +401,7 @@ eYo.fcfl.Board._p.render = function (board, bbbl, recorder) {
   }
   if (board.changer.save.render === board.changer.count) {
     // minimal rendering
-    var io = this.willShortRender_(board, recorder)
+    io = this.willShortRender_(board, recorder)
     this.layoutMagnets_(io)
     this.drawFoot_(io)
     this.renderMove_(io)
@@ -462,7 +463,7 @@ eYo.fcfl.Board._p.moveBy = function(board, dxy, snap) {
  * @param {*} recorder
  * @private
  */
-eYo.fcfl.Board._p.willRender_ = function (board, recorder) {
+eYo.fcfl.Board._p.willRender_ = function (board, recorder) { // eslint-disable-line
   board.consolidate()
 }
 
@@ -1141,7 +1142,8 @@ eYo.fcfl.Board._p.drawEnding_ = function (io, isLast = false, inStatement = fals
           var board = m4t.board
           if (this === board) {
             // we are lucky, this is the board we are currently rendering
-            io.steps.push(departFocus)
+            //TODO: What is departFocus ?
+            io.steps.push(/* departFocus */)
           } else {
             // bad luck, board has already been rendered
             // we must append the definition to the path
@@ -1206,22 +1208,22 @@ eYo.fcfl.Board._p.drawPending_ = function (io, side = eYo.key.NONE, shape = eYo.
  * @param {Object} io the input/output argument.
  * @private
  */
-eYo.fcfl.Board._p.drawInputMagnet_ = function (io) {
-  var m4t = io.magnet
+eYo.fcfl.Board._p.drawInputMagnet_ = function (b3d) {
+  var m4t = b3d.magnet
   m4t.renderedRight = eYo.NA
-  m4t.renderedLeft = io.common.magnetDone
-  if (io.common.magnetDone) {
-    io.common.magnetDone.inputRight = io.magnet
+  m4t.renderedLeft = b3d.common.magnetDone
+  if (b3d.common.magnetDone) {
+    b3d.common.magnetDone.inputRight = b3d.magnet
   } else {
-    board.ui.firstRenderedMagnet = io.magnet
+    b3d.ui.firstRenderedMagnet = b3d.magnet
   }
-  io.common.magnetDone = io.magnet
-  ++ io.n
-  m4t.startOfLine = io.common.startOfLine
-  m4t.startOfStatement = io.common.startOfStatement
-  io.form = m4t
+  b3d.common.magnetDone = b3d.magnet
+  ++ b3d.n
+  m4t.startOfLine = b3d.common.startOfLine
+  m4t.startOfStatement = b3d.common.startOfStatement
+  b3d.form = m4t
   m4t.side = m4t.shape = eYo.NA
-  io.common.field.canStarLike = false
+  b3d.common.field.canStarLike = false
   // io.cursor is relative to the board or the slot
   // but the magnet must be located relative to the board
   // the magnet will take care of that because it knows
@@ -1229,18 +1231,18 @@ eYo.fcfl.Board._p.drawInputMagnet_ = function (io) {
   var t9k = m4t.targetBoard
   if (t9k) {
     if (m4t.boundField && m4t.boundField.visible) {
-      m4t.setOffset(io.cursor.c - m4t.w, io.cursor.l)
+      m4t.setOffset(b3d.cursor.c - m4t.w, b3d.cursor.l)
       // The `bind` field hides the connection.
       // The bind field is always the last field before the connection.
       // if the connection has a bindField, then rendering the placeholder
       // for that connection is a bit different.
       // Don't display anything for that connection
-      io.common.field.afterCaret = false
+      b3d.common.field.afterCaret = false
     }
     var ui = t9k.ui
     try {
-      ui.startOfLine = io.common.startOfLine
-      ui.startOfStatement = io.common.startOfStatement
+      ui.startOfLine = b3d.common.startOfLine
+      ui.startOfStatement = b3d.common.startOfStatement
       ui.mayBeLast = ui.hasRightEdge
       ui.down = true
       if (eYo.board.DEBUG_StartTrackingRender) {
@@ -1250,69 +1252,69 @@ eYo.fcfl.Board._p.drawInputMagnet_ = function (io) {
         // force target rendering
         t9k.changeDone()
       }
-      m4t.setOffset(io.cursor)
-      if (m4t.c === 1 && !io.common.field.afterBlack && m4t.slot) {
+      m4t.setOffset(b3d.cursor)
+      if (m4t.c === 1 && !b3d.common.field.afterBlack && m4t.slot) {
         m4t.slot.where.c -= 1
-        m4t.setOffset(io.cursor)
-        if (io.magnet && io.magnet.renderedLeft && io.magnet.renderedLeft.startOfLine) {
-          ui.startOfLine = ui.startOfStatement = io.common.startOfLine = io.common.startOfStatement = true
+        m4t.setOffset(b3d.cursor)
+        if (b3d.magnet && b3d.magnet.renderedLeft && b3d.magnet.renderedLeft.startOfLine) {
+          ui.startOfLine = ui.startOfStatement = b3d.common.startOfLine = b3d.common.startOfStatement = true
         }
       }
-      if (board.out_m !== eYo.magnet.disconnectedChild && !ui.up) {
-        t9k.render(false, io)
+      if (b3d.out_m !== eYo.magnet.disconnectedChild && !ui.up) {
+        t9k.render(false, b3d)
         if (!t9k.wrapped_) {
-          io.common.field.shouldSeparate = false
-          io.common.field.afterSeparator = true
+          b3d.common.field.shouldSeparate = false
+          b3d.common.field.afterSeparator = true
         }
       }
     } finally {
       ui.down = false
       var span = t9k.span
       if (span.w) {
-        board.span.main += span.main - 1
-        io.cursor.forward(span.c, span.main - 1)
+        b3d.span.main += span.main - 1
+        b3d.cursor.forward(span.c, span.main - 1)
         // We just rendered a connected input board
         // it is potentially the rightmost object inside its parent.
-        if (ui.hasRightEdge || io.common.shouldPack) {
-          io.common.ending.push(t9k)
+        if (ui.hasRightEdge || b3d.common.shouldPack) {
+          b3d.common.ending.push(t9k)
           ui.rightCaret = eYo.NA
-          io.common.field.shouldSeparate = false
+          b3d.common.field.shouldSeparate = false
         }
-        io.common.field.afterCaret = false
+        b3d.common.field.afterCaret = false
       }
     }
   } else {
     if (!m4t.target) {
-      board.ui.someTargetIsMissing = true
+      b3d.ui.someTargetIsMissing = true
     }
     if (m4t.boundField && m4t.boundField.visible) {
-      m4t.setOffset(io.cursor.c - m4t.w, io.cursor.l)
+      m4t.setOffset(b3d.cursor.c - m4t.w, b3d.cursor.l)
       // The `bind` field hides the connection.
       // The bind field is always the last field before the connection.
       // if the connection has a bindField, then rendering the placeholder
       // for that connection is a bit different.
       // Don't display anything for that connection
-      io.common.field.afterCaret = false
-    } else if (!board.locked_ && !m4t.hidden_) {
+      b3d.common.field.afterCaret = false
+    } else if (!b3d.locked_ && !m4t.hidden_) {
       // locked boards won't display any placeholder
       // (slot with no target)
       if (!m4t.disabled_) {
-        m4t.setOffset(io.cursor)
-        m4t.startOfLine = io.common.startOfLine
-        m4t.startOfStatement = io.common.startOfStatement
+        m4t.setOffset(b3d.cursor)
+        m4t.startOfLine = b3d.common.startOfLine
+        m4t.startOfStatement = b3d.common.startOfStatement
         if (m4t.s7r_) {
           m4t.side = eYo.key.NONE
-          var ending = io.common.ending.slice(-1)[0]
+          var ending = b3d.common.ending.slice(-1)[0]
           if (ending && !ending.ui.rightCaret) {
             // an expression board with a right end has been rendered
             // we put the caret on that end to save space,
             // we move the connection one character to the left
-            io.cursor.c -= 1
-            m4t.setOffset(io.cursor)
-            io.cursor.c += 1
+            b3d.cursor.c -= 1
+            m4t.setOffset(b3d.cursor)
+            b3d.cursor.c += 1
             ending.ui.rightCaret = m4t
-            m4t.isAfterRightEdge = io.afterEdge
-            io.common.field.afterCaret = true
+            m4t.isAfterRightEdge = b3d.afterEdge
+            b3d.common.field.afterCaret = true
           } else {
             // we might want this caret not to advance the cursor
             // If the next rendered object is a field, then
@@ -1324,32 +1326,32 @@ eYo.fcfl.Board._p.drawInputMagnet_ = function (io) {
             // If the caret is the last rendered object of the board,
             // then it should be rendered with special shape and
             // the cursor should not advance.
-            io.common.pending = m4t
+            b3d.common.pending = m4t
           }
-          io.common.field.shouldSeparate = false
+          b3d.common.field.shouldSeparate = false
         } else if (m4t.optional_) {
-          this.drawPending_(io)
-          io.common.pending = m4t
+          this.drawPending_(b3d)
+          b3d.common.pending = m4t
         } else {
-          this.drawPending_(io)
+          this.drawPending_(b3d)
           if (m4t.c === 1) {
             if (m4t.slot) {
               m4t.slot.where.c -= 1
             } else {
-              io.cursor.c = m4t.where.c = 0
+              b3d.cursor.c = m4t.where.c = 0
             }
-            m4t.setOffset(io.cursor)
+            m4t.setOffset(b3d.cursor)
           }
           var shape = eYo.shape.newWithMagnet(m4t)
-          io.steps.push(shape.definition)
+          b3d.steps.push(shape.definition)
           if (shape.width) {
-            io.cursor.c += shape.width
+            b3d.cursor.c += shape.width
             // a space was added as a visual separator anyway
           }
-          io.common.field.afterSeparator = io.common.field.shouldSeparate
-          io.common.field.shouldSeparate = false
+          b3d.common.field.afterSeparator = b3d.common.field.shouldSeparate
+          b3d.common.field.shouldSeparate = false
         }
-        io.common.afterEdge = true
+        b3d.common.afterEdge = true
       }
     }
   }
@@ -1384,8 +1386,8 @@ eYo.fcfl.Board._p.hide = function (board) {
  * This must take place while the board is still in a consistent state.
  * @param {eYo.board.BaseC9r} board - the board the driver acts on
  */
-eYo.fcfl.Board._p.disposeEffect = function (board) {
-  missing implementation
+eYo.fcfl.Board._p.disposeEffect = function (board) { // eslint-disable-line
+  //TODO: Missing implementation
 }
 
 /**
@@ -1408,7 +1410,7 @@ eYo.fcfl.Board._p.showMenu = function (board, menu) {
  * @param {eYo.magnet.BaseC9r} oldTargetM4t what was previously connected in the board
  * @param {eYo.magnet.BaseC9r} targetOldM4t what was previously connected to the new targetConnection
  */
-eYo.fcfl.Board._p.didConnect = function (board, m4t, oldTargetM4t, targetOldM4t) {
+eYo.fcfl.Board._p.didConnect = function (board, m4t, oldTargetM4t, targetOldM4t) { // eslint-disable-line
   if (m4t.isOut) {
     m4t.board.statusTopRemove_()
   }
@@ -1420,7 +1422,7 @@ eYo.fcfl.Board._p.didConnect = function (board, m4t, oldTargetM4t, targetOldM4t)
  * @param {eYo.magnet.BaseC9r} m4t what has been connected in the board
  * @param {eYo.magnet.BaseC9r} oldTargetM4t what was previously connected in the board
  */
-eYo.fcfl.Board._p.didDisconnect = function (board, m4t, oldTargetM4t) {
+eYo.fcfl.Board._p.didDisconnect = function (board, m4t, oldTargetM4t) { // eslint-disable-line
   if (m4t.isOut) {
     m4t.board.statusTopAdd_()
   }

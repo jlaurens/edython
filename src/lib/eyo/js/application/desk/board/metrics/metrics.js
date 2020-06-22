@@ -105,10 +105,10 @@ eYo.o3d.newC9r(eYo.geom, 'Metrics', {
           var options = this.options
           if (options && options.maxScale &&
             after > options.maxScale) {
-              after = options.maxScale
+            after = options.maxScale
           } else if (options && options.minScale &&
             after < options.minScale) {
-              after = options.minScale
+            after = options.minScale
           }
         }
         return after
@@ -278,10 +278,7 @@ eYo.o3d.newC9r(eYo.geom, 'Metrics', {
         ++this.updateDepth__
         do_it()
       } finally {
-        if(--this.updateDepth__) {
-          return
-        }
-        this.update()
+        --this.updateDepth__ || this.update()
       }
     },
     /**
@@ -329,10 +326,12 @@ eYo.o3d.newC9r(eYo.geom, 'Metrics', {
  * @param{?eYo.geom.Rect} rect
  */
 console.error('MISSING IMPLEMENTATION')
-eYo.geom.Metrics_p.getDraggingLimits = function (rect) {
+eYo.geom.Metrics_p.getDraggingLimits = function (rect) { // eslint-disable-line
+  /*
   var view = this.minPort
   var limits = this.port
   if (rect) {
 
   }
+  */
 }

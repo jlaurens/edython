@@ -19,7 +19,7 @@ eYo.forward('view.Scrollbar')
  * Svg driver for a scrollbar.
  */
 eYo.svg.newDriverC9r('Scrollbar', {
-    /**
+  /**
    * Initializes the scrollbar SVG ressources.
    * @param {eYo.view.Scrollbar} scrollbar
    * @param {String} [opt_css_class]
@@ -144,7 +144,7 @@ eYo.svg.Scrollbar_p.updateHandle = function(scrollbar) {
  * @param {eYo.view.Scrollbar} scrollbar
  */
 eYo.svg.Scrollbar_p.updateView = function(scrollbar) {
-  var svg = scrollbar.dom.svg
+  var svg = scrollbar.dom.svg // eslint-disable-line
 }
 
 /**
@@ -210,7 +210,7 @@ eYo.svg.Scrollbar_p.on_mousemove = function(e) {
   var currentMouse = this.horizontal_ ? e.clientX : e.clientY
   var ratio = this.dragLength_ ? (currentMouse - this.dragMin_) / this.dragLength_ : 0
   if (ratio < 0) {
-    ration = 0
+    ratio = 0
   } else if (ratio > 1) {
     ratio = 1
   }

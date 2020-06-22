@@ -135,6 +135,6 @@ describe('Proxy between lists and linked lists (Proof of concept)', function() {
     p.insert(d, 3)
     test('a0','b1','c2','d3')
     delete p[3]
-//    test('a0','b1','c2')
+    //    test('a0','b1','c2')
   })
 })

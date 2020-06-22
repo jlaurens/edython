@@ -57,7 +57,7 @@ eYo.o4t.changeCount.modelDeclare({
         //... o.updateChangeCount(false)
         //... chai.expect(o.changeCount).equal(0)
       } else {
-        ;[redo, event] = [event, redo]
+        [redo, event] = [event, redo]
         what = !eYo.isDef(redo) || redo ? 1 : -1
         //... o.updateChangeCount()
         //... chai.expect(o.changeCount).equal(1)

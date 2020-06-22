@@ -105,8 +105,7 @@ eYo.t3.profile.newC9r('BaseC9r', {
       module: eYo.NA,
       holder: eYo.NA,
       item: eYo.NA,
-      type: eYo.NA,
-      prefixDots: eYo.NA
+      type: eYo.NA
     }
     if (model) {
       var methods = model.methods
@@ -138,7 +137,7 @@ eYo.t3.profile.newC9r('BaseC9r', {
       f('expr')
       f('stmt')
       f('type')
-      var f = (key) => {
+      f = (key) => {
         value = m[key]
         Object.defineProperty(
           this,
@@ -175,7 +174,7 @@ eYo.t3.profile.newC9r('BaseC9r', {
         }
       )
       for (key in m) {
-        var value = m[key]
+        value = m[key]
         if (eYo.isF(value)) {
           Object.defineProperty(
             this,
@@ -275,8 +274,8 @@ eYo.t3.newC9r('Profiles', {
   eYo.t3.profile.get = function (candidate, module) {
     if (eYo.isNum(candidate)) {
       return candidate === Math.floor(candidate)
-      ? eYo.t3.profile.integer
-      : eYo.t3.profile.floatnumber
+        ? eYo.t3.profile.integer
+        : eYo.t3.profile.floatnumber
     }
     if (!candidate || !eYo.isStr(candidate)) {
       return eYo.t3.profile.void
@@ -299,8 +298,7 @@ eYo.t3.newC9r('Profiles', {
         return (profiles[module] = M.getProfile(candidate))
       }
     }
-    var ans = profiles['.builtin']
-    if (ans) {
+    if ((ans = profiles['.builtin'])) {
       return ans
     }
     if ((ans = eYo.t3.profile.getReference(candidate)) && !ans.isVoid) {
@@ -407,12 +405,12 @@ eYo.t3.profile.getIdentifier = function (candidate, module) {
   var m = XRegExp.exec(candidate, eYo.xre.identifier_annotated_valued)
   if (m) {
     var r = m.annotated
-    ? m.valued
-      ? eYo.t3.expr.identifier_annotated_valued
-      : eYo.t3.expr.identifier_annotated
-    : m.valued
-      ? eYo.t3.expr.identifier_valued
-      : eYo.t3.expr.custom_identifier
+      ? m.valued
+        ? eYo.t3.expr.identifier_annotated_valued
+        : eYo.t3.expr.identifier_annotated
+      : m.valued
+        ? eYo.t3.expr.identifier_valued
+        : eYo.t3.expr.custom_identifier
     var x = m.annotated
       ? m.valued
         ? eYo.t3.expr.identifier_annotated_valued
@@ -437,15 +435,15 @@ eYo.t3.profile.getIdentifier = function (candidate, module) {
  * @param {String} candidate
  * @return {!eYo.t3} the profile of this candidate.
  */
-eYo.t3.profile.getAnnotatedValued = function (candidate, module) {
+eYo.t3.profile.getAnnotatedValued = function (candidate, module) { // eslint-disable-line
   var m = XRegExp.exec(candidate, eYo.xre.name_annotated_valued)
   if (m) {
     var valued = m.valued_a || m.valued
     var t = valued
-    ? m.annotated
-      ? eYo.t3.expr.identifier_annotated_valued
-      : eYo.t3.expr.identifier_annotated
-    : eYo.t3.expr.identifier_valued
+      ? m.annotated
+        ? eYo.t3.expr.identifier_annotated_valued
+        : eYo.t3.expr.identifier_annotated
+      : eYo.t3.expr.identifier_valued
     return new eYo.t3.profile.BaseC9r(null, {
       raw: t,
       expr: t,
@@ -478,26 +476,26 @@ eYo.t3.profile.getLiteral = function (candidate) {
             : eYo.t3.expr.decinteger
     })
   }
-  if (!!XRegExp.exec(candidate, eYo.xre.floatnumber)) {
+  if (XRegExp.exec(candidate, eYo.xre.floatnumber)) {
     return new eYo.t3.profile.BaseC9r(null, {
       raw: eYo.t3.Custom_literal,
       expr: eYo.t3.expr.floatnumber
     })
   }
-  if (!!XRegExp.exec(candidate, eYo.xre.imagnumber)) {
+  if (XRegExp.exec(candidate, eYo.xre.imagnumber)) {
     return new eYo.t3.profile.BaseC9r(null, {
       raw: eYo.t3.Custom_literal,
       expr: eYo.t3.expr.imagnumber
     })
   }
-  if (!!XRegExp.exec(candidate, eYo.xre.ShortbytesliteralSingle)) {
+  if (XRegExp.exec(candidate, eYo.xre.ShortbytesliteralSingle)) {
     return {
       raw: eYo.t3.expr.shortbytesliteral,
       expr: eYo.t3.expr.shortliteral,
       type: eYo.t3.expr.singleQuoted
     }
   }
-  if (!!XRegExp.exec(candidate, eYo.xre.ShortbytesliteralDouble)) {
+  if (XRegExp.exec(candidate, eYo.xre.ShortbytesliteralDouble)) {
     return {
       raw: eYo.t3.expr.shortbytesliteral,
       expr: eYo.t3.expr.shortliteral,
@@ -519,14 +517,14 @@ eYo.t3.profile.getLiteral = function (candidate) {
       type: eYo.t3.expr.doubleQuoted
     }
   }
-  if (!!XRegExp.exec(candidate, eYo.xre.longbytesliteralSingle)) {
+  if (XRegExp.exec(candidate, eYo.xre.longbytesliteralSingle)) {
     return {
       raw: eYo.t3.expr.longbytesliteral,
       expr: eYo.t3.expr.longliteral,
       type: eYo.t3.expr.singleQuoted
     }
   }
-  if (!!XRegExp.exec(candidate, eYo.xre.longbytesliteralDouble)) {
+  if (XRegExp.exec(candidate, eYo.xre.longbytesliteralDouble)) {
     return {
       raw: eYo.t3.expr.longbytesliteral,
       expr: eYo.t3.expr.longliteral,

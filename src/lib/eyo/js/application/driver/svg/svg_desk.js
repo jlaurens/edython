@@ -91,7 +91,7 @@ eYo.svg.Desk_p.whereElement = function(desk, element) {
   var div = desk.dom.div_
   while (element && element !== div) {
     ans.scale(eYo.svg.getScale_(element))
-    .forward(eYo.svg.getRelativeWhere(element))
+      .forward(eYo.svg.getRelativeWhere(element))
     element = element.parentNode
   }
   return ans
@@ -102,6 +102,6 @@ eYo.svg.Desk_p.whereElement = function(desk, element) {
  * @param {eYo.view.Desk} desk
  * @return {!Element} The desk's SVG group.
  */
-eYo.svg.Desk_p.installFlyout = function(desk) {
+eYo.svg.Desk_p.installFlyout = function(desk) { // eslint-disable-line
 }
 

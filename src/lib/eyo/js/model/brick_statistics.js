@@ -56,28 +56,28 @@ eYo.provide('brick.statistics')
     }
   }
 
-eYo.library.DATA.Basic_statistics__module = [
-  {
-    type: eYo.t3.stmt.import_stmt,
-    from_p: 'statistics',
-    variant_p: eYo.key.FROM_MODULE_IMPORT_STAR,
-    title: 'statistics__import_stmt'
-  },
-  F('mode', 'Mode de l\'argument, une séquence ou un itérateur, en tant que valeur représentative.'),
-  F('mean', 'Moyenne arithmétique de l\'argument, une séquence ou un itérateur.'),
-  F('harmonic_mean', 'Moyenne harmonique de l\'argument, une séquence ou un itérateur.'),
-  F('median', 'Valeur médiane de l\'argument, une séquence ou un itérateur.'),
-  F('median_high', 'Valeur médiane (sans moyenne et par excès) de l\'argument, une séquence ou un itérateur.'),
-  F('median_low', 'Valeur médiane (sans moyenne et par défaut) de l\'argument, une séquence ou un itérateur.'),
-  F('median_grouped', 'Valeur médiane de l\'argument, une séquence ou un itérateur avec répétitions possibles.'),
-  F('pstdev', 'Écart type d\'une population'),
-  F('pvariance', 'Variance d\'une population'),
-  F('stdev', 'Écart type d\'un échantillon d\'une population'),
-  F('variance', 'Variance d\'un échantillon d\'une population'),
-  F('StatisticsError', 'Exception spécifique au module `statistics`')
-]
+  eYo.library.DATA.Basic_statistics__module = [
+    {
+      type: eYo.t3.stmt.import_stmt,
+      from_p: 'statistics',
+      variant_p: eYo.key.FROM_MODULE_IMPORT_STAR,
+      title: 'statistics__import_stmt'
+    },
+    F('mode', 'Mode de l\'argument, une séquence ou un itérateur, en tant que valeur représentative.'),
+    F('mean', 'Moyenne arithmétique de l\'argument, une séquence ou un itérateur.'),
+    F('harmonic_mean', 'Moyenne harmonique de l\'argument, une séquence ou un itérateur.'),
+    F('median', 'Valeur médiane de l\'argument, une séquence ou un itérateur.'),
+    F('median_high', 'Valeur médiane (sans moyenne et par excès) de l\'argument, une séquence ou un itérateur.'),
+    F('median_low', 'Valeur médiane (sans moyenne et par défaut) de l\'argument, une séquence ou un itérateur.'),
+    F('median_grouped', 'Valeur médiane de l\'argument, une séquence ou un itérateur avec répétitions possibles.'),
+    F('pstdev', 'Écart type d\'une population'),
+    F('pvariance', 'Variance d\'une population'),
+    F('stdev', 'Écart type d\'un échantillon d\'une population'),
+    F('variance', 'Variance d\'un échantillon d\'une population'),
+    F('StatisticsError', 'Exception spécifique au module `statistics`')
+  ]
 
-  var F = (name, title) => {
+  F = (name, title) => {
     var key = 'statistics__'+name
     title && (eYo.tooltip.TITLE[key] = title)
     return {
@@ -91,32 +91,32 @@ eYo.library.DATA.Basic_statistics__module = [
     }
   }
 
-eYo.library.DATA.Statistics__module = [
-  {
-    type: eYo.t3.stmt.import_stmt,
-    variant_p: eYo.key.IMPORT,
-    import_module_s: {
-      slots: {
-        O: {
-          type: eYo.t3.expr.identifier,
-          data: 'statistics'
+  eYo.library.DATA.Statistics__module = [
+    {
+      type: eYo.t3.stmt.import_stmt,
+      variant_p: eYo.key.IMPORT,
+      import_module_s: {
+        slots: {
+          O: {
+            type: eYo.t3.expr.identifier,
+            data: 'statistics'
+          }
         }
       }
-    }
-  },
-  F('mode'),
-  F('mean'),
-  F('harmonic_mean'),
-  F('median'),
-  F('median_high'),
-  F('median_low'),
-  F('median_grouped'),
-  F('pstdev'),
-  F('pvariance'),
-  F('stdev'),
-  F('variance'),
-  F('StatisticsError')
-]
+    },
+    F('mode'),
+    F('mean'),
+    F('harmonic_mean'),
+    F('median'),
+    F('median_high'),
+    F('median_low'),
+    F('median_grouped'),
+    F('pstdev'),
+    F('pvariance'),
+    F('stdev'),
+    F('variance'),
+    F('StatisticsError')
+  ]
 
 })()
 

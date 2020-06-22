@@ -112,7 +112,6 @@ eYo.newNS('key', {
   SLICING: 'slicing',
   TARGET: 'target',
 
-  ROOT: 'root',
   EXPR: 'expr',
 
   BACKUP: 'backup', // this MUST be in camelcase
@@ -189,9 +188,6 @@ eYo.newNS('key', {
   UNARY: 'unary',
   BINARY: 'binary',
 
-  DOTTED_NAME: 'dotted_name',
-
-  CODE: 'code',
   CODE_COMMENT: 'code_comment',
 
   RESTART: 'restart', // attribute name
@@ -204,9 +200,9 @@ eYo.newNS('key', {
   BRACE: '{}', // also used in xml eyo attribute
   EVENT: {
     DATA: 'eyo:data:',
-//    PROPERTY: 'eyo:property',
-//    LOCKED: 'eyo:locked',
-//    ASYNCED: 'eyo:asynced'
+    //    PROPERTY: 'eyo:property',
+    //    LOCKED: 'eyo:locked',
+    //    ASYNCED: 'eyo:asynced'
   },
 })
 

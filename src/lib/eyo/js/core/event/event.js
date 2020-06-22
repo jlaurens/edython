@@ -41,7 +41,7 @@ eYo.event.MAX_UNDO = 1024,
 //>>>
 //<<< mochai: Basics
 //... chai.assert(eYo.event)
-//... chai.assert(eYo.event._p.hasOwnProperty('BaseC9r'))
+//... eYo.objectHasOwnProperty(chai.assert(eYo.event._p, 'BaseC9r'))
 //... chai.assert(eYo.event.Mngr)
 //>>>
 
@@ -83,11 +83,11 @@ eYo.event.newC9r('Mngr', {
      */
     MAX_UNDO: eYo.event.MAX_UNDO,
     //<<< mochai: MAX_UNDO
-      //... chai.expect(mngr.MAX_UNDO).equal(eYo.event.MAX_UNDO)
-      //... mngr.MAX_UNDO_ += 1
-      //... chai.expect(mngr.MAX_UNDO).equal(eYo.event.MAX_UNDO + 1)
-      //... mngr.MAX_UNDO_ -= 1
-      //... chai.expect(mngr.MAX_UNDO).equal(eYo.event.MAX_UNDO)
+    //... chai.expect(mngr.MAX_UNDO).equal(eYo.event.MAX_UNDO)
+    //... mngr.MAX_UNDO_ += 1
+    //... chai.expect(mngr.MAX_UNDO).equal(eYo.event.MAX_UNDO + 1)
+    //... mngr.MAX_UNDO_ -= 1
+    //... chai.expect(mngr.MAX_UNDO).equal(eYo.event.MAX_UNDO)
     //...
     //>>>
     /**
@@ -214,12 +214,12 @@ eYo.event.newC9r('Mngr', {
         ;[$this, try_f, finally_f] = [eYo.NA, $this, try_f]
       }
       return group
-      ? eYo.do.makeWrapper(
-        () => this.beginGroup(group),
-        eYo.doNothing,
-        () => this.endGroup(),
-      ) ($this, try_f, finally_f)
-      : eYo.do.makeWrapper() ($this, try_f, finally_f)
+        ? eYo.do.makeWrapper(
+          () => this.beginGroup(group),
+          eYo.doNothing,
+          () => this.endGroup(),
+        ) ($this, try_f, finally_f)
+        : eYo.do.makeWrapper() ($this, try_f, finally_f)
     },
     //>>>
   },
@@ -487,7 +487,7 @@ eYo.event.Mngr_p.clear = function() {
 eYo.event.Mngr_p.undo = function(redo) {
   var inputStack = redo ? this.redoStack_ : this.undoStack_
   var outputStack = redo ? this.undoStack_ : this.redoStack_
-  while (true) {
+  while (true) { // eslint-disable-line
     var inputEvent = inputStack.pop()
     if (!inputEvent) {
       return

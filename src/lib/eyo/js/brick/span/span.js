@@ -145,12 +145,12 @@ eYo.span.makeBaseC9r({
       get () {
         let b3k = this.brick
         return b3k.wrapped
-        ? 0
-        : b3k.isGroup
-          ? 2 * eYo.span.INDENT + 1
-          : b3k.isStmt
-            ? eYo.span.INDENT + 1
-            : 2
+          ? 0
+          : b3k.isGroup
+            ? 2 * eYo.span.INDENT + 1
+            : b3k.isStmt
+              ? eYo.span.INDENT + 1
+              : 2
       }
     },
     /**
@@ -340,7 +340,7 @@ eYo.span.BaseC9r_p.addL = function (delta) {
 
 /**
  * Convenient method
- * @param {Number} delta  the value to add to the ressource.
+ * @param {Number}delta  the value to add to the ressource.
  */
 eYo.span.BaseC9r_p.resetL = function () {
   this.main_ = 1
@@ -348,10 +348,10 @@ eYo.span.BaseC9r_p.resetL = function () {
   var b = this.brick_
   this.hole_ = b.isGroup && (!b.right || b.right.isComment) ? 1 : 0
   this.l_ = b.isGroup
-  ? this.main_ + this.hole_ + this.suite_
-  : b.isStmt
-    ? this.header_ + this.main_ + this.footer_
-    : this.main_
+    ? this.main_ + this.hole_ + this.suite_
+    : b.isStmt
+      ? this.header_ + this.main_ + this.footer_
+      : this.main_
 }
 
 /**
@@ -360,7 +360,7 @@ eYo.span.BaseC9r_p.resetL = function () {
  * 1) the left brick changes its header line number
  * 2) The left brick changes its main line number
  * 3) the left connection changes
- * @param {Number} delta  the value to add to the ressource.
+ * @param {Number}delta  the value to add to the ressource.
  */
 eYo.span.BaseC9r_p.addHeader = function (delta) {
   if (delta) {
@@ -382,7 +382,7 @@ eYo.span.BaseC9r_p.addHeader = function (delta) {
  * As a consequence, the main line number of the receiver is changed
  * accordingly. This change is cascaded ot the left and the right,
  * and possibly to the head.
- * @param {Number} delta  the value to add to the ressource.
+ * @param {Number}delta  the value to add to the ressource.
  */
 eYo.span.BaseC9r_p.addMain = function (delta) {
   if (delta) {
@@ -400,7 +400,7 @@ eYo.span.BaseC9r_p.addMain = function (delta) {
 
 /**
  * Convenient method
- * @param {Number} delta  the value to add to the ressource.
+ * @param {Number}delta  the value to add to the ressource.
  */
 eYo.span.BaseC9r_p.addLeft_ = function (delta) {
   var left = this.leftSpan
@@ -413,7 +413,7 @@ eYo.span.BaseC9r_p.addLeft_ = function (delta) {
 
 /**
  * Convenient method
- * @param {Number} delta  the value to add to the ressource.
+ * @param {Number}delta  the value to add to the ressource.
  */
 eYo.span.BaseC9r_p.addParent_ = function (delta) {
   var parent = this.parentSpan
@@ -430,7 +430,7 @@ eYo.span.BaseC9r_p.addParent_ = function (delta) {
  * 1) the right brick changes its footer line number
  * 2) The right brick changes its main line number
  * 3) The right connection changes
- * @param {Number} delta  the value to add to the ressource.
+ * @param {Number}delta  the value to add to the ressource.
  */
 eYo.span.BaseC9r_p.addFooter = function (delta) {
   if (delta) {
@@ -445,7 +445,7 @@ eYo.span.BaseC9r_p.addFooter = function (delta) {
  * This may happen only in on of 2 situation:
  * 1) the suite magnet connection status changes
  * 2) the right magnet connection status changes
- * @param {Number} delta  the value to add to the ressource.
+ * @param {Number}delta  the value to add to the ressource.
  * Actually it can only be 1 or -1.
  */
 eYo.span.BaseC9r_p.addFoot = function (delta) {
@@ -457,7 +457,7 @@ eYo.span.BaseC9r_p.addFoot = function (delta) {
 
 /**
  * Add to the suite line number.
- * @param {Number} delta  the value to add to the ressource.
+ * @param {Number}delta  the value to add to the ressource.
  * Actually it can only be 1 or -1.
  */
 eYo.span.BaseC9r_p.addSuite = function (delta) {
@@ -483,9 +483,9 @@ eYo.span.BaseC9r_p.addSuite = function (delta) {
 
 /**
  * Convenient method
- * @param {Object} delta  the value to add to the ressource.
+ * @param {Object}delta  the value to add to the ressource.
  */
-eYo.span.BaseC9r_p.reset = function (where) {
+eYo.span.BaseC9r_p.reset = function (where) { // eslint-disable-line
   console.error('WHAT IS THE PURPOSE ?')
 }
 

@@ -24,6 +24,7 @@ module.exports = {
     eYo: true,
     XRegExp: true,
     brython: true,
+    tippy: true,
   },
 
   plugins: [
@@ -40,6 +41,7 @@ module.exports = {
       'error',
       'only-multiline'
     ],
-    'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off'
+    'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
+    'no-v-html': 'off'
   }
 }

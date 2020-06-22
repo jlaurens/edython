@@ -29,7 +29,7 @@ eYo.expr.newC9r('comprehension', true, {
       validate (after) /** @suppress {globalThis} */ {
         var type = eYo.t3.profile.get(after)
         return type.expr === eYo.t3.expr.identifier
-        ? after : eYo.INVALID
+          ? after : eYo.INVALID
       },
       synchronize: true,
       xml: {
@@ -72,7 +72,7 @@ eYo.expr.newC9r('comprehension', true, {
     }
   },
   out: {
-    check (type) /** @suppress {globalThis} */ {
+    check (type) /** @suppress {globalThis} */ { // eslint-disable-line
       // `this` is a magnet
       // we do not take the type argument into account
       var eyo = this.brick

@@ -24,7 +24,7 @@ describe ('Tests: data', function () {
     test('function ( after ) ...', false, false)
   })
   it ('eYo.data.handle_validate: #', function () {
-    ;['validate', 'validateIncog'].forEach(K => {
+    ['validate', 'validateIncog'].forEach(K => {
       new_ns()
       let test = (expect, f) => {
         d = ns.new({
@@ -147,7 +147,7 @@ describe ('Tests: data', function () {
     })
   })
   it ('eYo.data.handle_change:', function () {
-    ;[
+    [
       'willChange', 'didChange', 'isChanging',
       'willUnchange', 'didUnchange', 'isUnchanging',
     ].forEach(K => {
@@ -364,121 +364,121 @@ describe ('Tests: data', function () {
     chai.expect(d.ui).equal(4)
     chai.expect(d.ui_driver).equal(5)
   })
-//   it('Data model', function () {
-//     let ns = eYo.data.newNS()
-//     ns.makeBaseC9r()
+  //   it('Data model', function () {
+  //     let ns = eYo.data.newNS()
+  //     ns.makeBaseC9r()
 
-//     let test = (key, value) => {
-//       let one = ns.singleton({eyo: true}, {
-//         [key]: value,
-//       })
-//       chai.expect(one.model[key]).equal(value)
-//     }
-//     ;['after', // key || [keys]
-//     'all'].forEach(key => {
-//       let one = ns.singleton({eyo: true}, {
-//         [key]: 421,
-//       })
-//       chai.expect(one.model[key]).eql([421])
-//     })
-//     ;[
-//       'order', // INTEGER
-//       'main', // BOOLEAN
-//       'placeholder', // STRING
-//       'noUndo', // true
-//     ].forEach(key => {
-//       let one = ns.singleton({eyo: true}, {
-//         [key]: 421,
-//       })
-//       chai.expect(one.model[key]).equal(421)
-//     })
-//     ;[
-//       // 'init', // WHATEVER
-//       'validate', // (...) => {} || false || true,
-//       'validateIncog', // (...) => {}
-//       'willChange', // (...) => {}
-//       'isChanging', // (...) => {}
-//       'didChange', // (...) => {}
-//       'willUnchange', // (...) => {}
-//       'isUnchanging', // (...) => {}
-//       'didUnchange', // (...) => {}
-//       'willLoad', // () => {}
-//       'didLoad', // () => {}
-//       'consolidate', // (...) => {}
-//       'fromType', // () => {}
-//       'fromField', // () => {}
-//       'toField', // () => {}
-//     ].forEach(key => {
-//       let one = ns.singleton({eyo: true}, {
-//         [key]: function () {},
-//       })
-//       chai.expect(eYo.isF(one.model[key])).true
-//       let second = ns.singleton({eyo: true}, {
-//         [key]: 421,
-//       })
-//       chai.expect(eYo.isDef(second.model[key])).false
-//     })
-//     var one = ns.singleton({eyo: true}, {
-//       init: 421,
-//     })
-//     chai.expect(eYo.isF(one.model.init)).true
-//     var one = ns.singleton({eyo: true}, {
-//       xml: 421,
-//     })
-//     chai.expect(one.model.xml).not.equal(421)
-//     one = ns.singleton({eyo: true}, {
-//       xml: {},
-//     })
-//     chai.expect(one.model.xml).eql({})
-//     ;[
-//       'save', // () => {}
-//       'load', // () => {}
-//     ].forEach(key => {
-//       let one = ns.singleton({eyo: true}, {
-//         xml: {
-//           [key]: function () {},
-//         },
-//       })
-//       chai.expect(eYo.isF(one.model.xml[key])).true
-//       let second = ns.singleton({eyo: true}, {
-//         xml: {
-//           [key]: 421,
-//         },
-//       })
-//       chai.expect(eYo.isDef(second.model.xml[key])).false
-//     })
-//     /*
-//     eYo.model.allowModelPaths({
-//   [eYo.model.ROOT]: 'data',
-//   'data': '\\w+',
-//   'data\\.\\w+': [
-//     'after', // key || [keys]
-//     'order', // INTEGER
-//     'all', // TYPE || [TYPE], // last is expected
-//     'main', // BOOLEAN
-//     'placeholder', // STRING
-//     'noUndo', // true
-//     'xml', // {}
-//     'init', // WHATEVER
-//     'validate', // (...) => {} || false || true,
-//     'validateIncog', // (...) => {}
-//     'willChange', // (...) => {}
-//     'isChanging', // (...) => {}
-//     'didChange', // (...) => {}
-//     'willUnchange', // (...) => {}
-//     'isUnchanging', // (...) => {}
-//     'didUnchange', // (...) => {}
-//     'willLoad', // () => {}
-//     'didLoad', // () => {}
-//     'consolidate', // (...) => {}
-//     'fromType', // () => {}
-//     'fromField', // () => {}
-//     'toField', // () => {}
-//   ],
-//   'data\\.\\w+\.xml': [
-//     'save', 'load',
-//   ],
-// })
+  //     let test = (key, value) => {
+  //       let one = ns.singleton({eyo: true}, {
+  //         [key]: value,
+  //       })
+  //       chai.expect(one.model[key]).equal(value)
+  //     }
+  //     ;['after', // key || [keys]
+  //     'all'].forEach(key => {
+  //       let one = ns.singleton({eyo: true}, {
+  //         [key]: 421,
+  //       })
+  //       chai.expect(one.model[key]).eql([421])
+  //     })
+  //     ;[
+  //       'order', // INTEGER
+  //       'main', // BOOLEAN
+  //       'placeholder', // STRING
+  //       'noUndo', // true
+  //     ].forEach(key => {
+  //       let one = ns.singleton({eyo: true}, {
+  //         [key]: 421,
+  //       })
+  //       chai.expect(one.model[key]).equal(421)
+  //     })
+  //     ;[
+  //       // 'init', // WHATEVER
+  //       'validate', // (...) => {} || false || true,
+  //       'validateIncog', // (...) => {}
+  //       'willChange', // (...) => {}
+  //       'isChanging', // (...) => {}
+  //       'didChange', // (...) => {}
+  //       'willUnchange', // (...) => {}
+  //       'isUnchanging', // (...) => {}
+  //       'didUnchange', // (...) => {}
+  //       'willLoad', // () => {}
+  //       'didLoad', // () => {}
+  //       'consolidate', // (...) => {}
+  //       'fromType', // () => {}
+  //       'fromField', // () => {}
+  //       'toField', // () => {}
+  //     ].forEach(key => {
+  //       let one = ns.singleton({eyo: true}, {
+  //         [key]: function () {},
+  //       })
+  //       chai.expect(eYo.isF(one.model[key])).true
+  //       let second = ns.singleton({eyo: true}, {
+  //         [key]: 421,
+  //       })
+  //       chai.expect(eYo.isDef(second.model[key])).false
+  //     })
+  //     var one = ns.singleton({eyo: true}, {
+  //       init: 421,
+  //     })
+  //     chai.expect(eYo.isF(one.model.init)).true
+  //     var one = ns.singleton({eyo: true}, {
+  //       xml: 421,
+  //     })
+  //     chai.expect(one.model.xml).not.equal(421)
+  //     one = ns.singleton({eyo: true}, {
+  //       xml: {},
+  //     })
+  //     chai.expect(one.model.xml).eql({})
+  //     ;[
+  //       'save', // () => {}
+  //       'load', // () => {}
+  //     ].forEach(key => {
+  //       let one = ns.singleton({eyo: true}, {
+  //         xml: {
+  //           [key]: function () {},
+  //         },
+  //       })
+  //       chai.expect(eYo.isF(one.model.xml[key])).true
+  //       let second = ns.singleton({eyo: true}, {
+  //         xml: {
+  //           [key]: 421,
+  //         },
+  //       })
+  //       chai.expect(eYo.isDef(second.model.xml[key])).false
+  //     })
+  //     /*
+  //     eYo.model.allowModelPaths({
+  //   [eYo.model.ROOT]: 'data',
+  //   'data': '\\w+',
+  //   'data\\.\\w+': [
+  //     'after', // key || [keys]
+  //     'order', // INTEGER
+  //     'all', // TYPE || [TYPE], // last is expected
+  //     'main', // BOOLEAN
+  //     'placeholder', // STRING
+  //     'noUndo', // true
+  //     'xml', // {}
+  //     'init', // WHATEVER
+  //     'validate', // (...) => {} || false || true,
+  //     'validateIncog', // (...) => {}
+  //     'willChange', // (...) => {}
+  //     'isChanging', // (...) => {}
+  //     'didChange', // (...) => {}
+  //     'willUnchange', // (...) => {}
+  //     'isUnchanging', // (...) => {}
+  //     'didUnchange', // (...) => {}
+  //     'willLoad', // () => {}
+  //     'didLoad', // () => {}
+  //     'consolidate', // (...) => {}
+  //     'fromType', // () => {}
+  //     'fromField', // () => {}
+  //     'toField', // () => {}
+  //   ],
+  //   'data\\.\\w+\.xml': [
+  //     'save', 'load',
+  //   ],
+  // })
 
 // eYo.model.allowModelShortcuts({
 //   'data\\.\\w+\\.init': (before, p) => {

@@ -144,19 +144,19 @@ eYo.newNS('model', {
   eYo.model._p['descriptor' + K] = function(model, fallback) {
     var alt = eYo.isF(model)
     if (alt) {
-      ;[model, fallback] = [fallback, model]
+      [model, fallback] = [fallback, model]
     } else {
       alt = eYo.isF(fallback)
     }
     model || (model = {})
     model[eYo.model.VALIDATE] = alt
-    ? function (before) {
-      let ans = eYo.model['validate' + K](before)
-      if (eYo.isINVALID(ans)) {
-        ans = fallback(before)
-      }
-      return ans
-    } : eYo.model['validate' + K]
+      ? function (before) {
+        let ans = eYo.model['validate' + K](before)
+        if (eYo.isINVALID(ans)) {
+          ans = fallback(before)
+        }
+        return ans
+      } : eYo.model['validate' + K]
     return model
   }
 })
@@ -288,9 +288,9 @@ eYo.model.Format = function (parent, key, fallback) {
   } else { // cases 3 and 5
     fallback && eYo.throw(`eYo.model.Format: unexpected argument ${fallback} (2)`)
     if (key) { // case 3
-      ;[key, fallback] = [eYo.NA, key]
+      [key, fallback] = [eYo.NA, key]
     } else { // case 6
-      ;[parent, fallback] = [eYo.NA, parent]
+      [parent, fallback] = [eYo.NA, parent]
     }
   }
   this.parent = parent
@@ -588,8 +588,8 @@ eYo.model.Format_p.validate = function (path, model, key) {
   if (eYo.isDef(model)/* && !(model instanceof eYo.c9r.BaseC9r)*/) {
     // validate the model
     let v = c.validate_
-    ? c.validate_(model, key)
-    : c.fallback && c.fallback.validate(eYo.NA, model, key)
+      ? c.validate_(model, key)
+      : c.fallback && c.fallback.validate(eYo.NA, model, key)
     if (eYo.isINVALID(v)) {
       if (eYo.TESTING) {
         console.error(model, c.path)
@@ -598,7 +598,7 @@ eYo.model.Format_p.validate = function (path, model, key) {
     } else if (eYo.isDef(v)) {
       model = v
     }
-    ;[Object.keys, Object.getOwnPropertySymbols].forEach(f => {
+    [Object.keys, Object.getOwnPropertySymbols].forEach(f => {
       f(model).forEach(k => {
         let cc = c.get(k)
         if (cc) {

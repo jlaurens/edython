@@ -45,6 +45,18 @@ eYo.forward('geom.Metrics')
 eYo.board.makeBaseC9r({
   aliases: {
     'owner.workspace': 'workspace',
+    /**
+     * @type {Number}
+     * The board's zoom factor.
+     * zoom options are required
+     */
+    'metrics.scale': 'scale',
+    /**
+     * @type {Yo.geom.Size}
+     * The board's zoom factor.
+     * zoom options are required
+     */
+    'metrics.drag': 'drag',
   },
   properties: {
     board: {
@@ -223,21 +235,7 @@ eYo.board.makeBaseC9r({
       }
     },
   },
-  aliases: {
-    /**
-     * @type {Number}
-     * The board's zoom factor.
-     * zoom options are required
-     */
-    'metrics.scale': 'scale',
-    /**
-     * @type {Yo.geom.Size}
-     * The board's zoom factor.
-     * zoom options are required
-     */
-    'metrics.drag': 'drag',
-  },
-  init (owner) {    
+  init (owner) { // eslint-disable-line   
     /**
      * @type {*}
      */
@@ -268,7 +266,7 @@ eYo.board.makeBaseC9r({
  * @constructor
  */
 eYo.board.newC9r('Main', {
-  init (owner, options) {
+  init (owner, options) { // eslint-disable-line
     /** @type {string} */
     this.id = eYo.genUID()    
   },
@@ -409,13 +407,13 @@ eYo.board.newC9r('Main', {
     init () {
       var options = this.options
       if (options.hasScrollbars) {
-          // Add scrollbar.
+        // Add scrollbar.
         this.scrollbar_ = this.readOnly
           ? new eYo.view.Scrollbar(
-              this,
-              false /*this.horizontalLayout_*/,
-              false, 'eyo-flyout-scrollbar'
-            )
+            this,
+            false /*this.horizontalLayout_*/,
+            false, 'eyo-flyout-scrollbar'
+          )
           : new eYo.view.Scroller(this)
       }
     },
@@ -536,7 +534,7 @@ eYo.board.BaseC9r_p.getBrickById = eYo.board.BaseC9r_p.getBrickById = function(i
  * @return {boolean} True if all inputs are filled, false otherwise.
  */
 eYo.board.BaseC9r_p.allInputsFilled = function(opt_shadowBricksAreFilled) {
-  if (this.topBricks.some(b3k => !brick.allInputsFilled(opt_shadowBricksAreFilled))) {
+  if (this.topBricks.some(b3k => !b3k.allInputsFilled(opt_shadowBricksAreFilled))) {
     return false
   }
   return true
@@ -692,12 +690,12 @@ eYo.board.BaseC9r_p.place = function() {
  */
 eYo.board.BaseC9r_p.updateScreenCalculationsIfScrolled =
     function() {
-  var currScroll = eYo.dom.getDocumentScroll()
-  if (!this.lastPageScroll_ || !this.lastPageScroll_.equals(currScroll)) {
-    this.lastPageScroll_ = currScroll
-    this.updateScreenCalculations_()
-  }
-}
+      var currScroll = eYo.dom.getDocumentScroll()
+      if (!this.lastPageScroll_ || !this.lastPageScroll_.equals(currScroll)) {
+        this.lastPageScroll_ = currScroll
+        this.updateScreenCalculations_()
+      }
+    }
 
 console.warn('NYI')
 /**
@@ -739,17 +737,15 @@ eYo.board.BaseC9r_p.render = function() {
  * often used to visually mark bricks currently being executed.
  * @param {string} [id] ID of brick to highlight/unhighlight,
  *   or null for no brick (used to unhighlight all bricks).
- * @param {boolean=} opt_state If eYo.NA, highlight specified brick and
+ * @param {boolean=} opt_state if (eYo.NA, highlight specified brick and
  * automatically unhighlight all others.  If true or false, manually
  * highlight/unhighlight the specified brick.
  */
 eYo.board.BaseC9r_p.highlightBrick = function(id, opt_state) {
   if (opt_state === eYo.NA) {
     // Unhighlight all bricks.
-    for (var i = 0, brick; brick = this.highlightedBricks_[i]; i++) {
-      brick.setHighlighted(false);
-    }
-    this.highlightedBricks_.length = 0;
+    this.highlightedBricks_.forEach(b3k => b3k.setHighlighted(false))
+    this.highlightedBricks_.length = 0
   }
   // Highlight/unhighlight the specified brick.
   var brick = id ? this.getBrickById(id) : null;
@@ -824,11 +820,11 @@ eYo.board.BaseC9r_p.paste = function () {
                   return true
                 }
               }) || b3k.getMagnets_(false).some(m4t => {
-                  var neighbour = m4t.closest(eYo.event.SNAP_RADIUS,
-                    eYo.geom.pPoint(dx, dy))
-                  if (neighbour) {
-                    return true
-                  }
+                var neighbour = m4t.closest(eYo.event.SNAP_RADIUS,
+                  eYo.geom.pPoint(dx, dy))
+                if (neighbour) {
+                  return true
+                }
               })
               if (collide) {
                 dx += eYo.event.SNAP_RADIUS
@@ -939,7 +935,7 @@ eYo.board.BaseC9r_p.scrollPage = function(horizontally, increase) {
   // how many lines are visible actually
   var metrics = this.metrics_
   var drag = metrics.drag
-  var size = metrics.view.size.unscale(board.scale)
+  var size = metrics.view.size.unscale(this.scale)
   if (horizontally) {
     var scrollAmount = Math.max(Math.floor(size.w) * 0.75, 1)
     if (increase) {
@@ -1033,7 +1029,7 @@ eYo.board.doRelativeScroll = function(xyRatio) {
     drag.x = view.x_max - content.x_max + t * (view.width - content.width)
   }
   if (eYo.isNum(xyRatio.y)) {
-    var t = Math.min(1, Math.max(0, xyRatio.y))
+    t = Math.min(1, Math.max(0, xyRatio.y))
     drag.y = view.y_max - content.y_max + t * (view.height - content.height)
   }
   this.moveTo(drag)
@@ -1111,7 +1107,7 @@ eYo.board.BaseC9r_p.toDom = function (opt) {
  * Convert the board to string.
  * @param {Boolean} [opt_noId]
  */
-eYo.board.BaseC9r_p.description = function (opt_noId) {
+eYo.board.BaseC9r_p.description = function (opt_noId) { // eslint-disable-line
   let oSerializer = new XMLSerializer()
   return oSerializer.serializeToString(this.toDom())
 }
@@ -1121,7 +1117,7 @@ eYo.board.BaseC9r_p.description = function (opt_noId) {
  * @param {Boolean} [opt_noId]
  */
 eYo.board.BaseC9r_p.toUTF8ByteArray = function (opt_noId) {
-  var s = '<?xml version="1.0" encoding="utf-8"?>\n' + this.toString(optNoId)
+  var s = '<?xml version="1.0" encoding="utf-8"?>\n' + this.toString(opt_noId)
   return goog.crypt.toUTF8ByteArray(s)
 }
 

@@ -22,7 +22,7 @@
     "eyo:t3": "python3 \"./src/lib/eyo/t3/python types.py\" && python3 \"./bin/helpers/install t3.py\"",
     "eyo:test": "mocha src/lib/eyo/parser/*.test.js --timeout 10000",
     "eyo:update": "python3 ./bin/helpers/update.py",
-    "lint:fix": "eslint --ext .js,.vue -f ./node_modules/eslint-friendly-formatter --fix src test",
+    "lint:fix": "eslint --ext .js,.vue -f ./node_modules/eslint-friendly-formatter --fix src/lib/eyo test src/vue",
     "pack": "npm run pack:main && npm run pack:renderer",
     "pack:main": "cross-env NODE_ENV=production webpack --display-error-details --progress --colors --config .electron-vue/webpack.main.config.js",
     "pack:renderer": "cross-env NODE_ENV=production webpack --display-error-details --progress --colors --config .electron-vue/webpack.renderer.config.js",

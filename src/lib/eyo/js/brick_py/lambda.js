@@ -181,7 +181,7 @@ eYo.consolidator.Parameter.prototype.doCleanup = (() => {
         var m4t = io.m4t
         var targetM4t = m4t.target
         m4t.disconnect()
-        while (true) {
+        while (true) { // eslint-disable-line
           if (this.setupIO(io, io.i + 2)) {
             var nextM4t = io.m4t
             var nextTargetM4t = nextM4t.target
@@ -225,7 +225,7 @@ eYo.consolidator.Parameter.prototype.doCleanup = (() => {
       m4t = io.m4t
       targetM4t = m4t.target
       m4t.disconnect()
-      while (true) {
+      while (true) { // eslint-disable-line
         this.setupIO(io, io.i - 2)
         nextM4t = io.m4t
         nextTargetM4t = m4t.target
@@ -383,7 +383,7 @@ eYo.expr.newC9r('lambda', true, {
       fields: {
         label: ':'
       },
-      check (type) /** @suppress {globalThis} */ {
+      check (type) /** @suppress {globalThis} */ { // eslint-disable-line
         var m4t = this.brick.out_m.target
         if (m4t) {
           // does the target accept general expression in lambda
@@ -396,7 +396,7 @@ eYo.expr.newC9r('lambda', true, {
     }
   },
   out: {
-    check (type) /** @suppress {globalThis} */ {
+    check (type) /** @suppress {globalThis} */ { // eslint-disable-line
       var eyo = this.brick // does it always exist ?
       var m4tIn = eyo.expression_s.magnet
       var cond_in = true // cond are accepted by default

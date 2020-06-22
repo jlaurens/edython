@@ -23,7 +23,7 @@ eYo.dom.newDriverC9r('Brick', {
    * @return {!Element} The board's dom repository.
    */
   initUI (brick) {
-    const dom = Brick.dom
+    let dom = brick.dom
     Object.defineProperty(dom, 'div_', {
       get () {
         return brick.owner.dom.board_

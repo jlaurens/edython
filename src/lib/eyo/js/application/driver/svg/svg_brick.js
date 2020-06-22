@@ -142,7 +142,7 @@ eYo.svg.newDriverC9r('Brick', {
           svg.pathPlayIcon_,
           'mousedown',
           null,
-          e => {
+          e => { // eslint-disable-line
             if (brick.isInFlyout) {
               return
             }
@@ -347,10 +347,10 @@ eYo.svg.Brick_p.pathCollapsedDef_ = eYo.svg.Brick_p.pathDef_
  * @param {eYo.brick.BaseC9r} brick  the brick the driver acts on
  * @private
  */
-eYo.svg.Brick_p.pathMagnetDef_ = function (brick) {
+eYo.svg.Brick_p.pathMagnetDef_ = function (brick) { // eslint-disable-line
   return eYo.focus.magnet
-  ? eYo.shape.definitionWithMagnet(eYo.focus.magnet, {hilight: true})
-  : ''
+    ? eYo.shape.definitionWithMagnet(eYo.focus.magnet, {hilight: true})
+    : ''
 }
 
 /**
@@ -369,7 +369,7 @@ eYo.svg.Brick_p.pathBBoxDef_ = function (brick) {
  * @param {Object} recorder
  * @private
  */
-eYo.svg.Brick_p.willRender = function (brick, recorder) {
+eYo.svg.Brick_p.willRender = function (brick, recorder) { // eslint-disable-line
   var svg = brick.dom.svg
   if (svg.group_) {
     var F = brick.locked_ && brick.out
@@ -488,14 +488,13 @@ eYo.svg.Brick_p.drawModelEnd_ = function (brick, io) {
  * @param {eYo.brick.BaseC9r} brick  the brick the driver acts on
  */
 eYo.svg.Brick_p.updateDisabled = function (brick) {
-  var brick = brick
   var svg = brick.dom.svg
   if (brick.disabled || brick.getInheritedDisabled()) {
     eYo.dom.classlist.add(
-        /** @type {!Element} */ svg.group_, 'eyo-disabled')
+      /** @type {!Element} */ svg.group_, 'eyo-disabled')
   } else {
     eYo.dom.classlist.remove(
-        /** @type {!Element} */ svg.group_, 'eyo-disabled')
+      /** @type {!Element} */ svg.group_, 'eyo-disabled')
   }
 }
 
@@ -550,7 +549,7 @@ eYo.svg.Brick_p.placeOnTop = function (brick) {
  * @param {eYo.brick.BaseC9r} brick child.
  * @param {eYo.brick.BaseC9r} newParent to be connected.
  */
-eYo.svg.Brick_p.parentWillChange = function (brick, newParent) {
+eYo.svg.Brick_p.parentWillChange = function (brick, newParent) { // eslint-disable-line
   if (brick.parent) {
     this.placeOnTop(brick)
   }
@@ -563,7 +562,7 @@ eYo.svg.Brick_p.parentWillChange = function (brick, newParent) {
  * @param {eYo.brick.BaseC9r} oldParent child.
  * @param {eYo.brick.BaseC9r} oldParent replaced.
  */
-eYo.svg.Brick_p.parentDidChange = function (brick, oldParent) {
+eYo.svg.Brick_p.parentDidChange = function (brick, oldParent) { // eslint-disable-line
   var newParent = brick.parent
   if (newParent) {
     var dom = brick.dom
@@ -584,7 +583,7 @@ eYo.svg.Brick_p.parentDidChange = function (brick, oldParent) {
     eYo.dom.classlist.add(/** @type {!Element} */(svg.groupShape_),
       'eyo-inner')
     svg.groups = [g, svg.groupContour_, svg.groupShape_]
-      // manage the selection,
+    // manage the selection,
     // this seems tricky? Is there any undocumented side effect?
     if ((svg.group_ === svg.pathSelect_.parentElement) || (svg.group_ === svg.pathMagnet_.parentElement)) {
       this.selectRemove(brick)
@@ -921,7 +920,8 @@ eYo.svg.Brick_p.drawSharp = function (brick, visible) {
       text = children[--length]
       g.removeChild(text)
     }
-    g.setAttribute('transform', `translate(${io.cursor.x},${eYo.padding.t})`)
+    //TODO: Is it really brick below ?
+    g.setAttribute('transform', `translate(${brick.cursor.x},${eYo.padding.t})`)
     g.style.display = 'block'
   } else {
     eYo.dom.removeChildren(g)
@@ -941,10 +941,10 @@ eYo.svg.Brick_p.setDragging = (brick, dragging) => {
     g.translate_ = ''
     g.skew_ = ''
     eYo.dom.classlist.add(
-        /** @type {!Element} */ g, 'eyo-dragging')
+      /** @type {!Element} */ g, 'eyo-dragging')
   } else {
     eYo.dom.classlist.remove(
-        /** @type {!Element} */ g, 'eyo-dragging')
+      /** @type {!Element} */ g, 'eyo-dragging')
   }
   // Recurse through all bricks attached under this one.
   brick.childForEach(b => b.ui.dragging = dragging)
@@ -968,10 +968,11 @@ eYo.svg.Brick_p.parentSet = function (brick, parent) {
     eYo.dom.classlist.add(/** @type {!Element} */(svg.groupShape_),
       'eyo-inner')
   } else {
-    var oldWhere = this.whereInBoard(brick)
+    oldWhere = this.whereInBoard(brick)
     brick.board.dom.svg.canvas_.appendChild(svg.group_)
-    xy && (svg.group_.setAttribute('transform', `translate(${oldWhere.x},${oldWhere.y})`))
-    var newWhere = this.whereInBoard(brick)
+    //TODO: Whet is this xy below ?
+    // xy && (svg.group_.setAttribute('transform', `translate(${oldWhere.x},${oldWhere.y})`))
+    newWhere = this.whereInBoard(brick)
     eYo.dom.insertChildAt(svg.group_, svg.groupContour_, 0)
     eYo.dom.classlist.remove(/** @type {!Element} */svg.groupContour_,
       'eyo-inner')
@@ -991,7 +992,7 @@ eYo.svg.Brick_p.parentSet = function (brick, parent) {
 eYo.svg.Brick_p.addTooltip = function (brick, key, options) {
   var g = brick.dom.group
   eYo.do.mixin(options, {
-    onShow(instance) {
+    onShow(instance) { // eslint-disable-line
       g && g.parentNode && (eYo.tooltip.hideAll(g.parentNode))
     }
   })
@@ -1011,7 +1012,7 @@ eYo.svg.Brick_p.deleteStyleSet = function(brick, enable) {
   (enable
     ? eYo.dom.classlist.add
     : eYo.dom.classlist.remove)(
-      /** @type {!Element} */brick.dom.svg.group_,
-      'eyo-dragging-delete'
+    /** @type {!Element} */brick.dom.svg.group_,
+    'eyo-dragging-delete'
   )
 }

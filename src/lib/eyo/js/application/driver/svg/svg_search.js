@@ -20,7 +20,7 @@ eYo.forward('section.Search')
  * Svg driver for the search view.
  */
 eYo.svg.newDriverC9r('Search', {
-    /**
+  /**
    * Initializes the search SVG ressources.
    * @param {eYo.dom.Search} search
    */
@@ -39,12 +39,12 @@ eYo.svg.newDriverC9r('Search', {
     </svg>
     */
     var root = svg.root_ = eYo.svg.newElementSvg(dom.boardDiv_, 'eyo-svg eyo-board')
-    x.dataset && (x.dataset.type = 'search board')
+    root.dataset && (root.dataset.type = 'search board')
 
     var background = svg.background_ = eYo.svg.newElement('path', {
       class: 'eyo-search-background'
     }, root)
-  // Bad design: code reuse: options
+    // Bad design: code reuse: options
     this.addTooltip(background, eYo.tooltip.getTitle('Search'), {
       position: 'right',
       theme: 'light bordered',
@@ -61,7 +61,7 @@ eYo.svg.newDriverC9r('Search', {
           }
         }
       },
-      onShow: x => {
+      onShow: x => { // eslint-disable-line
         eYo.tooltip.hideAll(background)
       }
     })
@@ -204,13 +204,13 @@ eYo.svg.Search_p.addListeners = function(search, brick) {
 eYo.svg.Search_p.listen_mouseover = function(search) {
   search.listeners_.push(
     eYo.dom.bindEvent(
-    search.dom.svg.background_,
-    'mouseover',
-    null,
-    () => {
-      search.board_.topBricks.forEach(b3k => b3k.focusRemove)
-    }
-  ))
+      search.dom.svg.background_,
+      'mouseover',
+      null,
+      () => {
+        search.board_.topBricks.forEach(b3k => b3k.focusRemove)
+      }
+    ))
 }
 
 /**
@@ -289,8 +289,8 @@ eYo.svg.newDriverC9r('SearchToolbar', {
     svg.pathControl_ = eYo.svg.newElement('path', {
       id: 'p-search-control'
     }, dom.svg)
-    if (ftb.app && ftb.app.searchDropDown) {
-    } else if (ftb.app && ftb.app.searchDropDownGeneral && ftb.app.searchDropDownModule) {
+    if (ftb.app && ftb.app.searchDropDown) { // eslint-disable-line
+    } else if (ftb.app && ftb.app.searchDropDownGeneral && ftb.app.searchDropDownModule) { // eslint-disable-line
     }
     const div = this.search.desk.dom.div_.searchToolbar_
     Object.definePorperty(dom, 'div_', {
@@ -336,8 +336,8 @@ eYo.svg.newDriverC9r('SearchToolbar', {
     var dom = ftb.dom
     var div = dom.div_
     var fc
-    while((fc = dom.div_.firstChild)) {
-      myNode.removeChild(fc)
+    while((fc = div.firstChild)) {
+      div.removeChild(fc)
     }
     var svg = dom.svg
     eYo.dom.removeNode(svg.group_)

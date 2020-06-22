@@ -141,19 +141,19 @@ eYo.brick.List_p.add = function (brick, opt_id) {
       }
     }
   }
-  this.bricks_.splice(i, 0, b)
-  var l = b.where.l
+  this.bricks_.splice(i, 0, brick)
+  var l = brick.where.l
   var bb
   while ((bb = this.bricks_[++i])) {
-    l += b.span.l + 2
+    l += brick.span.l + 2
     if (bb.where.l < l) {
-      (b = bb).ui.xy_.l = l
+      (brick = bb).ui.xy_.l = l
     } else {
       break
     }
   }
   brick.id = (opt_id && !this.getBrickById(opt_id))
-  ? opt_id : eYo.genUID()
+    ? opt_id : eYo.genUID()
   this.db.add(brick)
 }
 
@@ -173,9 +173,9 @@ eYo.brick.List_p.remove = function (brick) {
   var forEachMake = (test) => {
     return function (f, deep=false) {
       var bricks = this.bricks_
-      i = 0
+      var i = 0
       const stack = []
-      while (true) {
+      while (true) { // eslint-disable-line
         if (i < bricks.length) {
           var b3k = bricks[i]
           test(f) && f(b3k)
@@ -188,7 +188,7 @@ eYo.brick.List_p.remove = function (brick) {
             ++i
           }
           continue
-        } else if (bricks = stack.pop()) {
+        } else if ((bricks = stack.pop())) {
           i = stack.pop() + 1
           continue
         }
@@ -201,7 +201,7 @@ eYo.brick.List_p.remove = function (brick) {
    * Children are looked after too.
    * @param {function} f -  (element)=>None: {}
    */
-  eYo.brick.List_p.forEach = forEachMake(b3k=>true)
+  eYo.brick.List_p.forEach = forEachMake(b3k=>true) // eslint-disable-line
   /**
    * Performs a function on each expression brick
    * until one is found for which the answer is a truthy value.
@@ -222,9 +222,9 @@ eYo.brick.List_p.remove = function (brick) {
   var someMake = (test) => {
     return function (f, deep=false) {
       var bricks = this.bricks_
-      i = 0
+      var i = 0
       const stack = []
-      while (true) {
+      while (true) { // eslint-disable-line
         if (i < bricks.length) {
           var b3k = bricks[i]
           if (test(f) && f(b3k)) {
@@ -239,7 +239,7 @@ eYo.brick.List_p.remove = function (brick) {
             ++i
           }
           continue
-        } else if (bricks = stack.pop()) {
+        } else if ((bricks = stack.pop())) {
           i = stack.pop() + 1
           continue
         }
@@ -253,7 +253,7 @@ eYo.brick.List_p.remove = function (brick) {
    * @param {function} f -  (element)=>Boolean: {}
    * @param {Boolean} deep -  deep first traversal when true, flat traversal otherwise
    */
-  eYo.brick.List_p.some = someMake(b3k=>true)
+  eYo.brick.List_p.some = someMake(b3k=>true) // eslint-disable-line
   /**
    * Performs a function on each expression brick
    * until one is found for which the answer is a truthy value.

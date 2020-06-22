@@ -280,7 +280,7 @@ eYo.focus.ChooseAbove = function () {
       return
     }
   }
-  var brick = eyo.root.getBestBrick((a, b) => {
+  brick = eyo.root.getBestBrick((a, b) => {
     if (a.head <= b.head) {
       return {}
     }
@@ -328,7 +328,7 @@ eYo.focus.ChooseBelow = () => {
         return
       }
     } else if (m4t.isSuite) {
-      var target = m4t.target
+      target = m4t.target
       if (target) {
         target.focusOn().scrollToVisible()
         return

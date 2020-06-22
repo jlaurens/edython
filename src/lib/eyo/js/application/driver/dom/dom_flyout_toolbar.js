@@ -19,7 +19,7 @@ eYo.forward('flyout.Toolbar')
  * Dom driver for the flyout.
  */
 eYo.dom.flyout.newDriverC9r('Toolbar', {
-    /**
+  /**
    * Initialize the flyout dom ressources.
    * @param {eYo.flyout.View} flyout
    * @return {!Element} The desk's dom repository.
@@ -48,7 +48,7 @@ eYo.dom.flyout.newDriverC9r('Toolbar', {
    * @param {eYo.flyout.View} flyout
    */
   disposeUI (toolbar) {
-    ;['Down', 'Enter', 'Up', 'Leave'].forEach(k => {
+    ['Down', 'Enter', 'Up', 'Leave'].forEach(k => {
       k = `onButton${k}Wrapper_`
       let wrapper = toolbar[k]
       if (wrapper) {

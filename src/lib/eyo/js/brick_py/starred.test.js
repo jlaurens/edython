@@ -1,5 +1,5 @@
 describe('Basic Starred', function() {
-  ;[
+  [
     ['star_expr', '*<MISSING EXPRESSION>'],
     ['expression_star', '*<MISSING EXPRESSION>'],
     ['expression_star_star', '**<MISSING EXPRESSION>'],

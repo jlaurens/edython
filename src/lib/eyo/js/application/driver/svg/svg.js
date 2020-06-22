@@ -58,7 +58,7 @@ eYo.svg.makeMngr({
         if (dom && dom.svg) {
           f && f.apply(object, rest)
           dom.svg = null
-          cls[eYo.$SuperC9r_p].disposeUI.apply(object, ...rest)
+          eYo.svg[eYo.$SuperC9r_p].disposeUI.apply(object, ...rest)
         }
       }
     },
@@ -334,7 +334,7 @@ eYo.svg.getScale_ = function(element) {
 
 // eslint-disable-next-line no-global-assign
 var eyo_original_parseFloat = parseFloat
-parseFloat = (x) => {
+parseFloat = (x) => { // eslint-disable-line
   return eyo_original_parseFloat(eYo.isDef(x) && x.replace
     ? x.replace(',', '.')
     : x)

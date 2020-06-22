@@ -95,7 +95,7 @@ eYo.view.newNS(eYo, 'flyout', {
  * @private
  */
 eYo.flyout.newC9r('View', {
-  init (owner) {
+  init (owner) { // eslint-disable-line
     // First
     if (!this.autoClose) {
       this.filterWrapper_ = this.filterForCapacity_.bind(this)
@@ -106,10 +106,11 @@ eYo.flyout.newC9r('View', {
    * Dispose of this flyout.
    */
   dispose () {
-    if (!!this.filterWrapper_) {
+    if (this.filterWrapper_) {
       this.board.removeChangeListener(this.filterWrapper_)
     }
   },
+  //TODO: is it still ui ?
   ui: {
     /**
      * Make the UI
@@ -118,7 +119,7 @@ eYo.flyout.newC9r('View', {
       var switcher = this.flyoutOptions.switcher
       if (switcher) {
         var tb = this.toolbar_ = new eYo.flyout.Toolbar(this, switcher)
-        d.toolbarInitUI(tb)
+        tb.driver.toolbarInitUI(tb)
         tb.doSelectGeneral(null) // is it necessary ?
       }
     },
@@ -274,7 +275,7 @@ eYo.flyout.newC9r('View', {
       didChange () /** @suppress {globalThis} */ {
         this.updateDisplay_()
       }
-     },
+    },
     dragAngleLimit: 70,
     autoClose: {
       reset () {
@@ -640,10 +641,10 @@ eYo.flyout.View_p.placeNewBrick_ = function(srcBrick) {
   // placed at position (0, 0) in main board units.
   var brick = eYo.xml.domToBrick(xml, targetBoard)
   var xy = this.board_.originInApplication
-  .forward(
-    srcBrick.whereInBoard.scale(this.board_.scale)
-  ).backward(targetBoard.originInApplication)
-  .unscale(this.desk.scale)
+    .forward(
+      srcBrick.whereInBoard.scale(this.board_.scale)
+    ).backward(targetBoard.originInApplication)
+    .unscale(this.desk.scale)
   brick.moveTo(xy)
   brick.render()
   return brick
@@ -737,14 +738,14 @@ eYo.flyout.View_p.slide = function(close) {
  * Subclassers will add there stuff here.
  * @param {number} step betwwen 0 and 1.
  */
-eYo.flyout.View_p.slideOneStep = function(step) {
+eYo.flyout.View_p.slideOneStep = function(step) { // eslint-disable-line
 }
 
 /**
  * Subclassers will add there stuff here.
  * @param {Boolean} closed
  */
-eYo.flyout.View_p.didSlide = function(closed) {
+eYo.flyout.View_p.didSlide = function(closed) { // eslint-disable-line
 }
 
 /**

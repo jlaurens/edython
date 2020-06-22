@@ -347,7 +347,7 @@ eYo.expr.target_list_p.xdidDisconnect = function (m4t, oldTargetM4t) {
         }
         return
       }
-      ;(x = x.target_s) && (x.boundField.visible = true)
+      (x = x.target_s) && (x.boundField.visible = true)
     }
   }
   eYo.expr.target_list.eyo.C9r_s.didDisconnect.call(this, m4t, oldTargetM4t)
@@ -380,7 +380,7 @@ eYo.expr.target_list_p.xdidConnect = function (m4t, oldTargetM4t, targetOldM4t) 
             parent.variant_ = eYo.key.NONE // no 2 annotations
           }
         } else if (v === eYo.key.ANNOTATED_VALUED) {
-          var t9k = m4t.targetBrick
+          t9k = m4t.targetBrick
           if ([eYo.t3.expr.identifier_annotated,
             eYo.t3.expr.augtarget_annotated,
             eYo.t3.expr.key_datum].indexOf(t9k.type) >= 0) {
@@ -572,8 +572,8 @@ eYo.expr.newC9r('primary', {
           validated = Math.max(0, Math.floor(after))
         }
         return eYo.isDef(validated)
-        ? validated
-        : eYo.INVALID
+          ? validated
+          : eYo.INVALID
       },
       didChange (builtin, after) /** @suppress {globalThis} */ {
         builtin()
@@ -599,7 +599,7 @@ eYo.expr.newC9r('primary', {
       fromField (builtin, value) /** @suppress {globalThis} */ {
         builtin(value.length)
       },
-      toField (value) /** @suppress {globalThis} */ {
+      toField (value) /** @suppress {globalThis} */ { // eslint-disable-line
         var txt = ''
         for (var i = 0; (i < this.get()); i++) {
           txt += '.'
@@ -629,7 +629,7 @@ eYo.expr.newC9r('primary', {
         || p5e.expr === eYo.t3.expr.dotted_name
         || p5e.expr === eYo.t3.expr.attributeref
         || p5e.expr === eYo.t3.expr.parent_module
-        ? after: eYo.INVALID
+          ? after: eYo.INVALID
       },
       didChange (builtin, after) /** @suppress {globalThis} */ {
         // first change the dotted data to unincog the holder
@@ -668,8 +668,8 @@ eYo.expr.newC9r('primary', {
         return type === eYo.t3.expr.unset
         || type === eYo.t3.expr.identifier
         || type === eYo.t3.expr.builtin__name
-        ? after
-        : eYo.INVALID
+          ? after
+          : eYo.INVALID
       },
       xml: {
         save (element, opt) /** @suppress {globalThis} */ {
@@ -701,7 +701,7 @@ eYo.expr.newC9r('primary', {
           }
         }
       },
-      didLoad (element) /** @suppress {globalThis} */ {
+      didLoad (element) /** @suppress {globalThis} */ { // eslint-disable-line
         var b3k = this.brick
         var v = b3k.Variant_p
         if (this.required_from_saved) {
@@ -727,8 +727,8 @@ eYo.expr.newC9r('primary', {
         if (after) {
           var b3k = this.brick
           b3k.variant_ = b3k.Value_p || b3k.value_s.unwrappedTarget
-          ? eYo.key.ANNOTATED_VALUED
-          : eYo.key.ANNOTATED
+            ? eYo.key.ANNOTATED_VALUED
+            : eYo.key.ANNOTATED
         }
       }
     },
@@ -751,9 +751,9 @@ eYo.expr.newC9r('primary', {
       },
       didChange (builtin, after) /** @suppress {globalThis} */ {
         builtin()
-         if (after === eYo.key.NONE) {
-           console.error('UNEXPECTED')
-         }
+        if (after === eYo.key.NONE) {
+          console.error('UNEXPECTED')
+        }
       },
       didLoad () /** @suppress {globalThis} */ {
         if (this.required_from_saved) {
@@ -860,9 +860,9 @@ eYo.expr.newC9r('primary', {
         || type.expr === eYo.t3.expr.identifier
         || type.expr === eYo.t3.expr.parent_module
         || type.expr === eYo.t3.expr.dotted_name
-        ? after: eYo.INVALID
+          ? after: eYo.INVALID
       },
-      didChange (builtin, after) /** @suppress {globalThis} */ {
+      didChange (builtin, after) /** @suppress {globalThis} */ { // eslint-disable-line
         builtin()
         var b3k = this.brick
         b3k.updateProfile()
@@ -928,7 +928,7 @@ eYo.expr.newC9r('primary', {
         if (target) {
           target.Ary_p = after
         }
-        ;(after < this.brick.Mandatory_p) && (this.brick.Mandatory_p = after)
+        (after < this.brick.Mandatory_p) && (this.brick.Mandatory_p = after)
         if (eYo.isDef(after)) {
           this.brick.variant_ = eYo.key.CALL_EXPR
         }
@@ -973,7 +973,7 @@ eYo.expr.newC9r('primary', {
         if (target) {
           target.Mandatory_p = after
         }
-        ;(after > this.brick.Ary_p) && (this.brick.Ary_p = after)
+        (after > this.brick.Ary_p) && (this.brick.Ary_p = after)
         if (eYo.isDef(after)) {
           this.brick.variant_ = eYo.key.CALL_EXPR
         }
@@ -1001,10 +1001,10 @@ eYo.expr.newC9r('primary', {
         }
       },
       check: eYo.t3.expr.check.primary,
-      didDisconnect (oldTargetM4t) /** @suppress {globalThis} */ {
+      didDisconnect (oldTargetM4t) /** @suppress {globalThis} */ { // eslint-disable-line
         this.brick.updateProfile()
       },
-      didConnect (oldTargetM4t, targetOldM4t) /** @suppress {globalThis} */ {
+      didConnect (oldTargetM4t, targetOldM4t) /** @suppress {globalThis} */ { // eslint-disable-line
         this.brick.updateProfile()
       },
       xml: true
@@ -1044,7 +1044,7 @@ eYo.expr.newC9r('primary', {
       accept (attribute) /** @suppress {globalThis} */ {
         return attribute === 'name'
       },
-      didConnect (oldTargetM4t, targetOldM4t) /** @suppress {globalThis} */ {
+      didConnect (oldTargetM4t, targetOldM4t) /** @suppress {globalThis} */ { // eslint-disable-line
         // the brick is not yet consolidated
         if (this.isSlot) {
           var parent = this.brick.parent
@@ -1063,7 +1063,7 @@ eYo.expr.newC9r('primary', {
                   parent.variant_ = eYo.key.NONE // no 2 annotations
                 }
               } else if (v === eYo.key.ANNOTATED_VALUED) {
-                var t = this.targetBrick
+                t = this.targetBrick
                 if ([eYo.t3.expr.identifier_annotated,
                   eYo.t3.expr.augtarget_annotated,
                   eYo.t3.expr.key_datum].indexOf(t.type) >= 0) {
@@ -1074,7 +1074,7 @@ eYo.expr.newC9r('primary', {
           }
         }
       },
-      didDisconnect (oldTargetM4t) /** @suppress {globalThis} */ {
+      didDisconnect (oldTargetM4t) /** @suppress {globalThis} */ { // eslint-disable-line
         // the brick is not yet consolidated
         // when there is no connected brick, we display the field
         var unwrappedB3k = this.unwrappedMagnet.brick
@@ -1177,17 +1177,17 @@ eYo.expr.newC9r('primary', {
           this.brick.variant_ = eYo.key.ALIASED
         }
       },
-      didConnect (oldTargetM4t, targetOldM4t) /** @suppress {globalThis} */ {
+      didConnect (oldTargetM4t, targetOldM4t) /** @suppress {globalThis} */ { // eslint-disable-line
         this.slot.boundField.visible = false
         this.brick.variant_ = eYo.key.ALIASED
       },
-      didDisconnect (oldTargetM4t) /** @suppress {globalThis} */ {
+      didDisconnect (oldTargetM4t) /** @suppress {globalThis} */ { // eslint-disable-line
         this.slot.boundField.visible = true
       }
     }
   },
   out: {
-    check (type, subtype) /** @suppress {globalThis} */ {
+    check (type, subtype) /** @suppress {globalThis} */ { // eslint-disable-line
       return this.brick.getOutCheck()
     }
   },
@@ -1242,7 +1242,7 @@ eYo.register.add(eYo.expr, 'primary', function (b3k) {
   if (eYo.expr[k]) {
     console.warn('BREAK HERE!')
   }
-//  console.warn(k)
+  //  console.warn(k)
   eYo.c9r.register(k, (eYo.expr[k] = eYo.expr.primary))
 })
 
@@ -1289,8 +1289,8 @@ eYo.expr.primary_p.updateProfile = eYo.decorate.reentrant_method(
 eYo.expr.primary_p.getProfile = eYo.changer.memoize(
   'getProfile',
   function () {
-      // this may be called very very early when
-      // neither `data` nor `slots` may exist yet
+    // this may be called very very early when
+    // neither `data` nor `slots` may exist yet
     if (this.data && this.slots) {
       var ans = {
         dotted: this.Dotted_p,
@@ -1453,181 +1453,181 @@ eYo.expr.primary_p.getOutCheck = function () {
   var f = function () {
   // there is no validation here
   // simple cases first, variant based
-  var profile = this.profile
-  if (!profile) {
-    console.warn('NO PROFILE, is it normal?')
-    this.changeDone()
-    profile = this.profile
+    var profile = this.profile
     if (!profile) {
-      console.error('NO PROFILE')
-    }
-  }
-  if (!profile.name) {
-    console.error('NO NAME')
-    this.changeDone()
-    this.getProfile()
-  }
-
-  var named = () => {
-    if (eYo.t3.expr.check.named_primary.indexOf(profile.name.type)) {
-      if (!profile.holder.type
-      || eYo.t3.expr.check.named_primary.indexOf(profile.holder.type)) {
-        return true
+      console.warn('NO PROFILE, is it normal?')
+      this.changeDone()
+      profile = this.profile
+      if (!profile) {
+        console.error('NO PROFILE')
       }
     }
-  }
-  if (profile.variant === eYo.key.CALL_EXPR) {
-    return named()
-      ? [
-        eYo.t3.expr.named_call_expr,
-        eYo.t3.expr.call_expr
-      ]
-      : [
-        eYo.t3.expr.call_expr
-      ]
-  } else if (profile.variant === eYo.key.SLICING) {
+    if (!profile.name) {
+      console.error('NO NAME')
+      this.changeDone()
+      this.getProfile()
+    }
+
+    var named = () => {
+      if (eYo.t3.expr.check.named_primary.indexOf(profile.name.type)) {
+        if (!profile.holder.type
+      || eYo.t3.expr.check.named_primary.indexOf(profile.holder.type)) {
+          return true
+        }
+      }
+    }
+    if (profile.variant === eYo.key.CALL_EXPR) {
+      return named()
+        ? [
+          eYo.t3.expr.named_call_expr,
+          eYo.t3.expr.call_expr
+        ]
+        : [
+          eYo.t3.expr.call_expr
+        ]
+    } else if (profile.variant === eYo.key.SLICING) {
     // is it a slicing or a subscription ?
-    if (!eYo.t3.expr.check.slice_only) {
-      eYo.t3.expr.check.slice_only = eYo.t3.expr.check.slice_list.filter(i => eYo.t3.expr.check.expression.indexOf(i) < 0)
-    }
-    if (this.slotSome(slot => {
-      var t = slot.targetBrick
-      return t && (t.checkOutputType(eYo.t3.expr.check.slice_only))
-    })) {
-      return named()
-      ? [
-        eYo.t3.expr.named_slicing,
-        eYo.t3.expr.slicing
-      ]
-      : [
-        eYo.t3.expr.slicing
-      ]
-    } else {
-      return named()
-      ? [
-        eYo.t3.expr.named_subscription,
-        eYo.t3.expr.named_slicing,
-        eYo.t3.expr.subscription,
-        eYo.t3.expr.slicing
-      ]
-      : [
-        eYo.t3.expr.subscription,
-        eYo.t3.expr.slicing
-      ]
-    }
-  } else if (profile.variant === eYo.key.ALIASED) {
-    if (profile.name.type === eYo.t3.expr.identifier
+      if (!eYo.t3.expr.check.slice_only) {
+        eYo.t3.expr.check.slice_only = eYo.t3.expr.check.slice_list.filter(i => eYo.t3.expr.check.expression.indexOf(i) < 0)
+      }
+      if (this.slotSome(slot => {
+        var t = slot.targetBrick
+        return t && (t.checkOutputType(eYo.t3.expr.check.slice_only))
+      })) {
+        return named()
+          ? [
+            eYo.t3.expr.named_slicing,
+            eYo.t3.expr.slicing
+          ]
+          : [
+            eYo.t3.expr.slicing
+          ]
+      } else {
+        return named()
+          ? [
+            eYo.t3.expr.named_subscription,
+            eYo.t3.expr.named_slicing,
+            eYo.t3.expr.subscription,
+            eYo.t3.expr.slicing
+          ]
+          : [
+            eYo.t3.expr.subscription,
+            eYo.t3.expr.slicing
+          ]
+      }
+    } else if (profile.variant === eYo.key.ALIASED) {
+      if (profile.name.type === eYo.t3.expr.identifier
     || profile.name.type === eYo.t3.expr.unset) {
-      if (profile.holder) {
-        if (profile.holder.type === eYo.t3.expr.unset) {
-          return [
-            eYo.t3.expr.identifier_as,
-            eYo.t3.expr.dotted_name_as,
-            eYo.t3.expr.expression_as
-          ]
-        } else if (profile.holder.type === eYo.t3.expr.identifier
+        if (profile.holder) {
+          if (profile.holder.type === eYo.t3.expr.unset) {
+            return [
+              eYo.t3.expr.identifier_as,
+              eYo.t3.expr.dotted_name_as,
+              eYo.t3.expr.expression_as
+            ]
+          } else if (profile.holder.type === eYo.t3.expr.identifier
           || profile.holder.type === eYo.t3.expr.dotted_name) {
+            return [
+              eYo.t3.expr.dotted_name_as,
+              eYo.t3.expr.expression_as
+            ]
+          } else if (profile.holder.type) {
+            return [
+              eYo.t3.expr.expression_as
+            ]
+          }
+        }
+        return [
+          eYo.t3.expr.identifier_as,
+          eYo.t3.expr.dotted_name_as,
+          eYo.t3.expr.expression_as
+        ]
+      }
+      if (profile.name.type === eYo.t3.expr.dotted_name) {
+        if (!profile.holder.type
+        || profile.holder.type === eYo.t3.expr.unset
+        || profile.holder.type === eYo.t3.expr.identifier
+        || profile.holder.type === eYo.t3.expr.dotted_name) {
           return [
             eYo.t3.expr.dotted_name_as,
-            eYo.t3.expr.expression_as
-          ]
-        } else if (profile.holder.type) {
-          return [
             eYo.t3.expr.expression_as
           ]
         }
       }
       return [
-        eYo.t3.expr.identifier_as,
-        eYo.t3.expr.dotted_name_as,
         eYo.t3.expr.expression_as
       ]
-    }
-    if (profile.name.type === eYo.t3.expr.dotted_name) {
-      if (!profile.holder.type
-        || profile.holder.type === eYo.t3.expr.unset
-        || profile.holder.type === eYo.t3.expr.identifier
-        || profile.holder.type === eYo.t3.expr.dotted_name) {
-        return [
-          eYo.t3.expr.dotted_name_as,
-          eYo.t3.expr.expression_as
-        ]
-      }
-    }
-    return [
-      eYo.t3.expr.expression_as
-    ]
-  } else if (profile.variant === eYo.key.ANNOTATED) {
-    return profile.name.type === eYo.t3.expr.identifier || profile.name.type === eYo.t3.expr.unset
-      ? [
-        eYo.t3.expr.identifier_annotated,
-        eYo.t3.expr.augtarget_annotated,
-        eYo.t3.expr.key_datum
-      ]
-      : profile.name.type === eYo.t3.expr.dotted_name
-      || profile.name.type === eYo.t3.expr.augtarget
+    } else if (profile.variant === eYo.key.ANNOTATED) {
+      return profile.name.type === eYo.t3.expr.identifier || profile.name.type === eYo.t3.expr.unset
         ? [
+          eYo.t3.expr.identifier_annotated,
           eYo.t3.expr.augtarget_annotated,
           eYo.t3.expr.key_datum
         ]
-        : [
-          eYo.t3.expr.key_datum
-        ]
-  } else if (profile.variant === eYo.key.COL_VALUED) {
-    return [
-      eYo.t3.expr.named_expr
-    ]
-  } else if (profile.variant === eYo.key.TARGET_VALUED) {
+        : profile.name.type === eYo.t3.expr.dotted_name
+      || profile.name.type === eYo.t3.expr.augtarget
+          ? [
+            eYo.t3.expr.augtarget_annotated,
+            eYo.t3.expr.key_datum
+          ]
+          : [
+            eYo.t3.expr.key_datum
+          ]
+    } else if (profile.variant === eYo.key.COL_VALUED) {
+      return [
+        eYo.t3.expr.named_expr
+      ]
+    } else if (profile.variant === eYo.key.TARGET_VALUED) {
     // Is the target connected to something that is not an identifier ?
-    if (Object.keys(this.target_b.slots).length > 3) {
-      return [eYo.t3.expr.assignment_chain]
-    }
-    if (Object.keys(this.target_b.slots).length > 1) {
-      // only one connected input
-      var b3k = this.target_s.unwrappedTarget
-      if (b3k && b3k.type !== eYo.t3.expr.identifier) {
+      if (Object.keys(this.target_b.slots).length > 3) {
         return [eYo.t3.expr.assignment_chain]
       }
-    }
-    // if the first value is connected to a `… = …`
-    b3k = this.value_s.unwrappedTarget
-    if (b3k && [
-      eYo.t3.expr.identifier_valued,
-      eYo.t3.expr.assignment_chain
-    ].indexOf(b3k.type) >= 0) {
-      return [
+      if (Object.keys(this.target_b.slots).length > 1) {
+      // only one connected input
+        var b3k = this.target_s.unwrappedTarget
+        if (b3k && b3k.type !== eYo.t3.expr.identifier) {
+          return [eYo.t3.expr.assignment_chain]
+        }
+      }
+      // if the first value is connected to a `… = …`
+      b3k = this.value_s.unwrappedTarget
+      if (b3k && [
+        eYo.t3.expr.identifier_valued,
         eYo.t3.expr.assignment_chain
-      ]
-    }
-    // if the parent is a value_list
-    if ((b3k = this.out)) {
-      if (b3k.type === eYo.t3.expr.value_list || b3k.type === eYo.t3.expr.value_list) {
+      ].indexOf(b3k.type) >= 0) {
         return [
           eYo.t3.expr.assignment_chain
         ]
       }
+      // if the parent is a value_list
+      if ((b3k = this.out)) {
+        if (b3k.type === eYo.t3.expr.value_list || b3k.type === eYo.t3.expr.value_list) {
+          return [
+            eYo.t3.expr.assignment_chain
+          ]
+        }
+      }
+      return [
+        eYo.t3.expr.identifier_valued,
+        eYo.t3.expr.assignment_chain
+      ]
+    } else if (profile.variant === eYo.key.ANNOTATED_VALUED) {
+      return [
+        eYo.t3.expr.identifier_annotated_valued
+      ]
     }
-    return [
-      eYo.t3.expr.identifier_valued,
-      eYo.t3.expr.assignment_chain
-    ]
-  } else if (profile.variant === eYo.key.ANNOTATED_VALUED) {
-    return [
-      eYo.t3.expr.identifier_annotated_valued
-    ]
-  }
-  // if this is just a wrapper, forwards the check array
-  if (!profile.dotted) {
-    return profile.name.target
-      ? profile.name.target.out_m.check_
-      : profile.name.type === eYo.t3.expr.unset
-        ? [
-          eYo.t3.expr.identifier
-        ]
-        : profile.name.check || [
-          profile.name.type
-        ]
-  }
+    // if this is just a wrapper, forwards the check array
+    if (!profile.dotted) {
+      return profile.name.target
+        ? profile.name.target.out_m.check_
+        : profile.name.type === eYo.t3.expr.unset
+          ? [
+            eYo.t3.expr.identifier
+          ]
+          : profile.name.check || [
+            profile.name.type
+          ]
+    }
     // parent_module first
     if (profile.name.type === eYo.t3.expr.parent_module) {
       return [

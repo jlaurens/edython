@@ -85,8 +85,7 @@ eYo.register.add = function (object, key, filter) {
     //... chai.expect(o[eyo.p6y$.map].get($k).value).not.undefined
     //... eyo[p6y$.shortcuts]()
     //... chai.expect(o[eyo.p6y$.map].get($k).value).equal(o[$k])
-    var p6y$ = object.p6y$
-    p6y$ || eYo.throw(`Not a proper subclass (unknown p6y$/2).`)
+    (p6y$ = object.p6y$) || eYo.throw(`Not a proper subclass (unknown p6y$/2).`)
     object[p6y$.merge]({
       [$k]: {
         value () {
@@ -207,30 +206,30 @@ eYo.register.add = function (object, key, filter) {
     [key + 'ForEach']: function ($this, handler) {
       //<<< mochai: fooForEach
       if (eYo.isF($this)) {
-        ;[$this, handler] = [handler || this, $this]
+        [$this, handler] = [handler || this, $this]
       }
       for (let r of this[$k].keys()) {
         handler.call($this, r)
       }
-        //<<< mochai: no $this
-          //... o = {}
-          //... let $k = eYo.register.add(o, 'foo')
-          //... o.fooRegister(a)
-          //... o.fooRegister(b)
-          //... o.fooForEach(x => x.flag(3, 4))
-          //... flag.expect(134234)
-        //>>>
-        //<<< mochai: $this
-          //... o = {}
-          //... let $k = eYo.register.add(o, 'foo')
-          //... o.fooRegister(a)
-          //... o.fooRegister(b)
-          //... o.fooForEach($this, function(x) {
-          //...    this.flag(3, 4)
-          //...    x.flag(3, 4)
-          //... })
-          //... flag.expect(934134934234)
-        //>>>
+      //<<< mochai: no $this
+      //... o = {}
+      //... let $k = eYo.register.add(o, 'foo')
+      //... o.fooRegister(a)
+      //... o.fooRegister(b)
+      //... o.fooForEach(x => x.flag(3, 4))
+      //... flag.expect(134234)
+      //>>>
+      //<<< mochai: $this
+      //... o = {}
+      //... let $k = eYo.register.add(o, 'foo')
+      //... o.fooRegister(a)
+      //... o.fooRegister(b)
+      //... o.fooForEach($this, function(x) {
+      //...    this.flag(3, 4)
+      //...    x.flag(3, 4)
+      //... })
+      //... flag.expect(934134934234)
+      //>>>
       //>>>
     },
     /**
@@ -240,7 +239,7 @@ eYo.register.add = function (object, key, filter) {
     [key + 'Some']: function ($this, handler) {
       //<<< mochai: fooSome
       if (eYo.isF($this)) {
-        ;[$this, handler] = [handler || this, $this]
+        [$this, handler] = [handler || this, $this]
       }
       for (let r of this[$k].keys()) {
         if (handler.call($this, r)) {
@@ -248,51 +247,51 @@ eYo.register.add = function (object, key, filter) {
         }
       }
       return false
-        //<<< mochai: no $this
-          //... o = {}
-          //... let $k = eYo.register.add(o, 'foo')
-          //... o.fooRegister(a)
-          //... o.fooRegister(b)
-          //... chai.expect(o.fooSome(x => {
-          //...   x.flag()
-          //...   return x === a
-          //... })).true
-          //... flag.expect(1)
-          //... chai.expect(o.fooSome(x => {
-          //...   x.flag()
-          //...   return x === b
-          //... })).true
-          //... flag.expect(12)
-          //... chai.expect(o.fooSome(x => {
-          //...   x.flag()
-          //...   return x === 0
-          //... })).false
-          //... flag.expect(12)
-        //>>>
-        //<<< mochai: $this
-          //... o = {}
-          //... let $k = eYo.register.add(o, 'foo')
-          //... o.fooRegister(a)
-          //... o.fooRegister(b)
-          //... chai.expect(o.fooSome($this, function(x) {
-          //...   this.flag()
-          //...   x.flag()
-          //...   return x === a
-          //... })).true
-          //... flag.expect(91)
-          //... chai.expect(o.fooSome($this, function(x) {
-          //...   this.flag()
-          //...   x.flag()
-          //...   return x === b
-          //... })).true
-          //... flag.expect(9192)
-          //... chai.expect(o.fooSome($this, function(x) {
-          //...   this.flag()
-          //...   x.flag()
-          //...   return x === 0
-          //... })).false
-          //... flag.expect(9192)
-        //>>>
+      //<<< mochai: no $this
+      //... o = {}
+      //... let $k = eYo.register.add(o, 'foo')
+      //... o.fooRegister(a)
+      //... o.fooRegister(b)
+      //... chai.expect(o.fooSome(x => {
+      //...   x.flag()
+      //...   return x === a
+      //... })).true
+      //... flag.expect(1)
+      //... chai.expect(o.fooSome(x => {
+      //...   x.flag()
+      //...   return x === b
+      //... })).true
+      //... flag.expect(12)
+      //... chai.expect(o.fooSome(x => {
+      //...   x.flag()
+      //...   return x === 0
+      //... })).false
+      //... flag.expect(12)
+      //>>>
+      //<<< mochai: $this
+      //... o = {}
+      //... let $k = eYo.register.add(o, 'foo')
+      //... o.fooRegister(a)
+      //... o.fooRegister(b)
+      //... chai.expect(o.fooSome($this, function(x) {
+      //...   this.flag()
+      //...   x.flag()
+      //...   return x === a
+      //... })).true
+      //... flag.expect(91)
+      //... chai.expect(o.fooSome($this, function(x) {
+      //...   this.flag()
+      //...   x.flag()
+      //...   return x === b
+      //... })).true
+      //... flag.expect(9192)
+      //... chai.expect(o.fooSome($this, function(x) {
+      //...   this.flag()
+      //...   x.flag()
+      //...   return x === 0
+      //... })).false
+      //... flag.expect(9192)
+      //>>>
       //>>>
     },
     //>>>

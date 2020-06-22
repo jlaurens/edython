@@ -157,8 +157,8 @@ eYo.view.newC9r('Scrollbar', {
           var ratio = old ? after / old : 1
           var size = this.viewRect.size_
           this.horizontal
-          ? (size.width = after)
-          : (size.height = after)
+            ? (size.width = after)
+            : (size.height = after)
           this.handlePosition_ *= ratio
           this.handleLength_ *= ratio
           this.ui_driver.updateView(this)
@@ -198,8 +198,8 @@ eYo.view.Scrollbar_p.layoutHorizontal = function(hostMetrics, prepare) {
   var range = content.width - view.width
   if (prepare !== false) {
     this.visible = (view.width > this.scroller_
-    ? 2 * eYo.view.SCROLLBAR_THICKNESS
-    : eYo.view.SCROLLBAR_THICKNESS) && (this.scroller_ || range > 0)
+      ? 2 * eYo.view.SCROLLBAR_THICKNESS
+      : eYo.view.SCROLLBAR_THICKNESS) && (this.scroller_ || range > 0)
     if (prepare) {
       return
     }
@@ -245,8 +245,8 @@ eYo.view.Scrollbar_p.layoutVertical = function(hostMetrics, prepare) {
   var range = content.height - view.height
   if (prepare !== false) {
     this.visible = (view.height > (this.scroller_
-    ? 2 * eYo.view.SCROLLBAR_THICKNESS
-    : eYo.view.SCROLLBAR_THICKNESS)) && (!!this.scroller_ || range > 0)
+      ? 2 * eYo.view.SCROLLBAR_THICKNESS
+      : eYo.view.SCROLLBAR_THICKNESS)) && (!!this.scroller_ || range > 0)
     if (prepare) {
       return
     }
@@ -261,8 +261,8 @@ eYo.view.Scrollbar_p.layoutVertical = function(hostMetrics, prepare) {
     var r = this.viewRect_
     r.top = view.top
     r.bottom = this.scroller_ && this.scroller_.hScroll.visible
-    ? view.bottom - eYo.view.SCROLLBAR_THICKNESS
-    : view.bottom
+      ? view.bottom - eYo.view.SCROLLBAR_THICKNESS
+      : view.bottom
     r.left = (r.right = view.right) - eYo.view.SCROLLBAR_THICKNESS
     r.pInset(0.5)
     // layout the content

@@ -187,19 +187,19 @@ eYo.event.newC9r('Motion', {
     startDistance: 0,
     pidLong: {
       value: 0,
-      willChange(before, after) {
+      willChange(before, after) { // eslint-disable-line
         clearTimeout(before)
       },
     },
     pidCancel: {
       value: 0,
-      willChange(before, after) {
+      willChange(before, after) { // eslint-disable-line
         clearTimeout(before)
       },
     },
     pidHandle: {
       value: 0,
-      willChange(before, after) {
+      willChange(before, after) { // eslint-disable-line
         clearTimeout(before)
       },
     },
@@ -324,7 +324,7 @@ eYo.event.newC9r('Motion', {
      * @param {Event} e - the dom event
      * @return {eYo.event.Motion} the receiver
      */
-    update (e) {
+    update (e) { // eslint-disable-line
       return this
     },
     /**
@@ -354,7 +354,7 @@ eYo.event.newC9r('Motion', {
      * Cancel an event.
      * @private
      */
-    cancel (e) {
+    cancel (e) { // eslint-disable-line
       this.abortCancel_()
       this.scaler_.cancel() || this.dndmngr_.cancel()
       this.reset()
@@ -433,7 +433,7 @@ eYo.event.Motion[eYo.$].methodsMerge({
    * Remove custom capture method overrides.
    * @private
    */
-  abortCapture_ (e) {
+  abortCapture_ (e) { // eslint-disable-line
     this.abortCaptureUp_()
     this.abortCaptureMove_()
     this.abortCaptureGestureMove_()
@@ -502,8 +502,8 @@ eYo.event.Motion[eYo.$].methodsMerge({
     this.xyDelta_ = this.where.backward(this.xyStart_)
     var delta = this.xyDelta_.magnitude
     var limit = this.flyout
-    ? this.ns.FLYOUT_DRAG_RADIUS
-    : this.ns.DRAG_RADIUS
+      ? this.ns.FLYOUT_DRAG_RADIUS
+      : this.ns.DRAG_RADIUS
     if (delta > limit) {
       this.brick_ && this.brick_.focusOn()
       this.abortLongPress_()
@@ -789,7 +789,7 @@ eYo.event.Motion[eYo.$].methodsMerge({
    * Schedule a `handleClick_`.
    * @private
    */
-  willHandleClick_ (e) {
+  willHandleClick_ (e) { // eslint-disable-line
     this.pidHandle_ = setTimeout(() => {
       this.pidHandle__ = 0
       this.handleClick_()

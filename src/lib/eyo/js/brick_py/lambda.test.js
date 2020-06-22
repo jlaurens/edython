@@ -19,8 +19,8 @@ describe('Lambda', function() {
         eYo.key.ANNOTATED,
         eYo.key.ANNOTATED_VALUED,
         eYo.key.NONE].forEach(v => {
-          f(v)
-        })
+        f(v)
+      })
       b3k.dispose()
       /*
       parameter_list          ::=  defparameter ("," defparameter)* ["," [parameter_list_starargs]]
@@ -36,49 +36,49 @@ describe('Lambda', function() {
       eYo.key.ANNOTATED,
       eYo.key.ANNOTATED_VALUED,
       eYo.key.NONE].forEach(v1 => {[
-        eYo.key.NONE,
+      eYo.key.NONE,
+      eYo.key.VALUED,
+      eYo.key.ANNOTATED,
+      eYo.key.ANNOTATED_VALUED,
+      eYo.key.NONE
+    ].forEach(v2 => {
+      [eYo.key.NONE,
         eYo.key.VALUED,
         eYo.key.ANNOTATED,
         eYo.key.ANNOTATED_VALUED,
-        eYo.key.NONE
-      ].forEach(v2 => {
-        [eYo.key.NONE,
-          eYo.key.VALUED,
-          eYo.key.ANNOTATED,
-          eYo.key.ANNOTATED_VALUED,
-          eYo.key.NONE].forEach(v3 => {
-            var parameter = v => {
-              return {
-                [eYo.key.NONE]: '',
-                [eYo.key.VALUED]: '=…',
-                [eYo.key.ANNOTATED]: ':…',
-                [eYo.key.ANNOTATED_VALUED]: ':…=…',
-              }[v]
-            }
-            it (`f(a${parameter(v1)}, d${parameter(v2)}, c${parameter(v3)})`, function () {
-              var b3k = eYo.test.new_brick(eYo.t3.expr.lambda)
-              var t = b3k.parameters_b
-              var a = eYo.test.new_brick('a')
-              assert(t.lastSlot.connect(a), 'MISSING 1')
-              a.variant_ = v1
-              var d = eYo.test.new_brick('d')
-              assert(t.lastSlot.connect(d), 'MISSING 2')
-              d.variant_ = v2
-              var c = eYo.test.new_brick('c')
-              assert(this._runnable.lastSlot.connect(c), 'MISSING 3')
-              c.variant_ = v3
-              assert(t.slots.length === 7, 'MISSED 1')
-              var f = (n, i) => {
-                var u = b3k.parameters_b.slotList_[i].targetBrick
-                assert(u.Target_p === n, `MISSED: ${n} at ${i}`)
-              }
-              f('a', 1)
-              f('d', 3)
-              f('c', 5)
-              b3k.dispose()
-            })
-          })
+        eYo.key.NONE].forEach(v3 => {
+        var parameter = v => {
+          return {
+            [eYo.key.NONE]: '',
+            [eYo.key.VALUED]: '=…',
+            [eYo.key.ANNOTATED]: ':…',
+            [eYo.key.ANNOTATED_VALUED]: ':…=…',
+          }[v]
+        }
+        it (`f(a${parameter(v1)}, d${parameter(v2)}, c${parameter(v3)})`, function () {
+          var b3k = eYo.test.new_brick(eYo.t3.expr.lambda)
+          var t = b3k.parameters_b
+          var a = eYo.test.new_brick('a')
+          assert(t.lastSlot.connect(a), 'MISSING 1')
+          a.variant_ = v1
+          var d = eYo.test.new_brick('d')
+          assert(t.lastSlot.connect(d), 'MISSING 2')
+          d.variant_ = v2
+          var c = eYo.test.new_brick('c')
+          assert(this._runnable.lastSlot.connect(c), 'MISSING 3')
+          c.variant_ = v3
+          assert(t.slots.length === 7, 'MISSED 1')
+          var f = (n, i) => {
+            var u = b3k.parameters_b.slotList_[i].targetBrick
+            assert(u.Target_p === n, `MISSED: ${n} at ${i}`)
+          }
+          f('a', 1)
+          f('d', 3)
+          f('c', 5)
+          b3k.dispose()
+        })
       })
+    })
     })
   })
 })

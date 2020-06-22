@@ -74,7 +74,7 @@ eYo.fcls.Field.BaseC9r_p.displayedUpdate = eYo.doNothing
  * Forwards to the driver.
  * @param {*} field
  */
-eYo.fcls.Field.BaseC9r_p.widgetDisposeCallback = function (field) {
+eYo.fcls.Field.BaseC9r_p.widgetDisposeCallback = function (field) { // eslint-disable-line
   return eYo.doNothing
 }
 

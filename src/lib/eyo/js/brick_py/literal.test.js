@@ -1,5 +1,5 @@
 describe('Literals(Basic)', function() {
-  ;[
+  [
     'integer',
     'floatnumber',
     'imagnumber',
@@ -19,7 +19,7 @@ describe('Literals(Basic)', function() {
 })
 
 describe('Literals(String)', function() {
-  ;[
+  [
     [`'abc'`, 'shortstringliteral'],
     [`"abc"`, 'shortstringliteral'],
     [`'''abc'''`, 'longstringliteral'],

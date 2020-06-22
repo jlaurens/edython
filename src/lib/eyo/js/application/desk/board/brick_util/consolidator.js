@@ -132,7 +132,7 @@ eYo.consolidator.List_p.getAry = function (io) {
  */
 eYo.consolidator.List_p.getMandatory = function (io) {
   if (io.brick) {
-   var d = io.brick.mandatory_d
+    var d = io.brick.mandatory_d
     if (d) {
       return d.get()
     }
@@ -141,8 +141,8 @@ eYo.consolidator.List_p.getMandatory = function (io) {
     }
   }
   return eYo.isDef(this.model.mandatory)
-  ? this.model.mandatory
-  : this.model.mandatory = 0
+    ? this.model.mandatory
+    : this.model.mandatory = 0
 }
 
 /**
@@ -195,10 +195,10 @@ eYo.consolidator.List_p.insertPlaceholder = function (io, i) {
     io.i = i
   }
   var model = {
-    willConnect (targetM4t) /** @suppress {globalThis} */ {
+    willConnect (targetM4t) /** @suppress {globalThis} */ {  // eslint-disable-line
       this.will_connect_ = this.brick.will_connect_ = true // do not consolidate
     },
-    didConnect (oldTargetM4t, targetOldM4t) /** @suppress {globalThis} */ {
+    didConnect (oldTargetM4t, targetOldM4t) /** @suppress {globalThis} */ { // eslint-disable-line
       this.will_connect_ = this.brick.will_connect_ = false
     }
   }
@@ -441,8 +441,8 @@ eYo.consolidator.List_p.walk_to_next_connected = function (io, gobble) {
       io.presep = io.slot.lst_presep || this.model.presep
       io.postsep = io.slot.lst_postsep || this.model.postsep
       // manage the unique slot
-      if (io.unique < 0) {
-
+      if (io.unique < 0) { // eslint-disable-line
+        //TODO: fill the block?
       }
       this.makeUnique(io)
       return true
@@ -470,7 +470,7 @@ eYo.consolidator.List_p.consolidate_unconnected = function (io) {
   var ary = this.getAry(io)
   if (ary > 0) {
     if (io.slot) {
-      while (true) {
+      while (true) { // eslint-disable-line
         if (io.m4t.s7r_) {
           this.disposeAtI(io)
           if (this.setupIO(io, 0)) {
@@ -513,7 +513,7 @@ eYo.consolidator.List_p.consolidate_unconnected = function (io) {
  * Default implementation does nothing.
  * @param {Object} io parameter.
  */
-eYo.consolidator.List_p.doCleanup = function (io) {
+eYo.consolidator.List_p.doCleanup = function (io) { // eslint-disable-line
 }
 
 /**
@@ -666,7 +666,7 @@ eYo.consolidator.List_p.consolidate = eYo.decorate.reentrant('consolidate', func
     // console.error('EXPECTED CONSOLIDATION', brick.type)
     if (this.consolidate_first_connected(io)) {
       while (this.walk_to_next_connected(io, true) &&
-        this.consolidate_connected(io)) {}
+        this.consolidate_connected(io)) {} // eslint-disable-line
     }
     this.doCleanup(io)
     if (force || io.edited || io.noLeftSeparator || io.noDynamicList) {
@@ -723,7 +723,7 @@ eYo.consolidator.List_p.getSlot = function (brick, name, dontCreate) {
         }
       }
     }
-    if (!!dontCreate) {
+    if (dontCreate) {
       return null
     }
     // no slot found, create one

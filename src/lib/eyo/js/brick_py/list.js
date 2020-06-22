@@ -92,7 +92,7 @@ eYo.expr.List.SlotsHandler = {
     } else if (isNaN(k)) {
       return undefined
     }
-    var ans = brick.slotAtHead
+    ans = brick.slotAtHead
     var i = k
     while (i-- > 0) {
       ans = ans[eYo.$next]
@@ -222,11 +222,11 @@ eYo.expr.List_p.doConsolidate = (() => {
       return !this.connectionsIncog && (this.consolidator.consolidate(this, deep, force))
     }
   }
-  return function (deep, force) {
+  return {$ (deep, force) { // eslint-disable-line
     this.createConsolidator()
     this.doConsolidate = doConsolidate
     return doConsolidate.apply(this, arguments)// this is not recursive
-  }
+  }}.$
 }) ()
 
 // eYo.expr.List_p.consolidator = eYo.NA
@@ -443,7 +443,7 @@ eYo.expr.List[eYo.$newSubC9r]('enclosure', {
     return me
   }) (),
   out: {
-    check (type, subtype) /** @suppress {globalThis} */ {
+    check (type, subtype) /** @suppress {globalThis} */ { // eslint-disable-line
       // retrieve the brick
       var brick = this.brick
       var p5e = brick.profile
@@ -474,11 +474,11 @@ eYo.expr.enclosure.prototype.getProfile = eYo.changer.memoize(
     if (this.data && this.slots) {
       var f = (target, no_target) => {
         return {ans: this.slotSome(slot => {
-            var t = slot.targetBrick
-            if (t && (t = t.out_m.check_)) {
-              return t.some(x => eYo.t3.expr.check.target.indexOf(x) >= 0)
-            }
-          })
+          var t = slot.targetBrick
+          if (t && (t = t.out_m.check_)) {
+            return t.some(x => eYo.t3.expr.check.target.indexOf(x) >= 0)
+          }
+        })
           ? target
           : no_target
         }
@@ -497,11 +497,11 @@ eYo.expr.enclosure.prototype.getProfile = eYo.changer.memoize(
         } else if (target.type === eYo.t3.expr.dict_comprehension) {
           return {ans: eYo.t3.expr.dict_display}
         } else if (this.slots.length === 3) {
-            if (this.model.all(eYo.t3.expr.set_display).indexOf(target.type) >= 0) {
-              return {ans: eYo.t3.expr.one_set_display}
-            } else {
-              return {ans: eYo.t3.expr.one_dict_display}
-            }
+          if (this.model.all(eYo.t3.expr.set_display).indexOf(target.type) >= 0) {
+            return {ans: eYo.t3.expr.one_set_display}
+          } else {
+            return {ans: eYo.t3.expr.one_dict_display}
+          }
         } else if (this.model.all(eYo.t3.expr.set_display).indexOf(target.type) >= 0) {
           return {ans: eYo.t3.expr.set_display}
         } else {
@@ -544,13 +544,13 @@ eYo.expr.enclosure.prototype.getBaseType = function () {
   return this.profile
 }
 ;['parenth_form',
-'parenth_target_list',
-'list_display',
-'bracket_target_list',
-'void_dict_display',
-'one_set_display',
-'set_display',
-'dict_display',
-'one_dict_display'].forEach(k => {
+  'parenth_target_list',
+  'list_display',
+  'bracket_target_list',
+  'void_dict_display',
+  'one_set_display',
+  'set_display',
+  'dict_display',
+  'one_dict_display'].forEach(k => {
   eYo.c9r.register(k, (eYo.expr[k] = eYo.expr.enclosure))
 })

@@ -27,7 +27,7 @@ eYo.dom.newNS('flyout', {
  * Dom driver for the flyout.
  */
 eYo.dom.flyout.newDriverC9r('View', {
-    /**
+  /**
    * Initialize the flyout dom ressources.
    * @param {eYo.flyout.View} flyout
    * @return {!Element} The desk's dom repository.

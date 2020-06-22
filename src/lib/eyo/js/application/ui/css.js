@@ -23,8 +23,8 @@ eYo.newNS('css', {
     OPEN: 'handopen',
     CLOSED: 'handclosed',
     DELETE: 'handdelete'
-    },
   },
+},
 )
 
 eYo.forward('geom')
@@ -65,7 +65,7 @@ eYo.css.insertRuleAt = (() => {
   }
 })()
 
- /**
+/**
  * Setup the font style, amongst others.
  */
 ;(static_ => {
@@ -76,7 +76,7 @@ eYo.css.insertRuleAt = (() => {
   font-weight: normal;
   font-style: normal;
 }`)
-  eYo.css.insertRuleAt(`@font-face {
+    eYo.css.insertRuleAt(`@font-face {
   font-family: 'DejaVuSansMono';
   src: local('☺'), url('${static_}/font/DejaVuSansMono-Bold.woff')format('woff');
   font-weight: bold;
@@ -147,10 +147,10 @@ eYo.css.CONTENT = path => {
 }`, /* */
 
     'eyo-board-drag-surface {',
-      'display: none;',
-      'position: absolute;',
-      'top: 0;',
-      'left: 0;',
+    'display: none;',
+    'position: absolute;',
+    'top: 0;',
+    'left: 0;',
     '}',
     /* Added as a separate rule with multiple classes to make it more specific
       than a bootstrap rule that selects svg:root. See issue #1275 for context.
@@ -178,7 +178,7 @@ eyo-zoom>image:active {
   position: absolute;
   display: block;
 }`,
-  /* Display below flyout, but above everything else. */
+    /* Display below flyout, but above everything else. */
     `eyo-brick-drag-surface {
   display: none;
   position: absolute;
@@ -202,7 +202,7 @@ eyo-zoom>image:active {
     Don't allow users to select text.  It gets annoying when trying to
     drag a block and selected text moves instead.
     */
-  `eyo-svg text, eyo-brick-drag-surface text {
+    `eyo-svg text, eyo-brick-drag-surface text {
   user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
@@ -217,52 +217,52 @@ eyo-zoom>image:active {
 
 
 
-  //HERE
+    //HERE
     '.blocklyNonSelectable {',
-      'user-select: none;',
-      '-moz-user-select: none;',
-      '-ms-user-select: none;',
-      '-webkit-user-select: none;',
+    'user-select: none;',
+    '-moz-user-select: none;',
+    '-ms-user-select: none;',
+    '-webkit-user-select: none;',
     '}',
 
     'eyo-draggable {',
-      /* backup for browsers (e.g. IE11) that don't support grab */
-      'cursor: url("${path}/handopen.cur"), auto;',
-      'cursor: grab;',
-      'cursor: -webkit-grab;',
+    /* backup for browsers (e.g. IE11) that don't support grab */
+    'cursor: url("${path}/handopen.cur"), auto;',
+    'cursor: grab;',
+    'cursor: -webkit-grab;',
     '}',
 
     'eyo-dragging {',
-      /* backup for browsers (e.g. IE11) that don't support grabbing */
-      'cursor: url("${path}/handclosed.cur"), auto;',
-      'cursor: grabbing;',
-      'cursor: -webkit-grabbing;',
+    /* backup for browsers (e.g. IE11) that don't support grabbing */
+    'cursor: url("${path}/handclosed.cur"), auto;',
+    'cursor: grabbing;',
+    'cursor: -webkit-grabbing;',
     '}',
     /* Changes cursor on mouse down. Not effective in Firefox because of
       https://bugzilla.mozilla.org/show_bug.cgi?id=771241 */
     'eyo-draggable:active {',
-      /* backup for browsers (e.g. IE11) that don't support grabbing */
-      'cursor: url("${path}/handclosed.cur"), auto;',
-      'cursor: grabbing;',
-      'cursor: -webkit-grabbing;',
+    /* backup for browsers (e.g. IE11) that don't support grabbing */
+    'cursor: url("${path}/handclosed.cur"), auto;',
+    'cursor: grabbing;',
+    'cursor: -webkit-grabbing;',
     '}',
 
     '.blocklyFlyout {',
-      'position: absolute;',
-      'z-index: 20;',
+    'position: absolute;',
+    'z-index: 20;',
     '}',
 
     '.blocklyHidden {',
-      'display: none;',
+    'display: none;',
     '}',
 
     'eyo-flyout-background {',
-      'fill: #ddd;',
-      'fill-opacity: .8;',
+    'fill: #ddd;',
+    'fill-opacity: .8;',
     '}',
 
     'eyo-transparent-background {',// used
-      'opacity: 0;',
+    'opacity: 0;',
     '}',
 
     `eyo-main-board-scrollbar {
@@ -270,45 +270,45 @@ eyo-zoom>image:active {
 }`,
 
     'eyo-scrollbar-horizontal, eyo-scrollbar-vertical {',
-      'position: absolute;',
-      'outline: none;',
+    'position: absolute;',
+    'outline: none;',
     '}',
 
     'eyo-scrollbar-background {',
-      'opacity: 0;',
+    'opacity: 0;',
     '}',
 
     'eyo-scrollbar-handle {',
-      'fill: #ccc;',
+    'fill: #ccc;',
     '}',
 
     'eyo-scrollbar-background:hover+eyo-scrollbar-handle,',
     'eyo-scrollbar-handle:hover {',
-      'fill: #bbb;',
+    'fill: #bbb;',
     '}',
 
     /* Darken flyout scrollbars due to being on a grey background. */
     /* By contrast, board scrollbars are on a white background. */
     '.blocklyFlyout eyo-scrollbar-handle {',
-      'fill: #bbb;',
+    'fill: #bbb;',
     '}',
 
     '.blocklyFlyout eyo-scrollbar-background:hover+eyo-scrollbar-handle,',
     '.blocklyFlyout eyo-scrollbar-handle:hover {',
-      'fill: #aaa;',
+    'fill: #aaa;',
     '}',
 
     '.blocklyInvalidInput {',
-      'background: #faa;',
+    'background: #faa;',
     '}',
 
     '.blocklyContextMenu {',
-      'border-radius: 4px;',
+    'border-radius: 4px;',
     '}',
 
     '.blocklyDropdownMenu {',
-      'padding: 0 !important;',
-      'max-height: 300px !important;',
+    'padding: 0 !important;',
+    'max-height: 300px !important;',
     '}',
     `eyo-flyout {
   position: absolute;
@@ -629,16 +629,16 @@ eyo-hilighted-magnet-path{
   stroke-width: ${eYo.style.path.Hilighted.width}px;
   fill: none;
 }`,
-`eyo-main-board-background {
+    `eyo-main-board-background {
   fill: green;
 }`,
-`eyo-board-dragger-background {
+    `eyo-board-dragger-background {
   fill: rgba(255, 0, 127, 0.3)
 }`,
-`eyo-main-board-backgroundeyo-draft {
+    `eyo-main-board-backgroundeyo-draft {
   fill: gainsboro;
 }`,
-`#eyo-desk svg { pointer-events: none; }
+    `#eyo-desk svg { pointer-events: none; }
 #eyo-desk svg * { pointer-events: all; }
 `,
   ]

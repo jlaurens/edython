@@ -5,41 +5,41 @@ describe('Import statement (BASIC)', function() {
     eYo.test.variant(d, 'IMPORT')
     eYo.test.incog(d,
       ['import_module',
-      'Xfrom',
-      'Ximport',
-      'Ximport_star'])
+        'Xfrom',
+        'Ximport',
+        'Ximport_star'])
     eYo.test.Code(d, 'import <MISSING NAME>')
     d.variant_ = eYo.key.FROM_MODULE_IMPORT
     eYo.test.variant(d, 'FROM_MODULE_IMPORT')
     eYo.test.incog(d,
       ['Ximport_module',
-      'from',
-      'import',
-      'Ximport_star'])
+        'from',
+        'import',
+        'Ximport_star'])
     eYo.test.Code(d, 'from <MISSING NAME> import <MISSING NAME>')
     d.variant_ = eYo.key.IMPORT
     eYo.test.variant(d, 'IMPORT')
     eYo.test.incog(d,
       ['import_module',
-      'Xfrom',
-      'Ximport',
-      'Ximport_star'])
+        'Xfrom',
+        'Ximport',
+        'Ximport_star'])
     eYo.test.Code(d, 'import <MISSING NAME>')
     d.variant_ = eYo.key.FROM_MODULE_IMPORT_STAR
     eYo.test.variant(d, 'FROM_MODULE_IMPORT_STAR')
     eYo.test.incog(d,
       ['Ximport_module',
-      'from',
-      'Ximport',
-      'import_star'])
+        'from',
+        'Ximport',
+        'import_star'])
     eYo.test.Code(d, 'from <MISSING NAME> import *')
     d.variant_ = eYo.key.IMPORT
     eYo.test.variant(d, 'IMPORT')
     eYo.test.incog(d,
       ['import_module',
-      'Xfrom',
-      'Ximport',
-      'Ximport_star'])
+        'Xfrom',
+        'Ximport',
+        'Ximport_star'])
     eYo.test.Code(d, 'import <MISSING NAME>')
     d.dispose()
   })

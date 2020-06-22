@@ -35,7 +35,6 @@ eYo.dragger.newC9r('Brick', {
     brick: eYo.NA,
     target: eYo.NA,
     magnet: eYo.NA,
-    brick: eYo.NA,
     motion: eYo.NA,
     availableMagnets: eYo.NA,
     /**
@@ -374,7 +373,7 @@ eYo.dragger.newC9r('Brick', {
           // Trigger a connection animation.
           // Determine which connection is inferior (lower in the source stack).
           var inferiorM4t = this.magnet_.isSuperior ?
-              this.target_ : this.magnet_
+            this.target_ : this.magnet_
           inferiorM4t.brick.connectEffect()
           // Bring the just-edited stack to the front.
           this.brick_.root.sendToFront()

@@ -94,11 +94,11 @@ eYo.KHandler = (() => {
         return
       }
     } else if (k === 'backspace') {
-      eYo.dom.gobbleEvent(e)
+      eYo.dom.gobbleEvent(event)
       K = eYo.NA
     }
     if (me.updateMenu(K)) {
-      eYo.dom.gobbleEvent(e)
+      eYo.dom.gobbleEvent(event)
       return true
     }
     return false
@@ -426,20 +426,20 @@ eYo.KHandler = (() => {
       }
     } else if (k === 'enter' || k === 'return') {
       if ((brick = eYo.app.focus_mngr.brick)) {
-        eYo.dom.gobbleEvent(e)
+        eYo.dom.gobbleEvent(event)
         return
       }
     }
     if ((brick = eYo.app.focus_mngr.brick)) {
       if (K === ' ') {
-        eYo.dom.gobbleEvent(e)
+        eYo.dom.gobbleEvent(event)
         eYo.MenuManager.Shared().showMenu(brick, event)
         return
       }
       keys_ = []
       me.populateMenu(K)
       if (menu_.getChildCount()) {
-        eYo.dom.gobbleEvent(e)
+        eYo.dom.gobbleEvent(event)
         if (!menu_.inDocument_) {
           menu_.render()
         }
@@ -488,7 +488,7 @@ eYo.KHandler = (() => {
         menu_.highlightFirst()
       } else {
         var F = f => {
-          eYo.dom.gobbleEvent(e)
+          eYo.dom.gobbleEvent(event)
           f()
         }
         switch (k) {
@@ -501,7 +501,7 @@ eYo.KHandler = (() => {
     } else {
       // B is not always a brick!
       F = f => {
-        eYo.dom.gobbleEvent(e)
+        eYo.dom.gobbleEvent(event)
         var brick = eYo.brick.getBestBrick(eYo.board, f)
         if (brick) {
           brick.focusOn().scrollToVisible()
@@ -538,7 +538,7 @@ eYo.KHandler.Split = function (key, sep) {
   return [key.substring(0, i), key.substring(i + sep.length)]
 }
 
-  /**
+/**
  * Turn the selected brick into a call brick or insert a call brick.
  * @param {*} model
  */
@@ -557,77 +557,78 @@ eYo.KHandler.makeSlicing = function (model) {
 eYo.KHandler.register('if', eYo.t3.stmt.if_part)
 
 for (let [K, V] of Object.entries({
-    'start': eYo.t3.stmt.start_stmt,
-    'if': eYo.t3.stmt.if_part,
-    'elif': eYo.t3.stmt.elif_part,
-    'else': eYo.t3.stmt.else_part,
-    class: eYo.t3.stmt.classdef_part,
-    'except': {
-      type: eYo.t3.stmt.except_part,
-      variant_p: eYo.key.NONE
-    },
-    'except …': {
-      type: eYo.t3.stmt.except_part,
-      variant_p: eYo.key.EXPRESSION
-    },
-    'except … as …': {
-      type: eYo.t3.stmt.except_part,
-      variant_p: eYo.key.ALIASED
-    },
-    'finally': eYo.t3.stmt.finally_part,
-    'for': eYo.t3.stmt.for_part,
-    '@': eYo.t3.stmt.decorator_stmt,
-    'def': eYo.t3.stmt.funcdef_part,
-    'import': eYo.t3.stmt.import_stmt,
-    'try': eYo.t3.stmt.try_part,
-    'while': eYo.t3.stmt.while_part,
-    'with': eYo.t3.stmt.with_part,
-    'lambda': eYo.t3.expr.lambda,
-    '… if … else …': eYo.t3.expr.conditional_expression,
-    'identifier': eYo.t3.expr.identifier,
-    'name': eYo.t3.expr.identifier,
-    'not …': function (key) {
-      var eyo = eYo.app.focus_mngr.brick
-      if (eyo) {
-        var parent = eyo.surround
-        if (parent && parent.board.options.smartUnary && (parent.type === eYo.t3.expr.not_test)) {
-          eyo.replaceBrick(parent)
-          return
-        }
-        if (eYo.focus.magnet) {
-          eyo.insertBrickWithModel(eYo.t3.expr.not_test)
-        } else {
-          eyo.insertParentWithModel(eYo.t3.expr.not_test)
-        }
+  'start': eYo.t3.stmt.start_stmt,
+  'if': eYo.t3.stmt.if_part,
+  'elif': eYo.t3.stmt.elif_part,
+  'else': eYo.t3.stmt.else_part,
+  class: eYo.t3.stmt.classdef_part,
+  'except': {
+    type: eYo.t3.stmt.except_part,
+    variant_p: eYo.key.NONE
+  },
+  'except …': {
+    type: eYo.t3.stmt.except_part,
+    variant_p: eYo.key.EXPRESSION
+  },
+  'except … as …': {
+    type: eYo.t3.stmt.except_part,
+    variant_p: eYo.key.ALIASED
+  },
+  'finally': eYo.t3.stmt.finally_part,
+  'for': eYo.t3.stmt.for_part,
+  '@': eYo.t3.stmt.decorator_stmt,
+  'def': eYo.t3.stmt.funcdef_part,
+  'import': eYo.t3.stmt.import_stmt,
+  'try': eYo.t3.stmt.try_part,
+  'while': eYo.t3.stmt.while_part,
+  'with': eYo.t3.stmt.with_part,
+  'lambda': eYo.t3.expr.lambda,
+  '… if … else …': eYo.t3.expr.conditional_expression,
+  'identifier': eYo.t3.expr.identifier,
+  'name': eYo.t3.expr.identifier,
+  'not …': function (key) { // eslint-disable-line
+    var eyo = eYo.app.focus_mngr.brick
+    if (eyo) {
+      var parent = eyo.surround
+      if (parent && parent.board.options.smartUnary && (parent.type === eYo.t3.expr.not_test)) {
+        eyo.replaceBrick(parent)
+        return
       }
-    },
-    '+…': function (key) {
-      var eyo = eYo.app.focus_mngr.brick
-      if (eyo) {
-        var parent = eyo.surround
-        if (parent && parent.board.options.smartUnary && (parent.type === eYo.t3.expr.u_expr) && parent.Operator_p === '+') {
-          return
-        }
-        var model = {
-          type: eYo.t3.expr.u_expr,
-          operator_p: '+'
-        }
-        if (eYo.focus.magnet) {
-          eyo.insertBrickWithModel(model)
-        } else {
-          eyo.insertParentWithModel(model)
-        }
+      if (eYo.focus.magnet) {
+        eyo.insertBrickWithModel(eYo.t3.expr.not_test)
+      } else {
+        eyo.insertParentWithModel(eYo.t3.expr.not_test)
       }
     }
+  },
+  '+…': function (key) { // eslint-disable-line
+    var eyo = eYo.app.focus_mngr.brick
+    if (eyo) {
+      var parent = eyo.surround
+      if (parent && parent.board.options.smartUnary && (parent.type === eYo.t3.expr.u_expr) && parent.Operator_p === '+') {
+        return
+      }
+      var model = {
+        type: eYo.t3.expr.u_expr,
+        operator_p: '+'
+      }
+      if (eYo.focus.magnet) {
+        eyo.insertBrickWithModel(model)
+      } else {
+        eyo.insertParentWithModel(model)
+      }
+    }
+  }
 })) {
   eYo.KHandler.register(K, V)
 }
 
-;(() => {
+(() => {
   var F = (key, op) => {
     var brick = eYo.app.focus_mngr.brick
     if (brick) {
-      var parent = eyo.surround
+      //TODO: verify
+      var parent = brick.parent
       if (parent && parent.board.options.smartUnary && (parent.type === eYo.t3.expr.u_expr) && parent.operator_ === op) {
         brick.replaceBrick(parent)
         return
@@ -715,7 +716,7 @@ for (let [K, V] of Object.entries({
   eYo.KHandler.register(`… ${K} …`, V)
 }
 
-;['True', 'False', 'None', '...'].forEach(K => {
+['True', 'False', 'None', '...'].forEach(K => {
   eYo.KHandler.register(K, {
     type: eYo.t3.expr.builtin__object,
     data: K
@@ -890,7 +891,7 @@ for (let [K, V] of Object.entries({
   eYo.KHandler.register(K, V)
 }
 
-;['+=', '-=', '*=', '@=', '/=', '//=', '%=', '**=', '>>=', '<<=', '&=', '^=', '|='].forEach(K => {
+['+=', '-=', '*=', '@=', '/=', '//=', '%=', '**=', '>>=', '<<=', '&=', '^=', '|='].forEach(K => {
   eYo.KHandler.register(`… ${K} …`, {
     type: eYo.t3.stmt.augmented_assignment_stmt,
     operator: K

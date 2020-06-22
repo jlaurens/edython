@@ -685,7 +685,7 @@ eYo.geom.Rect[eYo.$].modelMerge({
       }
       if (eYo.isDef(w)) {
         if (eYo.isaP6y(w)) {
-          var v = w.value
+          v = w.value
           if (eYo.isDef(v.w) && eYo.isDef(v.h)) {
             eYo.isDef(h) && eYo.throw(`${this.eyo.name}.set: Unexpected last argument ${h}`)
             this.size_t = w
@@ -768,17 +768,17 @@ eYo.geom.Rect[eYo.$].modelMerge({
   aliases: {
     //<<< mochai: aliases
     origin: 'topLeft',
-      //<<< mochai: topLeft
-      //... R = new eYo.geom.Rect(false, m)
-      //... chai.expect(R).property('origin_p')
-      //... chai.expect(R).property('topLeft_p')
-      //... chai.expect(R.topLeft).almost.eql(R.topLeft_).almost.eql(R.origin)
-      //... R.origin_ = P
-      //... chai.expect(R.topLeft).almost.eql(R.topLeft_).almost.eql(R.origin).almost.eql(P)
-      //... R = new eYo.geom.Rect(false, m)
-      //... R.topLeft_ = P
-      //... chai.expect(R.topLeft).almost.eql(R.origin).almost.eql(P)
-      //... chai.expect(R.topLeft).almost.eql(R.topLeft_).almost.eql(R.origin).almost.eql(P)
+    //<<< mochai: topLeft
+    //... R = new eYo.geom.Rect(false, m)
+    //... chai.expect(R).property('origin_p')
+    //... chai.expect(R).property('topLeft_p')
+    //... chai.expect(R.topLeft).almost.eql(R.topLeft_).almost.eql(R.origin)
+    //... R.origin_ = P
+    //... chai.expect(R.topLeft).almost.eql(R.topLeft_).almost.eql(R.origin).almost.eql(P)
+    //... R = new eYo.geom.Rect(false, m)
+    //... R.topLeft_ = P
+    //... chai.expect(R.topLeft).almost.eql(R.origin).almost.eql(P)
+    //... chai.expect(R.topLeft).almost.eql(R.topLeft_).almost.eql(R.origin).almost.eql(P)
     //>>>
     // Basic properties in text dimensions.
     // When in text dimensions, and snap to grid mode,
@@ -786,55 +786,55 @@ eYo.geom.Rect[eYo.$].modelMerge({
     // Except for left, right, top and bottom,
     // the position setters won't change the size.
     'origin.c': ['c', 'c_min'],
-      //<<< mochai: c, c_min
-      //... R = new eYo.geom.Rect(false, m)
-      //... chai.expect(R.origin.c).equal(R.c).equal(R.c_min)
-      //... R.c_ += 1
-      //... chai.expect(R).almost.eql({c: m.c+1, l: m.l, w: m.w, h: m.h})
-      //... chai.expect(R.origin.c).equal(R.c).equal(R.c_min)
-      //... R.c_min_ -= 1
-      //... chai.expect(R).almost.eql(m)
-      //... chai.expect(R.origin.c).equal(R.c).equal(R.c_min)
-      //... R.origin_.c_ += 1
-      //... chai.expect(R).almost.eql({c: m.c+1, l: m.l, w: m.w, h: m.h})
-      //... chai.expect(R.origin.c).equal(R.c).equal(R.c_min)
-      //>>>
+    //<<< mochai: c, c_min
+    //... R = new eYo.geom.Rect(false, m)
+    //... chai.expect(R.origin.c).equal(R.c).equal(R.c_min)
+    //... R.c_ += 1
+    //... chai.expect(R).almost.eql({c: m.c+1, l: m.l, w: m.w, h: m.h})
+    //... chai.expect(R.origin.c).equal(R.c).equal(R.c_min)
+    //... R.c_min_ -= 1
+    //... chai.expect(R).almost.eql(m)
+    //... chai.expect(R.origin.c).equal(R.c).equal(R.c_min)
+    //... R.origin_.c_ += 1
+    //... chai.expect(R).almost.eql({c: m.c+1, l: m.l, w: m.w, h: m.h})
+    //... chai.expect(R.origin.c).equal(R.c).equal(R.c_min)
+    //>>>
     'origin.l': ['l', 'l_min'],
-      //<<< mochai: l, l_min
-      //... R = new eYo.geom.Rect(false, m)
-      //... chai.expect(R.origin.l).equal(R.l).equal(R.l_min)
-      //... R.l_ += 2
-      //... chai.expect(R).almost.eql({c: m.c, l: m.l+2, w: m.w, h: m.h})
-      //... chai.expect(R.origin.l).equal(R.l).equal(R.l_min)
-      //... R.l_min_ -= 2
-      //... chai.expect(R).almost.eql(m)
-      //... chai.expect(R.origin.l).equal(R.l).equal(R.l_min)
-      //... R.origin_.l_ += 2
-      //... chai.expect(R.origin.l).equal(R.l).equal(R.l_min)
-      //... chai.expect(R).almost.eql({c: m.c, l: m.l+2, w: m.w, h: m.h})
-      //>>>
+    //<<< mochai: l, l_min
+    //... R = new eYo.geom.Rect(false, m)
+    //... chai.expect(R.origin.l).equal(R.l).equal(R.l_min)
+    //... R.l_ += 2
+    //... chai.expect(R).almost.eql({c: m.c, l: m.l+2, w: m.w, h: m.h})
+    //... chai.expect(R.origin.l).equal(R.l).equal(R.l_min)
+    //... R.l_min_ -= 2
+    //... chai.expect(R).almost.eql(m)
+    //... chai.expect(R.origin.l).equal(R.l).equal(R.l_min)
+    //... R.origin_.l_ += 2
+    //... chai.expect(R.origin.l).equal(R.l).equal(R.l_min)
+    //... chai.expect(R).almost.eql({c: m.c, l: m.l+2, w: m.w, h: m.h})
+    //>>>
     'size.w': 'w',
-      //<<< mochai: w
-      //... R = new eYo.geom.Rect(false, m)
-      //... chai.expect(R.size.w).equal(R.w)
-      //... R.w_ += 1
-      //... chai.expect(R).almost.eql({c: m.c, l: m.l, w: m.w+1, h: m.h})
-      //... chai.expect(R.size.w).equal(R.w)
-      //... R.size_.w_ -= 1
-      //... chai.expect(R).almost.eql(m)
-      //... chai.expect(R.size.w).equal(R.w)
-      //>>>
+    //<<< mochai: w
+    //... R = new eYo.geom.Rect(false, m)
+    //... chai.expect(R.size.w).equal(R.w)
+    //... R.w_ += 1
+    //... chai.expect(R).almost.eql({c: m.c, l: m.l, w: m.w+1, h: m.h})
+    //... chai.expect(R.size.w).equal(R.w)
+    //... R.size_.w_ -= 1
+    //... chai.expect(R).almost.eql(m)
+    //... chai.expect(R.size.w).equal(R.w)
+    //>>>
     'size.h': 'h',
-      //<<< mochai: h
-      //... R = new eYo.geom.Rect(false, m)
-      //... chai.expect(R.size.h).equal(R.h)
-      //... R.h_ += 1
-      //... chai.expect(R).almost.eql({c: m.c, l: m.l, w: m.w, h: m.h+1})
-      //... chai.expect(R.size.h).equal(R.h)
-      //... R.size_.h_ -= 1
-      //... chai.expect(R).almost.eql(m)
-      //... chai.expect(R.size.h).equal(R.h)
-      //>>>
+    //<<< mochai: h
+    //... R = new eYo.geom.Rect(false, m)
+    //... chai.expect(R.size.h).equal(R.h)
+    //... R.h_ += 1
+    //... chai.expect(R).almost.eql({c: m.c, l: m.l, w: m.w, h: m.h+1})
+    //... chai.expect(R.size.h).equal(R.h)
+    //... R.size_.h_ -= 1
+    //... chai.expect(R).almost.eql(m)
+    //... chai.expect(R.size.h).equal(R.h)
+    //>>>
     //>>>
   },
   //>>>
@@ -846,54 +846,54 @@ eYo.geom.Rect[eYo.$].modelMerge({
     //<<< mochai: aliases
     // basic properties in board dimensions
     'origin.x': ['x', 'x_min'],
-      //<<< mochai: Rect x, x_min
-      //... R = new eYo.geom.Rect(false, m)
-      //... chai.expect(R.origin.x).almost.equal(R.x).almost.equal(R.x_min)
-      //... R.x_ += eYo.geom.X
-      //... chai.expect(R).almost.eql({c: m.c+1, l: m.l, w: m.w, h: m.h})
-      //... chai.expect(R.origin.x).almost.equal(R.x).almost.equal(R.x_min)
-      //... R.x_min_ -= eYo.geom.X
-      //... chai.expect(R).almost.eql(m)
-      //... chai.expect(R.origin.x).almost.equal(R.x).almost.equal(R.x_min)
-      //... R.origin_.x_ += eYo.geom.X
-      //... chai.expect(R).almost.eql({c: m.c+1, l: m.l, w: m.w, h: m.h})
-      //... chai.expect(R.origin.x).almost.equal(R.x).almost.equal(R.x_min)
-      //>>>
+    //<<< mochai: Rect x, x_min
+    //... R = new eYo.geom.Rect(false, m)
+    //... chai.expect(R.origin.x).almost.equal(R.x).almost.equal(R.x_min)
+    //... R.x_ += eYo.geom.X
+    //... chai.expect(R).almost.eql({c: m.c+1, l: m.l, w: m.w, h: m.h})
+    //... chai.expect(R.origin.x).almost.equal(R.x).almost.equal(R.x_min)
+    //... R.x_min_ -= eYo.geom.X
+    //... chai.expect(R).almost.eql(m)
+    //... chai.expect(R.origin.x).almost.equal(R.x).almost.equal(R.x_min)
+    //... R.origin_.x_ += eYo.geom.X
+    //... chai.expect(R).almost.eql({c: m.c+1, l: m.l, w: m.w, h: m.h})
+    //... chai.expect(R.origin.x).almost.equal(R.x).almost.equal(R.x_min)
+    //>>>
     'origin.y': ['y', 'y_min'],
-      //<<< mochai: Rect y, y_min
-      //... R = new eYo.geom.Rect(false, m)
-      //... chai.expect(R.origin.y).almost.equal(R.y).almost.equal(R.y_min)
-      //... R.y_min_ -= eYo.geom.Y
-      //... chai.expect(R).almost.eql({c: m.c, l: m.l-1, w: m.w, h: m.h})
-      //... chai.expect(R.origin.y).almost.equal(R.y).almost.equal(R.y_min)
-      //... R.origin_.y_ += eYo.geom.Y
-      //... chai.expect(R).almost.eql(m)
-      //... chai.expect(R.origin.y).almost.equal(R.y).almost.equal(R.y_min)
-      //... R.y_ += 4 * eYo.geom.Y
-      //... chai.expect(R).almost.eql({c: m.c, l: m.l+4, w: m.w, h: m.h})
-      //>>>
+    //<<< mochai: Rect y, y_min
+    //... R = new eYo.geom.Rect(false, m)
+    //... chai.expect(R.origin.y).almost.equal(R.y).almost.equal(R.y_min)
+    //... R.y_min_ -= eYo.geom.Y
+    //... chai.expect(R).almost.eql({c: m.c, l: m.l-1, w: m.w, h: m.h})
+    //... chai.expect(R.origin.y).almost.equal(R.y).almost.equal(R.y_min)
+    //... R.origin_.y_ += eYo.geom.Y
+    //... chai.expect(R).almost.eql(m)
+    //... chai.expect(R.origin.y).almost.equal(R.y).almost.equal(R.y_min)
+    //... R.y_ += 4 * eYo.geom.Y
+    //... chai.expect(R).almost.eql({c: m.c, l: m.l+4, w: m.w, h: m.h})
+    //>>>
     'size.width': 'width',
-      //<<< mochai: Rect width
-      //... R = new eYo.geom.Rect(false, m)
-      //... chai.expect(R.size.width).almost.equal(R.width)
-      //... R.width_ += 3 * eYo.geom.X
-      //... chai.expect(R).almost.eql({c: m.c, l: m.l, w: m.w+3, h: m.h})
-      //... chai.expect(R.size.width).almost.equal(R.width)
-      //... R.size_.width_ -= 3 * eYo.geom.X
-      //... chai.expect(R).almost.eql(m)
-      //... chai.expect(R.size.width).almost.equal(R.width)
-      //>>>
+    //<<< mochai: Rect width
+    //... R = new eYo.geom.Rect(false, m)
+    //... chai.expect(R.size.width).almost.equal(R.width)
+    //... R.width_ += 3 * eYo.geom.X
+    //... chai.expect(R).almost.eql({c: m.c, l: m.l, w: m.w+3, h: m.h})
+    //... chai.expect(R.size.width).almost.equal(R.width)
+    //... R.size_.width_ -= 3 * eYo.geom.X
+    //... chai.expect(R).almost.eql(m)
+    //... chai.expect(R.size.width).almost.equal(R.width)
+    //>>>
     'size.height': 'height',
-      //<<< mochai: Rect height
-      //... R = new eYo.geom.Rect(false, m)
-      //... chai.expect(R.size.height).almost.equal(R.height)
-      //... R.height_ += 4 * eYo.geom.Y
-      //... chai.expect(R).almost.eql({c: m.c, l: m.l, w: m.w, h: m.h+4})
-      //... chai.expect(R.size.height).almost.equal(R.height)
-      //... R.size_.height_ -= 4 * eYo.geom.Y
-      //... chai.expect(R).almost.eql(m)
-      //... chai.expect(R.size.height).almost.equal(R.height)
-      //>>>
+    //<<< mochai: Rect height
+    //... R = new eYo.geom.Rect(false, m)
+    //... chai.expect(R.size.height).almost.equal(R.height)
+    //... R.height_ += 4 * eYo.geom.Y
+    //... chai.expect(R).almost.eql({c: m.c, l: m.l, w: m.w, h: m.h+4})
+    //... chai.expect(R.size.height).almost.equal(R.height)
+    //... R.size_.height_ -= 4 * eYo.geom.Y
+    //... chai.expect(R).almost.eql(m)
+    //... chai.expect(R.size.height).almost.equal(R.height)
+    //>>>
     //>>>
   },
   //>>>

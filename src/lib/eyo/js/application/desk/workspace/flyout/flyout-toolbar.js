@@ -30,7 +30,7 @@ eYo.flyout.newC9r('Toolbar', {
  * @param {Object} dom helper.
  * @return {!Element} The flyout toolbar's div.
  */
-eYo.flyout.Toolbar_p.doSelectGeneral = function (e) {
+eYo.flyout.Toolbar_p.doSelectGeneral = function (e) { // eslint-disable-line
   var board = this.flyout_.desk.board
   if (board && this.selectControl_) {
     var category = this.selectControl_.getValue()
@@ -66,7 +66,7 @@ eYo.flyout.Toolbar_p.onButtonDown_ = function(e) {
  * @param {Event} e Mouse up event.
  * @private
  */
-eYo.flyout.Toolbar_p.onButtonEnter_ = function(e) {
+eYo.flyout.Toolbar_p.onButtonEnter_ = function(e) { // eslint-disable-line
   if (this.isDown) {
     eYo.dom.classlist.add(this.control_, 'eyo-flash')
   }
@@ -77,7 +77,7 @@ eYo.flyout.Toolbar_p.onButtonEnter_ = function(e) {
  * @param {Event} e Mouse up event.
  * @private
  */
-eYo.flyout.Toolbar_p.onButtonLeave_ = function(e) {
+eYo.flyout.Toolbar_p.onButtonLeave_ = function(e) { // eslint-disable-line
   eYo.dom.classlist.remove(this.control_, 'eyo-flash')
 }
 
@@ -122,14 +122,11 @@ eYo.flyout.Toolbar_p.notOnButtonUp_ = function(e) {
  * @param {Float} [height.]
  * @private
  */
-eYo.flyout.Toolbar_p.layout = function(width, height) {
+eYo.flyout.Toolbar_p.layout = function(width, height) { // eslint-disable-line
   if (eYo.isDef(width.width)) {
-    height = width.height || 0
     width = width.width
   }
-  var height = eYo.flyout.TOOLBAR_HEIGHT
   var margin = eYo.flyout.TOOLBAR_MARGIN
-  var big_radius = 1.25 * eYo.geom.REM
   var radius = 1.125 * eYo.geom.REM
   var h = radius * 0.75
 

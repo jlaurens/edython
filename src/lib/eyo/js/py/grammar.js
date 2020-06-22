@@ -222,7 +222,7 @@ eYo.py.gmr._p.addDFA = (/* grammar * */ g, /* int */ type, /* const char * */ na
 
 /* int */
 eYo.py.gmr._p.addstate = (/* dfa * */ d) => {
-  var /* state * */ s = new eYo.py.gmr.State()
+  var /* state * */ state = new eYo.py.gmr.State()
   d.d_state.push(state)
   ++d.d_nstates
   return d.d_state.length - 1
@@ -230,7 +230,7 @@ eYo.py.gmr._p.addstate = (/* dfa * */ d) => {
 
 /* void */
 eYo.py.gmr._p.addarc = (/* dfa * */ d, /* int */ from, /* int */ to, /* int */ lbl) => {
-  s = d.d_state[from]
+  let s = d.d_state[from]
   s.s_arc.push(new eYo.py.gmr.Arc(lbl, to))
 }
 
@@ -242,8 +242,8 @@ eYo.py.gmr._p.addlabel = (/* labellist * */ ll, /* int */ type, /* const char * 
       return i
     }
   }
-  var /* label * */ lb = {}
-  ll.push(new eYo.py.gmr.Label(type, str))
+  var /* label * */ lb = new eYo.py.gmr.Label(type, str)
+  ll.push(lb)
   return ll.length - 1
 }
 

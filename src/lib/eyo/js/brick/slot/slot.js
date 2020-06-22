@@ -30,7 +30,7 @@ eYo.model.allowModelPaths({
     'xml', // : (() => {} || true) || false||  first expected,
     'plugged', // : eYo.t3.expr.primary,
   ],
-  'slots\\.\\w+\.xml': [
+  'slots\\.\\w+\\.xml': [
     'accept', //  () => {},
   ],
 })
@@ -103,6 +103,7 @@ eYo.slot.makeBaseC9r({
         delete model.validateIncog
       }
     }
+    var model = this.model_
     model.setup_ || setupModel(model)
     if (!eYo.isNA(model.check)) {
       this.magnet_ = eYo.magnet.new(model, eYo.magnet.IN, this)
@@ -352,7 +353,7 @@ eYo.slot.BaseC9r_p.whenRequiredFromModel = function (do_it) {
  * @param {Boolean} deep whether to consolidate connected bricks.
  * @param {Boolean} force whether to force synchronization.
  */
-eYo.slot.BaseC9r_p.consolidate = function (deep, force) {
+eYo.slot.BaseC9r_p.consolidate = function (deep, force) { // eslint-disable-line
   var m4t = this.magnet
   if (m4t) {
     m4t.incog = this.incog

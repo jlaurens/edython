@@ -55,7 +55,7 @@ eYo.dlgt.BaseC9r_p.viewEnhanced = function () {
       let _p = this.C9r_p
       for (let k of this.viewModelMap.keys()) {
         let k_v = k + '_v'
-        _p.hasOwnProperty(k_v) || Object.defineProperties(_p, {
+        eYo.objectHasOwnProperty(_p, k_v) || Object.defineProperties(_p, {
           [k_v]: eYo.descriptorR({$ () {
             return this.viewMap.get(k)
             //... let NS = eYo.o4t.newNS()
@@ -68,7 +68,7 @@ eYo.dlgt.BaseC9r_p.viewEnhanced = function () {
             //...   },
             //... })
             //... let _p = C9r[eYo.$].C9r_p
-            //... chai.expect(_p.hasOwnProperty('foo_v')).true
+            //... eYo.objectHasOwnProperty(chai.expect(_p, 'foo_v')).true
             //... let o = NS.new('o', onr)
             //... chai.expect(o.foo_v).instanceOf(eYo.View)
           }}.$),
@@ -147,14 +147,14 @@ eYo.dlgt.BaseC9r_p.viewEnhanced = function () {
       if (init_m) {
         //<<< mochai: ui.init
         this.C9r_p.doInitUI = XRegExp.exec(init_m.toString(), eYo.xre.function_builtin)
-        ? function (...$) {
-          init_m.call(this, () => {
+          ? function (...$) {
+            init_m.call(this, () => {
+              init_p.call(this, ...$)
+            }, ...$)
+          } : function (...$) {
             init_p.call(this, ...$)
-          }, ...$)
-        } : function (...$) {
-          init_p.call(this, ...$)
-          init_m.call(this, ...$)  
-        }
+            init_m.call(this, ...$)  
+          }
         //... var seed = eYo.genUID(eYo.IDENT)
         //... var key = 'x' + seed
         //... var Key = 'X' + seed
@@ -186,14 +186,14 @@ eYo.dlgt.BaseC9r_p.viewEnhanced = function () {
       if (dispose_m) {
         //<<< mochai: ui.dispose
         this.C9r_p.doDisposeUI = XRegExp.exec(dispose_m.toString(), eYo.xre.function_builtin)
-        ? function (...$) {
-          dispose_m.call(this, () => {
-            dispose_p.call(this, ...$)              
-          }, ...$)
-        } : function (...$) {
-          dispose_m.call(this, ...$)
-          dispose_p.call(this, ...$)
-        }
+          ? function (...$) {
+            dispose_m.call(this, () => {
+              dispose_p.call(this, ...$)              
+            }, ...$)
+          } : function (...$) {
+            dispose_m.call(this, ...$)
+            dispose_p.call(this, ...$)
+          }
         //... var seed = eYo.genUID(eYo.IDENT)
         //... var key = 'x' + seed
         //... var Key = 'X' + seed
@@ -403,7 +403,7 @@ eYo.View[eYo.$].finalizeC9r({
   views: {
     [eYo.model.ANY]: {
       [eYo.model.DOT]: ['C9r', 'shared'],
-      [eYo.model.VALIDATE]: function (before, p) {
+      [eYo.model.VALIDATE] (before, p) {  // eslint-disable-line
         if (eYo.isStr(before)) {
           var v = eYo.valueForKeyPath(before)
           if (eYo.isSubclass(v, eYo.view.BaseC9r)) {

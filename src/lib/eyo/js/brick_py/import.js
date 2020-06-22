@@ -97,7 +97,7 @@ eYo.stmt.newC9r('import_stmt', true, {
         || p5e.expr === eYo.t3.expr.parent_module
         || p5e.expr === eYo.t3.expr.dotted_name
         || after === '...'
-        ? after : eYo.INVALID
+          ? after : eYo.INVALID
       },
       didChange (builtin, after) /** @suppress {globalThis} */ {
         builtin()
@@ -125,7 +125,7 @@ eYo.stmt.newC9r('import_stmt', true, {
         || p5e.expr === eYo.t3.expr.dotted_name
         || ((variant !== eYo.key.FROM_MODULE_IMPORT_STAR)
           && (p5e.expr === eYo.t3.expr.parent_module || after === '...'))
-            ? after: eYo.INVALID
+          ? after: eYo.INVALID
       },
       synchronize: true,
       didChange (builtin, after) /** @suppress {globalThis} */ {
@@ -135,8 +135,8 @@ eYo.stmt.newC9r('import_stmt', true, {
           if (b3k.variant === eYo.key.IMPORT) {
             // STAR of not ?
             b3k.variant_ = b3k.import_s.unwrappedTarget
-            ? eYo.key.FROM_MODULE_IMPORT
-            : eYo.key.FROM_MODULE_IMPORT_STAR
+              ? eYo.key.FROM_MODULE_IMPORT
+              : eYo.key.FROM_MODULE_IMPORT_STAR
           }
         }
       }
@@ -148,7 +148,7 @@ eYo.stmt.newC9r('import_stmt', true, {
         var p5e = eYo.t3.profile.get(after)
         return p5e === eYo.t3.profile.void
         || p5e.expr === eYo.t3.expr.identifier
-        ? after: eYo.INVALID
+          ? after: eYo.INVALID
       },
       didChange (builtin, after) /** @suppress {globalThis} */ {
         builtin()
@@ -176,7 +176,7 @@ eYo.stmt.newC9r('import_stmt', true, {
         }
       },
       promise: eYo.t3.expr.non_void_module_as_list,
-      didConnect (oldTargetM4t, targetOldM4t) /** @suppress {globalThis} */ {
+      didConnect (oldTargetM4t, targetOldM4t) /** @suppress {globalThis} */ { // eslint-disable-line
         var parent = this.brick.parent
         parent && (parent.variant_ = eYo.key.IMPORT)
       }
@@ -190,19 +190,19 @@ eYo.stmt.newC9r('import_stmt', true, {
           variable: true // change this to/with a `module` data
         }
       },
-      check (type) /** @suppress {globalThis} */ {
+      check (type) /** @suppress {globalThis} */ { // eslint-disable-line
         var v = this.brick.Variant_p
         return v === eYo.key.FROM_MODULE_IMPORT_STAR
-        ? [
-          eYo.t3.expr.unset,
-          eYo.t3.expr.identifier,
-          eYo.t3.expr.dotted_name
-        ] : [
-          eYo.t3.expr.unset,
-          eYo.t3.expr.identifier,
-          eYo.t3.expr.dotted_name,
-          eYo.t3.expr.parent_module
-        ]
+          ? [
+            eYo.t3.expr.unset,
+            eYo.t3.expr.identifier,
+            eYo.t3.expr.dotted_name
+          ] : [
+            eYo.t3.expr.unset,
+            eYo.t3.expr.identifier,
+            eYo.t3.expr.dotted_name,
+            eYo.t3.expr.parent_module
+          ]
       },
       didLoad () /** @suppress {globalThis} */ {
         if (this.required_from_saved) {
@@ -210,18 +210,18 @@ eYo.stmt.newC9r('import_stmt', true, {
           if (b3k.variant === eYo.key.IMPORT) {
             // STAR of not ?
             b3k.variant_ = b3k.import_s.unwrappedTarget
-            ? eYo.key.FROM_MODULE_IMPORT
-            : eYo.key.FROM_MODULE_IMPORT_STAR
+              ? eYo.key.FROM_MODULE_IMPORT
+              : eYo.key.FROM_MODULE_IMPORT_STAR
           }
         }
       },
-      didConnect (oldTargetM4t, targetOldM4t) /** @suppress {globalThis} */ {
-        var O = this.brick
+      didConnect (oldTargetM4t, targetOldM4t) /** @suppress {globalThis} */ { // eslint-disable-line
+        var b3k = this.brick
         if (b3k.variant === eYo.key.IMPORT) {
           // STAR of not ?
           b3k.variant_ = b3k.import_s.unwrappedTarget
-          ? eYo.key.FROM_MODULE_IMPORT
-          : eYo.key.FROM_MODULE_IMPORT_STAR
+            ? eYo.key.FROM_MODULE_IMPORT
+            : eYo.key.FROM_MODULE_IMPORT_STAR
         }
       }
     },
@@ -239,7 +239,7 @@ eYo.stmt.newC9r('import_stmt', true, {
           this.brick.variant_ = eYo.key.FROM_MODULE_IMPORT
         }
       },
-      didConnect (oldTargetM4t, targetOldM4t) /** @suppress {globalThis} */ {
+      didConnect (oldTargetM4t, targetOldM4t) /** @suppress {globalThis} */ { // eslint-disable-line
         var parent = this.brick.parent
         parent && (parent.variant_ = eYo.key.FROM_MODULE_IMPORT)
       }
@@ -252,7 +252,7 @@ eYo.stmt.newC9r('import_stmt', true, {
         }
       },
       xml: {
-        save (element, opt) /** @suppress {globalThis} */ {
+        save (element, opt) /** @suppress {globalThis} */ { // eslint-disable-line
           if (this.brick.variant === eYo.key.FROM_MODULE_IMPORT_STAR) {
             element.setAttribute('star', 'true')
           }
@@ -318,7 +318,7 @@ eYo.stmt.import_stmt.prototype.importedModules = function () {
       }
     })
   } else /* if (v === eYo.key.FROM_MODULE_IMPORT[_STAR]) */ {
-    modules[p] = this.From_p
+    modules[v] = this.From_p
   }
   return modules
 }

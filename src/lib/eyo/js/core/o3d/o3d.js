@@ -48,7 +48,7 @@ eYo.o3d.makeBaseC9r({
 })
 //<<< mochai: BaseC9r
 //... chai.assert(eYo.o3d)
-//... chai.assert(eYo.o3d._p.hasOwnProperty('BaseC9r'))
+//... eYo.objectHasOwnProperty(chai.assert(eYo.o3d._p, 'BaseC9r'))
 //... chai.expect(eYo.o3d.BaseC9r).equal(eYo.O3d)
 //>>>
 
@@ -125,6 +125,7 @@ Object.defineProperties(eYo.o3d.BaseC9r.prototype, {
       return this.owner__
     },
     set (after) {
+      let before = this.owner__
       if (after !== this.owner__) {
         this.ownerWillChange(before, after)
         this.owner__ =  after
@@ -179,7 +180,7 @@ eYo.mixinFR(eYo.o3d._p, {
       ;[NS, id, model] = [this, NS, id]
     }
     if (eYo.isId(id)) {
-      if (NS.hasOwnProperty(id)) {
+      if (eYo.objectHasOwnProperty(NS, id)) {
         return NS[id]
         //<<< mochai: unique
         //... chai.expect(eYo.o3d.newSingleton(id)).equal(eYo.o3d.newSingleton(id))

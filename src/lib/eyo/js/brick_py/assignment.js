@@ -65,7 +65,7 @@ eYo.stmt.newC9r('assignment_stmt', true, {
       isChanging (builtin, after) /** @suppress {globalThis} */ {
         var b3k = this.brick
         if (after === eYo.key.VALUED) {
-            b3k.Operator_p = ''
+          b3k.Operator_p = ''
         } else if (b3k.Operator_p === '') {
           b3k.Operator_p = '='
         }
@@ -109,8 +109,8 @@ eYo.stmt.newC9r('assignment_stmt', true, {
       validate (after) /** @suppress {globalThis} */ {
         var p5e = eYo.t3.profile.get(after, null)
         return this.model.subtypes.indexOf(p5e.expr) >= 0
-        ? after
-        : eYo.INVALID
+          ? after
+          : eYo.INVALID
       },
       synchronize: true,
       allwaysBoundField: true,

@@ -63,16 +63,18 @@ eYo.require('stmt.group')
         value: true,
         set: false,
       },
-    }
+    },
+    methods: {
+      /**
+       * Update the creation number.
+       */
+      updateCreation () {
+        this.creation__ = creation ++
+      },
+    },
   })
 }) ()
 
-/**
- * Update the creation number.
- */
-eYo.stmt.control_p.updateCreation = function () {
-  this.creation__ = creation ++
-}
 
 /**
  * Run the script exported from the brick.

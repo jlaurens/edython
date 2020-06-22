@@ -9,7 +9,7 @@ describe('Brick dragger', function() {
           && e.clientX <= visibleArea.right
           && e.clientY >= visibleArea.top
           && e.clientY <= visibleArea.bottom) {
-            console.log(e.clientX, e.clientY)
+          console.log(e.clientX, e.clientY)
         }
       }
     )

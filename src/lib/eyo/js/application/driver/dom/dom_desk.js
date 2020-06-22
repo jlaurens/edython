@@ -33,7 +33,7 @@ eYo.dom.newDriverC9r('Desk', {
     if (!eYo.dom.contains(document, container)) {
       throw 'Error: container is not in current document.'
     }
-    var div = dom.div_ || (dom.div_= container)
+    dom.div_ || (dom.div_= container)
     eYo.dom.bindEvent(
       container,
       'contextmenu',
@@ -65,5 +65,5 @@ eYo.dom.newDriverC9r('Desk', {
  * Place the desk div.
  * @param {eYo.view.Desk} desk
  */
-eYo.dom.Desk_p.place = function(desk) {
+eYo.dom.Desk_p.place = function(desk) { // eslint-disable-line
 }

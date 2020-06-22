@@ -24,8 +24,8 @@ describe ('geometry', function () {
       let ns = eYo.geom.newNS()
       ns.makeBaseC9r(eYo.geom.Point, {
         init (c_p, l_p) {
-          chai.expect(this.hasOwnProperty('c_p')).false
-          chai.expect(this.hasOwnProperty('l_p')).false
+          eYo.objectHasOwnProperty(chai.expect(this, 'c_p')).false
+          eYo.objectHasOwnProperty(chai.expect(this, 'l_p')).false
           if (!eYo.isDef(l_p)) {
             l_p = c_p.l_p
             c_p = c_p.c_p

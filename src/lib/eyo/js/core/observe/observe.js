@@ -59,11 +59,11 @@ eYo.observe.makeBaseC9r({
      */
     callback (before, after) {
       let f = this.callback_.length > 1
-      ? function (before, after) {
-        this.callback_.call(this.$this, before, after)
-      } : function (before, after) {
-        this.callback_.call(this.$this, after)
-      }
+        ? function (before, after) {
+          this.callback_.call(this.$this, before, after)
+        } : function (before, after) {
+          this.callback_.call(this.$this, after)
+        }
       this.callback = f
       f.call(this, before, after)
     }
@@ -259,7 +259,7 @@ eYo.dlgt.BaseC9r_p.observeEnhanced = function () {
       }
     }
     return observer
-        //... let ns = eYo.c9r.newNS()
+    //... let ns = eYo.c9r.newNS()
     //... ns.makeBaseC9r()
     //... ns.BaseC9r[eYo.$].observeEnhanced()
     //... let o = ns.new()
@@ -316,7 +316,7 @@ eYo.dlgt.BaseC9r_p.observeEnhanced = function () {
           observers && observers.forEach(observer => observer.callback(before, after))
         }
       })
-      let byWhen = this.hasOwnProperty('observersByWhen__') && this.observersByWhen__
+      let byWhen = eYo.objectHasOwnProperty(this, 'observersByWhen__') && this.observersByWhen__
       if (byWhen) {
         let observers = byWhen[when]
         observers && observers.forEach(observer => observer.callback(before, after))

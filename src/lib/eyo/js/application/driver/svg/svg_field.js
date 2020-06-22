@@ -84,7 +84,7 @@ eYo.svg.newDriverC9r('Field', {
 eYo.svg.Field_p.moveTo = function (field, where) {
   var g = field.dom.svg.group_
   g.setAttribute('transform',
-  `translate(${where.x}, ${where.y + eYo.padding.t})`)
+    `translate(${where.x}, ${where.y + eYo.padding.t})`)
 }
 
 /**
@@ -126,8 +126,8 @@ eYo.svg.Field_p.makeReserved = function (field, yorn) {
   var g = field.dom.svg.group_
   if (g) {
     (yorn
-    ? eYo.dom.classlist.add
-    : eYo.dom.classlist.remove)(
+      ? eYo.dom.classlist.add
+      : eYo.dom.classlist.remove)(
       g,
       'eyo-code-reserved'
     )
@@ -144,7 +144,7 @@ eYo.svg.Field_p.makePlaceholder = function (field, yorn) {
   g && (yorn
     ? eYo.dom.classlist.add
     : eYo.dom.classlist.remove)(g,
-      'eyo-code-comment')
+    'eyo-code-comment')
 }
 
 /**
@@ -157,7 +157,7 @@ eYo.svg.Field_p.makeComment = function (field, yorn) {
   g && (yorn
     ? eYo.dom.classlist.add
     : eYo.dom.classlist.remove)(g,
-      'eyo-code-comment')
+    'eyo-code-comment')
 }
 
 
@@ -255,14 +255,14 @@ eYo.svg.Field_p.setVisualAttribute = function (field) {
   if (e) {
     var f = txt => {
       switch (eYo.t3.profile.get(txt, null).raw) {
-        case eYo.t3.expr.reserved_identifier:
-        case eYo.t3.expr.reserved_keyword:
-        case eYo.t3.expr.known_identifier:
-          return 'eyo-code-reserved'
-        case eYo.t3.expr.builtin__name:
-          return 'eyo-code-builtin'
-        default:
-          return 'eyo-code'
+      case eYo.t3.expr.reserved_identifier:
+      case eYo.t3.expr.reserved_keyword:
+      case eYo.t3.expr.known_identifier:
+        return 'eyo-code-reserved'
+      case eYo.t3.expr.builtin__name:
+        return 'eyo-code-builtin'
+      default:
+        return 'eyo-code'
       }
     }
     eYo.dom.classlist.removeAll(e, eYo.dom.classlist.get(e))
@@ -306,7 +306,7 @@ eYo.svg.Field_p.getDisplayText_ = function(field) {
  * @param {Event} e Mouse down event.
  * @private
  */
-eYo.svg.onFieldMouseDown_ = function(e) {
+eYo.svg.onFieldMouseDown_ = function(e) { // eslint-disable-line
   if (this.board && this.brick.hasFocus) {
     this.app.motion.setStartField(this)
   }

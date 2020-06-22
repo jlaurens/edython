@@ -84,22 +84,22 @@ eYo.dom.makeBaseC9r()
 eYo.dom.makeMngr({
   ui: {
     initMaker (f) {
-      return function () {
+      return function (object, ...$) {
         if (object.dom) {
           return
         }
         var dom = object.dom = Object.create(null)
         dom.bound = Object.create(null)
-        f && f.apply(object, rest)
+        f && f.call(object, ...$)
         return dom
       }
     },
     disposeMaker (f) {
-      return function (object, ...rest) {
+      return function (object, ...$) {
         var dom = object.dom
         if (dom) {
           eYo.dom.clearBoundEvents(object)
-          f && f.apply(object, rest)
+          f && f.call(object, ...$)
           object.dom = dom.bound = null
         }
       }
@@ -113,9 +113,9 @@ eYo.dom.makeMngr({
  */
 eYo.dom._p.getDocumentScroll = () => {
   let el = document.scrollingElement || (
-  !eYo.userAgent.WEBKIT && goog.dom.isCss1CompatMode_(document)
-    ? document.documentElement
-    : doc.body || doc.documentElement)
+    !eYo.userAgent.WEBKIT && goog.dom.isCss1CompatMode_(document)
+      ? document.documentElement
+      : document.body || document.documentElement)
   let win = goog.dom.getWindow_(document)
   if (eYo.userAgent.IE && eYo.userAgent.isVersionOrHigher('10') &&
       win.pageYOffset != el.scrollTop) {
@@ -125,7 +125,7 @@ eYo.dom._p.getDocumentScroll = () => {
     return eYo.geom.pPoint(el.scrollLeft, el.scrollTop)
   }
   return eYo.geom.pPoint(
-      win.pageXOffset || el.scrollLeft, win.pageYOffset || el.scrollTop)
+    win.pageXOffset || el.scrollLeft, win.pageYOffset || el.scrollTop)
 }
 
 /**
@@ -237,8 +237,8 @@ eYo.dom._p.bindEvent = (node, name, thisObject, callback, opt) => {
           event.clientY = p.clientY
         }
         thisObject
-        ? callback.call(thisObject, event)
-        : callback(event)
+          ? callback.call(thisObject, event)
+          : callback(event)
         handled = true
       }
     })
@@ -294,7 +294,7 @@ eYo.dom._p.unbindEvent = bindData => {
  * @param {Object} [opt]  Option data: suffix, option flags: willUnbind, and bindEventWithChecks_'s options
  */
 eYo.dom._p.bindMouseEvents = (listener, element, opt) => {
-  ;[
+  [
     'mousedown',
     'mousemove',
     'mouseup'
@@ -439,10 +439,10 @@ eYo.dom._p.checkTouchIdentifier = (() => {
 eYo.dom._p.touchIdentifierFromEvent = e => {
   var x
   return e.pointerId != eYo.NA
-  ? e.pointerId
-  : ((x = e.changedTouches) && (x = x[0]) && (x = x.identifier) != eYo.NA && x != null)
-    ? x
-    : 'mouse'
+    ? e.pointerId
+    : ((x = e.changedTouches) && (x = x[0]) && (x = x.identifier) != eYo.NA && x != null)
+      ? x
+      : 'mouse'
 }
 
 /**
@@ -571,7 +571,8 @@ eYo.dom._p.bindDocumentEvents = (() => {
         eYo.dom.bindEvent(
           window,
           'orientationchange',
-          e => eYo.app.desk.layout() // TODO(#397): Fix for multiple boards.
+          e => eYo.app.desk.layout() // eslint-disable-line
+          // TODO(#397): Fix for multiple boards.
         )
       }
     }
@@ -594,9 +595,9 @@ eYo.dom._p.on_keydown = e => {
   // var deleteBrick = false;
   if (e.keyCode == 9) {
     if (eYo.navigate.doTab(eYo.app.focus_mngr.brick, {
-        left: e.shiftKey,
-        fast: e.altKey || e.ctrlKey || e.metaKey
-      })) {
+      left: e.shiftKey,
+      fast: e.altKey || e.ctrlKey || e.metaKey
+    })) {
       eYo.dom.gobbleEvent(e)
     }
   } else if (e.keyCode == 27) {

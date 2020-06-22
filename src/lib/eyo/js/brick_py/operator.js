@@ -317,8 +317,8 @@ eYo.expr.newC9r('unary', {
       init: '',
       placeholder (type) /** @suppress {globalThis} */ {
         return type === eYo.t3.expr.not_test
-         ? 'test'
-         : 1
+          ? 'test'
+          : 1
       },
       synchronize: true
     }

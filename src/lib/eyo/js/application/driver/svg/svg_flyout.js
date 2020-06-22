@@ -34,12 +34,12 @@ eYo.svg.newDriverC9r('Flyout', {
     </svg>
     */
     var root = svg.root_ = eYo.svg.newElementSvg(dom.boardDiv_, 'eyo-svg eyo-board')
-    x.dataset && (x.dataset.type = 'flyout board')
+    root.dataset && (root.dataset.type = 'flyout board')
 
     var background = svg.background_ = eYo.svg.newElement('path', {
       class: 'eyo-flyout-background'
     }, root)
-  // Bad design: code reuse: options
+    // Bad design: code reuse: options
     this.addTooltip(background, eYo.tooltip.getTitle('flyout.View'), {
       position: 'right',
       theme: 'light bordered',
@@ -56,7 +56,7 @@ eYo.svg.newDriverC9r('Flyout', {
           }
         }
       },
-      onShow: x => {
+      onShow: x => { // eslint-disable-line
         eYo.tooltip.hideAll(background)
       }
     })
@@ -132,9 +132,9 @@ eYo.svg.newDriverC9r('FlyoutToolbar', {
     svg.pathControl_ = eYo.svg.newElement('path', {
       id: 'p-flyout-control'
     }, dom.svg)
-    if (eYo.app.BaseC9r && ftb.app.flyoutDropDown) {
+    if (eYo.app.BaseC9r && ftb.app.flyoutDropDown) { // eslint-disable-line
     } else if (eYo.app.BaseC9r && ftb.app.flyoutDropDownGeneral && ftb.app.flyoutDropDownModule) {
-    dom.select_module_ = eYo.dom.createDom(
+      dom.select_module_ = eYo.dom.createDom(
         eYo.dom.TagName.DIV,
         eYo.dom.getCssClass(cssClass, 'select-module'),
         ftb.app.flyoutDropDownModule
@@ -184,8 +184,8 @@ eYo.svg.newDriverC9r('FlyoutToolbar', {
     var dom = ftb.dom
     var div = dom.div_
     var fc
-    while((fc = dom.div_.firstChild)) {
-      myNode.removeChild(fc)
+    while((fc = div.firstChild)) {
+      div.removeChild(fc)
     }
     var svg = dom.svg
     eYo.dom.removeNode(svg.group_)
@@ -300,13 +300,13 @@ eYo.svg.Flyout.prototype.addListeners = function(flyout, brick) {
 eYo.svg.Flyout.prototype.listen_mouseover = function(flyout) {
   flyout.listeners_.push(
     eYo.dom.bindEvent(
-    flyout.dom.svg.background_,
-    'mouseover',
-    null,
-    () => {
-      flyout.board_.topBricks.forEach(b3k => b3k.focusRemove)
-    }
-  ))
+      flyout.dom.svg.background_,
+      'mouseover',
+      null,
+      () => {
+        flyout.board_.topBricks.forEach(b3k => b3k.focusRemove)
+      }
+    ))
 }
 
 /**

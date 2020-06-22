@@ -130,8 +130,8 @@ eYo.py.newNS('parseTok')
     for (;;) {
       console.error('ERASE ME tkn.name:', tkn.name)
       if (tkn.type === eYo.py.tkn.ERRORTOKEN) {
-          err_ret.error = tkn.error;
-          break;
+        err_ret.error = tkn.error;
+        break;
       }
 
       if (tkn.type === eYo.py.tkn.TYPE_IGNORE) {
@@ -183,8 +183,8 @@ eYo.py.newNS('parseTok')
 
         for (var i = 0; i < type_ignores.length; i++) {
           eYo.do.pyNode_AddChild(ch, eYo.py.tkn.TYPE_IGNORE, null,
-          type_ignores[i], 0,
-          type_ignores[i], 0);
+            type_ignores[i], 0,
+            type_ignores[i], 0);
         }
       }
       /* Check that the source for a single input statement really
@@ -205,7 +205,7 @@ eYo.py.newNS('parseTok')
       eYo.py.node._finalizeEndPos(parent)
     }
     else
-      /* n = null
+    /* n = null
     // pyParser_Delete(ps);
 
     if (!n)*/ {
@@ -231,8 +231,8 @@ eYo.py.newNS('parseTok')
     err_ret.expected = -1;
     err_ret.filename = '<string>'
     if (err_ret.filename === null) {
-        err_ret.error = eYo.e.ERROR;
-        return -1;
+      err_ret.error = eYo.e.ERROR;
+      return -1;
     }
     return 0;
   }

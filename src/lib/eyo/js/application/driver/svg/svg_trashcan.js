@@ -32,7 +32,7 @@ eYo.svg.newDriverC9r('TrashCan', {
      * @param {Object} [options]
      * @return {!Element} The trash can's SVG group.
      */
-    init (trashCan, options) {
+    init (trashCan, options) { // eslint-disable-line
       var dom = trashCan.dom
       var svg = dom.svg = Object.create(null)
       svg.state_ = svg.left_ = svg.top_ = 0

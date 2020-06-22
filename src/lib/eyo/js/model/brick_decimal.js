@@ -46,17 +46,7 @@ eYo.provide('brick.decimal')
       title: key
     }
   }
-  var F_k = (name, title) => {
-    var key = 'decimal__'+name
-    title && (eYo.tooltip.TITLE[key] = title)
-    return {
-      type: eYo.t3.expr.identifier,
-      name_p: name,
-      holder_p: 'decimal',
-      dotted_p: 0,
-      title: key
-    }
-  }
+
   /*
     'Decimal': 0,
     getcontext: 1,
@@ -91,78 +81,78 @@ eYo.provide('brick.decimal')
     'FloatOperation': 30
 
     */
-eYo.library.DATA.Basic_decimal__module = [
-  {
-    type: eYo.t3.stmt.import_stmt,
-    from_p: 'decimal',
-    star_p: true,
-    title: 'decimal__import_stmt'
-  },
-  F('Decimal', 'Retourne une représentation d\'un nombre décimal, dans un certain contexte.'),
-  {
-    type: eYo.t3.stmt.assignment_stmt,
-    value_s: {
-      slots: {
-        O: {
-          type: eYo.t3.expr.call_expr,
-          name_p: 'Decimal',
-          holder_p: 'decimal',
-          dotted_p: 0,
-          n_ary_s: {
-            slots: {
-              O: 0.1
+  eYo.library.DATA.Basic_decimal__module = [
+    {
+      type: eYo.t3.stmt.import_stmt,
+      from_p: 'decimal',
+      star_p: true,
+      title: 'decimal__import_stmt'
+    },
+    F('Decimal', 'Retourne une représentation d\'un nombre décimal, dans un certain contexte.'),
+    {
+      type: eYo.t3.stmt.assignment_stmt,
+      value_s: {
+        slots: {
+          O: {
+            type: eYo.t3.expr.call_expr,
+            name_p: 'Decimal',
+            holder_p: 'decimal',
+            dotted_p: 0,
+            n_ary_s: {
+              slots: {
+                O: 0.1
+              }
+            }
+          }
+        },
+      },
+      title: 'decimal__assigned_from_string'
+    },
+    {
+      type: eYo.t3.stmt.assignment_stmt,
+      value_s: {
+        slots: {
+          O: {
+            type: eYo.t3.expr.call_expr,
+            name_p: 'Decimal',
+            holder_p: 'decimal',
+            dotted_p: 0,
+            n_ary_s: {
+              slots: {
+                O: 0.1
+              }
             }
           }
         }
       },
+      title: 'decimal__assigned_from_float'
     },
-    title: 'decimal__assigned_from_string'
-  },
-  {
-    type: eYo.t3.stmt.assignment_stmt,
-    value_s: {
-      slots: {
-        O: {
-          type: eYo.t3.expr.call_expr,
-          name_p: 'Decimal',
-          holder_p: 'decimal',
-          dotted_p: 0,
-          n_ary_s: {
-            slots: {
-              O: 0.1
-            }
+    {
+      type: eYo.t3.stmt.assignment_stmt,
+      target_s: {
+        slots: {
+          O: {
+            type: eYo.t3.expr.attributeref,
+            holder_s: {
+              type: eYo.t3.expr.call_expr,
+              name_p: 'getcontext',
+              dotted_p: 0
+            },
+            dotted_p: 1,
+            name_p: 'prec'
           }
         }
-      }
-    },
-    title: 'decimal__assigned_from_float'
-  },
-  {
-    type: eYo.t3.stmt.assignment_stmt,
-    target_s: {
-      slots: {
-        O: {
-          type: eYo.t3.expr.attributeref,
-          holder_s: {
-            type: eYo.t3.expr.call_expr,
-            name_p: 'getcontext',
-            dotted_p: 0
-          },
-          dotted_p: 1,
-          name_p: 'prec'
+      },
+      value_s: {
+        slots: {
+          O: 50
         }
-      }
-    },
-    value_s: {
-      slots: {
-        O: 50
-      }
-    },
-    title: 'decimal__assigned_prec'
-  }
-]
+      },
+      title: 'decimal__assigned_prec'
+    }
+  ]
 
-  var F = (name, title) => {
+  F = (name, title) => {
     var key = 'decimal__'+name
     title && (eYo.tooltip.TITLE[key] = title)
     return {
@@ -175,88 +165,75 @@ eYo.library.DATA.Basic_decimal__module = [
       title: key
     }
   }
-  var F_k = (name, title) => {
-    var key = 'decimal__'+name
-    title && (eYo.tooltip.TITLE[key] = title)
-    return {
-      type: eYo.t3.expr.attributeref,
-      data: {
-        name: name,
-        holder: 'decimal',
-        dotted: 1
-      },
-      title: key
-    }
-  }
 
-eYo.library.DATA.decimal__module = [
-  {
-    type: eYo.t3.stmt.import_stmt,
-    import_module_s: {
-      slots: {
-        O: {
+  eYo.library.DATA.decimal__module = [
+    {
+      type: eYo.t3.stmt.import_stmt,
+      import_module_s: {
+        slots: {
+          O: {
+            type: eYo.t3.expr.identifier,
+            name_p: 'decimal'
+          }
+        }
+      }
+    },
+    {
+      type: eYo.t3.stmt.import_stmt,
+      from_p: 'decimal',
+      import_s: {
+        slots: {
+          O: {
+            type: eYo.t3.expr.identifier_as,
+            name_p: 'Decimal',
+            alias_p: 'D'
+          }
+        }
+      }
+    },
+    F('sqrt', 'Racine carrée (square root)'),
+    F('exp', 'Fonction exponentielle'),
+    F('log', 'Fonction logarithme népérien, donner un deuxième argument pour changer de base'),
+    F('log10', 'Fonction logarithme de base 10 avec une meilleure précision que log(x, 10)'),
+    F('cos', 'Fonction cosinus'),
+    F('sin', 'Fonction sinus'),
+    F('tan', 'Fonction tangente'),
+    F('acos', 'Fonction arc cosinus'),
+    F('asin', 'Fonction arc sinus'),
+    F('atan', 'Fonction arc tangente'),
+
+    F('cosh', 'Fonction cosinus hyperbolique (ch)'),
+    F('sinh', 'Fonction sinus hyperbolique (sh)'),
+    F('tanh', 'Fonction tangente hyperbolique (th)'),
+    F('acosh', 'Fonction arc cosinus hyperbolique (argch)'),
+    F('asinh', 'Fonction arc sinus hyperbolique (argsh)'),
+    F('atanh', 'Fonction arc tangente hyperbolique (argth)'),
+
+    F('isclose', 'Teste si deux valeurs sont proches'),
+    F('isfinite', 'Teste si l\'argument est un nombre fini'),
+    F('isinf', 'Teste si l\'argument est infini (au sens informatique)'),
+    F('isnan', 'Teste si l\'argument n\'est pas un nombre (Not A Number)'),
+    (createOneBrick) => {
+      [
+        'ROUND_CEILING',
+        'ROUND_DOWN',
+        'ROUND_FLOOR',
+        'ROUND_HALF_DOWN',
+        'ROUND_HALF_EVEN',
+        'ROUND_HALF_UP',
+        'ROUND_UP',
+        'ROUND_05UP'
+      ].forEach(key => {
+        createOneBrick({
           type: eYo.t3.expr.identifier,
-          name_p: 'decimal'
-        }
-      }
-    }
-  },
-  {
-    type: eYo.t3.stmt.import_stmt,
-    from_p: 'decimal',
-    import_s: {
-      slots: {
-        O: {
-          type: eYo.t3.expr.identifier_as,
-          name_p: 'Decimal',
-          alias_p: 'D'
-        }
-      }
-    }
-  },
-  F('sqrt', 'Racine carrée (square root)'),
-  F('exp', 'Fonction exponentielle'),
-  F('log', 'Fonction logarithme népérien, donner un deuxième argument pour changer de base'),
-  F('log10', 'Fonction logarithme de base 10 avec une meilleure précision que log(x, 10)'),
-  F('cos', 'Fonction cosinus'),
-  F('sin', 'Fonction sinus'),
-  F('tan', 'Fonction tangente'),
-  F('acos', 'Fonction arc cosinus'),
-  F('asin', 'Fonction arc sinus'),
-  F('atan', 'Fonction arc tangente'),
-
-  F('cosh', 'Fonction cosinus hyperbolique (ch)'),
-  F('sinh', 'Fonction sinus hyperbolique (sh)'),
-  F('tanh', 'Fonction tangente hyperbolique (th)'),
-  F('acosh', 'Fonction arc cosinus hyperbolique (argch)'),
-  F('asinh', 'Fonction arc sinus hyperbolique (argsh)'),
-  F('atanh', 'Fonction arc tangente hyperbolique (argth)'),
-
-  F('isclose', 'Teste si deux valeurs sont proches'),
-  F('isfinite', 'Teste si l\'argument est un nombre fini'),
-  F('isinf', 'Teste si l\'argument est infini (au sens informatique)'),
-  F('isnan', 'Teste si l\'argument n\'est pas un nombre (Not A Number)'),
-  (createOneBrick) => {
-    [
-      'ROUND_CEILING',
-      'ROUND_DOWN',
-      'ROUND_FLOOR',
-      'ROUND_HALF_DOWN',
-      'ROUND_HALF_EVEN',
-      'ROUND_HALF_UP',
-      'ROUND_UP',
-      'ROUND_05UP'
-    ].forEach(key => {
-      createOneBrick({
-        type: eYo.t3.expr.identifier,
-        name_p: key,
-        holder_p: 'decimal',
-        dotted_p: 1,
-        title: eYo.msg[key] // to be changed to a tooltip key
+          name_p: key,
+          holder_p: 'decimal',
+          dotted_p: 1,
+          title: eYo.msg[key] // to be changed to a tooltip key
+        })
       })
-    })
-  }
-]
+    }
+  ]
 })()
 
 eYo.do.mixin(eYo.tooltip.TITLE, {

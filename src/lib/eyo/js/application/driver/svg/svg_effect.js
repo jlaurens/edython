@@ -60,7 +60,8 @@ eYo.svg.Effect.prototype.brickDispose = (() => {
     w.dom.svg.root_.appendChild(clone)
     clone.bBox_ = clone.getBBox()
     // Start the animation.
-    step(clone, new Date, ws.scale)
+    //TODO: Is it `w` below.
+    step(clone, new Date, w.scale)
   }
 })()
 
@@ -84,7 +85,7 @@ eYo.svg.Effect.prototype.brickConnect = (() => {
       eYo.dom.removeNode(ripple)
     } else {
       ripple.style.opacity = 8 * Math.pow(percent, 2) * Math.pow(1 - percent, 2)
-      pid_ = setTimeout(step, 10, ripple, start, scale)
+      this.pid_ = setTimeout(step, 10, ripple, start, scale)
     }
   }
   return function (brick) {
@@ -146,8 +147,8 @@ eYo.svg.Effect.prototype.brickDisconnect = (() => {
       svg.skew = ''
     } else {
       var skew = Math.round(
-          Math.sin(percent * Math.PI * WIGGLES) * (1 - percent) * magnitude);
-          svg.skew = `skewX(${skew})`
+        Math.sin(percent * Math.PI * WIGGLES) * (1 - percent) * magnitude);
+      svg.skew = `skewX(${skew})`
       this.pid_ = setTimeout(step, 10, magnitude, start)
     }
     g.setAttribute('transform', svg.translate + svg.skew)

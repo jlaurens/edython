@@ -318,7 +318,7 @@ eYo.make$$('parent')
         return driver
       }
       var saveId = driverId
-      while(true) {
+      while(true) { // eslint-disable-line
         var C9r = this.getDriverC9r(driverId)
         if (C9r) {
           //... NS = eYo.driver.newNS()
@@ -430,16 +430,16 @@ eYo.c9r.newC9r(eYo.driver, eYo.$$.Handler, {
   },
   methods: {
     //<<< mochai: methods
-    apply (target, thisArg, argumentsList) {
+    apply (target, thisArg, argumentsList) { // eslint-disable-line
       eYo.throw(`${target.eyo.name} instances are not callable.`)
     },
-    construct(target, args) {
+    construct(target, args) { // eslint-disable-line
       eYo.throw(`${target.eyo.name} instances are not constructors.`)
     },
-    defineProperty(target, key, descriptor) {
+    defineProperty(target, key, descriptor) { // eslint-disable-line
       eYo.throw(`${target.eyo.name} instances are frozen (no defineProperty).`)
     },
-    deleteProperty(target, prop) {
+    deleteProperty(target, prop) { // eslint-disable-line
       eYo.throw(`${target.eyo.name} instances are frozen (no deleteProperty).`)
     },
     //<<< mochai: frozen or forbidden
@@ -450,9 +450,9 @@ eYo.c9r.newC9r(eYo.driver, eYo.$$.Handler, {
     //... chai.expect(() => d.defineProperty()).throw()
     //... chai.expect(() => d.deleteProperty()).throw()
     //>>>
-    get (target, prop, receiver) {
+    get (target, prop, receiver) { // eslint-disable-line
       //<<< mochai: get
-      if (prop === eYo.$$.target && !target.hasOwnProperty(prop)) {
+      if (prop === eYo.$$.target && !eYo.objectHasOwnProperty(target, prop)) {
         return target
         //... var NS = eYo.driver.newNS()
         //... var seed = eYo.genUID(eYo.IDENT)
@@ -475,8 +475,8 @@ eYo.c9r.newC9r(eYo.driver, eYo.$$.Handler, {
         var ra = target.eyo.driverId.split('.')
         var x = ra.shift()
         var ids = x
-        ? ['', eYo.do.toTitleCase(x)]
-        : ['']
+          ? ['', eYo.do.toTitleCase(x)]
+          : ['']
         var component
         while ((component = ra.shift())) {
           ids.push(`${x}.${eYo.do.toTitleCase(component)}`)
@@ -494,7 +494,7 @@ eYo.c9r.newC9r(eYo.driver, eYo.$$.Handler, {
           ids.forEach(id => {
             var C9r = ns.getDriverC9r(id)
             if (C9r) {
-              if (C9r.prototype.hasOwnProperty(prop)) {
+              if (eYo.objectHasOwnProperty(C9r.prototype, prop)) {
                 ra.push(C9r.prototype[prop])
               }
               //... var NS = eYo.driver.newNS()
@@ -507,7 +507,7 @@ eYo.c9r.newC9r(eYo.driver, eYo.$$.Handler, {
               //...     },
               //...   },
               //... })
-              //... chai.expect(d.eyo.C9r_p.hasOwnProperty('foo')).true
+              //... eYo.objectHasOwnProperty(chai.expect(d.eyo.C9r_p, 'foo')).true
               //... d.foo(2, 3)
               //... flag.expect(123)
             }
@@ -560,7 +560,7 @@ eYo.c9r.newC9r(eYo.driver, eYo.$$.Handler, {
     preventExtensions(target) {
       return Reflect.preventExtensions(target)
     },
-    set(target, prop, value) {
+    set(target, prop, value) { // eslint-disable-line
       //<<< mochai: set
       return Reflect.set(...arguments)
       //... let driver = new eYo.O4t('driver', onr)
@@ -569,7 +569,7 @@ eYo.c9r.newC9r(eYo.driver, eYo.$$.Handler, {
       //... chai.expect(() => p.foo = 'bar').throw()
       //>>>
     },
-    setPrototypeOf(target, proto) {
+    setPrototypeOf(target, proto) { // eslint-disable-line
       return false
     },
     //>>>
@@ -634,7 +634,7 @@ eYo.driver.makeBaseC9r(true, {
      * @param {*} object
      * @return {Boolean}
      */
-    doInitUI (unused) {
+    doInitUI (unused) { // eslint-disable-line
       //<<< mochai: doInitUI
       return true
       //... let drvr = new eYo.Driver('foo', onr)
@@ -647,7 +647,7 @@ eYo.driver.makeBaseC9r(true, {
      * @param {*} object
      * @return {Boolean}
      */
-    doDisposeUI (unused) {
+    doDisposeUI (unused) { // eslint-disable-line
       //<<< mochai: doDisposeUI
       return true
       //... let drvr = new eYo.Driver('foo', onr)

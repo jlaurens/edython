@@ -19,7 +19,7 @@ eYo.forward('slot')
  * Svg driver for slots.
  */
 eYo.svg.newDriverC9r('Slot', {
-    /**
+  /**
    * Prepare the given slot.
    * @param {eYo.slot.BaseC9r} slot to be prepared.
    */

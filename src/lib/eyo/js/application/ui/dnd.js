@@ -109,7 +109,7 @@ eYo.dnd.Mngr_p.ownedForEach = function (f) {
 }
 /**
  * Ask one of its draggers to initate a dragging operation.
- * @return {Boolean} Whether a drag operation did start.
+ * @return {Boolean} Whether a drag operation did start.
  */
 eYo.dnd.Mngr_p.start = function () {
   this.cancel()
@@ -121,7 +121,7 @@ eYo.dnd.Mngr_p.start = function () {
 /**
  * Update a dragging operation.
  * Forwards to the current dragger, then to all its droppers.
- * @return {Boolean} Whether a drag operation did update.
+ * @return {Boolean} Whether a drag operation did update.
  */
 eYo.dnd.Mngr_p.update = function () {
   if (this.dragger_) {
@@ -135,7 +135,7 @@ eYo.dnd.Mngr_p.update = function () {
 /**
  * Cancel a dragging operation.
  * Forwards to the current dragger.
- * @return {Boolean} Whether a drag operation did cancel.
+ * @return {Boolean} Whether a drag operation did cancel.
  */
 eYo.dnd.Mngr_p.cancel = function () {
   if (this.dragger_) {
@@ -149,7 +149,7 @@ eYo.dnd.Mngr_p.cancel = function () {
 /**
  * Reset a dragging operation.
  * Forwards to the current dragger.
- * @return {Boolean} Whether a drag operation did reset.
+ * @return {Boolean} Whether a drag operation did reset.
  */
 eYo.dnd.Mngr_p.reset = function () {
   if (this.dragger_) {
@@ -163,7 +163,7 @@ eYo.dnd.Mngr_p.reset = function () {
 /**
  * Conclude a dragging operation.
  * Forwards to the current dragger, then to all its droppers.
- * @return {Boolean} Whether a drag operation did complete.
+ * @return {Boolean} Whether a drag operation did complete.
  */
 eYo.dnd.Mngr_p.complete = function () {
   if (this.dragger_) {

@@ -80,7 +80,7 @@ eYo.field.allowModelPaths({
           before.text__ = before.comment
           // this is just a label field
           // field = new eYo.field.Label(owner, name, model.comment)
-          status = eYo.field.STATUS_COMMENT
+          eYo.status = eYo.field.STATUS_COMMENT
         } else if ([
           eYo.field.STATUS_NONE,
           eYo.field.STATUS_COMMENT,
@@ -98,13 +98,13 @@ eYo.field.allowModelPaths({
         }
       }
     },
-    '(?:slots\\.\\w+\\.|right\\.)?fields\\.\\w+.startEditing': (before, p) => {
+    '(?:slots\\.\\w+\\.|right\\.)?fields\\.\\w+.startEditing': (before, p) => { // eslint-disable-line
       return eYo.isF(before) ? before : eYo.doNothing
     },
-    '(?:slots\\.\\w+\\.|right\\.)?fields\\.\\w+.endEditing': (before, p) => {
+    '(?:slots\\.\\w+\\.|right\\.)?fields\\.\\w+.endEditing': (before, p) => { // eslint-disable-line
       return eYo.isF(before) ? before : endEditing
     },
-    '(?:slots\\.\\w+\\.|right\\.)?fields\\.\\w+.(?:didLoad|willRender)': (before, p) => {
+    '(?:slots\\.\\w+\\.|right\\.)?fields\\.\\w+.(?:didLoad|willRender)': (before, p) => { // eslint-disable-line
       return eYo.isF(before) ? before : eYo.INVALID
     },
   })
@@ -161,7 +161,7 @@ eYo.field._p.modelPath = function (key) {
  * @param {Object} model
  * @param {Object} key
  */
-eYo.field._p.modelBaseC9r = function (model, key) {
+eYo.field._p.modelBaseC9r = function (model, key) { // eslint-disable-line
   return model.edit || model.endEditing || model.startEditing
     ? eYo.field.Input
     : eYo.field.Label
@@ -354,7 +354,7 @@ eYo.field.BaseC9r_p.render_ = function() {
     return
   }
   var d = this.ui_driver
-  d && (d.textRemove(field), d.textCreate(field))
+  d && (d.textRemove(this), d.textCreate(this))
   this.updateWidth()
 }
 

@@ -470,33 +470,33 @@ describe('Primary slots', function() {
     da.dispose()
   })
   ;[
-  'assignment_stmt',
-  'augmented_assignment_stmt',
-  'annotated_assignment_stmt',
-  'assignment_chain',
-  'identifier_valued',
-  'named_expr',
-  'identifier',
-  'identifier_annotated',
-  'augtarget_annotated',
-  'key_datum',
-  'identifier_valued',
-  'assignment_chain',
-  'named_expr',
-  'identifier_annotated_valued',
-  'attributeref',
-  'named_attributeref',
-  'dotted_name',
-  'parent_module',
-  'identifier_as',
-  'dotted_name_as',
-  'expression_as',
-  'subscription',
-  'named_subscription',
-  'slicing',
-  'named_slicing',
-  'call_expr',
-  'named_call_expr'
+    'assignment_stmt',
+    'augmented_assignment_stmt',
+    'annotated_assignment_stmt',
+    'assignment_chain',
+    'identifier_valued',
+    'named_expr',
+    'identifier',
+    'identifier_annotated',
+    'augtarget_annotated',
+    'key_datum',
+    'identifier_valued',
+    'assignment_chain',
+    'named_expr',
+    'identifier_annotated_valued',
+    'attributeref',
+    'named_attributeref',
+    'dotted_name',
+    'parent_module',
+    'identifier_as',
+    'dotted_name_as',
+    'expression_as',
+    'subscription',
+    'named_subscription',
+    'slicing',
+    'named_slicing',
+    'call_expr',
+    'named_call_expr'
   ].forEach(t => {
     it(`value_list checks 1/2: ${t}`, function () {
       var da = eYo.test.new_brick(t)
@@ -910,7 +910,7 @@ describe('Primary(Assignment)', function() {
   })
   it('f(… = …)', function() {
     var d = eYo.test.new_brick('identifier_valued')
-     var f = (k, d1 = d) => {
+    var f = (k, d1 = d) => {
       eYo.test.brick(d1, k)
     }
     f('identifier_valued')
@@ -1085,7 +1085,7 @@ describe('Primary(ALIASED)', function() {
 })
 
 describe ('Primary data by key', function () {
-  ;[
+  [
     ['target', 'y'],
     ['dotted', 2],
     ['holder', 'x'],

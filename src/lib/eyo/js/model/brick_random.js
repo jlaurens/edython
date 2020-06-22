@@ -53,8 +53,8 @@ eYo.expr.builtin__range_expr[eYo.$newSubC9r]('random__randrange', true, {
           validated = Math.max(0, Math.floor(after))
         }
         return eYo.isDef(validated) && validated <= 1
-        ? validated
-        : eYo.INVALID
+          ? validated
+          : eYo.INVALID
       },
       didChange (builtin, after) /** @suppress {globalThis} */ {
         builtin()
@@ -75,7 +75,7 @@ eYo.expr.builtin__range_expr[eYo.$newSubC9r]('random__randrange', true, {
       fromField (builtin, value) /** @suppress {globalThis} */ {
         builtin(value.length)
       },
-      toField (value) /** @suppress {globalThis} */ {
+      toField (value) /** @suppress {globalThis} */ { // eslint-disable-line
         var txt = ''
         for (var i = 0; (i < this.get()); i++) {
           txt += '.'
@@ -152,150 +152,150 @@ eYo.expr.random__randrange.prototype.xmlAttr = function () {
       title: key
     }
   }
-eYo.library.DATA.Basic_random__module = [
-  {
-    type: eYo.t3.stmt.import_stmt,
-    data: {
-      from: 'random',
-      variant: eYo.key.FROM_MODULE_IMPORT_STAR
+  eYo.library.DATA.Basic_random__module = [
+    {
+      type: eYo.t3.stmt.import_stmt,
+      data: {
+        from: 'random',
+        variant: eYo.key.FROM_MODULE_IMPORT_STAR
+      },
+      title: 'random__import_stmt'
     },
-    title: 'random__import_stmt'
-  },
-  {
-    type: eYo.t3.expr.call_expr,
-    name_p: 'randint',
-    holder_p: 'random',
-    binary_s: { // implement 'main' instead of 'binary'
-      fstart_s: 1,
-      rend_s: 6
+    {
+      type: eYo.t3.expr.call_expr,
+      name_p: 'randint',
+      holder_p: 'random',
+      binary_s: { // implement 'main' instead of 'binary'
+        fstart_s: 1,
+        rend_s: 6
+      },
+      title: 'random__randint'
     },
-    title: 'random__randint'
-  },
-  function () {
-    var key = 'random__choice'
-    eYo.tooltip.TITLE[key] = 'Choisir aléatoirement un élément dans une liste'
+    function () {
+      var key = 'random__choice'
+      eYo.tooltip.TITLE[key] = 'Choisir aléatoirement un élément dans une liste'
+      return {
+        type: eYo.t3.expr.call_expr,
+        data: {
+          name: 'choice',
+          holder: 'random'
+        },
+        slots: {
+          unary: {
+            type: eYo.t3.expr.list_display,
+            slots: {
+              O: {
+                type: eYo.t3.expr.shortliteral,
+                data: "'P'"
+              },
+              f: {
+                type: eYo.t3.expr.shortliteral,
+                data: "'F'"
+              }
+            }
+          }
+        },
+        title: key
+      }
+    } (),
+    // F('choice', 'Choisir aléatoirement un élément dans une liste'),
+    F_s('shuffle', 'Mélanger aléatoirement les éléments dans une liste'),
+    F('sample', 'Obtenir un échantillon de taille donnée dans une population donnée sans répétition'),
+    F('random', 'Générer (pseudo) aléatoirement un nombre entre 0 et 1'),
+    F('uniform', 'Loi uniforme'),
+    F('gauss', 'Loi normale'),
+    {
+      type: eYo.t3.expr.random__randrange,
+      title: 'random__randrange'
+    },
+    F_s('seed', 'Mélanger aléatoirement les éléments dans une liste'),
+    // '<x eyo="identifier" name="a"><x eyo="builtin__object" value="None" slot="definition"></x></x>',
+    F('getstate', 'Obtenir l\'état du générateur aléatoire, utile pour reproduire les tirages'),
+    {
+      type: eYo.t3.stmt.call_stmt,
+      data: {
+        name: 'setstate',
+        holder: 'random'
+      }
+    }
+  ]
+
+  F = function (name, title) {
+    var key = 'random__'+name
+    title && (eYo.tooltip.TITLE[key] = title)
     return {
       type: eYo.t3.expr.call_expr,
       data: {
-        name: 'choice',
-        holder: 'random'
-      },
-      slots: {
-        unary: {
-          type: eYo.t3.expr.list_display,
-          slots: {
-            O: {
-              type: eYo.t3.expr.shortliteral,
-              data: "'P'"
-            },
-            f: {
-              type: eYo.t3.expr.shortliteral,
-              data: "'F'"
-            }
-          }
-        }
+        name: name,
+        holder: 'random',
+        dotted: 1
       },
       title: key
     }
-  } (),
-  // F('choice', 'Choisir aléatoirement un élément dans une liste'),
-  F_s('shuffle', 'Mélanger aléatoirement les éléments dans une liste'),
-  F('sample', 'Obtenir un échantillon de taille donnée dans une population donnée sans répétition'),
-  F('random', 'Générer (pseudo) aléatoirement un nombre entre 0 et 1'),
-  F('uniform', 'Loi uniforme'),
-  F('gauss', 'Loi normale'),
-  {
-    type: eYo.t3.expr.random__randrange,
-    title: 'random__randrange'
-  },
-  F_s('seed', 'Mélanger aléatoirement les éléments dans une liste'),
-  // '<x eyo="identifier" name="a"><x eyo="builtin__object" value="None" slot="definition"></x></x>',
-  F('getstate', 'Obtenir l\'état du générateur aléatoire, utile pour reproduire les tirages'),
-  {
-    type: eYo.t3.stmt.call_stmt,
-    data: {
-      name: 'setstate',
-      holder: 'random'
+  }
+  F_s = function (name, title) {
+    var key = 'random__'+name
+    title && (eYo.tooltip.TITLE[key] = title)
+    return {
+      type: eYo.t3.stmt.call_stmt,
+      data: {
+        name: name,
+        holder: 'random',
+        dotted: 1
+      },
+      title: key
     }
   }
-]
-
-F = function (name, title) {
-  var key = 'random__'+name
-  title && (eYo.tooltip.TITLE[key] = title)
-  return {
-    type: eYo.t3.expr.call_expr,
-    data: {
-      name: name,
-      holder: 'random',
-      dotted: 1
-    },
-    title: key
-  }
-}
-F_s = function (name, title) {
-  var key = 'random__'+name
-  title && (eYo.tooltip.TITLE[key] = title)
-  return {
-    type: eYo.t3.stmt.call_stmt,
-    data: {
-      name: name,
-      holder: 'random',
-      dotted: 1
-    },
-    title: key
-  }
-}
-eYo.library.DATA.random__module = [
-  {
-    type: eYo.t3.stmt.import_stmt,
-    variant_p: eYo.key.IMPORT,
-    import_module_s: {
-      slots: {
-        O: {
-          type: eYo.t3.expr.identifier,
-          data: 'random'
+  eYo.library.DATA.random__module = [
+    {
+      type: eYo.t3.stmt.import_stmt,
+      variant_p: eYo.key.IMPORT,
+      import_module_s: {
+        slots: {
+          O: {
+            type: eYo.t3.expr.identifier,
+            data: 'random'
+          }
         }
-      }
+      },
+      title: 'random__import_stmt'
     },
-    title: 'random__import_stmt'
-  },
-  {
-    type: eYo.t3.expr.call_expr,
-    name_p: 'randint',
-    holder_p: 'random',
-    binary_s: {
-      fstart_s: 1,
-      rend_s: 6
+    {
+      type: eYo.t3.expr.call_expr,
+      name_p: 'randint',
+      holder_p: 'random',
+      binary_s: {
+        fstart_s: 1,
+        rend_s: 6
+      },
+      title: 'random__randint'
     },
-    title: 'random__randint'
-  },
-  F('choice', 'Choisir aléatoirement un élément dans une liste'),
-  F_s('shuffle', 'Mélanger aléatoirement les éléments dans une liste'),
-  F('sample', 'Obtenir un échantillon de taille donnée dans une population donnée sans répétition'),
-  F('random', 'Générer (pseudo) aléatoirement un nombre entre 0 et 1'),
-  F('uniform', 'Loi uniforme'),
-  F('triangular', 'Loi triangle'),
-  F('betavariate', 'Loi béta'),
-  F('expovariate', 'Loi exponentielle'),
-  F('gammavariate', 'Loi gamma'),
-  F('gauss', 'Loi normale'),
-  F('normalvariate', 'Loi normale (variante)'),
-  F('lognormvariate', 'Loi log normale'),
-  F('vonmisesvariate', 'Distribution de Von Mises'),
-  F('paretovariate', 'Loi de Pareto'),
-  F('weibullvariate', 'Distribution de Weibull'),
-  {
-    type: eYo.t3.expr.random__randrange,
-    dotted_p: 1,
-    title: 'random__randrange'
-  },
-  F('sample', 'Obtenir un échantillon de taille donnée dans une population donnée sans répétition'),
-  F('getrandbits', 'Générer aléatoirement une suite de bits de longueur donnée'),
-  F_s('seed', 'Réinitialiser le générateur de nombres (pseudo-)aléatoires'),
-  F('getstate', 'Obtenir l\'état du générateur aléatoire, utile pour reproduire les tirages'),
-  F_s('setstate', 'Ramener le générateur de nombres (pseudo-)aléatoires dans un état antérieur')
-]
+    F('choice', 'Choisir aléatoirement un élément dans une liste'),
+    F_s('shuffle', 'Mélanger aléatoirement les éléments dans une liste'),
+    F('sample', 'Obtenir un échantillon de taille donnée dans une population donnée sans répétition'),
+    F('random', 'Générer (pseudo) aléatoirement un nombre entre 0 et 1'),
+    F('uniform', 'Loi uniforme'),
+    F('triangular', 'Loi triangle'),
+    F('betavariate', 'Loi béta'),
+    F('expovariate', 'Loi exponentielle'),
+    F('gammavariate', 'Loi gamma'),
+    F('gauss', 'Loi normale'),
+    F('normalvariate', 'Loi normale (variante)'),
+    F('lognormvariate', 'Loi log normale'),
+    F('vonmisesvariate', 'Distribution de Von Mises'),
+    F('paretovariate', 'Loi de Pareto'),
+    F('weibullvariate', 'Distribution de Weibull'),
+    {
+      type: eYo.t3.expr.random__randrange,
+      dotted_p: 1,
+      title: 'random__randrange'
+    },
+    F('sample', 'Obtenir un échantillon de taille donnée dans une population donnée sans répétition'),
+    F('getrandbits', 'Générer aléatoirement une suite de bits de longueur donnée'),
+    F_s('seed', 'Réinitialiser le générateur de nombres (pseudo-)aléatoires'),
+    F('getstate', 'Obtenir l\'état du générateur aléatoire, utile pour reproduire les tirages'),
+    F_s('setstate', 'Ramener le générateur de nombres (pseudo-)aléatoires dans un état antérieur')
+  ]
 
 })()
 

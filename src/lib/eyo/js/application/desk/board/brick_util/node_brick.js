@@ -106,9 +106,9 @@ eYo.py.node.BaseC9r_p.comment2Brick = function (owner) {
  * @param {Object} a brick
  */
 eYo.py.node.BaseC9r_p.typeComment2Brick = function (owner) {
-  var slgt = eYo.brick.newReady(eYo.t3.stmt.comment_stmt, owner)
-  brick.Comment_p = this.n0.n_str
-  return slgt
+  var b3k = eYo.brick.newReady(eYo.t3.stmt.comment_stmt, owner)
+  b3k.Comment_p = this.n0.n_str
+  return b3k
 }
 
 /**
@@ -197,7 +197,7 @@ eYo.py.node.BaseC9r_p.comp_iter2Brick = function (board) {
   } else if (n.type === eYo.py.comp_for) {
     if (n.n1) {
       var b = n.n1.sync_comp_for2Brick(board)
-      brick.async_ = true
+      b.async_ = true
       return b
     } else {
       return n.n0.sync_comp_for2Brick(board)
@@ -268,19 +268,19 @@ eYo.py.node.BaseC9r_p.comp_if2Brick = function (board) {
  */
 eYo.py.node.BaseC9r_p.for_stmt2Brick = function (board) {
   // 'for' exprlist 'in' testlist ':' suite ['else' ':' suite]
-  var brick = eYo.brick.newReady(eYo.t3.stmt.for_part, board)
+  var b3k = eYo.brick.newReady(eYo.t3.stmt.for_part, board)
   var n = this.n1
-  n.exprlistInBrick(brick.for_b)
+  n.exprlistInBrick(b3k.for_b)
   n = n.sibling.sibling
-  n.testlistInBrick(brick.in_b)
+  n.testlistInBrick(b3k.in_b)
   n = n.sibling.sibling
-  n.suiteInBrick(brick)
+  n.suiteInBrick(b3k)
   if ((n = n.sibling.sibling.sibling)) {
     var dd = eYo.brick.newReady(board, eYo.t3.stmt.else_part)
     n.suiteInBrick(dd)
-    brick.footConnect(dd)
+    b3k.footConnect(dd)
   }
-  return b
+  return b3k
 }
 
 /**
@@ -610,8 +610,8 @@ eYo.py.node.BaseC9r_p.typedargslistInBrick = function (brick) {
       if ((n = n.sibling)) {
         if (n.type === eYo.py.tkn.EQUAL) {
           d.variant_ = d.variant === eYo.key.ANNOTATED
-          ? eYo.key.ANNOTATED_VALUED
-          : eYo.key.TARGET_VALUED
+            ? eYo.key.ANNOTATED_VALUED
+            : eYo.key.TARGET_VALUED
           n = n.sibling
           d.value_b.connectLast(n.toBrick(brick))
           if (!(n = n.sibling)) {
@@ -633,7 +633,7 @@ eYo.py.node.BaseC9r_p.typedargslistInBrick = function (brick) {
  */
 eYo.py.node.BaseC9r_p.knownListInBrick = function (brick, toBrick) {
   var n = this.n0
-  while (true) {
+  while (true) { // eslint-disable-line
     var d = toBrick.call(n, brick)
     if (!d) {
       console.error('MISSING BLOCK', toBrick.call(n, brick))
@@ -828,9 +828,9 @@ eYo.py.node.BaseC9r_p.dictorsetmakerInBrick = function (brick) {
     }
   }
   // no comprehension
-  while (true) {
+  while (true) { // eslint-disable-line
     if (n.n_type === eYo.py.tkn.DOUBLESTAR) {
-      var dd = eYo.brick.newReady(brick, eYo.t3.expr.expression_star_star)
+      dd = eYo.brick.newReady(brick, eYo.t3.expr.expression_star_star)
       brick.connectLast(dd)
       if ((n1 = n.sibling)) {
         dd.modified_s.connect(n1.toBrick(brick))
@@ -969,11 +969,11 @@ eYo.py.node.BaseC9r_p.toBrick = function (board) {
         root.commentBricks = ds
       }
     } else if ((root = ds.shift())) {
-      var dd = root
-      ds.forEach(dd => {
-        if (dd) {
-          dd.foot = dd
-          dd = dd
+      //TODO: Weird
+      dd = root
+      ds.forEach(d => {
+        if (d) {
+          d.foot = root
         }
       })
     }
@@ -994,516 +994,515 @@ eYo.py.node.BaseC9r_p.toBrick = function (board) {
  */
 eYo.py.node.BaseC9r_p.toBrick_ = function (board) {
   // console.log(`node type: ${this.name}`)
-  var root, d, d0, d1, d2, n, n0, n1, n2, i, s, t, m4t
+  var root, d, d0, d1, d2, n, n0, n1, n2, s, t, m4t
   switch (this.n_type) {
-    case eYo.py.file_input: // (NEWLINE | stmt)* ENDMARKER
-      var bs = this.n_child.map(n => n.toBrick(board))
-      if ((root = bs.shift())) {
-        m4t = root.foot_mMost
-        bs.forEach(dd => {
-          var m = m4t.connectSmart(dd)
-          m && (m4t = m)
-        })
-      }
-      return root
-    case eYo.py.simple_stmt:
-      return this.simple_stmt2Brick(board)
-    case eYo.py.expr_stmt: // testlist_star_expr (annassign | augassign (yield_expr|testlist) | [('=' (yield_expr|testlist_star_expr))+ [TYPE_COMMENT]] )
-      n0 = this.n0
-      if (!(n1 = n0.sibling)) {
-        // simple expression statement: only a testlist_star_expr
-        root = eYo.brick.newReady(board, eYo.t3.stmt.expression_stmt)
-        n0.testlist_star_exprInBrick(root.value_b)
-        // manage comments
+  case eYo.py.file_input: // (NEWLINE | stmt)* ENDMARKER
+    var bs = this.n_child.map(n => n.toBrick(board))
+    if ((root = bs.shift())) {
+      m4t = root.foot_mMost
+      bs.forEach(dd => {
+        var m = m4t.connectSmart(dd)
+        m && (m4t = m)
+      })
+    }
+    return root
+  case eYo.py.simple_stmt:
+    return this.simple_stmt2Brick(board)
+  case eYo.py.expr_stmt: // testlist_star_expr (annassign | augassign (yield_expr|testlist) | [('=' (yield_expr|testlist_star_expr))+ [TYPE_COMMENT]] )
+    n0 = this.n0
+    if (!(n1 = n0.sibling)) {
+      // simple expression statement: only a testlist_star_expr
+      root = eYo.brick.newReady(board, eYo.t3.stmt.expression_stmt)
+      n0.testlist_star_exprInBrick(root.value_b)
+      // manage comments
 
-        return root
-      }
-      if (n1.n_type === eYo.py.tkn.EQUAL) {
-        // assignment,
-        root = d1 = eYo.brick.newReady(board, eYo.t3.stmt.assignment_stmt)
-        while (true) {
-          // targets
-          ;(n0.type === eYo.py.yield_expr ? n0.yield_exprInListBrick : n0.testlist_star_exprInBrick).call(n0, d1.target_b) // .call is necessary !
-          // values
-          n0 = n1.sibling
-          if ((n1 = n0.sibling)) {
-            if (n1.n_type === eYo.py.tkn.EQUAL) {
-              d2 = eYo.brick.newReady(eYo.t3.expr.assignment_chain, board)
-              if ((d = d1.value_b)) {
-                d.connectLast(d2)
-                d1.variant_ = eYo.key.TARGET_VALUED // necessary ?
-              } else {
-                console.error('ERROR')
-              }
-              d1 = d2
-              continue
+      return root
+    }
+    if (n1.n_type === eYo.py.tkn.EQUAL) {
+      // assignment,
+      root = d1 = eYo.brick.newReady(board, eYo.t3.stmt.assignment_stmt)
+      while (true) { // eslint-disable-line
+        // targets
+        (n0.type === eYo.py.yield_expr ? n0.yield_exprInListBrick : n0.testlist_star_exprInBrick).call(n0, d1.target_b) // .call is necessary !
+        // values
+        n0 = n1.sibling
+        if ((n1 = n0.sibling)) {
+          if (n1.n_type === eYo.py.tkn.EQUAL) {
+            d2 = eYo.brick.newReady(eYo.t3.expr.assignment_chain, board)
+            if ((d = d1.value_b)) {
+              d.connectLast(d2)
+              d1.variant_ = eYo.key.TARGET_VALUED // necessary ?
             } else {
-              root.type_comment_node = n1
+              console.error('ERROR')
             }
+            d1 = d2
+            continue
+          } else {
+            root.type_comment_node = n1
           }
-          ;(n0.type === eYo.py.yield_expr
-            ? n0.yield_exprInListBrick
-            : n0.testlist_star_exprInBrick).call(n0, d1.value_b)
-          break
         }
-      } else if (n1.type === eYo.py.augassign) { // augassign: ('+=' | '-=' | '*=' | '@=' | '/=' | '%=' | '&=' | '|=' | '^=' | '<<=' | '>>=' | '**=' | '//=')
-        root = eYo.brick.newReady({
-          type: eYo.t3.stmt.augmented_assignment_stmt,
-          operator_p: n1.n0.n_str
-        }, board)
+        (n0.type === eYo.py.yield_expr
+          ? n0.yield_exprInListBrick
+          : n0.testlist_star_exprInBrick).call(n0, d1.value_b)
+        break
+      }
+    } else if (n1.type === eYo.py.augassign) { // augassign: ('+=' | '-=' | '*=' | '@=' | '/=' | '%=' | '&=' | '|=' | '^=' | '<<=' | '>>=' | '**=' | '//=')
+      root = eYo.brick.newReady({
+        type: eYo.t3.stmt.augmented_assignment_stmt,
+        operator_p: n1.n0.n_str
+      }, board)
+      n0.testlist_star_exprInBrick(root.target_b)
+      n2 = n1.sibling
+      ;(n2.type === eYo.py.yield_expr
+        ? n2.yield_exprInListBrick
+        : n2.testlistInBrick).call(n2, root.value_b)
+    } else if (n1.type === eYo.py.annassign) { // ':' test ['=' (yield_expr|testlist)]
+      if ((s = n1.n3)) {
+        root = eYo.brick.newReady(board, eYo.t3.stmt.annotated_assignment_stmt)
         n0.testlist_star_exprInBrick(root.target_b)
-        n2 = n1.sibling
-        ;(n2.type === eYo.py.yield_expr
-            ? n2.yield_exprInListBrick
-            : n2.testlistInBrick).call(n2, root.value_b)
-      } else if (n1.type === eYo.py.annassign) { // ':' test ['=' (yield_expr|testlist)]
-        if ((s = n1.n3)) {
-          root = eYo.brick.newReady(board, eYo.t3.stmt.annotated_assignment_stmt)
-          n0.testlist_star_exprInBrick(root.target_b)
-          d1 = n1.n1.toBrick(board)
-          root.annotated_s.connect(d1)
-          ;(s.type === eYo.py.yield_expr
-            ? s.yield_exprInListBrick
-            : s.testlistInBrick).call(s, root.value_b)
-        } else {
-          root = eYo.brick.newReady(board, eYo.t3.stmt.annotated_stmt)
-          n0.testlist_star_exprInBrick(root.target_b)
-          d1 = n1.n1.toBrick(board)
-          if (d1.description === 'str') {
-            console.error('STOP HERE')
-          }
-          root.annotated_s.connect(d1)
-        }
-      }
-      return root
-    case eYo.py.atom_expr: // ['await'] atom trailer*
-      i = 0
-      n0 = this.n0
-      if (n0.n_type === eYo.py.tkn.NAME && n0.n_str === 'await') {
-        n1 = this.n1
-        root = n1.toBrick(board)
-        root.await = true
-        n0 = n1
+        d1 = n1.n1.toBrick(board)
+        root.annotated_s.connect(d1)
+        ;(s.type === eYo.py.yield_expr
+          ? s.yield_exprInListBrick
+          : s.testlistInBrick).call(s, root.value_b)
       } else {
-        root = n0.toBrick(board)
+        root = eYo.brick.newReady(board, eYo.t3.stmt.annotated_stmt)
+        n0.testlist_star_exprInBrick(root.target_b)
+        d1 = n1.n1.toBrick(board)
+        if (d1.description === 'str') {
+          console.error('STOP HERE')
+        }
+        root.annotated_s.connect(d1)
       }
-      d0 = root
-      // root is an atom
-      // trailers ?
-      while ((n0 = n0.sibling)) {
-        // n0 is a trailer: '(' [arglist] ')' | '[' subscriptlist ']' | '.' NAME
-        if (n0.n0.n_type === eYo.py.tkn.LPAR) {
+    }
+    return root
+  case eYo.py.atom_expr: // ['await'] atom trailer*
+    n0 = this.n0
+    if (n0.n_type === eYo.py.tkn.NAME && n0.n_str === 'await') {
+      n1 = this.n1
+      root = n1.toBrick(board)
+      root.await = true
+      n0 = n1
+    } else {
+      root = n0.toBrick(board)
+    }
+    d0 = root
+    // root is an atom
+    // trailers ?
+    while ((n0 = n0.sibling)) {
+      // n0 is a trailer: '(' [arglist] ')' | '[' subscriptlist ']' | '.' NAME
+      if (n0.n0.n_type === eYo.py.tkn.LPAR) {
+        d = d0.n_ary_b
+        if (d && d0.variant === eYo.key.NONE) {
+          d0.variant_ = eYo.key.CALL_EXPR
+        } else {
+          root = eYo.brick.newReady(eYo.t3.expr.call_expr, board)
+          root.target_b.connectLast(d0)
+          d0 = root
           d = d0.n_ary_b
-          if (d && d0.variant === eYo.key.NONE) {
-            d0.variant_ = eYo.key.CALL_EXPR
-          } else {
-            root = eYo.brick.newReady(eYo.t3.expr.call_expr, board)
-            root.target_b.connectLast(d0)
-            d0 = root
-            d = d0.n_ary_b
-          }
-          n1 = n0.n1
-          if (n1.n_type !== eYo.py.tkn.RPAR) {
-            n1.arglistInBrick(brick)
-          }
-        } else if (n0.n0.n_type === eYo.py.tkn.LSQB) {
+        }
+        n1 = n0.n1
+        if (n1.n_type !== eYo.py.tkn.RPAR) {
+          //TODO: Is it d0?
+          n1.arglistInBrick(d0)
+        }
+      } else if (n0.n0.n_type === eYo.py.tkn.LSQB) {
+        d = d0.slicing_b
+        if (d && d0.variant === eYo.key.NONE) {
+          d0.variant_ = eYo.key.SLICING
+        } else {
+          root = eYo.brick.newReady(eYo.t3.expr.slicing, board)
+          root.target_b.connectLast(d0)
+          d0 = root
           d = d0.slicing_b
-          if (d && d0.variant === eYo.key.NONE) {
-            d0.variant_ = eYo.key.SLICING
-          } else {
-            root = eYo.brick.newReady(eYo.t3.expr.slicing, board)
-            root.target_b.connectLast(d0)
-            d0 = root
-            d = d0.slicing_b
-          }
-          n1 = n0.n1
-          if (n1.n_type !== eYo.py.tkn.RSQB) {
-            n1.subscriptlistInBrick(brick)
-          }
-        } else /* if (n0.n0.n_type === eYo.py.tkn.DOT) */ {
-          if (!d0.dotted_d || d0.variant !== eYo.key.NONE || d0.Dotted_p !== 0) {
-            root = n0.n1.NAME2Brick(board)
-            root.holder_s.connect(d0)
-            d0 = root
+        }
+        n1 = n0.n1
+        if (n1.n_type !== eYo.py.tkn.RSQB) {
+          //TODO: Is it d0?
+          n1.subscriptlistInBrick(d0)
+        }
+      } else /* if (n0.n0.n_type === eYo.py.tkn.DOT) */ {
+        if (!d0.dotted_d || d0.variant !== eYo.key.NONE || d0.Dotted_p !== 0) {
+          root = n0.n1.NAME2Brick(board)
+          root.holder_s.connect(d0)
+          d0 = root
+          d0.Dotted_p = 1
+        } else {
+          d0.changer.wrap(() => {
+            if ((d = d0.target_s.unwrappedTarget)) {
+              d0.holder_s.connect(d)
+            } else {
+              d0.Holder_p = d0.Target_p
+              d0.Target_p = ''
+            }
             d0.Dotted_p = 1
-          } else {
-            d0.changer.wrap(() => {
-              if ((d = d0.target_s.unwrappedTarget)) {
-                d0.holder_s.connect(d)
-              } else {
-                d0.Holder_p = d0.Target_p
-                d0.Target_p = ''
-              }
-              d0.Dotted_p = 1
-              d0.target_b.connectLast(n0.n1.NAME2Brick(board))
-            })
-          }
+            d0.target_b.connectLast(n0.n1.NAME2Brick(board))
+          })
         }
       }
-      return root
-    case eYo.py.subscript: // test | [test] ':' [test] [sliceop] // sliceop: ':' [test]
-      n0 = this.n0
+    }
+    return root
+  case eYo.py.subscript: // test | [test] ':' [test] [sliceop] // sliceop: ':' [test]
+    n0 = this.n0
+    if (n0.type === eYo.py.test) {
+      d0 = n0.toBrick(board)
+      if (!(n0 = n0.sibling)) {
+        return d0
+      }
+    }
+    root = eYo.brick.newReady(eYo.t3.expr.proper_slice, board)
+    d0 && (root.lower_bound_s.connect(d0))
+    // n0.type === eYo.py.tkn.COLON
+    if ((n0 = n0.sibling)) {
       if (n0.type === eYo.py.test) {
-        d0 = n0.toBrick(board)
+        root.upper_bound_s.connect(n0.toBrick(board))
         if (!(n0 = n0.sibling)) {
-          return d0
+          return root
         }
       }
-      root = eYo.brick.newReady(eYo.t3.expr.proper_slice, board)
-      d0 && (root.lower_bound_s.connect(d0))
-      // n0.type === eYo.py.tkn.COLON
-      if ((n0 = n0.sibling)) {
-        if (n0.type === eYo.py.test) {
-          root.upper_bound_s.connect(n0.toBrick(board))
-          if (!(n0 = n0.sibling)) {
-            return root
-          }
-        }
-        root.variant_ = eYo.key.STRIDE
-        n0.n1 && (root.stride_s.connect(n0.n1.toBrick(board)))
+      root.variant_ = eYo.key.STRIDE
+      n0.n1 && (root.stride_s.connect(n0.n1.toBrick(board)))
+    }
+    return root
+  case eYo.py.atom: //atom: ('(' [yield_expr|testlist_comp] ')' | '[' [testlist_comp] ']' | '{' [dictorsetmaker] '}') | NAME | NUMBER | STRING+ | '...' | 'None' | 'True' | 'False')
+    n0 = this.n0
+    if (n0.type === eYo.py.tkn.STRING) {
+      s = n0.n_str
+      while ((n0 = n0.sibling)) {
+        s += n0.n_str
       }
-      return root
-    case eYo.py.atom: //atom: ('(' [yield_expr|testlist_comp] ')' | '[' [testlist_comp] ']' | '{' [dictorsetmaker] '}') | NAME | NUMBER | STRING+ | '...' | 'None' | 'True' | 'False')
-      n0 = this.n0
-      if (n0.type === eYo.py.tkn.STRING) {
-        var s = n0.n_str
-        while ((n0 = n0.sibling)) {
-          s += n0.n_str
-        }
-        return eYo.brick.newReady(board, s) // THIS IS NOT COMPLETE
-      }
-      if ((n1 = n0.sibling)) {
-        root = eYo.brick.newReady(eYo.t3.expr.enclosure, board)
-        switch(n0.n_str) {
-          case '(':
-            t = eYo.key.PAR
-            s = n1.type === eYo.py.yield_expr
-            ? n1.yield_exprInListBrick
-            : n1.type === eYo.py.testlist_comp
-              ? n1.testlist_compInBrick
-              : null
-            break
-          case '[':
-            t = eYo.key.SQB
-            s = n1.type === eYo.py.testlist_comp
+      return eYo.brick.newReady(board, s) // THIS IS NOT COMPLETE
+    }
+    if ((n1 = n0.sibling)) {
+      root = eYo.brick.newReady(eYo.t3.expr.enclosure, board)
+      switch(n0.n_str) {
+      case '(':
+        t = eYo.key.PAR
+        s = n1.type === eYo.py.yield_expr
+          ? n1.yield_exprInListBrick
+          : n1.type === eYo.py.testlist_comp
             ? n1.testlist_compInBrick
             : null
-            break
-          case '{':
-            t = eYo.key.BRACE
-            s = n1.type === eYo.py.dictorsetmaker
-            ? n1.dictorsetmakerInBrick
-            : null
-            break
-        }
-        root.variant_ = t
-        s && (s.call(n1, root))
-        return root
-      } else if (['...', 'None', 'True', 'False'].indexOf((s = n0.n_str)) < 0) {
-        if (n0.type === eYo.py.tkn.NAME) {
-          return n0.NAME2Brick(board)
-        } else if (n0.type === eYo.py.tkn.NUMBER) {
-          return eYo.brick.newReady({
-            type: eYo.t3.expr.numberliteral,
-            value_p: s
-          }, board)
-        } else /* STRING+ */ {
-          d0 = root = eYo.brick.newReady({
-            type: s.endsWith('"""') || s.endsWith("'''") ? eYo.t3.expr.longliteral : eYo.t3.expr.shortliteral,
-            value_p: s
-          }, board)
-          while ((n0 = n0.sibling)) {
-            d0 = d0.next_string_block = eYo.brick.newReady({
-              type: s.endsWith('"""') || s.endsWith("'''") ? eYo.t3.expr.longliteral : eYo.t3.expr.shortliteral,
-              value_p: n0.n_str
-            }, board)
-          }
-        }
-        return root
-      } else {
+        break
+      case '[':
+        t = eYo.key.SQB
+        s = n1.type === eYo.py.testlist_comp
+          ? n1.testlist_compInBrick
+          : null
+        break
+      case '{':
+        t = eYo.key.BRACE
+        s = n1.type === eYo.py.dictorsetmaker
+          ? n1.dictorsetmakerInBrick
+          : null
+        break
+      }
+      root.variant_ = t
+      s && (s.call(n1, root))
+      return root
+    } else if (['...', 'None', 'True', 'False'].indexOf((s = n0.n_str)) < 0) {
+      if (n0.type === eYo.py.tkn.NAME) {
+        return n0.NAME2Brick(board)
+      } else if (n0.type === eYo.py.tkn.NUMBER) {
         return eYo.brick.newReady({
-          type: eYo.t3.expr.builtin__object,
+          type: eYo.t3.expr.numberliteral,
           value_p: s
         }, board)
+      } else /* STRING+ */ {
+        d0 = root = eYo.brick.newReady({
+          type: s.endsWith('"""') || s.endsWith("'''") ? eYo.t3.expr.longliteral : eYo.t3.expr.shortliteral,
+          value_p: s
+        }, board)
+        while ((n0 = n0.sibling)) {
+          d0 = d0.next_string_block = eYo.brick.newReady({
+            type: s.endsWith('"""') || s.endsWith("'''") ? eYo.t3.expr.longliteral : eYo.t3.expr.shortliteral,
+            value_p: n0.n_str
+          }, board)
+        }
       }
-    case eYo.py.star_expr: // star_expr: '*' expr
-      root = eYo.brick.newReady(eYo.t3.expr.expression_star, board)
-      root.modified_s.connect(this.n1.toBrick(board))
+      return root
+    } else {
+      return eYo.brick.newReady({
+        type: eYo.t3.expr.builtin__object,
+        value_p: s
+      }, board)
+    }
+  case eYo.py.star_expr: // star_expr: '*' expr
+    root = eYo.brick.newReady(eYo.t3.expr.expression_star, board)
+    root.modified_s.connect(this.n1.toBrick(board))
     return root
     /*
 term: factor (('*'|'@'|'/'|'%'|'//') factor)*
 factor: ('+'|'-'|'~') factor | power
 */
-    case eYo.py.xor_expr: // and_expr ('^' and_expr)*
-    case eYo.py.and_expr: // shift_expr ('&' shift_expr)*
-    case eYo.py.shift_expr: // arith_expr (('<<'|'>>') arith_expr)*
-    case eYo.py.arith_expr: // term (('+'|'-') term)*
-    case eYo.py.term: // factor (('*'|'@'|'/'|'%'|'//') factor)*
-    case eYo.py.expr: // xor_expr ('|' xor_expr)*
-      n0 = this.n0
-      root = n0.toBrick(board)
-      while ((n1 = n0.sibling) && (n2 = n1.sibling)) {
-        d0 = eYo.brick.newReady(eYo.t3.expr.m_expr, board)
-        d0.Operator_p = n1.n_str
-        d0.lhs_s.connect(root)
-        root = d0
-        d0.rhs_s.connect(n2.toBrick(board))
-        n0 = n2
-      }
+  // case eYo.py.xor_expr: // and_expr ('^' and_expr)*
+  // case eYo.py.and_expr: // shift_expr ('&' shift_expr)*
+  // case eYo.py.shift_expr: // arith_expr (('<<'|'>>') arith_expr)*
+  // case eYo.py.arith_expr: // term (('+'|'-') term)*
+  // case eYo.py.term: // factor (('*'|'@'|'/'|'%'|'//') factor)*
+  case eYo.py.expr: // xor_expr ('|' xor_expr)*
+    n0 = this.n0
+    root = n0.toBrick(board)
+    while ((n1 = n0.sibling) && (n2 = n1.sibling)) {
+      d0 = eYo.brick.newReady(eYo.t3.expr.m_expr, board)
+      d0.Operator_p = n1.n_str
+      d0.lhs_s.connect(root)
+      root = d0
+      d0.rhs_s.connect(n2.toBrick(board))
+      n0 = n2
+    }
+    return root
+  case eYo.py.factor: // ('+'|'-'|'~') factor | power
+    if ((n1 = this.n1)) {
+      root = eYo.brick.newReady(eYo.t3.expr.unary, board)
+      root.Operator_p = this.n0.n_str
+      root.rhs_s.connect(n1.toBrick(board))
+    } else {
+      return this.n0.toBrick(board)
+    }
+    return root
+  case eYo.py.power: // atom_expr ['**' factor]
+    d0 = this.n0.toBrick(board)
+    if (d0.type === eYo.t3.stmt.comment_stmt) {
+      console.error("BREAK HERE", d0 = this.n0.toBrick(board))
+    }
+    if ((n2 = this.n2)) {
+      root = eYo.brick.newReady(eYo.t3.expr.power, board)
+      root.lhs_s.connect(d0)
+      root.rhs_s.connect(n2.toBrick(board))
       return root
-    case eYo.py.factor: // ('+'|'-'|'~') factor | power
-      if ((n1 = this.n1)) {
-        root = eYo.brick.newReady(eYo.t3.expr.unary, board)
-        root.Operator_p = this.n0.n_str
-        root.rhs_s.connect(n1.toBrick(board))
-      } else {
-        return this.n0.toBrick(board)
-      }
-      return root
-    case eYo.py.power: // atom_expr ['**' factor]
-      d0 = this.n0.toBrick(board)
-      if (d0.type === eYo.t3.stmt.comment_stmt) {
-        console.error("BREAK HERE", d0 = this.n0.toBrick(board))
-      }
-      if ((n2 = this.n2)) {
-        root = eYo.brick.newReady(eYo.t3.expr.power, board)
-        root.lhs_s.connect(d0)
-        root.rhs_s.connect(n2.toBrick(board))
-        return root
-      } else {
-        return d0
-      }
-    case eYo.py.argument: /*argument: ( test [comp_for] |
+    } else {
+      return d0
+    }
+  case eYo.py.argument: /*argument: ( test [comp_for] |
       test ':=' test |
       test '=' test |
       '**' test |
       '*' test )*/
-      n0 = this.n0
-      if (n0.n_type === eYo.py.tkn.STAR) {
-        root = eYo.brick.newReady(eYo.t3.expr.expression_star, board)
-        root.modified_s.connect(n0.sibling.toBrick(board))
-      } else if (n0.n_type === eYo.py.tkn.DOUBLESTAR) {
-        root = eYo.brick.newReady(eYo.t3.expr.expression_star_star, board)
-        root.modified_s.connect(n0.sibling.toBrick(board))
-      } else if ((n1 = n0.sibling)) {
-        if (n1.n_type === eYo.py.tkn.COLONEQUAL) {
-          root = eYo.brick.newReady(eYo.t3.expr.named_expr, board)
-          root.target_b.connectLast(n0.toBrick(board))
-          root.value_b.connectLast(n1.sibling.toBrick(board))
-        } else if (n1.n_type === eYo.py.tkn.EQUAL) {
-          root = eYo.brick.newReady(eYo.t3.expr.identifier_valued, board)
-          root.target_b.connectLast(n0.toBrick(board))
-          root.value_b.connectLast(n1.sibling.toBrick(board))
-        } else {
-          root = this.comprehension2Brick(board)
-        }
-      } else {
-        root = n0.toBrick(board)
-      }
-      return root
-    case eYo.py.tkn.NAME: // test [':=' test]
-      return this.NAME2Brick(board)
-    case eYo.py.namedexpr_test: // test [':=' test]
-      d0 = this.n0.toBrick(board)
-      if ((n2 = this.n2)) {
+    n0 = this.n0
+    if (n0.n_type === eYo.py.tkn.STAR) {
+      root = eYo.brick.newReady(eYo.t3.expr.expression_star, board)
+      root.modified_s.connect(n0.sibling.toBrick(board))
+    } else if (n0.n_type === eYo.py.tkn.DOUBLESTAR) {
+      root = eYo.brick.newReady(eYo.t3.expr.expression_star_star, board)
+      root.modified_s.connect(n0.sibling.toBrick(board))
+    } else if ((n1 = n0.sibling)) {
+      if (n1.n_type === eYo.py.tkn.COLONEQUAL) {
         root = eYo.brick.newReady(eYo.t3.expr.named_expr, board)
-        root.target_b.connectLast(d0)
-        root.value_b.connectLast(n2.toBrick(board))
+        root.target_b.connectLast(n0.toBrick(board))
+        root.value_b.connectLast(n1.sibling.toBrick(board))
+      } else if (n1.n_type === eYo.py.tkn.EQUAL) {
+        root = eYo.brick.newReady(eYo.t3.expr.identifier_valued, board)
+        root.target_b.connectLast(n0.toBrick(board))
+        root.value_b.connectLast(n1.sibling.toBrick(board))
       } else {
-        root = d0
+        root = this.comprehension2Brick(board)
       }
-      return root
-    case eYo.py.lambdef: // 'lambda' [varargslist] ':' test
-      root = eYo.brick.newReady(eYo.t3.expr.lambda_expr, board)
-      n = this.n
-      if (n.type !== eYo.py.tkn.COLON) {
-        n.varargslistInBrick(root.parameters_b)
-        n = n.sibling
-      }
+    } else {
+      root = n0.toBrick(board)
+    }
+    return root
+  case eYo.py.tkn.NAME: // test [':=' test]
+    return this.NAME2Brick(board)
+  case eYo.py.namedexpr_test: // test [':=' test]
+    d0 = this.n0.toBrick(board)
+    if ((n2 = this.n2)) {
+      root = eYo.brick.newReady(eYo.t3.expr.named_expr, board)
+      root.target_b.connectLast(d0)
+      root.value_b.connectLast(n2.toBrick(board))
+    } else {
+      root = d0
+    }
+    return root
+  case eYo.py.lambdef: // 'lambda' [varargslist] ':' test
+    root = eYo.brick.newReady(eYo.t3.expr.lambda_expr, board)
+    n = this.n
+    if (n.type !== eYo.py.tkn.COLON) {
+      n.varargslistInBrick(root.parameters_b)
       n = n.sibling
-      root.expression_s.connect(n.toBrick(board))
-      return root
-    case eYo.py.lambdef_nocond: // 'lambda' [varargslist] ':' test_nocond
-      root = eYo.brick.newReady(eYo.t3.expr.lambda_expr_nocond, board)
-      n = this.n
-      if (n.type !== eYo.py.tkn.COLON) {
-        n.varargslistInBrick(root.parameters_b)
-        n = n.sibling
-      }
+    }
+    n = n.sibling
+    root.expression_s.connect(n.toBrick(board))
+    return root
+  case eYo.py.lambdef_nocond: // 'lambda' [varargslist] ':' test_nocond
+    root = eYo.brick.newReady(eYo.t3.expr.lambda_expr_nocond, board)
+    n = this.n
+    if (n.type !== eYo.py.tkn.COLON) {
+      n.varargslistInBrick(root.parameters_b)
       n = n.sibling
-      root.expression_s.connect(n.toBrick(board))
-      return root
-    case eYo.py.async_funcdef: // 'async' funcdef
-      root = this.n1.funcdef2Brick(board)
+    }
+    n = n.sibling
+    root.expression_s.connect(n.toBrick(board))
+    return root
+  case eYo.py.async_funcdef: // 'async' funcdef
+    root = this.n1.funcdef2Brick(board)
+    root.async_ = true
+    return root
+  case eYo.py.pass_stmt: // 'pass'
+    return eYo.brick.newReady(board, eYo.t3.stmt.pass_stmt)
+  case eYo.py.break_stmt: // 'break'
+    return eYo.brick.newReady(board, eYo.t3.stmt.break_stmt)
+  case eYo.py.continue_stmt: // 'continue'
+    return eYo.brick.newReady(board, eYo.t3.stmt.continue_stmt)
+  case eYo.py.compound_stmt: //
+    /* compound_stmt: if_stmt | while_stmt | for_stmt | try_stmt | with_stmt | funcdef | classdef | decorated | async_stmt */
+    n = this.n0
+    switch(n.type) {
+    case eYo.py.if_stmt: return n.if_stmt2Brick(board)
+    case eYo.py.while_stmt: return n.while_stmt2Brick(board)
+    case eYo.py.for_stmt: return n.for_stmt2Brick(board)
+    case eYo.py.try_stmt: return n.try_stmt2Brick(board)
+    case eYo.py.with_stmt: return n.with_stmt2Brick(board)
+    case eYo.py.funcdef: return n.funcdef2Brick(board)
+    case eYo.py.classdef: return n.classdef2Brick(board)
+    case eYo.py.decorated: return n.decorated2Brick(board)
+    case eYo.py.async_stmt:
+      // async_stmt: 'async' (funcdef | with_stmt | for_stmt)
+      n = n.n1
+      switch(n.type) {
+      case eYo.py.funcdef: root = n.funcdef2Brick(board); break
+      case eYo.py.with_stmt: root = n.with_stmt2Brick(board); break
+      case eYo.py.for_stmt: root = n.for_stmt2Brick(board); break
+      }
       root.async_ = true
       return root
-    case eYo.py.pass_stmt: // 'pass'
-      return eYo.brick.newReady(board, eYo.t3.stmt.pass_stmt)
-    case eYo.py.break_stmt: // 'break'
-      return eYo.brick.newReady(board, eYo.t3.stmt.break_stmt)
-    case eYo.py.continue_stmt: // 'continue'
-      return eYo.brick.newReady(board, eYo.t3.stmt.continue_stmt)
-    case eYo.py.compound_stmt: //
-      /* compound_stmt: if_stmt | while_stmt | for_stmt | try_stmt | with_stmt | funcdef | classdef | decorated | async_stmt */
-      n = this.n0
-      switch(n.type) {
-        case eYo.py.if_stmt: return n.if_stmt2Brick(board)
-        case eYo.py.while_stmt: return n.while_stmt2Brick(board)
-        case eYo.py.for_stmt: return n.for_stmt2Brick(board)
-        case eYo.py.try_stmt: return n.try_stmt2Brick(board)
-        case eYo.py.with_stmt: return n.with_stmt2Brick(board)
-        case eYo.py.funcdef: return n.funcdef2Brick(board)
-        case eYo.py.classdef: return n.classdef2Brick(board)
-        case eYo.py.decorated: return n.decorated2Brick(board)
-        case eYo.py.async_stmt:
-          // async_stmt: 'async' (funcdef | with_stmt | for_stmt)
-          n = n.n1
-          switch(n.type) {
-            case eYo.py.funcdef: root = n.funcdef2Brick(board); break
-            case eYo.py.with_stmt: root = n.with_stmt2Brick(board); break
-            case eYo.py.for_stmt: root = n.for_stmt2Brick(board); break
-          }
-          root.async_ = true
-          return root
-        default: console.error("BREAK HERE, UNEXPECTED NAME", n.name)
-        throw 'ERROR'
-      }
-    case eYo.py.yield_expr:
-      return this.yield_expr2Brick(board)
-    case eYo.py.yield_stmt:
-      root = eYo.brick.newReady(board, eYo.t3.stmt.yield_stmt)
-      this.n0.yield_exprInBrick(root)
+    default: console.error("BREAK HERE, UNEXPECTED NAME", n.name)
+      throw 'ERROR'
+    }
+  case eYo.py.yield_expr:
+    return this.yield_expr2Brick(board)
+  case eYo.py.yield_stmt:
+    root = eYo.brick.newReady(board, eYo.t3.stmt.yield_stmt)
+    this.n0.yield_exprInBrick(root)
+    return root
+  case eYo.py.return_stmt: // 'return' [testlist_star_expr]
+    root = eYo.brick.newReady(board, eYo.t3.stmt.return_stmt)
+    ;(n = this.n1) && (n.testlist_star_exprInBrick(root.return_b))
+    return root
+  case eYo.py.import_stmt: // import_stmt: import_name | import_from
+    n0 = this.n0
+    if (n0.type === eYo.py.import_name) {
+      //import_name: 'import' dotted_as_names
+      root = eYo.brick.newReady(board, eYo.t3.stmt.import_stmt)
+      t = root.import_module_b
+      n0.n1.knownListInBrick(t, function () {
+        // dotted_as_name: dotted_name ['as' NAME]
+        // dotted_name: NAME ('.' NAME)*
+        if ((n2 = this.n2)) {
+          var ddd = eYo.brick.newReady(eYo.t3.expr.identifier_as, board)
+          //TODO: Is it alias_p?
+          root.alias_p = n2.n_str
+        } else {
+          ddd = eYo.brick.newReady(eYo.t3.expr.identifier, board)
+        }
+        var s = this.n0.n_child.map(child => child.type === eYo.py.tkn.NAME ? child.n_str : '.').join('')
+        ddd.Target_p = s
+        return ddd
+      })
       return root
-    case eYo.py.break_stmt:
-      return eYo.brick.newReady(board, eYo.t3.stmt.break_stmt)
-    case eYo.py.continue_stmt:
-      return eYo.brick.newReady(board, eYo.t3.stmt.continue_stmt)
-    case eYo.py.pass_stmt:
-      return eYo.brick.newReady(board, eYo.t3.stmt.pass_stmt)
-    case eYo.py.return_stmt: // 'return' [testlist_star_expr]
-      root = eYo.brick.newReady(board, eYo.t3.stmt.return_stmt)
-      ;(n = this.n1) && (n.testlist_star_exprInBrick(root.return_b))
-      return root
-    case eYo.py.import_stmt: // import_stmt: import_name | import_from
-      n0 = this.n0
-      if (n0.type === eYo.py.import_name) {
-        //import_name: 'import' dotted_as_names
-        root = eYo.brick.newReady(board, eYo.t3.stmt.import_stmt)
-        var t = root.import_module_b
-        n0.n1.knownListInBrick(t, function () {
-          // dotted_as_name: dotted_name ['as' NAME]
-          // dotted_name: NAME ('.' NAME)*
-          if ((n2 = this.n2)) {
-            var ddd = eYo.brick.newReady(eYo.t3.expr.identifier_as, board)
-            brick.Alias_p = n2.n_str
-          } else {
-            ddd = eYo.brick.newReady(eYo.t3.expr.identifier, board)
-          }
-          var s = this.n0.n_child.map(child => child.type === eYo.py.tkn.NAME ? child.n_str : '.').join('')
-          brick.Target_p = s
-          return ddd
-        })
-        return root
-      } else {
+    } else {
       /*
       ('from' (('.' | '...')* dotted_name | ('.' | '...')+)
                 'import' ('*' | '(' import_as_names ')' | import_as_names))
         import_as_name: NAME ['as' NAME]*/
-        root = eYo.brick.newReady(board, eYo.t3.stmt.import_stmt)
-        s = ''
-        n = n0.n1
-        do {
-          if (n.type === eYo.py.dotted_name) {
-            s += n.n_child.map(child => child.type === eYo.py.tkn.NAME ? child.n_str : '.').join('')
+      root = eYo.brick.newReady(board, eYo.t3.stmt.import_stmt)
+      s = ''
+      n = n0.n1
+      do {
+        if (n.type === eYo.py.dotted_name) {
+          s += n.n_child.map(child => child.type === eYo.py.tkn.NAME ? child.n_str : '.').join('')
+          root.From_p = s
+          s = ''
+        } else if (n.type === eYo.py.tkn.DOT) {
+          s += '.'
+        } else if (n.type === eYo.py.tkn.ELLIPSIS) {
+          s += '...'
+        } else if (n.n_str.length === 6) {
+          // found the 'import'
+          if (s.length) {
             root.From_p = s
-            s = ''
-          } else if (n.type === eYo.py.tkn.DOT) {
-            s += '.'
-          } else if (n.type === eYo.py.tkn.ELLIPSIS) {
-            s += '...'
-          } else if (n.n_str.length === 6) {
-            // found the 'import'
-            if (s.length) {
-              root.From_p = s
-            }
-            break
           }
-        } while ((n = n.sibling))
-        n = n.sibling
-        if (n.type === eYo.py.tkn.STAR) {
-          root.Star_p = true
-        } else {
-          var t = root.import_b
-          if (n.type === eYo.py.tkn.LPAR) {
-            n = n.sibling
-            root.import_b.Parenth_p = true
+          break
+        }
+      } while ((n = n.sibling))
+      n = n.sibling
+      if (n.type === eYo.py.tkn.STAR) {
+        root.Star_p = true
+      } else {
+        t = root.import_b
+        if (n.type === eYo.py.tkn.LPAR) {
+          n = n.sibling
+          root.import_b.Parenth_p = true
+        }
+        n.knownListInBrick(t, function () {
+          // import_as_name: NAME ['as' NAME]
+          var n = this.n2
+          if (n) {
+            var ddd = eYo.brick.newReady(eYo.t3.expr.identifier_as, board)
+            //TODO: Is it alias_p?
+            ddd.alias_p = n.n_str
+          } else {
+            ddd = eYo.brick.newReady(eYo.t3.expr.identifier, board)
           }
-          n.knownListInBrick(t, function () {
-            // import_as_name: NAME ['as' NAME]
-            var n = this.n2
-            if (n) {
-              var ddd = eYo.brick.newReady(eYo.t3.expr.identifier_as, board)
-              brick.Alias_p = n.n_str
-            } else {
-              ddd = eYo.brick.newReady(eYo.t3.expr.identifier, board)
-            }
-            brick.Target_p = this.n0.n_str
-            return ddd
-          })
-        }
-        return root
-      }
-    case eYo.py.raise_stmt: // raise_stmt: 'raise' [test ['from' test]]
-      root = eYo.brick.newReady(board, eYo.t3.stmt.raise_stmt)
-      if ((n = this.n0.sibling)) {
-        root.expression_s.connect(n.toBrick(board))
-        root.variant_ = eYo.key.EXPRESSION
-        if ((n = n.sibling) && (n = n.sibling)) {
-          root.from_s.connect(n.toBrick(board))
-          root.variant_ = eYo.key.FROM
-        }
+          //TODO: Is it Target_p
+          ddd.Target_p = this.n0.n_str
+          return ddd
+        })
       }
       return root
-    case eYo.py.or_test: // or_test: and_test ('or' and_test)*
-      return this.binary2Brick(eYo.t3.expr.or_test, board)
-    case eYo.py.and_test: // and_expr: shift_expr ('&' shift_expr)*
-      return this.binary2Brick(eYo.t3.expr.and_test, board)
-    case eYo.py.xor_expr: // xor_expr: and_expr ('^' and_expr)*
-      return this.binary2Brick(eYo.t3.expr.xor_expr, board)
-    case eYo.py.and_expr:
-      return this.binary2Brick(eYo.t3.expr.and_expr, board)
-    case eYo.py.shift_expr: // shift_expr: arith_expr (('<<'|'>>') arith_expr)*
-      return this.binary2Brick(eYo.t3.expr.shift_expr, board)
-    case eYo.py.arith_expr: // arith_expr: term (('+'|'-') term)*
-      return this.binary2Brick(eYo.t3.expr.a_expr, board)
-    case eYo.py.term: // term: factor (('*'|'@'|'/'|'%'|'//') factor)*
-      return this.binary2Brick(eYo.t3.expr.m_expr, board)
-    case eYo.py.comparison: // expr (comp_op expr)*
-      return this.binary2Brick(eYo.t3.expr.comparison,, board n => n.n0.n_str)
-    case eYo.py.namedexpr_test:
-      return this.namedexpr_test2Brick(board)
-    case eYo.py.global_stmt:
-      // global_stmt: 'global' NAME (',' NAME)*
-      root = eYo.brick.newReady(board, eYo.t3.stmt.global_stmt)
-      t = root.identifiers_b
-      n = this.n1
-      do {
-        t.connectLast(n.toBrick(board))
-      } while ((n = n.sibling) && (n = n.sibling))
-      return root
-    case eYo.py.nonlocal_stmt:
-      // nonlocal_stmt: 'nonlocal' NAME (',' NAME)*
-      root = eYo.brick.newReady(board, eYo.t3.stmt.nonlocal_stmt)
-      t = root.identifiers_b
-      n = this.n1
-      do {
-        t.connectLast(n.toBrick(board))
-      } while ((n = n.sibling) && (n = n.sibling))
-      return root
-    case eYo.py.tkn.NEWLINE:
-      return eYo.brick.newReady(board, eYo.t3.stmt.blank_stmt)
-    case eYo.py.tkn.ENDMARKER:
-      return  null
+    }
+  case eYo.py.raise_stmt: // raise_stmt: 'raise' [test ['from' test]]
+    root = eYo.brick.newReady(board, eYo.t3.stmt.raise_stmt)
+    if ((n = this.n0.sibling)) {
+      root.expression_s.connect(n.toBrick(board))
+      root.variant_ = eYo.key.EXPRESSION
+      if ((n = n.sibling) && (n = n.sibling)) {
+        root.from_s.connect(n.toBrick(board))
+        root.variant_ = eYo.key.FROM
+      }
+    }
+    return root
+  case eYo.py.or_test: // or_test: and_test ('or' and_test)*
+    return this.binary2Brick(eYo.t3.expr.or_test, board)
+  case eYo.py.and_test: // and_expr: shift_expr ('&' shift_expr)*
+    return this.binary2Brick(eYo.t3.expr.and_test, board)
+  case eYo.py.xor_expr: // xor_expr: and_expr ('^' and_expr)*
+    return this.binary2Brick(eYo.t3.expr.xor_expr, board)
+  case eYo.py.and_expr:
+    return this.binary2Brick(eYo.t3.expr.and_expr, board)
+  case eYo.py.shift_expr: // shift_expr: arith_expr (('<<'|'>>') arith_expr)*
+    return this.binary2Brick(eYo.t3.expr.shift_expr, board)
+  case eYo.py.arith_expr: // arith_expr: term (('+'|'-') term)*
+    return this.binary2Brick(eYo.t3.expr.a_expr, board)
+  case eYo.py.term: // term: factor (('*'|'@'|'/'|'%'|'//') factor)*
+    return this.binary2Brick(eYo.t3.expr.m_expr, board)
+  case eYo.py.comparison: // expr (comp_op expr)*
+    return this.binary2Brick(eYo.t3.expr.comparison, board, n => n.n0.n_str)
+  //TODO: Is it the good one, another case above!!!
+  // case eYo.py.namedexpr_test:
+  //   return this.namedexpr_test2Brick(board)
+  case eYo.py.global_stmt:
+    // global_stmt: 'global' NAME (',' NAME)*
+    root = eYo.brick.newReady(board, eYo.t3.stmt.global_stmt)
+    t = root.identifiers_b
+    n = this.n1
+    do {
+      t.connectLast(n.toBrick(board))
+    } while ((n = n.sibling) && (n = n.sibling))
+    return root
+  case eYo.py.nonlocal_stmt:
+    // nonlocal_stmt: 'nonlocal' NAME (',' NAME)*
+    root = eYo.brick.newReady(board, eYo.t3.stmt.nonlocal_stmt)
+    t = root.identifiers_b
+    n = this.n1
+    do {
+      t.connectLast(n.toBrick(board))
+    } while ((n = n.sibling) && (n = n.sibling))
+    return root
+  case eYo.py.tkn.NEWLINE:
+    return eYo.brick.newReady(board, eYo.t3.stmt.blank_stmt)
+  case eYo.py.tkn.ENDMARKER:
+    return  null
     // case eYo.py.tkn.NUMBER: break
     // case eYo.py.tkn.STRING: break
     // case eYo.py.tkn.INDENT: break
@@ -1637,16 +1636,16 @@ factor: ('+'|'-'|'~') factor | power
     // case eYo.py.func_type_input: break
     // case eYo.py.func_type: break
     // case eYo.py.typelist: break
-    default:
-      if (!this.n0) {
-        throw `2) NOTHING TO DO WITH ${this.name}`
-      } else if (!this.n1) {
-        // console.log(`PASSED ${this.name} to ${this.n0.name}`, )
-        return this.n0.toBrick(board)
-      } else {
-        // eYo.py.gmr.Showtree(eYo.py.gmr._pyParser_Grammar, this)
-        console.error('BREAK HERE TO DEBUG', this.name, this.n_child)
-        throw `3) NOTHING TO DO WITH ${this.name}`
-      }
+  default:
+    if (!this.n0) {
+      throw `2) NOTHING TO DO WITH ${this.name}`
+    } else if (!this.n1) {
+      // console.log(`PASSED ${this.name} to ${this.n0.name}`, )
+      return this.n0.toBrick(board)
+    } else {
+      // eYo.py.gmr.Showtree(eYo.py.gmr._pyParser_Grammar, this)
+      console.error('BREAK HERE TO DEBUG', this.name, this.n_child)
+      throw `3) NOTHING TO DO WITH ${this.name}`
+    }
   }
 }

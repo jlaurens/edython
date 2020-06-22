@@ -49,10 +49,10 @@ eYo.model.allowModelPaths({
  * For edython.
  */
 eYo.stmt.makeBaseC9r({
-  left /** @suppress {globalThis} */ (type) {
+  left /** @suppress {globalThis} */ (type) { // eslint-disable-line
     return this.brick.head || this.brick.foot
-    ? [eYo.t3.stmt.comment_stmt]
-    : eYo.t3.stmt.left.Simple_stmt
+      ? [eYo.t3.stmt.comment_stmt]
+      : eYo.t3.stmt.left.Simple_stmt
   },
   right: {
     fields: {
@@ -61,19 +61,19 @@ eYo.stmt.makeBaseC9r({
         hidden: true
       }
     },
-    check /** @suppress {globalThis} */ (type) {
+    check /** @suppress {globalThis} */ (type) { // eslint-disable-line
       return eYo.t3.stmt.right.Simple_stmt
     }
   },
-  head /** @suppress {globalThis} */ (type) {
+  head /** @suppress {globalThis} */ (type) { // eslint-disable-line
     return this.brick.left
-    ? []
-    : null // except start_stmt ? connections must also have an uncheck_
+      ? []
+      : null // except start_stmt ? connections must also have an uncheck_
   },
-  foot /** @suppress {globalThis} */ (type) {
+  foot /** @suppress {globalThis} */ (type) { // eslint-disable-line
     return this.brick.left
-    ? []
-    : null
+      ? []
+      : null
   },
   properties: {
     isStmt: {
@@ -156,17 +156,16 @@ eYo.stmt.BaseC9r_p.insertBrickAfter = function (belowPrototypeName) {
     var below = eYo.brick.newReady(this, belowPrototypeName)
     var magnet = this.foot_m
     var targetMagnet = magnet.target
-    var magnets = below.magnets
     if (targetMagnet) {
       targetMagnet.disconnect()
-      if (targetMagnet.checkType_(foot_m)) {
-        targetMagnet.target = foot_m
+      if (targetMagnet.checkType_(this.foot_m)) {
+        targetMagnet.target = this.foot_m
       }
     }
-    magnet.target = head_m
+    magnet.target = this.head_m
     if (this.hasFocus) {
-      after.focusOn()
+      below.focusOn()
     }
-    return after
+    return below
   })
 }

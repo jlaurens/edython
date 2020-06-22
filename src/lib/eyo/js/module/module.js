@@ -103,7 +103,7 @@ eYo.o4t.newC9r(eYo.module, 'Item', {
       },
     },
     mandatory_min: {
-        get () {
+      get () {
         var mandatory = eYo.isNA(this.mandatory)
           ? this.ary || 0
           : this.mandatory

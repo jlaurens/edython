@@ -379,7 +379,7 @@ describe ('Tests: Object', function () {
     chai.assert(ab.bar_p)
   })
   it('O4t: validate, willChange, atChange, didChange', function () {
-    ;['validate', 'willChange', 'atChange', 'didChange'].forEach(key => {
+    ['validate', 'willChange', 'atChange', 'didChange'].forEach(key => {
       var ns = eYo.o4t.newNS()
       ns.newC9r('A', {
         properties: {

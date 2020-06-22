@@ -102,7 +102,7 @@ eYo.dlgt.BaseC9r = function (ns, id, C9r, model) {
   var $id, key
   if (ns) {
     if (eYo.isSym(id)) {
-      ;[$id, key] = [id, id.description]
+      [$id, key] = [id, id.description]
     } else {
       if (eYo.isStr(id)) {
         key = id
@@ -113,7 +113,7 @@ eYo.dlgt.BaseC9r = function (ns, id, C9r, model) {
       $id = Symbol(`${ns.name}.${key}`)
     }
   } else if (eYo.isSym(id)) {
-    ;[$id, key] = [id, id.description]
+    [$id, key] = [id, id.description]
   } else {
     if (eYo.isStr(id)) {
       key = id
@@ -593,7 +593,7 @@ eYo.dlgt.BaseC9r = function (ns, id, C9r, model) {
      */
     forEachSubC9r (f, deep) {
       if (eYo.isF(deep)) {
-        ;[f, deep] = [deep, f]
+        [f, deep] = [deep, f]
       }
       this.subC9rs__.forEach(C9r => {
         f(C9r)
@@ -664,14 +664,14 @@ eYo.dlgt.new = function (ns, id, C9r, model) {
   let dlgt_m = model[eYo.$]
   if (eYo.isF(dlgt_m)) {
     Dlgt.prototype.init = SuperDlgt
-    ? function (...$) {
-      this.init = eYo.doNothing
-      SuperDlgt.prototype.init.call(this, ...$)
-      dlgt_m.call(this, ...$)
-    } : function (...$) {
-      this.init = eYo.doNothing
-      dlgt_m.call(this, ...$)
-    }
+      ? function (...$) {
+        this.init = eYo.doNothing
+        SuperDlgt.prototype.init.call(this, ...$)
+        dlgt_m.call(this, ...$)
+      } : function (...$) {
+        this.init = eYo.doNothing
+        dlgt_m.call(this, ...$)
+      }
   }
   if (SuperC9r) {
     SuperC9r[eYo.$].addSubC9r(C9r)
@@ -702,7 +702,7 @@ Object.defineProperties(eYo.dlgt.BaseC9r_p, {
   }}.$),
   hasFinalizedC9r: eYo.descriptorR({$ () {
     let $super = this.super
-    return (!$super || $super.hasFinalizedC9r) && this.hasOwnProperty('finalizeC9r')
+    return (!$super || $super.hasFinalizedC9r) && eYo.objectHasOwnProperty(this, 'finalizeC9r')
   }}.$),
 })
 // ANCHOR modelling functions

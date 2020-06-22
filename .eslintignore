@@ -1,6 +1,10 @@
-test/unit/coverage/**
-test/unit/*.js
-test/e2e/*.js
-src/lib/**
+test/unit/coverage/*
+test/unit/*
+test/e2e/*
+src/lib/*
+!src/lib/eyo
+src/lib/eyo/js/test
+src/lib/eyo/**/*.test.js
+src/lib/eyo/**/*.test.inline.js
 build/*
-src/renderer/setup/i18n-setup.js
+src/vue/renderer/setup/i18n-setup.js

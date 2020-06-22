@@ -1,5 +1,5 @@
 describe('TRY statements', function() {
-  ;[
+  [
     ['try_part', null, 'try: <MISSING STATEMENT>'],
     ['void_except_part', null, 'except: <MISSING STATEMENT>'],
     ['except_part', 'void_except_part', 'except: <MISSING STATEMENT>'],
@@ -17,7 +17,7 @@ describe('TRY statements', function() {
 })
 
 describe('TRY ONLY', function() {
-  ;[
+  [
     ['try_part', null, 'try:\n    <MISSING STATEMENT>']
   ].forEach(Ts => {
     it(`Basic ${Ts[0]} statement`, function() {

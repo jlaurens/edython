@@ -43,7 +43,7 @@ eYo.expr.newC9r('literal', {
  * @param {Element} element the persistent element.
  * @param {Object} [opt]
  */
-eYo.expr.literal.prototype.saveData = function (element, opt) {
+eYo.expr.literal.prototype.saveData = function (element, opt) { // eslint-disable-line
   eYo.expr.literal.eyo.C9r_s.saveData.apply(this, arguments)
   if (this.Value_p == '') {
     element.setAttribute(eYo.key.PLACEHOLDER, this.value_d.model.placeholder)
@@ -135,7 +135,7 @@ eYo.expr.literal[eYo.$newSubC9r]('shortliteral', {
         eYo.t3.expr.shortbytesliteral
       ],
       init: eYo.t3.expr.shortstringliteral,
-      synchronize: /** @this{eYo.data.BaseC9r} */ function (after) {
+      synchronize /** @this{eYo.data.BaseC9r} */ (after) { // eslint-disable-line
         // synchronize the placeholder text
         var p = this.Content_p
         if (!p || !p.length) {
@@ -164,7 +164,7 @@ eYo.expr.literal[eYo.$newSubC9r]('shortliteral', {
         'b', 'B', 'br', 'Br', 'bR', 'BR', 'rb', 'rB', 'Rb', 'RB'],
       init: '',
       didChange (builtin) /** @suppress {globalThis} */ { /** @this{eYo.data.BaseC9r} */
-      builtin()
+        builtin()
         this.brick.value_d.consolidate()
       },
       validate (after) { /** @this{eYo.data.BaseC9r} */
@@ -202,7 +202,7 @@ eYo.expr.literal[eYo.$newSubC9r]('shortliteral', {
         return eYo.isStr(after)? after: eYo.INVALID
       },
       didChange (builtin, after) /** @suppress {globalThis} */ {/** @this{eYo.data.BaseC9r} */ 
-      builtin()
+        builtin()
         var b3k = this.brick
         var F = (xre, type, formatted) => {
           var m = XRegExp.exec(after, xre)
@@ -210,7 +210,7 @@ eYo.expr.literal[eYo.$newSubC9r]('shortliteral', {
             b3k.Prefix_p = m.prefix || ''
             b3k.Delimiter_p = m.delimiter || "'"
             b3k.Content_p = m.content || ''
-            b3k.Subtype_p = m.formatted ? (formatted || type) : type
+            b3k.Subtype_p = m.formatted ? (formatted || type) : type
             return true
           }
           return false

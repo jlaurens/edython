@@ -82,8 +82,8 @@ eYo.stmt.group[eYo.$newSubC9r]('except_part', true, {
         return type === eYo.t3.expr.unset
         || type === eYo.t3.expr.identifier
         || type === eYo.t3.expr.builtin__name
-        ? after
-        : eYo.INVALID
+          ? after
+          : eYo.INVALID
       },
       xml: {
         save (element, opt) /** @suppress {globalThis} */ {
@@ -116,8 +116,8 @@ eYo.stmt.group[eYo.$newSubC9r]('except_part', true, {
           this.brick.variant_ = eYo.key.EXPRESSION
         }
       },
-      didConnect: /** @suppress {globalThis} */ function  (oldTargetM4t, targetOldM4t) {
-        var O = this.brick
+      didConnect (oldTargetM4t, targetOldM4t) { // eslint-disable-line
+        var b3k = this.brick
         b3k.variant === eYo.key.ALIASED || (b3k.variant_ = eYo.key.EXPRESSION)
       }
     },
@@ -140,8 +140,8 @@ eYo.stmt.group[eYo.$newSubC9r]('except_part', true, {
           this.brick.variant_ = eYo.key.ALIASED
         }
       },
-      didConnect: /** @suppress {globalThis} */ function  (oldTargetM4t, targetOldM4t) {
-        var O = this.brick
+      didConnect (oldTargetM4t, targetOldM4t) { // eslint-disable-line
+        var b3k = this.brick
         b3k.variant_ = eYo.key.ALIASED
       }
     }
@@ -149,15 +149,15 @@ eYo.stmt.group[eYo.$newSubC9r]('except_part', true, {
   head: {
     check (type) /** @suppress {globalThis} */ {
       return type === eYo.t3.stmt.except_part
-      ? eYo.t3.stmt[eYo.$previous].except_part
-      : eYo.t3.stmt[eYo.$previous].void_except_part
+        ? eYo.t3.stmt[eYo.$previous].except_part
+        : eYo.t3.stmt[eYo.$previous].void_except_part
     }
   },
   foot: {
     check (type) /** @suppress {globalThis} */ {
       return type === eYo.t3.stmt.except_part
-      ? eYo.t3.stmt[eYo.$next].except_part
-      : eYo.t3.stmt[eYo.$next].void_except_part
+        ? eYo.t3.stmt[eYo.$next].except_part
+        : eYo.t3.stmt[eYo.$next].void_except_part
     }
   }
 })
@@ -176,8 +176,8 @@ eYo.stmt.except_part.prototype.getType = eYo.changer.memoize(
   function () {
     this.setupType(
       this.variant === eYo.key.NONE
-      ? eYo.t3.stmt.void_except_part
-      : eYo.t3.stmt.except_part
+        ? eYo.t3.stmt.void_except_part
+        : eYo.t3.stmt.except_part
     )
     return this.type
   }

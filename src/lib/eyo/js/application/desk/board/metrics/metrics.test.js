@@ -68,8 +68,8 @@ describe('Metrics', function () {
       svg)
     }
     eYo.svg.newElement('circle',
-    {cx: 20, cy: 13, r: 10, fill: 'red'},
-    svg)
+      {cx: 20, cy: 13, r: 10, fill: 'red'},
+      svg)
   })
   it ('SVG scaling', function() {
 
@@ -124,8 +124,8 @@ describe('Metrics', function () {
       svg)
     }
     eYo.svg.newElement('circle',
-    {cx: 20, cy: 13, r: 10, fill: 'red'},
-    svg)
+      {cx: 20, cy: 13, r: 10, fill: 'red'},
+      svg)
   })
   it ('getBoundingClientRect truncated to 1/64th', function () {
     var div0 = document.querySelector('#eyo-desk')

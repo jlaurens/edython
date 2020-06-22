@@ -2,31 +2,31 @@ eYo.provide('test')
 
 eYo.test.randN = (N = 2, snap) => {
   if (N === true || N === false) {
-    ;[N, snap] = [2, N]
+    [N, snap] = [2, N]
   }
   return snap
-  ? Math.round(Math.random()*10**N)
-  : Math.round(Math.random()*10**(2*N))/10**(N)
+    ? Math.round(Math.random()*10**N)
+    : Math.round(Math.random()*10**(2*N))/10**(N)
 }
 
 if (eYo.geom) {
   eYo.geom.randPoint = (N, snap) => {
     if (N === true || N === false) {
-      ;[N, snap] = [2, N]
+      [N, snap] = [2, N]
     }
     return new eYo.geom.Point(snap, eYo.test.randN(N, snap), eYo.test.randN(N, snap))
   }
 
   eYo.geom.randSize = (N, snap) => {
     if (N === true || N === false) {
-      ;[N, snap] = [2, N]
+      [N, snap] = [2, N]
     }
     return new eYo.geom.Size(snap, eYo.test.randN(N, snap), eYo.test.randN(N, snap))
   }
   
   eYo.geom.randRect = (N, snap) => {
     if (N === true || N === false) {
-      ;[N, snap] = [2, N]
+      [N, snap] = [2, N]
     }
     return new eYo.geom.Rect(snap, eYo.test.randN(N, snap), eYo.test.randN(N, snap), eYo.test.randN(N, snap), eYo.test.randN(N, snap))  
   }
@@ -73,7 +73,7 @@ eYo.TESTING = true
 
 chai.Assertion.addProperty('eyo_Num', function () {
   this.assert(
-      eYo.isNum(this._obj)
+    eYo.isNum(this._obj)
     , 'expected #{this} to be a finite number'
     , 'expected #{this} to not be a finite number'
   )
@@ -81,7 +81,7 @@ chai.Assertion.addProperty('eyo_Num', function () {
 
 chai.Assertion.addProperty('eyo_Str', function () {
   this.assert(
-      eYo.isStr(this._obj)
+    eYo.isStr(this._obj)
     , 'expected #{this} to be a string'
     , 'expected #{this} to not be a string'
   )
@@ -89,7 +89,7 @@ chai.Assertion.addProperty('eyo_Str', function () {
 
 chai.Assertion.addProperty('eyo_NS', function () {
   this.assert(
-      eYo.isNS(this._obj)
+    eYo.isNS(this._obj)
     , 'expected #{this} to be a namespace'
     , 'expected #{this} to not be a namespace'
   )
@@ -131,7 +131,7 @@ chai.Assertion.addProperty('eyo_BaseC9r', function () {
 
 chai.Assertion.addProperty('eyo_point', function () {
   this.assert(
-      this._obj instanceof eYo.geom.Point
+    this._obj instanceof eYo.geom.Point
     , 'expected #{this} to be a eYo.geom.Point'
     , 'expected #{this} to not be a eYo.geom.Point'
   )
@@ -139,7 +139,7 @@ chai.Assertion.addProperty('eyo_point', function () {
 
 chai.Assertion.addProperty('eyo_size', function () {
   this.assert(
-      this._obj instanceof eYo.geom.Size
+    this._obj instanceof eYo.geom.Size
     , 'expected #{this} to be a eYo.geom.Size'
     , 'expected #{this} to not be a eYo.geom.Size'
   )
@@ -147,7 +147,7 @@ chai.Assertion.addProperty('eyo_size', function () {
 
 chai.Assertion.addProperty('eyo_rect', function () {
   this.assert(
-      this._obj instanceof eYo.geom.Rect
+    this._obj instanceof eYo.geom.Rect
     , 'expected #{this} to be a eYo.geom.Rect'
     , 'expected #{this} to not be a eYo.geom.Rect'
   )
@@ -253,10 +253,10 @@ chai.use(function (_chai, utils) {
     eYo.isNA(expected.hole) && (expected.hole = actual.isGroup && (!actual.right || actual.right.isComment) ? 1 : 0)
     eYo.isNA(expected.l) && (expected.l = 
       actual.isGroup
-      ? expected.main + expected.hole + expected.suite
-      : actual.isStmt
-        ? expected.header + expected.main + expected.footer
-        : expected.main
+        ? expected.main + expected.hole + expected.suite
+        : actual.isStmt
+          ? expected.header + expected.main + expected.footer
+          : expected.main
     )
     let tol = utils.flag(this, 'tolerance')
     let equal = eYo.test.makeComparator(tol)
@@ -292,9 +292,9 @@ chai.use(function (_chai, utils) {
     var expected = C9r && C9r[eYo.$].name
     this.assert(
       eYo.isSubclass(this._obj, C9r)
-    , `expected ${actual} to be a subclass of ${expected}\n`
-    , `expected ${actual} not to be a subclass of ${expected}\n`
-  )
+      , `expected ${actual} to be a subclass of ${expected}\n`
+      , `expected ${actual} not to be a subclass of ${expected}\n`
+    )
   })
 })
 

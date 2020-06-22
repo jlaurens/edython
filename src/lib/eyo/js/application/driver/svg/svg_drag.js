@@ -223,10 +223,10 @@ eYo.svg.BoardDragSurface = function(container) {
  * @private
  */
 eYo.svg.BoardDragSurface.prototype.dispose = function () {
-  var svg = this.dom.svg
-  var svg = dom.svg
+  let dom = this.dom
+  let svg = dom.svg
   eYo.dom.removeNode(svg.root_)
-  this.dom = dom.svg = svg.root_ = this.dragger_ = null
+  this.dom = dom.svg = svg.root_ = this.dragger_ = eYo.NA
   this.dispose = eYo.doNothing
 }
 
@@ -252,18 +252,18 @@ Object.defineProperties(eYo.svg.BoardDragSurface.prototype, {
  * @param {number} height The height of the board SVG element.
  * @param {number} scale The scale of the board being dragged.
  */
-eYo.svg.BoardDragSurface.prototype.start = function(dragger, width, height) {
+eYo.svg.BoardDragSurface.prototype.start = function(dragger, width, height) { // eslint-disable-line
   this.dragger_ = dragger
   var board = dragger.board
   var brickCanvas = board.dom.svg.canvas_
   var root = this.dom.svg.root_
   eYo.assert(
     root.childNodes.length == 0, 'Already dragging a block.')
-    var coord = eYo.svg.getRelativeWhere(brickCanvas)
-    eYo.dom.SetCssTransform(
-      root,
-      `translate3d(${coord.x.toFixed(0)}px,${coord.y.toFixed(0)}px, 0px)`
-    )
+  var coord = eYo.svg.getRelativeWhere(brickCanvas)
+  eYo.dom.SetCssTransform(
+    root,
+    `translate3d(${coord.x.toFixed(0)}px,${coord.y.toFixed(0)}px, 0px)`
+  )
   this.previousSibling_ = brickCanvas.previousSibling
   root.appendChild(brickCanvas)
   var svg = board.dom.svg

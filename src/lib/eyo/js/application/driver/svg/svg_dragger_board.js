@@ -15,7 +15,7 @@
  * Svg driver for a brick dragger.
  */
 eYo.svg.newDriverC9r('DraggerBoard', {
-    /**
+  /**
    * Initializes the draggerBrick SVG ressources.
    * @param {eYo.dragger.Brick} draggerBrick
    */
@@ -29,14 +29,15 @@ eYo.svg.newDriverC9r('DraggerBoard', {
    * @param {eYo.draggerBrick} draggerBrick
    */
   disposeUI (draggerBrick) {
-    var svg = draggerBrick.dom.svg
+    let dom = draggerBrick.dom
+    let svg = dom.svg
     if (svg) {
       svg.dragSurface = null
       dom.svg = null
     }
   },
   methods: {
-        /**
+    /**
      * Start dragging.
      * @param {eYo.draggerBrick} draggerBrick
      */
@@ -45,8 +46,6 @@ eYo.svg.newDriverC9r('DraggerBoard', {
       // The translation for drag surface bricks,
       // is equal to the current relative-to-surface position,
       // to keep the position in sync as it moves on/off the surface.
-      var brick = draggerBrick.brick_
-      var board = brick.board
       var main = draggerBrick.destination
       var stl = main.board_.dom.div_.style
       stl.display = 'block'
@@ -54,35 +53,13 @@ eYo.svg.newDriverC9r('DraggerBoard', {
       // Execute the move on the top-level SVG component
       if (bds) {
         bds.start(draggerBrick)
-      } else {
-        
+      } else { // eslint-disable-line
+        //TODO: Is it void ?
       }
       // at start the board is centered in the visible area,
       // the whole size is at least 3x3 times the visible area.
       // Prepare the dragging boundaries
       return
-      var svg = board.dom.svg
-      var canvas = svg.canvas_
-      var matrix = canvas.getScreenCTM().inverse()
-      var rect = draggerBrick.desk
-      var point = svg.root_.createSVGPoint()
-      point.x = rect.top
-      point.y = rect.left
-      bds.topLeft_ = eYo.geom.pPoint(point.matrixTransform(matrix))
-      point.x = rect.bottom
-      point.y = rect.right
-      bds.bottomRight_ = eYo.geom.pPoint(point.matrixTransform(matrix))
-      // While dragging, the visible area must be contained within these limits.
-      var limits = bds.limits_ = new eYo.geom.Rect()
-      var topBricks = board.topBricks.filter(b3k => b3k.ui && b3k.ui.rendered)
-      topBricks.forEach(b3k => limits.union(b3k.ui.boundingRect))
-      var brickBoundary = brick.ui.boundingRect
-      var a = brickBoundary.w + 2
-      limits.c -= a
-      limits.c_max += a
-      a = brickBoundary.h + 1
-      limits.l -= a
-      limits.l_max += a
     },
     /**
     * End dragging.

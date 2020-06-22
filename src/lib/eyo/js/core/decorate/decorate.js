@@ -47,9 +47,9 @@ eYo.decorate.reentrant_method = (object, key, f) => {
     var ans
     try {
       ans = f.call(this, ..._)
+      return ans
     } finally {
       this.reentrant_[key] = false
-      return ans
     }
   }
 }

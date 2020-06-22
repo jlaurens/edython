@@ -111,13 +111,13 @@ eYo.expr.newC9r('yield_expr', true, {
           this.brick.variant_ = eYo.key.EXPRESSION
         }
       },
-      didConnect (oldTargetM4t, targetOldM4t) /** @suppress {globalThis} */ {
+      didConnect (oldTargetM4t, targetOldM4t) /** @suppress {globalThis} */ { // eslint-disable-line
         if (this.isSlot) {
           var parent = this.brick.parent
           parent && (parent.variant_ = eYo.key.EXPRESSION)
         }
       },
-      didDisconnect (oldTargetM4t) /** @suppress {globalThis} */ {
+      didDisconnect (oldTargetM4t) /** @suppress {globalThis} */ { // eslint-disable-line
         if (this.isSlot) {
           var parent = this.brick.parent
           parent && (parent.variant_ = parent.expression_s.unwrappedTarget || parent.Expression_p ? eYo.key.EXPRESSION : eYo.key.NONE)
@@ -139,10 +139,10 @@ eYo.expr.newC9r('yield_expr', true, {
           this.brick.variant_ = eYo.key.FROM
         }
       },
-      didConnect (oldTargetM4t, targetOldM4t) /** @suppress {globalThis} */ {
+      didConnect (oldTargetM4t, targetOldM4t) /** @suppress {globalThis} */ { // eslint-disable-line
         this.brick.variant_ = eYo.key.FROM
       },
-      didDisconnect (oldTargetM4t) /** @suppress {globalThis} */ {
+      didDisconnect (oldTargetM4t) /** @suppress {globalThis} */ { // eslint-disable-line
         var b3k = this.brick
         if (b3k.From_p) {
           b3k.variant_ = eYo.key.FROM
@@ -163,7 +163,6 @@ eYo.expr.newC9r('yield_expr', true, {
  * @private
  */
 eYo.expr.yield_expr.prototype.populateContextMenuFirst_ = function (mngr) {
-  var brick = this
   var yorn = eYo.expr.yield_expr.populateContextMenuFirst_.call(this, mngr)
   return eYo.expr.yield_expr.eyo.C9r_s.populateContextMenuFirst_.call(this, mngr) || yorn
 }

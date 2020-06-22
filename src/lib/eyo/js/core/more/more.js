@@ -42,7 +42,7 @@ eYo.more.iterators = function (_p, type) {
   let tMap = type + 'Map'
   _p[tForEach] = function ($this, f) {
     if (!eYo.isF(f)) {
-      ;[$this, f] = [f, $this]
+      [$this, f] = [f, $this]
     }
     let map = this[tMap]
     map && map.forEach(v => f.call($this, v))
@@ -54,7 +54,7 @@ eYo.more.iterators = function (_p, type) {
   }
   _p[tSome] = function ($this, f) {
     if (!eYo.isF(f)) {
-      ;[$this, f] = [f, $this]
+      [$this, f] = [f, $this]
     }
     let map = this[tMap]
     if (map) {
@@ -119,77 +119,77 @@ eYo.more.enhanceO3dValidate = function (eyo, type, thisIsOwner) {
    * @param{Object} model - Models used in constructors.
    */
   eyo._p.modelHandleValidate = thisIsOwner
-  ? function(key, model) {
-    let K = 'validate'
-    let _p = this.C9r_p
-    let f_m = model[K]
-    let f_p = _p[K] || eYo.doReturn2nd
-    if (eYo.isF(f_m)) {
-      if (f_m.length > 2) {
+    ? function(key, model) {
+      let K = 'validate'
+      let _p = this.C9r_p
+      let f_m = model[K]
+      let f_p = _p[K] || eYo.doReturn2nd
+      if (eYo.isF(f_m)) {
+        if (f_m.length > 2) {
         // builtin/before/after
-        _p[K] = function (before, after) {
-          return f_m.call(this.owner, f_p.bind(this), before, after)
-        }
-      } else if (XRegExp.exec(f_m.toString(), eYo.xre.function_builtin)) {
-        _p[K] = function (before, after) {
-          return f_m.call(this.owner, ($after) => {
-            return f_p.call(this, before, $after)
-          }, after)
+          _p[K] = function (before, after) {
+            return f_m.call(this.owner, f_p.bind(this), before, after)
+          }
+        } else if (XRegExp.exec(f_m.toString(), eYo.xre.function_builtin)) {
+          _p[K] = function (before, after) {
+            return f_m.call(this.owner, ($after) => {
+              return f_p.call(this, before, $after)
+            }, after)
+          }
+        } else {
+          _p[K] = f_m.length > 1
+            ? function (before, after) {
+              return f_m.call(this.owner, before, after)
+            } : function (before, after) {
+              return f_m.call(this.owner, after)
+            }
         }
       } else {
-        _p[K] = f_m.length > 1
-        ? function (before, after) {
-          return f_m.call(this.owner, before, after)
-        } : function (before, after) {
-          return f_m.call(this.owner, after)
-        }
+        f_m && eYo.throw(`Unexpected model (${_p[eYo.$].name}/${key}) value validate -> ${f_m}`)
       }
-    } else {
-      f_m && eYo.throw(`Unexpected model (${_p[eYo.$].name}/${key}) value validate -> ${f_m}`)
-    }
-  } : function(key, model) {
-    let K = 'validate'
-    let _p = this.C9r_p
-    let f_p = _p[K] || function (before, after) {
-      return after
-    }
-    let f_m = model[K]
-    if (eYo.isF(f_m)) {
-      if (f_m.length > 2) {
+    } : function(key, model) {
+      let K = 'validate'
+      let _p = this.C9r_p
+      let f_p = _p[K] || function (before, after) {
+        return after
+      }
+      let f_m = model[K]
+      if (eYo.isF(f_m)) {
+        if (f_m.length > 2) {
         // builtin/before/after
-        _p[K] = eYo.decorate.reentrant(K, function (before, after) {
-          return f_m.call(this, (before, after) => {
-            return f_p.call(this, before, after)
-          }, before, after)
-        })
-      } else if (XRegExp.exec(f_m.toString(), eYo.xre.function_builtin)) {
-        _p[K] = eYo.decorate.reentrant(K, function (before, after) {
-          return f_m.call(this, (after) => {
-            return f_p.call(this, before, after)
-          }, after)
-        })
-      } else {
-        _p[K] = f_m.length > 1
-        ? function (before, after) {
-          try {
-            this[K] = f_p
-            return f_m.call(this, before, after)
-          } finally {
-            delete this[K]
-          }
-        } : function (before, after) {
-          try {
-            this[K] = f_p
-            return f_m.call(this, after)
-          } finally {
-            delete this[K]
-          }
+          _p[K] = eYo.decorate.reentrant(K, function (before, after) {
+            return f_m.call(this, (before, after) => {
+              return f_p.call(this, before, after)
+            }, before, after)
+          })
+        } else if (XRegExp.exec(f_m.toString(), eYo.xre.function_builtin)) {
+          _p[K] = eYo.decorate.reentrant(K, function (before, after) {
+            return f_m.call(this, (after) => {
+              return f_p.call(this, before, after)
+            }, after)
+          })
+        } else {
+          _p[K] = f_m.length > 1
+            ? function (before, after) {
+              try {
+                this[K] = f_p
+                return f_m.call(this, before, after)
+              } finally {
+                delete this[K]
+              }
+            } : function (before, after) {
+              try {
+                this[K] = f_p
+                return f_m.call(this, after)
+              } finally {
+                delete this[K]
+              }
+            }
         }
+      } else {
+        f_m && eYo.throw(`Unexpected model (${_p[eYo.$].name}/${key}) value validate -> ${f_m}`)
       }
-    } else {
-      f_m && eYo.throw(`Unexpected model (${_p[eYo.$].name}/${key}) value validate -> ${f_m}`)
     }
-  }
   //>>>
 }
 

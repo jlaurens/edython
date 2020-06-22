@@ -1,5 +1,5 @@
 describe('Comprehension (Basic)', function () {
-  ;[
+  [
     ['comprehension'],
     ['dict_comprehension', 'comprehension']
   ].forEach(args => {

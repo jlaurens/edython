@@ -142,25 +142,25 @@ eYo.event.BrickChange_p.run = function(redo) {
   }
   var value = redo ? this.after : this.before;
   switch (this.element) {
-    case 'field':
-      var field = brick.getField(this.name)
-      if (field) {
-        // Run the validator for any side-effects it may have.
-        // The validator's opinion on validity is ignored.
-        field.callValidator(value);
-        field.setValue(value);
-      } else {
-        console.warn("Can't set non-existent field: " + this.name);
-      }
-      break;
-    case 'collapsed':
-      brick.collapsed = value
-      break
-    case 'disabled':
-      brick.disabled = value
-      break
-    default:
-      console.warn('Unknown change type: ' + this.element)
+  case 'field':
+    var field = brick.getField(this.name)
+    if (field) {
+      // Run the validator for any side-effects it may have.
+      // The validator's opinion on validity is ignored.
+      field.callValidator(value);
+      field.setValue(value);
+    } else {
+      console.warn("Can't set non-existent field: " + this.name);
+    }
+    break;
+  case 'collapsed':
+    brick.collapsed = value
+    break
+  case 'disabled':
+    brick.disabled = value
+    break
+  default:
+    console.warn('Unknown change type: ' + this.element)
   }
 }
 
@@ -276,7 +276,7 @@ eYo.event.BrickDelete_p.run = function(forward) {
  * @constructor
  */
 eYo.event.BrickBase[eYo.$newSubC9r]('BrickMove', {
-  init (mngr, brick) {
+  init (mngr, brick) { // eslint-disable-line
     var location = this.currentLocation
     this.oldParentId = location.parentId
     this.oldName = location.name
@@ -376,7 +376,8 @@ eYo.event.BrickMove_p.run = function(forward) {
   if (b3k.parent) {
     b3k.unplug()
   }
-  if (forward ? this.newCoordinate : this.oldCoordinate) {
+  var coordinate = forward ? this.newCoordinate : this.oldCoordinate
+  if (coordinate) {
     b3k.moveTo(coordinate)
   } else {
     var m4t, targetM4t

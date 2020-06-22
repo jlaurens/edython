@@ -54,36 +54,36 @@ eYo.provide('brick.math')
       title: key
     }
   }
-eYo.library.DATA.Basic_math__module = [
-  {
-    type: eYo.t3.stmt.import_stmt,
-    data: {
-      variant: eYo.key.FROM_MODULE_IMPORT_STAR,
-      from: 'math'
-    }
-  },
-  F('sqrt', 'Racine carrée (square root)'),
-  F('pow', 'Fonction puissance (power), préférer l\'opérateur ** pour les entiers'),
-  F_k('pi', 'π (approximation)'),
-  F('cos', 'Fonction cosinus'),
-  F('sin', 'Fonction sinus'),
-  F('tan', 'Fonction tangente'),
-  F('hypot', 'Fonction hypothénuse (module), distance euclidienne à l\'origine'),
-  F('atan2', 'Fonction angle polaire (argument)'),
-  F('degrees', 'Pour convertir en degrés'),
-  F('radians', 'Pour convertif en radians'),
-  F_k('e', 'e (approximation de la constante d\'Euler)'),
-  F('exp', 'Fonction exponentielle'),
-  F('log', 'Fonction logarithme népérien, donner un deuxième argument pour changer de base'),
-  F('log10', 'Fonction logarithme de base 10'),
-  F('gcd', 'Plus grand diviseur commun (pgcd)'),
-  F('floor', 'Partie entière par défaut'),
-  F('ceil', 'Partie entière par excès'),
-  F('trunc', 'Partie tronquée (parmi les deux parties entières, celles qui est le plus proche de 0) '),
-  F('factorial', 'Factorielle (n!)'),
-  F('acos', 'Fonction arc cosinus'),
-  F('asin', 'Fonction arc sinus'),
-  F('atan', 'Fonction arc tangente'),
+  eYo.library.DATA.Basic_math__module = [
+    {
+      type: eYo.t3.stmt.import_stmt,
+      data: {
+        variant: eYo.key.FROM_MODULE_IMPORT_STAR,
+        from: 'math'
+      }
+    },
+    F('sqrt', 'Racine carrée (square root)'),
+    F('pow', 'Fonction puissance (power), préférer l\'opérateur ** pour les entiers'),
+    F_k('pi', 'π (approximation)'),
+    F('cos', 'Fonction cosinus'),
+    F('sin', 'Fonction sinus'),
+    F('tan', 'Fonction tangente'),
+    F('hypot', 'Fonction hypothénuse (module), distance euclidienne à l\'origine'),
+    F('atan2', 'Fonction angle polaire (argument)'),
+    F('degrees', 'Pour convertir en degrés'),
+    F('radians', 'Pour convertif en radians'),
+    F_k('e', 'e (approximation de la constante d\'Euler)'),
+    F('exp', 'Fonction exponentielle'),
+    F('log', 'Fonction logarithme népérien, donner un deuxième argument pour changer de base'),
+    F('log10', 'Fonction logarithme de base 10'),
+    F('gcd', 'Plus grand diviseur commun (pgcd)'),
+    F('floor', 'Partie entière par défaut'),
+    F('ceil', 'Partie entière par excès'),
+    F('trunc', 'Partie tronquée (parmi les deux parties entières, celles qui est le plus proche de 0) '),
+    F('factorial', 'Factorielle (n!)'),
+    F('acos', 'Fonction arc cosinus'),
+    F('asin', 'Fonction arc sinus'),
+    F('atan', 'Fonction arc tangente'),
   // F('phi', 'Fonction de répartition de la loi normale centrée réduite'),
   // F('fmod', 'modulo avec des nombres, préférer % pour des arguments entiers'),
   // F('fsum', 'Somme pour des nombres entiers ou non, tient compte de problèmes d\'arrondi'),
@@ -110,9 +110,9 @@ eYo.library.DATA.Basic_math__module = [
   // F('erfc', 'Complément à 1 de la fonction erf'),
   // F('gamma', 'Fonction Gamma d\'Euler'),
   // F('lgamma', 'Logarithme népérien de la fonction Gamma')
-]
+  ]
 
-  var F = (name, title) => {
+  F = (name, title) => {
     var key = 'math__'+name
     title && (eYo.tooltip.TITLE[key] = title)
     return {
@@ -125,7 +125,7 @@ eYo.library.DATA.Basic_math__module = [
       title: key
     }
   }
-  var F_k = (name, title) => {
+  F_k = (name, title) => {
     var key = 'math__'+name
     title && (eYo.tooltip.TITLE[key] = title)
     return {

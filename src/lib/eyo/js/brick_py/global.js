@@ -54,7 +54,7 @@ eYo.stmt.newC9r(eYo.t3.stmt.global_stmt, {
         b3k.return_s.incog = after !== eYo.key.RETURN
       },
       xml: {
-        save (element, opt) /** @suppress {globalThis} */ {
+        save (element, opt) /** @suppress {globalThis} */ { // eslint-disable-line
         },
         load (element) /** @suppress {globalThis} */ {
           this.brick.variant_ = element.getAttribute(eYo.key.EYO)
@@ -184,11 +184,10 @@ eYo.stmt.global_stmt.prototype.xmlAttr = function () {
  * @private
  */
 eYo.stmt.global_stmt.prototype.populateContextMenuFirst_ = function (mngr) {
-  var current = this.Variant_p
   var variants = this.variant_d.getAll()
   var F = (i) => {
     var key = variants[i]
-    var content = eYo.dom.createDom(eYo.dom.TagName.SPAN, 'eyo-code',
+    eYo.dom.createDom(eYo.dom.TagName.SPAN, 'eyo-code',
       eYo.do.CreateSPAN(key, 'eyo-code-reserved')
     )
   }
@@ -198,7 +197,7 @@ eYo.stmt.global_stmt.prototype.populateContextMenuFirst_ = function (mngr) {
   mngr.shouldSeparate()
   F = (i) => {
     var key = variants[i]
-    var content = eYo.dom.createDom(eYo.dom.TagName.SPAN, 'eyo-code',
+    eYo.dom.createDom(eYo.dom.TagName.SPAN, 'eyo-code',
       eYo.do.CreateSPAN(key, 'eyo-code-reserved'),
       eYo.do.CreateSPAN(' …', 'eyo-code-placeholder')
     )
