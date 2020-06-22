@@ -13,7 +13,7 @@ const BabiliWebpackPlugin = require('babili-webpack-plugin')
 let mainConfig = {
   mode: 'development',
   entry: {
-    main: path.join(__dirname, '../src/main/index.js')
+    main: path.join(__dirname, '../src/vue/main/index.js')
   },
   externals: [
     ...Object.keys(dependencies || {})

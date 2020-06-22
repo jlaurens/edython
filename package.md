@@ -56,8 +56,9 @@ npm install --save-dev terser
 npm install --save-dev electron-builder
 npm install --save-dev electron-debug
 npm install --save-dev electron-devtools-installer
-npm install --save-dev webpack webpack-dev-server webpack-hot-middleware
+npm install --save-dev webpack webpack-cli webpack-dev-server webpack-hot-middleware
 npm install --save-dev html-webpack-plugin
+npm install --save-dev terser-webpack-plugin
 npm install --save-dev file-loader
 npm install --save-dev raw-loader
 npm install --save-dev vue-loader
@@ -79,11 +80,30 @@ npm install --save-dev postcss-url
 npm install --save-dev chai
 npm install --save-dev cross-env
 npm install --save-dev devtron
+npm install --save-dev @babel/core
+npm install --save-dev @babel/preset-env
 npm install --save-dev babel-register
 npm install --save-dev babel-loader
 npm install --save-dev babel-plugin-transform-runtime
 npm install --save-dev babel-preset-minify
-npm install --save-dev babel-preset-stage-0
+npm install --save-dev @babel/transform-runtime
+npm install --save-dev @babel/plugin-proposal-function-bind
+npm install --save-dev @babel/plugin-proposal-export-default-from
+npm install --save-dev @babel/plugin-proposal-logical-assignment-operators
+npm install --save-dev @babel/plugin-proposal-optional-chaining
+npm install --save-dev @babel/plugin-proposal-pipeline-operator
+npm install --save-dev @babel/plugin-proposal-nullish-coalescing-operator
+npm install --save-dev @babel/plugin-transform-runtime
+npm install --save-dev @babel/plugin-proposal-do-expressions
+npm install --save-dev @babel/plugin-proposal-decorators
+npm install --save-dev @babel/plugin-proposal-function-sent
+npm install --save-dev @babel/plugin-proposal-export-namespace-from
+npm install --save-dev @babel/plugin-proposal-numeric-separator
+npm install --save-dev @babel/plugin-proposal-throw-expressions
+npm install --save-dev @babel/plugin-syntax-dynamic-import
+npm install --save-dev @babel/plugin-syntax-import-meta
+npm install --save-dev @babel/plugin-proposal-class-properties
+npm install --save-dev @babel/plugin-proposal-json-strings
 ```
 
 ```
@@ -115,6 +135,7 @@ npm install --save vue-drawer-layout
 npm install --save vue-i18n
 npm install --save vue-router
 npm install --save vue-split-panel
+npm install --save tippy.js
 npm install --save vue-tippy
 npm install --save vue-template-compiler
 ```
@@ -291,6 +312,7 @@ npm install --save-dev clean-css
 "^3.14.1"
 ```
 npm install --save-dev terser
+npm install --save-dev terser-webpack-plugin
 ```
 ### Electron
 
@@ -315,7 +337,7 @@ npm install --save-dev electron-devtools-installer
 ### webpack
 
 ```
-npm install --save-dev webpack webpack-dev-server webpack-hot-middleware
+npm install --save-dev webpack webpack-cli webpack-dev-server webpack-hot-middleware
 ```
 
 #### html-webpack-plugin: Plugin that simplifies creation of HTML files to serve your bundles
@@ -465,6 +487,18 @@ npm install --save-dev devtron
 
 ### Babel
 
+#### @babel/core: Babel compiler core.
+
+```
+npm install --save-dev @babel/core
+```
+
+#### @babel/preset-env: Babel compiler core.
+
+```
+npm install --save-dev @babel/preset-env
+```
+
 #### babel-register
 The require hook will bind itself to node's require and automatically compile files on the fly.
 
@@ -479,12 +513,12 @@ See `webpack.debug.config.js` for example.
 npm install --save-dev babel-loader
 ```
 
-#### babel-plugin-transform-runtime:
+#### @babel/plugin-transform-runtime:
 Externalise references to helpers and builtins, automatically polyfilling your code without polluting globals. (This plugin is recommended in a library/tool)
 See `.babelrc`.
 
 ```
-npm install --save-dev babel-plugin-transform-runtime
+npm install --save-dev @babel/plugin-transform-runtime
 ```
 
 #### babel-preset-minify: Babel preset for all minify plugins.
@@ -494,11 +528,27 @@ See `.babelrc`.
 npm install --save-dev babel-preset-minify
 ```
 
-#### babel-preset-stage-0: Babel preset for all stage-0 plugins.
+#### Babel presets.
 See `.babelrc`.
-To be removed in a forthcoming future.
 
 ```
-npm install --save-dev babel-preset-stage-0
+npm install --save-dev @babel/transform-runtime
+npm install --save-dev @babel/plugin-proposal-function-bind
+npm install --save-dev @babel/plugin-proposal-export-default-from
+npm install --save-dev @babel/plugin-proposal-logical-assignment-operators
+npm install --save-dev @babel/plugin-proposal-optional-chaining
+npm install --save-dev @babel/plugin-proposal-pipeline-operator
+npm install --save-dev @babel/plugin-proposal-nullish-coalescing-operator
+npm install --save-dev @babel/plugin-proposal-do-expressions
+npm install --save-dev @babel/plugin-proposal-decorators
+npm install --save-dev @babel/plugin-proposal-function-sent
+npm install --save-dev @babel/plugin-proposal-export-namespace-from
+npm install --save-dev @babel/plugin-proposal-numeric-separator
+npm install --save-dev @babel/plugin-proposal-throw-expressions
+npm install --save-dev @babel/plugin-syntax-dynamic-import
+npm install --save-dev @babel/plugin-syntax-import-meta
+npm install --save-dev @babel/plugin-proposal-class-properties
+npm install --save-dev @babel/plugin-proposal-json-strings
 ```
+
 

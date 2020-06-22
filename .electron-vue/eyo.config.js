@@ -51,8 +51,10 @@ var ConfigEyo = function (target, dist, env) {
   this.distLibPath = path.join(this.distPath, 'lib')
   this.staticPath = path.join(this.rootPath, 'static')
   this.srcPath = path.join(this.rootPath, 'src')
+  this.fontPath = path.join(this.srcPath, 'font')
   this.jsPath = path.join(this.srcPath, 'js')
-  this.rendererPath = path.join(this.srcPath, 'vue', 'renderer')
+  this.vuePath = path.join(this.srcPath, 'vue')
+  this.rendererPath = path.join(this.vuePath, 'renderer')
   this.langPath = path.join(this.rendererPath, 'lang')
   this.envPath = path.join(this.rendererPath, 'env', this.env)
   this.componentsPath = path.join(this.rendererPath, 'components')
@@ -64,6 +66,7 @@ var ConfigEyo = function (target, dist, env) {
   console.log('this.staticPath :', this.staticPath)
   console.log('this.srcPath :', this.srcPath)
   console.log('this.jsPath :', this.jsPath)
+  console.log('this.vuePath :', this.vuePath)
   console.log('this.rendererPath :', this.rendererPath)
   console.log('this.langPath :', this.langPath)
   console.log('this.envPath :', this.envPath)
@@ -215,7 +218,7 @@ ConfigEyo.prototype.getConfig = function () {
     new HtmlWebpackPlugin(
       {
         filename: 'index.html',
-        template: path.join(this.srcPath, 'index.ejs'),
+        template: path.join(this.vuePath, 'index.ejs'),
         minify: {
           collapseWhitespace: false,// otherwise python code would not survive?
           removeAttributeQuotes: true,
@@ -387,8 +390,8 @@ ConfigEyo.prototype.enableTippy = function (config) {
   config.plugins.push(
     new CopyWebpackPlugin({
       patterns: [
-        { from: path.join(this.rootPath, 'node_modules/tippy.js/dist/tippy.min.js'),
-          to: path.join(this.distLibPath, 'tippy.min.js')
+        { from: path.join(this.rootPath, 'node_modules/tippy.js/dist/tippy.umd.min.js'),
+          to: path.join(this.distLibPath, 'tippy.umd.min.js')
         },
         { from: path.join(this.rootPath, 'node_modules/tippy.js/dist/tippy.css'),
           to: path.join(this.distLibPath, 'tippy.css')
@@ -412,10 +415,10 @@ ConfigEyo.prototype.enableResources = function (config) {
           toType: 'dir',
         },
         {
-          context: this.rootPath,
-          from: path.join(this.srcPath, 'font/*.woff'),
+          context: this.fontPath,
+          from: '*.woff',
           to: this.distStaticPath,
-          toType: 'dir',
+          toType: 'file',
         },
         {
           context: path.join(this.rootPath, 'gfx'),
@@ -431,7 +434,7 @@ ConfigEyo.prototype.enableResources = function (config) {
         },
         {
           context: path.join(this.rootPath, 'src/lib/eyo/'),
-          from: 'web_workers/**',
+          from: 'web_workers',
           to: this.distPath,
           toType: 'dir',
         },

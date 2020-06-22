@@ -24,7 +24,7 @@ let debugConfig = {
   mode: 'development',
   devtool: '#cheap-module-eval-source-map',
   entry: {
-    renderer: path.join(__dirname, '../src/main/index.dev.js')
+    renderer: path.join(__dirname, '../src/vue/main/index.dev.js')
   },
   externals: [
     ...Object.keys(dependencies || {}).filter(d => !whiteListedModules.includes(d))
@@ -43,11 +43,8 @@ let debugConfig = {
         }
       },
       {
-        test: /\.css$/,
-        use: MiniCssExtractPlugin.extract({
-          fallback: 'style-loader',
-          use: 'css-loader'
-        })
+        test: /\.css$/i,
+        use: [MiniCssExtractPlugin.loader, 'css-loader'],
       },
       {
         test: /\.xml$/,
@@ -90,13 +87,6 @@ let debugConfig = {
         }
       },
       {
-        test: /\.css$/,
-        use: MiniCssExtractPlugin.extract({
-          fallback: 'style-loader',
-          use: 'css-loader'
-        })
-      },
-      {
         test: /\.(mp4|webm|ogg|mp3|wav|flac|aac)(\?.*)?$/,
         loader: 'url-loader',
         options: {
@@ -124,7 +114,7 @@ let debugConfig = {
     new MiniCssExtractPlugin('styles.css'),
     new HtmlWebpackPlugin({
       filename: 'index.html',
-      template: path.resolve(__dirname, '../src/index.ejs'),
+      template: path.resolve(__dirname, '../src/vue/index.ejs'),
       minify: {
         collapseWhitespace: true,
         removeAttributeQuotes: true,
@@ -137,10 +127,15 @@ let debugConfig = {
     }),
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NoEmitOnErrorsPlugin(),
-    new CopyWebpackPlugin([
-      { from: path.resolve(__dirname, '../src/lib/xregexp-all/xregexp-all.js'),
-      to: path.resolve(__dirname, '../dist/electron/lib/xregexp-all.js')
-    }], {debug: 'debug'})
+    new CopyWebpackPlugin({
+      patterns: [
+        {
+          context: path.resolve(__dirname, '../src/lib/xregexp-all/'),
+          from: 'xregexp-all.js',
+          to: path.resolve(__dirname, '../dist/electron/lib/')
+        },
+      ],
+    })
   ],
   output: {
     filename: '[name].js',
@@ -166,14 +161,18 @@ let debugConfig = {
  * The process is not fully automatized.
  */
 if (process.env.EYO_BUILD_MODE === 'debug') {
-  debugConfig.plugins.push(new CopyWebpackPlugin([
-    { from: path.resolve(__dirname, '../src/lib/closure-library/closure/goog/'),
-    to: path.resolve(__dirname, '../dist/electron/lib/closure-library/closure/goog/')
-  }], {debug: 'debug'}))
-  debugConfig.plugins.push(new CopyWebpackPlugin([
-    { from: path.resolve(__dirname, '../src/lib/eyo/'),
-    to: path.resolve(__dirname, '../dist/electron/lib/eyo/')
-  }], {debug: 'debug'}))
+  debugConfig.plugins.push(new CopyWebpackPlugin({
+    patterns: [
+      {
+        from: path.resolve(__dirname, '../src/lib/closure-library/closure/goog/'),
+        to: path.resolve(__dirname, '../dist/electron/lib/closure-library/closure/goog/')
+      },
+      {
+        from: path.resolve(__dirname, '../src/lib/eyo/'),
+        to: path.resolve(__dirname, '../dist/electron/lib/eyo/')
+      },
+    ],
+  }))
 }
 
 /**

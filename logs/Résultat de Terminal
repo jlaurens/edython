@@ -117,7 +117,7 @@ Mar 19 déc 2017 18:35:31 UTC
     Child html-webpack-plugin for "index.html":
              Asset    Size  Chunks  Chunk Names
         index.html  568 kB       0  
-           [0] ./node_modules/html-webpack-plugin/lib/loader.js!./src/index.ejs 1.3 kB {0} [built]
+           [0] ./node_modules/html-webpack-plugin/lib/loader.js!./src/vue/index.ejs 1.3 kB {0} [built]
            [1] ./node_modules/lodash/lodash.js 540 kB {0} [built]
            [2] (webpack)/buildin/module.js 517 bytes {0} [built]
     Child extract-text-webpack-plugin node_modules/extract-text-webpack-plugin/dist node_modules/css-loader/index.js?minimize!node_modules/vue-loader/lib/style-compiler/index.js?{"vue":true,"id":"data-v-cdc4e462","scoped":false,"hasInlineConfig":false}!node_modules/vue-loader/lib/selector.js?type=styles&index=0!src/renderer/App.vue:

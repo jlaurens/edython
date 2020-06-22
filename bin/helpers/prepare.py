@@ -58,7 +58,7 @@ def updateBuild():
   return 1
 
 def update_ejs():
-  p_in = path_out = path_src / 'index.ejs'
+  p_in = path_out = path_vue / 'index.ejs'
   re_start = re.compile(r"^\s*<\!--\s+DYNAMIC DEPS START\s+-->\s*$")
   re_end = re.compile(r"^\s*<\!--\s+DYNAMIC DEPS END\s+-->\s*$")
   with p_in.open('r', encoding='utf-8') as f:
@@ -80,7 +80,7 @@ def update_ejs():
   <!--  DYNAMIC DEPS START  -->
   <script src="lib/closure-library/closure/goog/color/names.js"></script>
       """
-      head.append(rf'      <script src="{(path_lib / d.file_name).relative_to(path_src)}"></script>\n')
+      head.append(f'      <script src="{(path_lib / d.file_name).relative_to(path_src)}"></script>\n')
     head.extend(tail)
     path_out.write_text(''.join(head), encoding='utf-8')
     print(format.ok('... DONE'))

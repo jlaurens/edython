@@ -21,7 +21,7 @@ let hotMiddleware
 function logStats (proc, data) {
   let log = ''
 
-  log += chalk.yellow.bold(`┏ ${proc} Process ${new Array((19 - proc.length) + 1).join('-')}`)
+  log += chalk.blue.bold(`┏ ${proc} Process ${new Array((19 - proc.length) + 1).join('-')}`)
   log += '\n\n'
 
   if (typeof data === 'object') {
@@ -35,7 +35,7 @@ function logStats (proc, data) {
     log += `  ${data}\n`
   }
 
-  log += '\n' + chalk.yellow.bold(`┗ ${new Array(28 + 1).join('-')}`) + '\n'
+  log += '\n' + chalk.blue.bold(`┗ ${new Array(28 + 1).join('-')}`) + '\n'
 
   console.log(log)
 }
@@ -50,14 +50,11 @@ function startRenderer () {
       heartbeat: 2500
     })
 
-    compiler.plugin('compilation', compilation => {
-      compilation.plugin('html-webpack-plugin-after-emit', (data, cb) => {
-        hotMiddleware.publish({ action: 'reload' })
-        cb()
-      })
+    compiler.hooks.compilation.tap('html-webpack-plugin', () => {
+      hotMiddleware.publish({ action: 'reload' })
     })
 
-    compiler.plugin('done', stats => {
+    compiler.hooks.done.tap("Renderer", stats => {
       logStats('Renderer', stats)
     })
 
@@ -81,7 +78,7 @@ function startRenderer () {
 
 function startMain () {
   return new Promise((resolve, reject) => {
-    mainConfig.entry.main = [path.join(__dirname, '../src/main/index.dev.js')].concat(mainConfig.entry.main)
+    mainConfig.entry.main = [path.join(__dirname, '../src/vue/main/index.dev.js')].concat(mainConfig.entry.main)
 
     const compiler = webpack(mainConfig)
 
@@ -156,11 +153,11 @@ function greeting () {
 
   if (text) {
     say(text, {
-      colors: ['yellow'],
+      colors: ['blue'],
       font: 'simple3d',
       space: false
     })
-  } else console.log(chalk.yellow.bold('\n  electron-vue'))
+  } else console.log(chalk.blue.bold('\n  electron-vue'))
   console.log(chalk.blue('  getting ready...') + '\n')
 }
 

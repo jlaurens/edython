@@ -3,6 +3,7 @@ from pathlib import Path
 path_root = Path(__file__).resolve().parent.parent.parent.parent
 path_bin = path_root / 'bin'
 path_src = path_root / 'src'
+path_vue = path_src / 'vue'
 path_lib = path_src  / 'lib'
 path_eyo = path_lib  / 'eyo'
 path_js  = path_eyo  / 'js'
