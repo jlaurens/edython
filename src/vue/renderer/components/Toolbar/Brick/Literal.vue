@@ -77,7 +77,7 @@ export default {
   components: {
     LiteralQuote
   },
-  data: function () {
+  data () {
     return {
       saved_step: undefined,
       prefix_: undefined,

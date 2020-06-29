@@ -56,7 +56,7 @@ export default {
       }
     }
   },
-  data: function () {
+  data () {
     return {
       saved_step: undefined,
       hasModuleTarget_: undefined,

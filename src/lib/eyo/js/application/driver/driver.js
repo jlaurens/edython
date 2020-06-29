@@ -1,7 +1,7 @@
 /**
  * edython
  *
- * Copyright 2019 Jérôme LAURENS.
+ * Copyright 2020 Jérôme LAURENS.
  *
  * @license EUPL-1.2
  */
@@ -24,6 +24,11 @@
 
 eYo.mixinRO(eYo.xre, {
   //<<< mochai: xre
+  /**
+   * Regular expression to get the driver ID form an identifier.
+   * @name{eYo.xre.driverId}
+   * @private
+   */
   driverId: XRegExp(`^(?:(?:\\(.*?\\)|eYo)\\..*?\\.)?(?<path>.*\\.)?(?<Id>.*?)$`),
   //<<< mochai: driverId
   //... ;[
@@ -40,6 +45,11 @@ eYo.mixinRO(eYo.xre, {
   //...   chai.expect(m['Id']).equal(ra[2])
   //... })
   //>>>
+  /**
+   * Regular expression to extract the parent driver ID form an identifier.
+   * @name{eYo.xre.driverId}
+   * @private
+   */
   driverParentId: XRegExp(`^(?<parentId>.*)\\..*?$`),//
   //<<< mochai: driverParentId
   //... var m = XRegExp.exec('foo', eYo.xre.driverParentId)
@@ -57,10 +67,11 @@ eYo.mixinRO(eYo.xre, {
 })
 
 /**
+ * This namespace declares important methods.
  * @name {eYo.driver}
  * @namespace
  */
-eYo.o4t.newNS(eYo, 'driver')
+eYo.o3d.newNS(eYo, 'driver')
 //<<< mochai: Basics
 //... chai.assert(eYo.driver)
 //>>>
@@ -74,9 +85,11 @@ eYo.o4t.newNS(eYo, 'driver')
 //... }
 //>>>
 
+// make a new symbol to let a driver poit to its parent.
 eYo.make$$('parent')
 
-;(() => {
+{
+  // private symbol
   let $C9rMap = Symbol('C9rMap')
   let $map = Symbol('map')
   eYo.mixinFR(eYo.driver, {
@@ -195,7 +208,7 @@ eYo.make$$('parent')
      * This is the recommanded way to create a driver constructor.
      * Actual implementation with fcls, fcfl, dom and svg drivers.
      * Convenient driver constructor maker.
-     * The prototype will have eventually an `doInitUI` or `doDisposeUI`
+     * The prototype will have eventually an `do_initUI` or `do_disposeUI`
      * wrapping the model's eponym methods, if any.
      * The owner will have a default driver named `BaseC9r`,
      * which is expected to be the ancestor of all drivers.
@@ -207,8 +220,8 @@ eYo.make$$('parent')
      * - owner: An object owning the class, basically a namespace object.
      * If the owner is `Foo` and the key is 'Bar', the created constructor
      * is `Foo.Bar`. Actually used with `eYo` as owner, 'dom' or 'svg' as key.
-     * - doInitUI: an optional function with signature (object, ...)->eYo.NA
-     * - doDisposeUI: an optional function with signature (object)->eYo.NA
+     * - do_initUI: an optional function with signature (object, ...)->eYo.NA
+     * - do_disposeUI: an optional function with signature (object)->eYo.NA
      */
     newDriverC9r (id, SuperC9r, driverModel) {
       //<<< mochai: newDriverC9r
@@ -248,21 +261,21 @@ eYo.make$$('parent')
       //... chai.expect(drvr).instanceOf(D2)
       //... var id = eYo.genUID(eYo.IDENT)
       //... NS.newDriverC9r(id, {
-      //...   doInitUI (onr, ...$) {
+      //...   do_initUI (onr, ...$) {
       //...     onr.flag(2, ...$)
       //...   },
       //... })
       //... var drvr = NS.getDriver(id)
-      //... drvr.doInitUI(onr, 3, 4)
+      //... drvr.do_initUI(onr, 3, 4)
       //... flag.expect(1234)
       //... var id = eYo.genUID(eYo.IDENT)
       //... NS.newDriverC9r(id, {
-      //...   doDisposeUI (onr, ...$) {
+      //...   do_disposeUI (onr, ...$) {
       //...     onr.flag(2, ...$)
       //...   },
       //... })
       //... var drvr = NS.getDriver(id)
-      //... drvr.doDisposeUI(onr, 3, 4)
+      //... drvr.do_disposeUI(onr, 3, 4)
       //... flag.expect(1234)
       //>>>
     },
@@ -407,7 +420,7 @@ eYo.make$$('parent')
     },
     //>>>
   })
-})()
+}
 
 eYo.make$$('parentId', 'Handler')
 
@@ -579,30 +592,38 @@ eYo.c9r.newC9r(eYo.driver, eYo.$$.Handler, {
 
 eYo.mixinFR(eYo.driver._p, {
   //<<< mochai: eYo driver methods
+  // Registers the constructor
   makeBaseC9r (...$) {
+    //<<< mochai: makeBaseC9r
     var C9r = eYo.driver.super._p.makeBaseC9r.call(this, ...$)
     this.setDriverC9r('', C9r)
     return C9r
+    //... let NS = eYo.driver.makeNS()
+    //... let C9r = NS.makeBaseC9r()
+    //... chai.expect(C9r).equal(NS.getDriverC9r(''))
+    //>>>
   },
   /**
    * Convenient method to make simple driver forwarders.
-   * Usefull when some methods should simply forward the eponym message to the driver.
+   * Usefull when some methods should simply forward the almost eponym message to the driver.
+   * On return we simply have
+   * ```pttp[key] = (...$) => { return this.driver['do_' + key](this, ...$)}```
    * @param {Object} pttp - a prototype
    * @param {String} key - a function name
    */
-  makeForwarder (pttp, key) {
+  makeForwarder (pttp, ...$) {
     //<<< mochai: makeForwarder
-    pttp[key] = function (...$) {
-      return this.driver[key](this, ...$)
-    }
+    $.forEach(key => pttp[key] = { $ (...$) {
+      return this.driver['do_' + key](this, ...$)
+    }}.$)
     //... var o = eYo.c9r.new({})
     //... o.tag = 1
     //... o.driver = new eYo.Driver('foo', onr)
-    //... o.driver.do_it = function (object, ...$) {
+    //... o.driver.do_bar = function (object, ...$) {
     //...   flag.push(object.tag, 2, ...$, 5)
     //... }
-    //... eYo.driver.makeForwarder(o, 'do_it')
-    //... o.do_it(3, 4)
+    //... eYo.driver.makeForwarder(o, 'bar')
+    //... o.bar(3, 4)
     //... flag.expect(12345)
     //>>>
   },
@@ -621,8 +642,8 @@ eYo.driver.makeBaseC9r(true, {
     //... chai.expect(drvr).not.undefined
     //... chai.expect(drvr.key).equal('foo')
     //... chai.expect(drvr.mngr).equal(onr)
-    //... chai.expect(drvr.doInitUI).eyo_F
-    //... chai.expect(drvr.doDisposeUI).eyo_F
+    //... chai.expect(drvr.do_initUI).eyo_F
+    //... chai.expect(drvr.do_disposeUI).eyo_F
     eYo.mixinRO(this, {mngr})
     //>>>
   },
@@ -634,11 +655,11 @@ eYo.driver.makeBaseC9r(true, {
      * @param {*} object
      * @return {Boolean}
      */
-    doInitUI (unused) { // eslint-disable-line
-      //<<< mochai: doInitUI
+    do_initUI (unused) { // eslint-disable-line
+      //<<< mochai: do_initUI
       return true
       //... let drvr = new eYo.Driver('foo', onr)
-      //... chai.expect(drvr.doInitUI(1, 2, 3)).true
+      //... chai.expect(drvr.do_initUI(1, 2, 3)).true
       //>>>
     },
     /**
@@ -647,11 +668,11 @@ eYo.driver.makeBaseC9r(true, {
      * @param {*} object
      * @return {Boolean}
      */
-    doDisposeUI (unused) { // eslint-disable-line
-      //<<< mochai: doDisposeUI
+    do_disposeUI (unused) { // eslint-disable-line
+      //<<< mochai: do_disposeUI
       return true
       //... let drvr = new eYo.Driver('foo', onr)
-      //... chai.expect(drvr.doDisposeUI(1, 2, 3)).true
+      //... chai.expect(drvr.do_disposeUI(1, 2, 3)).true
       //>>>
     },
     //>>>
@@ -674,36 +695,36 @@ eYo.mixinFR(eYo.Driver[eYo.$]._p, {
     //...   init (key, owner, ...$) {
     //...     owner.flag(...$, 4)
     //...   },
-    //...   doInitUI (what, ...$) {
+    //...   do_initUI (what, ...$) {
     //...     what.flag(2, ...$)
     //...     return true
     //...   },
-    //...   doDisposeUI (what, ...$) {
+    //...   do_disposeUI (what, ...$) {
     //...     what.flag(...$, 4)
     //...   },
     //... })
     //... var foo = new NS.Foo('foo', onr, 2, 3)
     //... flag.expect(1234)
-    //... chai.expect(foo.doInitUI(onr, 3, 4)).true
+    //... chai.expect(foo.do_initUI(onr, 3, 4)).true
     //... flag.expect(1234)
-    //... foo.doDisposeUI(onr, 2, 3)
+    //... foo.do_disposeUI(onr, 2, 3)
     //... flag.expect(1234)
     //... var NS = eYo.driver.newNS()
     //... var d = newDriver(NS, 'X', {
-    //...   doInitUI(onr, ...$) {
+    //...   do_initUI(onr, ...$) {
     //...     onr.flag(2, ...$)
     //...   },
-    //...   doDisposeUI(onr, ...$) {
+    //...   do_disposeUI(onr, ...$) {
     //...     onr.flag(...$, 4)
     //...   },
     //... })
-    //... d.doInitUI(onr, 3, 4)
+    //... d.do_initUI(onr, 3, 4)
     //... flag.expect(1234)
-    //... d.doDisposeUI(onr, 2, 3)
+    //... d.do_disposeUI(onr, 2, 3)
     //... flag.expect(1234)
     model || (model = this.model)
     let C9r_p = this.C9r_p
-    ;['doInitUI', 'doDisposeUI'].forEach(doK => {
+    ;['do_initUI', 'do_disposeUI'].forEach(doK => {
       let f_m = model[doK]
       if (f_m) {
         C9r_p[doK] = f_m

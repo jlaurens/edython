@@ -103,12 +103,12 @@ eYo.o3d.newC9r(eYo.geom, 'Metrics', {
         }
         if (this.scale !== after) {
           var options = this.options
-          if (options && options.maxScale &&
-            after > options.maxScale) {
-            after = options.maxScale
-          } else if (options && options.minScale &&
-            after < options.minScale) {
-            after = options.minScale
+          if (options && options.scaleMax &&
+            after > options.scaleMax) {
+            after = options.scaleMax
+          } else if (options && options.scaleMin &&
+            after < options.scaleMin) {
+            after = options.scaleMin
           }
         }
         return after

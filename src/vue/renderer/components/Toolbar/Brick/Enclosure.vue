@@ -30,7 +30,7 @@ import {mapState, mapGetters} from 'vuex'
   
 export default {
   name: 'InfoEnclosure',
-  data: function () {
+  data () {
     return {
       saved_step: undefined,
       prefix_: undefined,

@@ -11,18 +11,12 @@
  */
 'use strict'
 
-eYo.require('driver')
-
 /**
  * @name {eYo.fcls}
  * @namespace
  */
-eYo.driver.newNS(eYo, 'fcls', {
-  OWNER: new eYo.C9r(),
-})
+eYo.driver.newNS(eYo, 'fcls')
 
-/**
- * @name {eYo.fcls.Mngr}
- * The manager of all the faceless drivers.
- */
-eYo.fcls.makeMngr()
+//<<< mochai: eYo.fcls
+//... chai.assert(eYo.fcls)
+//>>>

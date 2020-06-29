@@ -16,13 +16,14 @@ eYo.forward('magnet')
 /**
  * Faceless driver for magnets.
  */
-eYo.fcls.newDriverC9r('Magnet')
+eYo.fcls.newDriverC9r('Magnet', {
+  methods: {
+    /**
+     * Hilight the given connection.
+     * The default implementation forwards to the driver.
+     */
+    do_focusOn: eYo.doNothing,
+  }
+})
 
-/**
- * Hilight the given connection.
- * The default implementation does nothing.
- * @param {eYo.magnet.BaseC9r} magnet
- */
-eYo.fcls.Magnet.prototype.hilight = eYo.doNothing
-
-console.error('hilight -> focusOn?')
+eYo.fcls.makeForwarder(eYo.Magnet_p, 'focusOn')

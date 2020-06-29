@@ -29,7 +29,7 @@ export default {
     IconBase,
     IconRun
   },
-  data: function () {
+  data () {
     return {
       saved_step: undefined
     }

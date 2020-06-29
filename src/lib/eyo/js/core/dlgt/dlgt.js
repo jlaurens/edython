@@ -91,7 +91,7 @@ eYo.dlgt.declareDlgt = function (_p) {
   object->constructor->eyo->contructor->eyo->constructor->[eYo.$]...
   The Base is its own delegate's constructor
 */
-eYo.dlgt.BaseC9r = function (ns, id, C9r, model) {
+eYo.Dlgt = eYo.dlgt.BaseC9r = function (ns, id, C9r, model) {
   //<<< mochai: eYo.dlgt.BaseC9r
   //... chai.expect(eYo.dlgt).property('BaseC9r')
   if (ns && !eYo.isNS(ns)) {
@@ -107,6 +107,7 @@ eYo.dlgt.BaseC9r = function (ns, id, C9r, model) {
       if (eYo.isStr(id)) {
         key = id
       } else {
+        [id, C9r, model] = [eYo.NA, id, C9r]
         key = '?'
         this.anonymous = true
       }
@@ -152,12 +153,11 @@ eYo.dlgt.BaseC9r = function (ns, id, C9r, model) {
   //>>>
 }
 
-;(() => {
+{
   //<<< mochai: utils
   let _p = eYo.Dlgt_p = eYo.dlgt.BaseC9r_p = eYo.dlgt.BaseC9r.prototype
-
   _p.init = eYo.doNothing
-
+  
   eYo.dlgt.declareDlgt(_p)
   //<<< mochai: delegate
   //... chai.expect(eYo.dlgt.eyo).equal(eYo.dlgt.constructor[eYo.$])
@@ -263,7 +263,7 @@ eYo.dlgt.BaseC9r = function (ns, id, C9r, model) {
     /**
      * Make the init method of the associate contructor.
      * Any constructor must have an init method.
-     * @this {eYo.dlgt.BaseC9r}
+     * @this {eYo.Dlgt}
      * @param {Object} model
      */
     makeC9rInit (model) {
@@ -589,7 +589,7 @@ eYo.dlgt.BaseC9r = function (ns, id, C9r, model) {
      * Iterator
      * @param {Function} helper
      * @param {Boolean} deep - Propagates when true.
-     * @this {eYo.dlgt.BaseC9r}
+     * @this {eYo.Dlgt}
      */
     forEachSubC9r (f, deep) {
       if (eYo.isF(deep)) {
@@ -603,7 +603,7 @@ eYo.dlgt.BaseC9r = function (ns, id, C9r, model) {
     /**
      * Iterator
      * @param {Function} helper
-     * @this {eYo.dlgt.BaseC9r}
+     * @this {eYo.Dlgt}
      */
     someSubC9r (f) {
       for (let C9r of this.subC9rs__) {
@@ -615,7 +615,7 @@ eYo.dlgt.BaseC9r = function (ns, id, C9r, model) {
     },
   })
   //>>>
-})()
+}
 
 eYo.make$$('unknown')
 
@@ -652,7 +652,7 @@ eYo.dlgt.new = function (ns, id, C9r, model) {
   eYo.isC9r(C9r) && eYo.throw(`Already a C9r: ${C9r} in eYo.dlgt.new`)
   // process
   let SuperC9r = C9r[eYo.$SuperC9r]
-  let SuperDlgt = (SuperC9r && SuperC9r[eYo.$] && SuperC9r[eYo.$].constructor) || eYo.dlgt.BaseC9r
+  let SuperDlgt = (SuperC9r && SuperC9r[eYo.$] && SuperC9r[eYo.$].constructor) || eYo.Dlgt
   let Dlgt = function (ns, id, C9r, model) {
     SuperDlgt.call(this, ns, id, C9r, model)
   }
@@ -678,7 +678,7 @@ eYo.dlgt.new = function (ns, id, C9r, model) {
   }
   // in next function call, all the parameters are required
   // but some may be eYo.NA
-  /*Dlgt[eYo.$] = */new eYo.dlgt.BaseC9r(ns, 'BaseC9r', Dlgt, {})
+  /*Dlgt[eYo.$] = */new eYo.Dlgt(ns, 'BaseC9r', Dlgt, {})
   return new Dlgt(ns, id, C9r, model)
 }
 
@@ -789,8 +789,7 @@ eYo.mixinFR(eYo.dlgt.BaseC9r_p, {
    */
   methodsMerge (model) {
     let _p = this.C9r_p
-    Object.keys(model).forEach(k => {
-      let m = model[k]
+    for (var [k, m] in Object.entries(model)) {
       if (eYo.isF(m)) {
         if (m.length === 1 && _p[k] && XRegExp.exec(m.toString(), eYo.xre.function_overriden)) {
           _p[k] = eYo.asF(m.call(this, eYo.toF(_p[k]).bind(this)))
@@ -798,7 +797,7 @@ eYo.mixinFR(eYo.dlgt.BaseC9r_p, {
           _p[k] = m
         }
       } 
-    })
+    }
   },
   /**
    * For subclassers.
@@ -852,29 +851,7 @@ eYo.mixinFR(eYo.dlgt.BaseC9r_p, {
   //>>>
 })
 
-// The delegate of `eYo.dlgt.BaseC9r` is an instance of itself.
-new eYo.dlgt.BaseC9r(eYo.dlgt, 'Base…', eYo.dlgt.BaseC9r, {})
 
-eYo.dlgt.BaseC9r[eYo.$].finalizeC9r()
+// eYo.dlgt.BaseC9r[eYo.$].finalizeC9r()
 
-eYo.mixinFR(eYo, {
-  Dlgt: eYo.dlgt.BaseC9r,
-  //<<< mochai: eYo.Dlgt
-  //... chai.expect(eYo).property('Dlgt')
-  //... chai.expect(eYo.Dlgt).equal(eYo.dlgt.BaseC9r)
-  //>>>
-  /**
-   * 
-   * @param {*} what 
-   * @return {Boolean}
-   */
-  isaDlgt (what) {
-    //<<< mochai: isaDlgt
-    //... C9r = function () {}
-    //... let eyo = eYo.dlgt.new('foo', C9r,{})
-    //... chai.expect(eyo).eyo_Dlgt
-    //... chai.expect(C9r).not.eyo_Dlgt
-    return !!what && what instanceof eYo.Dlgt
-    //>>>
-  }
-})
+

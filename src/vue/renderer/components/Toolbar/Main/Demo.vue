@@ -58,7 +58,7 @@ export default {
     IconBase,
     IconDemo
   },
-  data: function () {
+  data () {
     return {
       on: 0.5,
       demos: [

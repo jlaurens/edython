@@ -1370,7 +1370,7 @@ eYo.driver.makeForwarder(eYo.board.BaseC9r_p, 'updateShape')
  * @param {eYo.board.BaseC9r} board - The board of which the shape would need an update
  * @protected
  */
-eYo.fcfl.Board._p.updateShape = eYo.doNothing
+eYo.fcfl.Board._p.do_updateShape = eYo.doNothing
 
 /**
  * Hide the board.

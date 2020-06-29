@@ -67,7 +67,7 @@ export default {
     IconNew,
     IconSaveLoad
   },
-  data: function () {
+  data () {
     return {
       open_theta: 1,
       save_theta: 1,

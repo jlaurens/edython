@@ -90,7 +90,7 @@ export default {
     IconMenu,
     CheckMark
   },
-  data: function () {
+  data () {
     return {
     }
   },

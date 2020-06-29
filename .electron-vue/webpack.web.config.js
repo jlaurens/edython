@@ -11,6 +11,12 @@ const CopyWebpackPlugin = require('copy-webpack-plugin')
 
 const eYoConfig = require('./eyo.config.js')
 
+const chalk = require('chalk')
+
+let rootPath = path.join(__dirname, '..')
+
+console.log(chalk.keyword('orange').bold('→ .electron-vue/webpack.web.config.js'))
+
 let webConfig = eYoConfig.get('web', 'web', process.env.BABEL_ENV)
 
 /**
@@ -26,8 +32,8 @@ if (process.env.NODE_ENV === 'production') {
     new CopyWebpackPlugin(
       [
         {
-          from: path.join(__dirname, '../static'),
-          to: path.join(__dirname, '../dist/web/static'),
+          from: path.join(rootPath, 'static'),
+          to: path.join(rootPath, 'dist/web/static'),
           ignore: ['.*']
         }
       ]

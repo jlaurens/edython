@@ -14,8 +14,8 @@
 eYo.forward('dnd.Mngr')
 
 /**
- * @name {eYo.fcls.Dnd}
+ * @name {eYo.dom.Dnd}
  * @constructor
  * Faceless driver for the zoomer.
  */
-eYo.fcls.newDriverC9r('DnD')
+eYo.dom.newDriverC9r('DnD')

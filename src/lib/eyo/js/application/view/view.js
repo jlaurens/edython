@@ -136,17 +136,17 @@ eYo.dlgt.BaseC9r_p.viewEnhanced = function () {
   
   eYo.mixinFR(this._p, {
     /**
-     * Make the `doInitUI` and `doDisposeUI` methods.
+     * Make the `do_initUI` and `do_disposeUI` methods.
      * @param {Object} ui - model with `init` and `dispose` keys.
      */
     uiMerge (ui) {
       //<<< mochai: uiMerge
       let init_m = ui && ui.init
       let C9r_p = this.C9r_p
-      let init_p = C9r_p && C9r_p.doInitUI // always exists
+      let init_p = C9r_p && C9r_p.do_initUI // always exists
       if (init_m) {
         //<<< mochai: ui.init
-        this.C9r_p.doInitUI = XRegExp.exec(init_m.toString(), eYo.xre.function_builtin)
+        this.C9r_p.do_initUI = XRegExp.exec(init_m.toString(), eYo.xre.function_builtin)
           ? function (...$) {
             init_m.call(this, () => {
               init_p.call(this, ...$)
@@ -167,7 +167,7 @@ eYo.dlgt.BaseC9r_p.viewEnhanced = function () {
         //...   },
         //... })
         //... var V = NS.new({}, 'foo', onr)
-        //... // V.doInitUI(5, 6)
+        //... // V.do_initUI(5, 6)
         //... flag.expect(156)
         //... var V = NS.new({
         //...   ui: {
@@ -176,7 +176,7 @@ eYo.dlgt.BaseC9r_p.viewEnhanced = function () {
         //...     },
         //...   },
         //... }, 'foo', onr)
-        //... // V.doInitUI(5, 6)
+        //... // V.do_initUI(5, 6)
         //... flag.expect(156256)
         //>>>
       }
@@ -185,7 +185,7 @@ eYo.dlgt.BaseC9r_p.viewEnhanced = function () {
       let dispose_p = C9r_p && C9r_p.disposeUI
       if (dispose_m) {
         //<<< mochai: ui.dispose
-        this.C9r_p.doDisposeUI = XRegExp.exec(dispose_m.toString(), eYo.xre.function_builtin)
+        this.C9r_p.do_disposeUI = XRegExp.exec(dispose_m.toString(), eYo.xre.function_builtin)
           ? function (...$) {
             dispose_m.call(this, () => {
               dispose_p.call(this, ...$)              
@@ -206,7 +206,7 @@ eYo.dlgt.BaseC9r_p.viewEnhanced = function () {
         //...   },
         //... })
         //... var V = NS.new({}, 'foo', onr)
-        //... // V.doDisposeUI(5, 6)
+        //... // V.do_disposeUI(5, 6)
         //... flag.expect(356)
         //... var V = NS.new({
         //...   ui: {
@@ -215,7 +215,7 @@ eYo.dlgt.BaseC9r_p.viewEnhanced = function () {
         //...     },
         //...   },
         //... }, 'foo', onr)
-        //... // V.doDisposeUI(5, 6)
+        //... // V.do_disposeUI(5, 6)
         //... flag.expect(356456)
         //>>>
       }
@@ -535,10 +535,10 @@ eYo.View[eYo.$].methodsMerge({
   //...   prepareUI (instance, ...$) {
   //...     flag.push(1, instance.eyo.model.bar, ...$)
   //...   },
-  //...   doInitUI (instance, ...$) {
+  //...   do_initUI (instance, ...$) {
   //...     flag.push(2, instance.eyo.model.bar, ...$)
   //...   },
-  //...   doDisposeUI (instance, ...$) {
+  //...   do_disposeUI (instance, ...$) {
   //...     flag.push(3, instance.eyo.model.bar, ...$)
   //...   },
   //... }
@@ -575,17 +575,17 @@ eYo.View[eYo.$].methodsMerge({
    * Default implementation calls the inherited method
    * and forwards to the views.
    */
-  doInitUI (...$) {
-    //<<< mochai: doInitUI
+  do_initUI (...$) {
+    //<<< mochai: do_initUI
     this.initUI = eYo.doNothing
-    this.ui_driver.doInitUI(this, ...$)
-    this.viewForEach(v => v.doInitUI(...$))
+    this.ui_driver.do_initUI(this, ...$)
+    this.viewForEach(v => v.do_initUI(...$))
     //... let V = eYo.view.new(model, 'V', onr)
     //... V.ui_driver = ui_driver
     //... V.viewForEach(V => {
     //...   V.ui_driver = ui_driver
     //... })
-    //... V.doInitUI(8, 9)
+    //... V.do_initUI(8, 9)
     //... flag.expect(2489258926892789)
     //>>>
   },
@@ -593,13 +593,13 @@ eYo.View[eYo.$].methodsMerge({
    * Make the ui.
    * Default implementation forwards to the driver.
    * One shot function until the next disposeUI.
-   * Calls `prepareUI` then `doInitUI`.
+   * Calls `prepareUI` then `do_initUI`.
    * Override the latter when necessary.
    */
   initUI (...$) {
     try {
       this.prepareUI(...$)
-      this.doInitUI(...$)
+      this.do_initUI(...$)
     } finally {
       delete this.disposeUI
     }
@@ -608,29 +608,29 @@ eYo.View[eYo.$].methodsMerge({
    * Dispose of the ui.
    * Default implementation forwards to the driver.
    */
-  doDisposeUI (...$) {
-    //<<< mochai: doInitUI
-    this.ui_driver.doDisposeUI(this, ...$)
+  do_disposeUI (...$) {
+    //<<< mochai: do_initUI
+    this.ui_driver.do_disposeUI(this, ...$)
     this.viewForEach(v => v.disposeUI(...$))
     //... let V = eYo.view.new(model, 'V', onr)
     //... V.ui_driver = ui_driver
     //... V.viewForEach(V => {
     //...   V.ui_driver = ui_driver
     //... })
-    //... V.doDisposeUI(8, 9)
+    //... V.do_disposeUI(8, 9)
     //... flag.expect(3489358936893789)
     //>>>
   },
   /**
    * Dispose of the ui.
-   * Default implementation forwards to `doDisposeUI`.
+   * Default implementation forwards to `do_disposeUI`.
    * Override the latter.
    */
   disposeUI (...$) {
     //<<< mochai: initUI/disposeUI
     try {
       this.disposeUI = eYo.doNothing
-      this.doDisposeUI(...$)
+      this.do_disposeUI(...$)
     } finally {
       delete this.initUI
     }

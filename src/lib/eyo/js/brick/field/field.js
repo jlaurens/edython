@@ -1,7 +1,7 @@
 /**
  * edython
  *
- * Copyright 2019 Jérôme LAURENS.
+ * Copyright 2020 Jérôme LAURENS.
  *
  * @license EUPL-1.2
  */
@@ -22,93 +22,6 @@ eYo.dfs.newNS(eYo, 'field', {
   STATUS_BUILTIN: 'builtin',
   BIND: 'bind',
 })
-
-eYo.field.allowModelPaths({
-  [eYo.model.ROOT]: 'fields',
-  '(?:slots\\.\\w+\\.)?fields\\.\\w+': [
-    'order', // number,
-    'value', // '(',
-    'reserved', // : '.',
-    'separator', // : true,
-    'hidden', // : true,
-    'variable', // : true, obsolete
-    'validate', // : true,
-    'edit', // : foo,
-    'startEditing', // : true|function,
-    'endEditing', // : true|function,
-    'didLoad', //  () => {},
-    'willRender', //  () => {},
-  ],
-})
-
-;(() => {
-  let endEditing = function () {
-    var data = this.data
-    eYo.assert(data, `No data bound to field ${this.name}/${this.brick.type}`)
-    var ans = this.validate(this.text)
-    if (ans) {
-      data.fromField(ans)
-    } else {
-      this.text = data.toText()
-    }
-  }
-  eYo.field.allowModelShortcuts({
-    '(?:slots\\.\\w+\\.|right\\.)?fields\\.\\w+': (before, p) => {
-      if (eYo.isD(before)) {
-        let a = new Set('value', 'reserved', 'builtin', 'comment', 'edit')
-        let b = Object.keys(before).filter(x => a.has(x))
-        b.length > 1 && eYo.throw(`Only one key of 'value', 'reserved', 'builtin', 'comment' and 'edit' at ${p}`)
-        if (eYo.isStr(before.edit)) {
-          before.text__ = before.edit
-          before.status = eYo.field.STATUS_NONE
-        } else if (eYo.isStr(before.value)) {
-          before.text__ = before.value
-          // this is just a label field
-          // field = new eYo.field.Label(owner, name, model.value || '')
-          before.status = eYo.field.STATUS_NONE
-        } else if (eYo.isStr(before.reserved)) {
-          before.text__ = before.reserved
-          // this is just a label field
-          // field = new eYo.fieldLabel(owner, name, model.reserved)
-          before.status = eYo.field.STATUS_RESERVED
-        } else if (eYo.isStr(before.builtin)) {
-          before.text__ = before.builtin
-          // this is just a label field
-          // field = new eYo.field.Label(owner, name, model.builtin)
-          before.status = eYo.field.STATUS_BUILTIN
-        } else if (eYo.isStr(before.comment)) {
-          before.text__ = before.comment
-          // this is just a label field
-          // field = new eYo.field.Label(owner, name, model.comment)
-          eYo.status = eYo.field.STATUS_COMMENT
-        } else if ([
-          eYo.field.STATUS_NONE,
-          eYo.field.STATUS_COMMENT,
-          eYo.field.STATUS_RESERVED,
-          eYo.field.STATUS_BUILTIN,
-        ].includes(before.status)) {
-          before.text__ = ''
-        } else {
-          console.error(before)
-          eYo.throw(`Bad model ${before} at ${p}`)
-        }
-      } else {
-        return {
-          value: before,
-        }
-      }
-    },
-    '(?:slots\\.\\w+\\.|right\\.)?fields\\.\\w+.startEditing': (before, p) => { // eslint-disable-line
-      return eYo.isF(before) ? before : eYo.doNothing
-    },
-    '(?:slots\\.\\w+\\.|right\\.)?fields\\.\\w+.endEditing': (before, p) => { // eslint-disable-line
-      return eYo.isF(before) ? before : endEditing
-    },
-    '(?:slots\\.\\w+\\.|right\\.)?fields\\.\\w+.(?:didLoad|willRender)': (before, p) => { // eslint-disable-line
-      return eYo.isF(before) ? before : eYo.INVALID
-    },
-  })
-})()
 
 eYo.require('geom.Size')
 eYo.require('xre')
@@ -145,56 +58,57 @@ eYo.key.END,
 eYo.key.SUFFIX,
 eYo.key.COMMENT_MARK,
 eYo.key.COMMENT
+*/
 
-/**
- * The model path.
- * @see The `new` method.
- * @param {String} key
- */
-eYo.field._p.modelPath = function (key) {
-  return eYo.isStr(key) ? `fields.${key}` : 'fields'
-}
-
-/**
- * The model Base used to derive a new class.
- * @see The `new` method.
- * @param {Object} model
- * @param {Object} key
- */
-eYo.field._p.modelBaseC9r = function (model, key) { // eslint-disable-line
-  return model.edit || model.endEditing || model.startEditing
-    ? eYo.field.Input
-    : eYo.field.Label
-}
-
-/**
- * For subclassers.
- * Called from ``modelMakeC9r``.
- * @param {Object} prototype
- * @param {String} key
- * @param {Object} model
- */
-eYo.field._p.modelHandle = function (_p, name, model) {
-  let willRender_m = model.willRender
-  if (eYo.isF(willRender_m)) {
-    if (willRender_m.length) {
-      _p.willRender = function () {
-        willRender_m.call(this, () => {
-          eYo.field.BaseC9r_p.willRender.call(this)
-        })
-      }
-    } else {
-      _p.willRender = function () {
-        try {
-          this.willRender = eYo.field.BaseC9r_p.willRender
-          willRender_m.call(this)
-        } finally {
-          delete this.willRender
+eYo.mixinFR(eYo.field._p, {
+  /**
+   * The model path.
+   * @see The `new` method.
+   * @param {String} key
+   */
+  modelPath (key) {
+    return eYo.isStr(key) ? `fields.${key}` : 'fields'
+  },
+  /**
+   * The model Base used to derive a new class.
+   * @see The `new` method.
+   * @param {Object} model
+   * @param {Object} key
+   */
+  modelBaseC9r (model, key) { // eslint-disable-line
+    return model.edit || model.endEditing || model.startEditing
+      ? eYo.field.Input
+      : eYo.field.Label
+  },
+  /**
+   * For subclassers.
+   * Called from ``modelMakeC9r``.
+   * @param {Object} prototype
+   * @param {String} key
+   * @param {Object} model
+   */
+  modelHandle (_p, name, model) {
+    let willRender_m = model.willRender
+    if (eYo.isF(willRender_m)) {
+      if (willRender_m.length) {
+        _p.willRender = function () {
+          willRender_m.call(this, () => {
+            eYo.field.BaseC9r_p.willRender.call(this)
+          })
+        }
+      } else {
+        _p.willRender = function () {
+          try {
+            this.willRender = eYo.field.BaseC9r_p.willRender
+            willRender_m.call(this)
+          } finally {
+            delete this.willRender
+          }
         }
       }
     }
-  }
-}
+  },
+})
 
 /**
  * Abstract class for text fields.
@@ -202,14 +116,17 @@ eYo.field._p.modelHandle = function (_p, name, model) {
  * @param {string} text The initial content of the field.
  * @constructor
  */
-eYo.field.makeBaseC9r({
-  init (bsm, name) {
-    this.name_ = name
-    this.text_ = this.model.text__
-    this.reentrant_ = {}
+eYo.field.makeBaseC9r(true, {
+  init (name, bsm) {
+    //<<< mochai: init
+    this.text_ = this.model.text__ || ''
     Object.defineProperty(bsm, `${name}_f`, { value: this})
     console.warn('Defer next line to the owner ?')
     bsm.hasUI && this.initUI()
+    //... let f = eYo.field.new('foo', onr)
+    //... chai.expect(f.text).equal('')
+    //... chai.expect(onr.foo_f).equal(f)
+    //>>>
   },
   properties: {
     status: eYo.field.STATUS_NONE, // one of STATUS_... above
@@ -229,16 +146,16 @@ eYo.field.makeBaseC9r({
      */
     text: {
       validate (after) {
-        return after ? String(after) : eYo.INVALID
+        return eYo.isDef(after) ? String(after) : eYo.INVALID
       },
       willChange(before, after) {
-        this.brick.fireChangeEvent('field', this.name, before, after)
+        this.owner.fireChangeEvent('field', this.name, before, after)
       },
       /**
        * 
        */
       set (builtin, after) {
-        this.brick.changer.wrap(() => {
+        this.owner.changer.wrap(() => {
           builtin(after)
           this.size.setFromText(after)
         })
@@ -258,13 +175,10 @@ eYo.field.makeBaseC9r({
        * Sets whether this editable field is visible or not.
        * @param {boolean} after True if visible.
        */
-      didChange (after) /** @suppress {globalThis} */ {
+      didChange (after) /** @suppress {globalThis} */ { // eslint-disable-line
         var d = this.ui_driver
         d && d.displayedUpdate(this)
-        if (this.brick.rendered) {
-          this.brick.render()
-          after && this.brick.bumpNeighbours_()
-        }
+        this.owner.rendered && this.owner.render()
       },
     },
     css_class: {},
@@ -293,7 +207,7 @@ eYo.field.makeBaseC9r({
      */
     isCurrentlyEditable: {
       get () {
-        return this.editable && this.brick.editable
+        return this.editable && this.owner.editable
       },
     },
     isComment: {
@@ -458,7 +372,7 @@ eYo.field.newC9r('Input', {
       } else if (this.placeholderText_) {
         return this.placeholderText_
       }
-      if (this.brick) {
+      if (this.owner) {
         var ph = model => {
           var placeholder = model && model.placeholder
           if (eYo.isNum(placeholder)) {
@@ -479,4 +393,49 @@ eYo.field.newC9r('Input', {
     },
   },
 })
+{
+  let endEditing = { $ () {
+    var data = this.data
+    eYo.assert(data, `No data bound to field ${this.name}/${this.owner.type}`)
+    var ans = this.validate(this.text)
+    if (ans) {
+      data.fromField(ans)
+    } else {
+      this.text = data.toText()
+    }
+  }}.$
+
+  eYo.Field[eYo.$].finalizeC9r([
+    'order', // number,
+    'value', // '(',
+    'reserved', // : '.',
+    'separator', // : true,
+    'hidden', // : true,
+    'variable', // : true, obsolete
+    'validate', // : true,
+    'edit', // : foo,
+  ], eYo.model.manyDescriptorF(
+    'didLoad', //  () => {},
+    'willRender', //  () => {},
+  ), {
+    startEditing: {
+      [eYo.model.VALIDATE] (before, p) { // eslint-disable-line
+        return eYo.isF(before)
+          ? before
+          : before
+            ? eYo.doNothing
+            : eYo.INVALID
+      },
+    },
+    endEditing: {
+      [eYo.model.VALIDATE] (before, p) { // eslint-disable-line
+        return eYo.isF(before)
+          ? before
+          : before
+            ? endEditing
+            : eYo.INVALID
+      },
+    },
+  })
+}
 

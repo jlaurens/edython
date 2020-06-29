@@ -11,6 +11,12 @@ const CopyWebpackPlugin = require('copy-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 
+const chalk = require('chalk')
+
+console.log(chalk.keyword('orange').bold('→ .electron-vue/webpack.debug.config.js'))
+
+let rootPath = path.join(__dirname, '..')
+
 /**
  * List of node_modules to include in webpack bundle
  *
@@ -24,7 +30,7 @@ let debugConfig = {
   mode: 'development',
   devtool: '#cheap-module-eval-source-map',
   entry: {
-    renderer: path.join(__dirname, '../src/vue/main/index.dev.js')
+    renderer: path.join(rootPath, 'src/vue/main/index.dev.js')
   },
   externals: [
     ...Object.keys(dependencies || {}).filter(d => !whiteListedModules.includes(d))
@@ -114,14 +120,14 @@ let debugConfig = {
     new MiniCssExtractPlugin('styles.css'),
     new HtmlWebpackPlugin({
       filename: 'index.html',
-      template: path.resolve(__dirname, '../src/vue/index.ejs'),
+      template: path.resolve(rootPath, 'src/vue/index.ejs'),
       minify: {
         collapseWhitespace: true,
         removeAttributeQuotes: true,
         removeComments: true
       },
       nodeModules: process.env.NODE_ENV !== 'production'
-        ? path.resolve(__dirname, '../node_modules')
+        ? path.resolve(rootPath, 'node_modules')
         : false,
       full_debug: process.env.NODE_ENV === 'production'? false: true,// NOT IN PRODUCTION
     }),
@@ -130,9 +136,9 @@ let debugConfig = {
     new CopyWebpackPlugin({
       patterns: [
         {
-          context: path.resolve(__dirname, '../src/lib/xregexp-all/'),
+          context: path.resolve(rootPath, 'src/lib/xregexp-all/'),
           from: 'xregexp-all.js',
-          to: path.resolve(__dirname, '../dist/electron/lib/')
+          to: path.resolve(rootPath, 'dist/electron/lib/')
         },
       ],
     })
@@ -140,15 +146,15 @@ let debugConfig = {
   output: {
     filename: '[name].js',
     libraryTarget: 'commonjs2',
-    path: path.join(__dirname, '../dist/electron')
+    path: path.join(rootPath, 'dist/electron')
   },
   resolve: {
     alias: {
-      '@': path.join(__dirname, '../src/renderer'),
-      '@lang': path.join(__dirname, '../src/renderer/lang'),
+      '@': path.join(rootPath, 'src/renderer'),
+      '@lang': path.join(rootPath, 'src/renderer/lang'),
       'vue$': 'vue/dist/vue.esm.js',
-      'eyo': path.resolve(__dirname, '../src/lib/eyo/'),
-      'assets': path.resolve(__dirname, '../src/renderer/assets/')
+      'eyo': path.resolve(rootPath, 'src/lib/eyo/'),
+      'assets': path.resolve(rootPath, 'src/renderer/assets/')
     },
     extensions: ['.js', '.vue', '.json', '.css', '.node']
   },
@@ -164,12 +170,12 @@ if (process.env.EYO_BUILD_MODE === 'debug') {
   debugConfig.plugins.push(new CopyWebpackPlugin({
     patterns: [
       {
-        from: path.resolve(__dirname, '../src/lib/closure-library/closure/goog/'),
-        to: path.resolve(__dirname, '../dist/electron/lib/closure-library/closure/goog/')
+        from: path.resolve(rootPath, 'src/lib/closure-library/closure/goog/'),
+        to: path.resolve(rootPath, 'dist/electron/lib/closure-library/closure/goog/')
       },
       {
-        from: path.resolve(__dirname, '../src/lib/eyo/'),
-        to: path.resolve(__dirname, '../dist/electron/lib/eyo/')
+        from: path.resolve(rootPath, 'src/lib/eyo/'),
+        to: path.resolve(rootPath, 'dist/electron/lib/eyo/')
       },
     ],
   }))
@@ -181,7 +187,7 @@ if (process.env.EYO_BUILD_MODE === 'debug') {
 if (process.env.NODE_ENV !== 'production') {
   debugConfig.plugins.push(
     new webpack.DefinePlugin({
-      '__static': `"${path.join(__dirname, '../static').replace(/\\/g, '\\\\')}"`
+      '__static': `"${path.join(rootPath, 'static').replace(/\\/g, '\\\\')}"`
     })
   )
 }
@@ -196,8 +202,8 @@ if (process.env.NODE_ENV === 'production') {
     new BabiliWebpackPlugin(),
     new CopyWebpackPlugin([
       {
-        from: path.join(__dirname, '../static'),
-        to: path.join(__dirname, '../dist/electron/static'),
+        from: path.join(rootPath, 'static'),
+        to: path.join(rootPath, 'dist/electron/static'),
         ignore: ['.*']
       }
     ]),

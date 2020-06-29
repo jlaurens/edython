@@ -17,3 +17,7 @@ eYo.forward('board')
  * Shared application driver.
  */
 eYo.fcls.newDriverC9r('Board')
+
+//<<< mochai: eYo.fcls.Board
+//... chai.assert(eYo.fcls.Board)
+//>>>

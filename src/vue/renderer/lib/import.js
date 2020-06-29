@@ -1,8 +1,10 @@
-import 'babel-polyfill'
+import "core-js/stable"
+import "regenerator-runtime/runtime"
+
 import lodash from 'lodash'
 import pako from 'pako'
-import { TweenLite } from 'gsap/TweenMax'
-import tippy from 'tippy.js/dist/tippy.js'
+import gsap from 'gsap'
+import tippy from 'tippy.js/dist/tippy-bundle.umd.js'
 import axios from 'axios'
 import Stacktrace from 'stack-trace'
 
@@ -12,7 +14,7 @@ eYo.$$ = {
   eYo,
   pako,
   _: lodash,
-  TweenLite,
+  gsap,
   tippy,
   http: axios,
   Stacktrace

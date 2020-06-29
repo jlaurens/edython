@@ -12,6 +12,8 @@ const webpackHotMiddleware = require('webpack-hot-middleware')
 const mainConfig = require('./webpack.main.config')
 const rendererConfig = process.env.EYO_BUILD_MODE === 'debug' ? require('./webpack.debug.config'): require('./webpack.renderer.config')
 
+console.log(chalk.keyword('orange').bold('→ .electron-vue/dev-server.js'))
+
 console.warn('EYO_BUILD_MODE: ', process.env.EYO_BUILD_MODE)
 
 let electronProcess = null

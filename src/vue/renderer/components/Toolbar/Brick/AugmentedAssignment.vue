@@ -52,7 +52,7 @@ export default {
       default: null
     }
   },
-  data: function () {
+  data () {
     return {
       saved_step: undefined,
       name_: undefined,

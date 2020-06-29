@@ -61,7 +61,7 @@ export default {
       default: item => item
     }
   },
-  data: function () {
+  data () {
     return {
       saved_step: undefined,
       chosen_: undefined,

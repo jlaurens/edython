@@ -83,7 +83,7 @@ eYo.view.newC9r('Workspace', {
     },
     scale: {
       get () {
-        return this.options.zoom.startScale || 1
+        return this.options.zoom.scaleStart || 1
       },
     },
     /**

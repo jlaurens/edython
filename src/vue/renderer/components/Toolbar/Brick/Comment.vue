@@ -32,7 +32,7 @@ import {mapState, mapGetters} from 'vuex'
 
 export default {
   name: 'InfoStmtComment',
-  data: function () {
+  data () {
     return {
       saved_step: undefined,
       variant_: undefined,

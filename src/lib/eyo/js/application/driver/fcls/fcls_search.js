@@ -16,28 +16,18 @@ eYo.forward('section.Search')
 /**
  * Faceless driver for the search view.
  */
-eYo.fcls.newDriverC9r('Search')
+eYo.fcls.newDriverC9r('Search', {
+  methods: {
+    /**
+     * Initiate the search UI.
+     * @param {eYo.dom.Search} search  The search controller we must init the toolbar of.
+     */
+    toolbarInitUI: eYo.doNothing,
+    /**
+     * Dispose of the search UI.
+     * @param {eYo.dom.Search} search  The search controller we must dispose of the toolbar of.
+     */
+    toolbarDisposeUI: eYo.doNothing,
+  },
+})
 
-/**
- * Initiate the search UI.
- * @param {eYo.dom.Search} search  The search controller we must init the UI of.
- */
-eYo.fcls.Search.prototype.doInitUI = eYo.doNothing
-
-/**
- * Dispose of the search UI.
- * @param {eYo.dom.Search} search  The search controller we must dispose of the UI of.
- */
-eYo.fcls.Search.prototype.doDisposeUI = eYo.doNothing
-
-/**
- * Initiate the search UI.
- * @param {eYo.dom.Search} search  The search controller we must init the toolbar of.
- */
-eYo.fcls.Search.prototype.toolbarInitUI = eYo.doNothing
-
-/**
- * Dispose of the search UI.
- * @param {eYo.dom.Search} search  The search controller we must dispose of the toolbar of.
- */
-eYo.fcls.Search.prototype.toolbarDisposeUI = eYo.doNothing

@@ -39,7 +39,7 @@ export default {
     IconBase,
     IconDisplay
   },
-  data: function () {
+  data () {
     return {
       left: true,
       right: true

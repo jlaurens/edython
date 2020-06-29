@@ -61,7 +61,7 @@ export default {
       default: false
     }
   },
-  data: function () {
+  data () {
     return {
       saved_step: 0,
       variant_: undefined,

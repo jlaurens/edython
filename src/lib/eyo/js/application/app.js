@@ -7,7 +7,7 @@
  */
 
 /**
- * @fileoverview Top application class, eYo.app.BaseC9r is an instance.
+ * @fileoverview Top application class.
  * @author jerome.laurens@u-bourgogne.fr (Jérôme LAURENS)
  */
 'use strict'
@@ -70,15 +70,14 @@ eYo.forward('audio')
  *  Configures zooming behaviour.
  *  {controls: true,
  *           wheel: true,
- *           startScale: 1.0,
- *           maxScale: 10,
- *           minScale: 0.1,
+ *           scaleStart: 1.0,
+ *           scaleMax: 10,
+ *           scaleMin: 0.1,
  *           scaleSpeed: 1.2}
  */
 eYo.app.newC9r('Options', {
   init (options) {
-    var readOnly = !!options.readOnly
-    if (readOnly) {
+    if ((this.readOnly = !!options.readOnly)) {
       var hasTrashcan = false
       var hasCollapse = false
       var hasDisable = false
@@ -89,7 +88,6 @@ eYo.app.newC9r('Options', {
       hasDisable = eYo.asDef(options.disable, true)
       hasSounds = eYo.asDef(options.sounds, true)
     }
-    this.readOnly = readOnly
     this.hasTrashcan = hasTrashcan
     this.collapse = hasCollapse
     this.disable = hasDisable
@@ -120,39 +118,18 @@ eYo.app.newC9r('Options', {
  * @return {!Object} A dictionary of normalized options.
  * @private
  */
-eYo.app._p.parseZoom_ = function (options) {
-  options || (options = {})
+eYo.app._p.parseZoom_ = function (options = {}) {
   var zoom = options.zoom || {}
-  if (zoom.controls === eYo.NA) {
-    options.controls = false
-  } else {
-    options.controls = !!zoom.controls
+  options.controls = !!zoom.controls
+  options.wheel = !!zoom.wheel
+  let f = (s, d) => {
+    let p = parseFloat(s)
+    return isNaN(p) ? d : p
   }
-  if (zoom.wheel === eYo.NA) {
-    options.wheel = false
-  } else {
-    options.wheel = !!zoom.wheel
-  }
-  if (zoom.startScale === eYo.NA) {
-    options.startScale = 1
-  } else {
-    options.startScale = parseFloat(zoom.startScale)
-  }
-  if (zoom.maxScale === eYo.NA) {
-    options.maxScale = 3
-  } else {
-    options.maxScale = parseFloat(zoom.maxScale)
-  }
-  if (zoom.minScale === eYo.NA) {
-    options.minScale = 0.1
-  } else {
-    options.minScale = parseFloat(zoom.minScale)
-  }
-  if (zoom.scaleSpeed === eYo.NA) {
-    options.scaleSpeed = 1.2
-  } else {
-    options.scaleSpeed = parseFloat(zoom.scaleSpeed)
-  }
+  options.scaleStart = f(zoom.scaleStart, 1)
+  options.scaleMax = f(zoom.scaleMax, 3)
+  options.scaleMin = f(zoom.scaleMin, 0.1)
+  options.scaleSpeed = f(zoom.scaleSpeed, 1.2)
   return options
 }
 
@@ -225,15 +202,6 @@ eYo.app.makeBaseC9r({
         return this
       },
     },
-    /**
-     * Is the user currently dragging a brick or scrolling a board?
-     * @type {boolean} True if currently dragging or scrolling.
-     */
-    isDragging: {
-      get () {
-        return this.motion__.isDragging
-      },
-    },
   },
   aliases: {
     'motion.isDragging': 'isDragging',
@@ -280,75 +248,141 @@ eYo.app.makeBaseC9r({
         b3k.board.scrollBrickTopLeft(b3k.id)
       }
     },
+    /**
+     * Paste a brick from the local clipboard.
+     * @private
+     */
+    doPaste: eYo.doNothing,
+    /**
+     * Delete this brick and the next ones if requested.
+     * For edython.
+     * @param {eYo.Brick} b3k - The brick to delete.
+     * @param {boolean} deep - whether to delete the next bricks too.
+     */
+    deleteBrick (b3k, deep) {
+      let brd = b3k.clipboard
+      if (b3k && b3k.deletable && !brd.readOnly) {
+        if (b3k.hasFocus) {
+          // prepare a connection or a block to be selected
+          var m4t
+          if ((m4t = b3k.out_m)) {
+            m4t = m4t.target
+          } else if ((m4t = b3k.foot_m)) {
+            var t9k = m4t.targetBrick
+          }
+        }
+        brd.eventMngr.groupWrap(() => {
+          this.hideChaff()
+          if (deep) {
+            do {
+              var low = b3k.foot
+              b3k.dispose(false, true)
+            } while ((b3k = low))
+          } else {
+            b3k.dispose(true, true)
+          }
+        })
+        if (m4t && m4t.board) {
+          m4t.focusOn()
+        } else if (t9k) {
+          t9k.focusOn()
+        }
+      }
+    },
+    /**
+     * Copy a brick onto the local clipboard.
+     * @param {eYo.brick.BaseC9r} b3k - Brick to be copied.
+     * @private
+     */
+    copyBrick (b3k, deep) {
+      let xml = eYo.xml.brickToDom(b3k, {noId: true, noNext: !deep})
+      // Copy only the selected brick and internal bricks.
+      // Encode start position in XML.
+      let xy = b3k.xy
+      xml.setAttribute('x', xy.x)
+      xml.setAttribute('y', xy.y)
+      this.clipboard.xml_ = xml
+      this.clipboard.source_ = b3k.board
+      this.didCopyBrick && this.didCopyBrick(b3k, xml)
+    },
+    /**
+     * Close tooltips, context menus, dropdown selections, etc.
+     */
+    hideChaff: eYo.doNothing,
   },
 })
 
-/**
- * Paste a brick from the local clipboard.
- * @private
- */
-eYo.app.BaseC9r_p.paste = eYo.doNothing
+eYo.o4t.BaseC9r[eYo.$][eYo.o4t.BaseC9r[eYo.$].p6y$.merge]({
+  /**
+   * The root application
+   * @type {eYo.app}
+   */
+  app: {
+    lazy () {
+      let o = this.owner
+      return o && o.app
+    },
+    reset (resetter) {
+      this.ownedForEach(x => {
+        x.app_p && x.app_p.reset()
+      })
+      resetter()
+    },
+    /**
+     * The app's audio manager
+     * @readonly
+     * @type {eYo.dom.Audio}
+     */
+    audio: {
+      get () {
+        let a = this.app ; return a && a.audio
+      },
+    },
+    /**
+     * The app's desk
+     * @readonly
+     * @type {eYo.view.Desk}
+     */
+    desk: {
+      get () {
+        let a = this.app ; return a && a.desk
+      },
+    },
+    /**
+     * The desk's flyout...
+     * @readonly
+     * @type {eYo.flyout.View}
+     */
+    flyout: {
+      get () {
+        let d = this.desk ; return d && d.flyout
+      },
+    },
+    /**
+     * The desk's board
+     * @readonly
+     * @type {eYo.board}
+     */
+    board: {
+      get () {
+        let d = this.desk ; return d && d.board
+      },
+    },
+    /**
+     * The desk's workspace...
+     * @readonly
+     * @type {eYo.view.Workspace}
+     */
+    workspace: {
+      get () {
+        let d = this.desk ; return d && d.workspace
+      },
+    },
+  },
+})
 
-/**
- * Delete this brick and the next ones if requested.
- * For edython.
- * @param {eYo.brick.BaseC9r} b3k - The brick to delete.
- * @param {boolean} deep
- */
-eYo.app.BaseC9r_p.deleteBrick = function (b3k, deep) {
-  let brd = b3k.clipboard
-  if (b3k && b3k.deletable && !brd.readOnly) {
-    if (b3k.hasFocus) {
-      // prepare a connection or a block to be selected
-      var m4t
-      if ((m4t = b3k.out_m)) {
-        m4t = m4t.target
-      } else if ((m4t = b3k.foot_m)) {
-        var t9k = m4t.targetBrick
-      }
-    }
-    brd.eventMngr.groupWrap(() => {
-      this.hideChaff()
-      if (deep) {
-        do {
-          var low = b3k.foot
-          b3k.dispose(false, true)
-        } while ((b3k = low))
-      } else {
-        b3k.dispose(true, true)
-      }
-    })
-    if (m4t && m4t.board) {
-      m4t.focusOn()
-    } else if (t9k) {
-      t9k.focusOn()
-    }
-  }
-}
-
-/**
- * Copy a brick onto the local clipboard.
- * @param {eYo.brick.BaseC9r} brick - Brick to be copied.
- * @private
- */
-eYo.app.BaseC9r_p.copyBrick = function (brick, deep) {
-  var xml = eYo.xml.brickToDom(brick, {noId: true, noNext: !deep})
-  // Copy only the selected brick and internal bricks.
-  // Encode start position in XML.
-  var xy = brick.xy
-  xml.setAttribute('x', xy.x)
-  xml.setAttribute('y', xy.y)
-  this.clipboard.xml_ = xml
-  this.clipboard.source_ = brick.board
-  this.didCopyBrick && this.didCopyBrick(brick, xml)
-}
-
-/**
- * Close tooltips, context menus, dropdown selections, etc.
- */
-eYo.app.BaseC9r_p.hideChaff = eYo.doNothing
-
-;((eyo) => {
+{
+  let eyo = eYo.o4t.BaseC9r[eYo.$]
   eyo[eyo.p6y$.merge]({
     /**
      * The root application
@@ -356,8 +390,15 @@ eYo.app.BaseC9r_p.hideChaff = eYo.doNothing
      */
     app: {
       lazy () {
+        //<<< mochai: app
         let o = this.owner
         return o && o.app
+        //... let o = eYo.o4t.new(onr, 'o')
+        //... onr.app = 421
+        //... chai.expect(o.app).equal(421)
+        //... let oo = eYo.o4t.new(o, 'oo')
+        //... chai.expect(oo.app).equal(421)
+        //>>>
       },
       reset (resetter) {
         this.ownedForEach(x => {
@@ -417,7 +458,7 @@ eYo.app.BaseC9r_p.hideChaff = eYo.doNothing
       },
     },
   })
-})(eYo.o4t.BaseC9r[eYo.$])
+}
 
 eYo.o3d.BaseC9r[eYo.$].modelMerge({
   aliases: {

@@ -14,76 +14,78 @@
 /**
  * Faceless driver for Focus managers.
  */
-eYo.fcls.newDriverC9r('Focus')
+eYo.fcls.newDriverC9r('Focus', {
+  methods: {
+    /**
+     * Init the main focus manager.
+     * @param {eYo.focus.Main} mainMngr  The main focus manager
+     */
+    do_mainInitUI: eYo.doNothing,
+    /**
+     * Init the main focus manager.
+     * @param {eYo.focus.Main} mainMngr  The main focus manager
+     */
+    do_mainDisposeUI: eYo.doNothing,
+    /**
+     * Init a standard focus manager.
+     * @param {eYo.focus.Mngr} mngr  The standard focus manager
+     */
+    do_mngrInitUI: eYo.doNothing,
+    /**
+     * Init a standard focus manager.
+     * @param {eYo.focus.Main} mngr  The standard focus manager
+     */
+    do_mngrDisposeUI: eYo.doNothing,
+    /**
+     * Focus on a board.
+     * @param {eYo.focus.Main} mngr  The main focus manager that should put focus on a board.
+     */
+    do_boardOn: eYo.doNothing,
 
-/**
- * Init the main focus manager.
- * @param {eYo.focus.Main} mainMngr  The main focus manager
- */
-eYo.fcls.Focus.prototype.mainInitUI = eYo.doNothing
+    /**
+     * Focus off a board.
+     * @param {eYo.focus.Main} mngr  The main focus manager that should put focus off a board.
+     */
+    do_boardOff: eYo.doNothing,
 
-/**
- * Init the main focus manager.
- * @param {eYo.focus.Main} mainMngr  The main focus manager
- */
-eYo.fcls.Focus.prototype.mainDisposeUI = eYo.doNothing
+    /**
+     * Focus on a board.
+     * @param {eYo.focus.Mngr} mngr  The focus manager that should put focus on a brick.
+     */
+    do_brickOn: eYo.doNothing,
 
-/**
- * Init a standard focus manager.
- * @param {eYo.focus.Mngr} mngr  The standard focus manager
- */
-eYo.fcls.Focus.prototype.mngrInitUI = eYo.doNothing
+    /**
+     * Focus off a brick.
+     * @param {eYo.focus.Mngr} mngr  The focus manager that should put focus off a brick.
+     */
+    do_brickOff: eYo.doNothing,
 
-/**
- * Init a standard focus manager.
- * @param {eYo.focus.Main} mngr  The standard focus manager
- */
-eYo.fcls.Focus.prototype.mngrDisposeUI = eYo.doNothing
+    /**
+     * Focus on a field.
+     * @param {eYo.focus.Mngr} mngr  The focus manager that should put focus on a field.
+     */
+    do_fieldOn: eYo.doNothing,
 
-/**
- * Focus on a board.
- * @param {eYo.focus.Main} mngr  The main focus manager that should put focus on a board.
- */
-eYo.fcls.Focus.prototype.boardOn = eYo.doNothing
+    /**
+     * Focus off a field.
+     * @param {eYo.focus.Mngr} mngr  The focus manager that should put focus off a field.
+     */
+    do_fieldOff: eYo.doNothing,
 
-/**
- * Focus off a board.
- * @param {eYo.focus.Main} mngr  The main focus manager that should put focus off a board.
- */
-eYo.fcls.Focus.prototype.boardOff = eYo.doNothing
+    /**
+     * Focus on a magnet.
+     * @param {eYo.focus.Mngr} mngr  The focus manager that should put focus on a magnet.
+     */
+    do_magnetOn: eYo.doNothing,
 
-/**
- * Focus on a board.
- * @param {eYo.focus.Mngr} mngr  The focus manager that should put focus on a brick.
- */
-eYo.fcls.Focus.prototype.brickOn = eYo.doNothing
+    /**
+     * Focus off a magnet.
+     * @param {eYo.focus.Mngr} mngr  The focus manager that should put focus off a magnet.
+     */
+    do_magnetOff: eYo.doNothing,
+  },
+})
 
-/**
- * Focus off a brick.
- * @param {eYo.focus.Mngr} mngr  The focus manager that should put focus off a brick.
- */
-eYo.fcls.Focus.prototype.brickOff = eYo.doNothing
 
-/**
- * Focus on a field.
- * @param {eYo.focus.Mngr} mngr  The focus manager that should put focus on a field.
- */
-eYo.fcls.Focus.prototype.fieldOn = eYo.doNothing
 
-/**
- * Focus off a field.
- * @param {eYo.focus.Mngr} mngr  The focus manager that should put focus off a field.
- */
-eYo.fcls.Focus.prototype.fieldOff = eYo.doNothing
 
-/**
- * Focus on a magnet.
- * @param {eYo.focus.Mngr} mngr  The focus manager that should put focus on a magnet.
- */
-eYo.fcls.Focus.prototype.magnetOn = eYo.doNothing
-
-/**
- * Focus off a magnet.
- * @param {eYo.focus.Mngr} mngr  The focus manager that should put focus off a magnet.
- */
-eYo.fcls.Focus.prototype.magnetOff = eYo.doNothing

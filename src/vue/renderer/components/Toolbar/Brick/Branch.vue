@@ -50,7 +50,7 @@ export default {
       }
     }
   },
-  data: function () {
+  data () {
     return {
       saved_step: undefined,
       if_: undefined,

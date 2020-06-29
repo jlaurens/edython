@@ -87,7 +87,7 @@ export default {
     MainStorage,
     MainMode
   },
-  data: function () {
+  data () {
     return {
       selected: eYo.$$.eYo.App.CONSOLE,
       titles: {

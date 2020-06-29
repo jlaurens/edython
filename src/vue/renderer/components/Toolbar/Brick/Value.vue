@@ -47,7 +47,7 @@ export default {
       }
     }
   },
-  data: function () {
+  data () {
     return {
       saved_step: undefined,
       value_: undefined

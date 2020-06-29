@@ -45,7 +45,7 @@ export default {
     IconClap,
     IconGear
   },
-  data: function () {
+  data () {
     return {
       step: 1
     }

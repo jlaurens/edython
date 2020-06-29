@@ -19,7 +19,7 @@ export default {
   components: {
         Modifier // eslint-disable-line 
   },
-  data: function () {
+  data () {
     return {
       saved_step: undefined,
       expression_: undefined

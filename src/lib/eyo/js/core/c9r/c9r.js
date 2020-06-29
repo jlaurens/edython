@@ -457,7 +457,7 @@ eYo.mixinFR(eYo.dlgt.BaseC9r_p, {
     //... chai.expect(C9r).eyo_BaseC9r
     if (!this.anonymous) {
       let parentNS = this.parentNS
-      if (parentNS && eYo.objectHasOwnProperty((this._p, 'key') || eYo.objectHasOwnProperty(this, 'key'))) {
+      if (parentNS && (eYo.objectHasOwnProperty(this._p, 'key') || eYo.objectHasOwnProperty(this, 'key'))) {
         // Convenient shortcut
         var K = eYo.do.toTitleCase(this.key)
         eYo.mixinRO(parentNS, {

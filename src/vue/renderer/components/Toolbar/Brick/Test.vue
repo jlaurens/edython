@@ -57,7 +57,7 @@ export default {
       }
     }
   },
-  data: function () {
+  data () {
     return {
       saved_step: undefined,
       lhs_: undefined,

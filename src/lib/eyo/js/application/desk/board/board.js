@@ -901,10 +901,10 @@ eYo.board.BaseC9r_p.zoom = function(center, amount) {
   var scaleChange = Math.pow(speed, amount)
   // Clamp scale within valid range.
   var newScale = this.scale * scaleChange
-  if (newScale > options.maxScale) {
-    scaleChange = options.maxScale / this.scale
-  } else if (newScale < options.minScale) {
-    scaleChange = options.minScale / this.scale
+  if (newScale > options.scaleMax) {
+    scaleChange = options.scaleMax / this.scale
+  } else if (newScale < options.scaleMin) {
+    scaleChange = options.scaleMin / this.scale
   }
   if (scaleChange == 1) {
     return // No change in zoom.

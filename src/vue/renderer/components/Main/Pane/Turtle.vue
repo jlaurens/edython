@@ -41,7 +41,7 @@ export default {
       default: undefined
     }
   },
-  data: function () {
+  data () {
     return {
       resizeSensor: null
     }

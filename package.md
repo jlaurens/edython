@@ -37,7 +37,6 @@ npm install --save stack-trace
 npm install --save popper
 npm install --save tippy.js
 npm install --save xregexp
-npm install --save electron
 npm install --save chalk
 npm install --save cfonts
 npm install --save del
@@ -53,6 +52,7 @@ npm install --save-dev eslint-plugin-vue@next
 npm install --save-dev babel-eslint
 npm install --save-dev clean-css
 npm install --save-dev terser
+npm install --save-dev electron
 npm install --save-dev electron-builder
 npm install --save-dev electron-debug
 npm install --save-dev electron-devtools-installer
@@ -228,12 +228,6 @@ npm install --save tippy.js
 npm install --save xregexp
 ```
 
-### electron: 
-
-```
-npm install --save electron
-```
-
 ### chalk: Terminal string styling done right
 
 ```
@@ -314,7 +308,12 @@ npm install --save-dev clean-css
 npm install --save-dev terser
 npm install --save-dev terser-webpack-plugin
 ```
-### Electron
+
+### electron: 
+
+```
+npm install --save-dev electron
+```
 
 #### electron-builder
 
@@ -337,7 +336,27 @@ npm install --save-dev electron-devtools-installer
 ### webpack
 
 ```
-npm install --save-dev webpack webpack-cli webpack-dev-server webpack-hot-middleware
+npm install --save-dev webpack
+npm install --save-dev webpack-cli
+```
+
+#### Server
+
+##### webpack-dev-server: Serves a webpack app. Updates the browser on changes.
+
+See `.electron-vue/dev-server.js`.
+Run from `npm run dev`.
+
+```
+npm install --save-dev webpack-dev-server
+```
+
+##### webpack-hot-middleware: Webpack hot reloading you can attach to your own server
+
+See `.electron-vue/dev-client.js`
+
+```
+npm install --save-dev webpack-hot-middleware
 ```
 
 #### html-webpack-plugin: Plugin that simplifies creation of HTML files to serve your bundles
@@ -392,6 +411,8 @@ npm install --save-dev node-loader
 
 #### sass-loader: Loads a Sass/SCSS file and compiles it to CSS.
 
+See [https://vue-loader.vuejs.org/guide/pre-processors.html#sass]
+
 ```
 npm install --save-dev sass-loader
 ```
@@ -408,11 +429,7 @@ npm install --save-dev style-loader
 npm install --save-dev url-loader
 ```
 
-### node-loader: A loader for webpack.
-
-```
-npm install --save-dev node-loader
-```
+### Webpack plugins
 
 #### babili-webpack-plugin:
 See `webpack.debug.config.js` for example.

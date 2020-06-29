@@ -60,7 +60,7 @@ export default {
       default: 'secondary'
     }
   },
-  data: function () {
+  data () {
     return {
       theta: 1
     }

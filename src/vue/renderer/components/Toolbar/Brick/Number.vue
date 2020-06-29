@@ -40,7 +40,7 @@ import {mapState, mapGetters} from 'vuex'
 
 export default {
   name: 'InfoNumber',
-  data: function () {
+  data () {
     return {
       saved_step: undefined,
       suffix_: undefined,

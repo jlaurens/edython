@@ -1,6 +1,6 @@
 # Edython's ui driver
 
-The ui task are forwarded to a driver which is another kind of delegates. The driver only has methods and its state needs not mutate at runtime.
+The ui task are forwarded to a driver which is another kind of delegate. The driver only has methods and its state needs not mutate at runtime.
 
 The main application owns a driver manager which can change at runtime.
 This driver manager owns in turn different drivers for each kind of object that needs a specific UI. Each object indirectly owned by the application have a path to the driver manager and thus to its own specific driver.
@@ -8,6 +8,12 @@ This driver manager owns in turn different drivers for each kind of object that 
 This delegation design allows to make a faceless application rather efficiently because it separates the ui from the data model logic.
 
 ## Implementation details
+### Names
+All the methods of the driver follow the same naming convention:
+
+	do_whathever(object, ...)
+
+This method is called from `object.whatever(...$)`. At least there are two methods: `do_initUI` and `do_disposeUI`.
 
 ### The namespaces
 

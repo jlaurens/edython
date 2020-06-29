@@ -277,7 +277,7 @@ export default {
     BrickBranch,
     BrickEnclosure
   },
-  data: function () {
+  data () {
     return {
       theta: 0,
       resizeSensor: undefined

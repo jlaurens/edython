@@ -146,7 +146,7 @@ eYo.svg.newDriverC9r('Zoomer', {
       'mousedown',
       e => {
         board.markFocused()
-        board.scale = board.options.zoom.startScale
+        board.scale = board.options.zoom.scaleStart
         board.scrollCenter()
         eYo.dom.clearTouchIdentifier()  // Don't block future drags.
         eYo.dom.gobbleEvent(e)

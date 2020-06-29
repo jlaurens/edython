@@ -581,7 +581,7 @@ eYo.make$$('target') // used by proxies
  * @return {*} the destination
  */
 eYo.mixinRO = (object, props) => {
-  [object.keys, object.getOwnPropertySymbols].forEach(f => {
+  [Object.keys, Object.getOwnPropertySymbols].forEach(f => {
     f(props).forEach(key => {
       eYo.objectHasOwnProperty(object, key) && eYo.throw(`Duplicate keys|symbols are forbidden: ${object}, ${key.toString ? key.toString() : key}`)
       var value = props[key]

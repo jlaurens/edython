@@ -1374,11 +1374,10 @@ eYo.driver.makeForwarder(eYo.brick.BaseC9r_p, 'updateShape')
  * @param {eYo.brick.BaseC9r} brick - The brick of which the shape would need an update
  * @protected
  */
-eYo.fcfl.Brick._p.updateShape = eYo.doNothing
+eYo.fcfl.Brick._p.do_updateShape = eYo.doNothing
 
 /**
  * Hide the brick.
- * Forwards to the driver.
  * @param {eYo.brick.BaseC9r} brick - the brick the driver acts on
  */
 eYo.fcfl.Brick._p.hide = function (brick) {

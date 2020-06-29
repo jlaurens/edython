@@ -28,7 +28,7 @@ export default {
       default: ''
     }
   },
-  data: function () {
+  data () {
     return {
       footstep: 0
     }

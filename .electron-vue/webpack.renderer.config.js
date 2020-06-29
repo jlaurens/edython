@@ -12,6 +12,12 @@ const CopyWebpackPlugin = require('copy-webpack-plugin')
 
 const eYoConfig = require('./eyo.config.js')
 
+const chalk = require('chalk')
+
+console.log(chalk.keyword('orange').bold('→ .electron-vue/webpack.renderer.config.js'))
+
+let rootPath = path.join(__dirname, '..')
+
 /**
  * List of node_modules to include in webpack bundle
  *
@@ -30,7 +36,6 @@ rendererConfig.externals = [
   ...Object.keys(dependencies || {}).filter(d => !whiteListedModules.includes(d))
 ]
 
-
 /**
  * Adjust rendererConfig for production settings
  */
@@ -42,8 +47,8 @@ if (process.env.NODE_ENV === 'production') {
     new BabiliWebpackPlugin(),
     new CopyWebpackPlugin([
       {
-        from: path.join(__dirname, '../static'),
-        to: path.join(__dirname, '../dist/electron/static'),
+        from: path.join(rootPath, 'static'),
+        to: path.join(rootPath, 'dist/electron/static'),
         ignore: ['.*']
       }
     ]),

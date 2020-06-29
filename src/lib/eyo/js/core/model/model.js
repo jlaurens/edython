@@ -89,6 +89,17 @@ eYo.newNS('model', {
     //... chai.expect(eYo.model.validateForFalse(true)).equal(eYo.INVALID)
     //>>>
   },
+  validateForTrue (what) {
+    //<<< mochai: eYo.model.validateForTrue
+    if (what === true) return eYo.doNothing
+    //... chai.expect(eYo.model.validateForFalse(false)).equal(eYo.doNothing)
+    if (eYo.isDef(what) && !eYo.isF(what))return eYo.INVALID
+    //... chai.assert(!eYo.model.validateForFalse(() => {}))
+    //... chai.assert(!eYo.model.validateForFalse())
+    //... chai.expect(eYo.model.validateForFalse(1)).equal(eYo.INVALID)
+    //... chai.expect(eYo.model.validateForFalse(true)).equal(eYo.INVALID)
+    //>>>
+  },
   validateRA (what) {
     if (eYo.isDef(what) && !eYo.isRA(what)) return eYo.INVALID
     //<<< mochai: eYo.model.validateRA
@@ -132,6 +143,11 @@ eYo.newNS('model', {
 /**
  * Descriptor.
  * @param {*} model
+ * @name {eYo.model.descriptorForTrue}
+ */
+/**
+ * Descriptor.
+ * @param {*} model
  * @name {eYo.model.descriptorRA}
  */
 /**
@@ -140,7 +156,7 @@ eYo.newNS('model', {
  * @param {Function} [fallback] - Signature: (model) -> model. Argument order does not matter.
  * @name {eYo.model.descriptorD}
  */
-;['Bool', 'Str', 'F', 'ForFalse', 'RA', 'D'].forEach(K => {
+;['Bool', 'Str', 'F', 'ForFalse', 'ForTrue', 'RA', 'D'].forEach(K => {
   eYo.model._p['descriptor' + K] = function(model, fallback) {
     var alt = eYo.isF(model)
     if (alt) {
@@ -161,107 +177,120 @@ eYo.newNS('model', {
   }
 })
 
-/**
- * Convenient method 
- * @param {Object} [model]
- */
-eYo.model._p.manyDescriptorF = function (model, ...$) {
-  if (!eYo.isStr(model)) {
-    var ans = model
-  } else {
-    ans = {}
-    ans[model] = this.descriptorF()
-  }
-  $.forEach(k => {
-    ans[k] = this.descriptorF()
-  })
-  return ans
-}
-
-/**
- * Convenient method 
- * @param {Object} [model]
- */
-eYo.model._p.manyDescriptorBool = function (model, ...$) {
-  if (!eYo.isStr(model)) {
-    var ans = model
-  } else {
-    ans = {}
-    ans[model] = this.descriptorBool()
-  }
-  $.forEach(k => {
-    ans[k] = this.descriptorBool()
-  })
-  return ans
-}
-
-/**
- * Convenient method 
- * @param {Object} [model]
- */
-eYo.model._p.manyDescriptorStr = function (model, ...$) {
-  if (!eYo.isStr(model)) {
-    var ans = model
-  } else {
-    ans = {}
-    ans[model] = this.descriptorStr()
-  }
-  $.forEach(k => {
-    ans[k] = this.descriptorStr()
-  })
-  return ans
-}
-
-/**
- * Convenient method 
- * @param {Object} [model]
- */
-eYo.model._p.manyDescriptorForFalse = function (model, ...$) {
-  if (!eYo.isStr(model)) {
-    var ans = model
-  } else {
-    ans = {}
-    ans[model] = this.descriptorForFalse()
-  }
-  $.forEach(k => {
-    ans[k] = this.descriptorForFalse()
-  })
-  return ans
-}
-
-/**
- * Convenient method 
- * @param {Object} [model]
- */
-eYo.model._p.manyDescriptorRA = function (model, ...$) {
-  if (!eYo.isStr(model)) {
-    var ans = model
-  } else {
-    ans = {}
-    ans[model] = this.descriptorRA()
-  }
-  $.forEach(k => {
-    ans[k] = this.descriptorRA()
-  })
-  return ans
-}
-
-/**
- * Convenient method 
- * @param {Object} [model]
- */
-eYo.model._p.manyDescriptorD = function (model, ...$) {
-  if (!eYo.isStr(model)) {
-    var ans = model
-  } else {
-    ans = {}
-    ans[model] = this.descriptorD()
-  }
-  $.forEach(k => {
-    ans[k] = this.descriptorD()
-  })
-  return ans
-}
+Object.assign(eYo.model._p, {
+  /**
+   * Convenient method 
+   * @param {Object} [model]
+   */
+  manyDescriptorF (model, ...$) {
+    if (!eYo.isStr(model)) {
+      var ans = model
+    } else {
+      ans = {}
+      ans[model] = this.descriptorF()
+    }
+    $.forEach(k => {
+      ans[k] = this.descriptorF()
+    })
+    return ans
+  },
+  /**
+   * Convenient method 
+   * @param {Object} [model]
+   */
+  manyDescriptorBool (model, ...$) {
+    if (!eYo.isStr(model)) {
+      var ans = model
+    } else {
+      ans = {}
+      ans[model] = this.descriptorBool()
+    }
+    $.forEach(k => {
+      ans[k] = this.descriptorBool()
+    })
+    return ans
+  },
+  /**
+   * Convenient method 
+   * @param {Object} [model]
+   */
+  manyDescriptorStr (model, ...$) {
+    if (!eYo.isStr(model)) {
+      var ans = model
+    } else {
+      ans = {}
+      ans[model] = this.descriptorStr()
+    }
+    $.forEach(k => {
+      ans[k] = this.descriptorStr()
+    })
+    return ans
+  },
+  /**
+  * Convenient method 
+  * @param {Object} [model]
+  */
+  manyDescriptorForFalse (model, ...$) {
+    if (!eYo.isStr(model)) {
+      var ans = model
+    } else {
+      ans = {}
+      ans[model] = this.descriptorForFalse()
+    }
+    $.forEach(k => {
+      ans[k] = this.descriptorForFalse()
+    })
+    return ans
+  },
+  /**
+   * Convenient method 
+   * @param {Object} [model]
+   */
+  manyDescriptorForTrue (model, ...$) {
+    if (!eYo.isStr(model)) {
+      var ans = model
+    } else {
+      ans = {}
+      ans[model] = this.descriptorForTrue()
+    }
+    $.forEach(k => {
+      ans[k] = this.descriptorForTrue()
+    })
+    return ans
+  },
+  /**
+   * Convenient method 
+   * @param {Object} [model]
+   */
+  manyDescriptorRA (model, ...$) {
+    if (!eYo.isStr(model)) {
+      var ans = model
+    } else {
+      ans = {}
+      ans[model] = this.descriptorRA()
+    }
+    $.forEach(k => {
+      ans[k] = this.descriptorRA()
+    })
+    return ans
+  },
+  /**
+   * Convenient method 
+   * @param {Object} [model]
+   */
+  manyDescriptorD (model, ...$) {
+    if (!eYo.isStr(model)) {
+      var ans = model
+    } else {
+      ans = {}
+      ans[model] = this.descriptorD()
+    }
+    $.forEach(k => {
+      ans[k] = this.descriptorD()
+    })
+    return ans
+  },
+})
 
 /**
  * A model is a tree.

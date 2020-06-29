@@ -15,6 +15,8 @@ const doneLog = chalk.bgGreen.white(' DONE ') + ' '
 const errorLog = chalk.bgRed.white(' ERROR ') + ' '
 const okayLog = chalk.bgBlue.white(' OKAY ') + ' '
 
+console.log(chalk.keyword('orange').bold('→ .electron-vue/build.js'))
+
 if (process.env.BUILD_TARGET === 'clean') {
   clean()
 } else if (process.env.BUILD_TARGET === 'web') {

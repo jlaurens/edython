@@ -6,22 +6,36 @@ const path = require('path')
 const { dependencies } = require('../package.json')
 const webpack = require('webpack')
 
+const VueLoaderPlugin = require('vue-loader/lib/plugin')
+
 const BabiliWebpackPlugin = require('babili-webpack-plugin')
 
+const chalk = require('chalk')
+
+console.log(chalk.keyword('orange').bold('→ .electron-vue/webpack.main.config.js'))
+
+let rootPath = path.join(__dirname, '..')
+
 // remove electron dependencies when web only ?
+
+let whiteListedModules = []
 
 let mainConfig = {
   mode: 'development',
   entry: {
-    main: path.join(__dirname, '../src/vue/main/index.js')
+    main: path.join(rootPath, 'src/vue/main/index.js')
   },
   externals: [
-    ...Object.keys(dependencies || {})
+    ...Object.keys(dependencies || {}).filter(d => !whiteListedModules.includes(d))
   ],
   module: {
     rules: [
       {
-        test: /\.(js)$/,
+        test: /\.vue$/,
+        loader: 'vue-loader'
+      },
+      {
+        test: /\.js$/,
         enforce: 'pre',
         exclude: /node_modules/,
         use: {
@@ -49,16 +63,20 @@ let mainConfig = {
   output: {
     filename: '[name].js',
     libraryTarget: 'commonjs2',
-    path: path.join(__dirname, '../dist/electron')
+    path: path.join(rootPath, 'dist/electron')
   },
   plugins: [
     new webpack.NoEmitOnErrorsPlugin(),
     new webpack.LoaderOptionsPlugin({ options: {} }),
+    new VueLoaderPlugin(),
   ],
   resolve: {
-    extensions: ['.js', '.json', '.node']
+    extensions: ['.js', '.json', '.node', '.vue'],
+    alias: {
+      vue$: 'vue/dist/vue.esm.js', // MAY BE USEFULL WHEN PROPERLY SETUP
+    }
   },
-  target: 'electron-main'
+  target: 'electron-main',
 }
 
 /**
@@ -68,12 +86,12 @@ if (process.env.NODE_ENV !== 'production') {
   mainConfig.mode = 'production'
   mainConfig.plugins.push(
     new webpack.DefinePlugin({
-      '__static': `"${path.join(__dirname, '../static').replace(/\\/g, '\\\\')}"`
+      '__static': `"${path.join(rootPath, 'static').replace(/\\/g, '\\\\')}"`
     })
   )
   mainConfig.plugins.push(
     new webpack.DefinePlugin({
-      '__lib': `"${path.join(__dirname, '../lib').replace(/\\/g, '\\\\')}"`
+      '__lib': `"${path.join(rootPath, 'lib').replace(/\\/g, '\\\\')}"`
     })
   )
 }

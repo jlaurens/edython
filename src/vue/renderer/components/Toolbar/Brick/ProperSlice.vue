@@ -56,7 +56,7 @@ import {mapState, mapGetters} from 'vuex'
 
 export default {
   name: 'BrickProperSlice',
-  data: function () {
+  data () {
     return {
       saved_step: 0,
       lower_: undefined,

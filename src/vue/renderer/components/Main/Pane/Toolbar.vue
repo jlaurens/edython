@@ -141,7 +141,7 @@ export default {
       default: false
     }
   },
-  data: function () {
+  data () {
     return {
       selectedPane_: 'console1',
       selectedLayout_: 'F',

@@ -126,3 +126,9 @@ We get both general controllers, that define behaviours shared by all the bricks
 ## Building for a web application
 
 `npm run build`
+
+# Vulnerabilities and other problems
+
+Webpack should updgrade to 5.
+
+https://github.com/webpack/webpack/issues/10924
