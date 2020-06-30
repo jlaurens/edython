@@ -202,6 +202,22 @@ describe ('Tests: Property', function () {
     flag.expect()
     p.value_ = 34
     flag.expect(1234)
+    var p = eYo.p6y.new({
+      lazy () {
+        this.flag(2)
+        return 34
+      },
+      didChange(after) {
+        this.flag(2, after)
+      }
+    }, 'foo', onr)
+    flag.expect()
+    chai.expect(p.value).equal(34)
+    flag.expect(12)
+    p.value_ = 34
+    flag.expect()
+    p.value_ = 3
+    flag.expect(123)
   })
   it ('P6y: lazy reset', function () {
     var x = 3

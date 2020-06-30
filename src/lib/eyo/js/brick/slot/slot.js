@@ -1,7 +1,7 @@
 /**
  * edython
  *
- * Copyright 2019 Jérôme LAURENS.
+ * Copyright 2020 Jérôme LAURENS.
  *
  * @license EUPL-1.2
  */
@@ -10,31 +10,6 @@
  * @author jerome.laurens@u-bourgogne.fr (Jérôme LAURENS)
  */
 'use strict'
-
-
-eYo.model.allowModelPaths({
-  [eYo.model.ROOT]: 'slots',
-  'slots\\.\\w+': [
-    'order', // INTEGER,
-    'fields', // {},
-    'check', // :  BRICK_TYPE || [BRICK_TYPE] || () => {}, // last is expected
-    'promise', // : eYo.t3.expr.value_list,
-    'validateIncog', //  () {},
-    'accept', //  () {},
-    'willConnect', //  () {},
-    'willDisconnect', //  () {},
-    'didConnect', //  () {},
-    'didDisconnect', //  () {},
-    'consolidate', // () {},
-    'wrap', // : TYPE,
-    'xml', // : (() => {} || true) || false||  first expected,
-    'plugged', // : eYo.t3.expr.primary,
-  ],
-  'slots\\.\\w+\\.xml': [
-    'accept', //  () => {},
-  ],
-})
-
 
 /**
  * @name{eYo.slot}
@@ -53,18 +28,10 @@ eYo.forward('magnet')
 // eYo.forward('key')
 // eYo.forward('expr.List')
 
-/**
- * The model path.
- * @see The `new` method.
- * @param {String} key
- */
-eYo.slot._p.modelPath = function (key) {
-  return eYo.isStr(key) ? `slots.${key}` : 'slots'
-}
-
 //g@@g.forwardDeclare('g@@g.dom');
 
 /**
+ * @name {eYo.Slot}
  * The model is one of the entries of the `slots` section
  * of the object used to create a delegate's subclass.
  * Here are some specifications for that model part.
@@ -90,10 +57,10 @@ eYo.slot._p.modelPath = function (key) {
  * @param {Object} model  the model for the given key in the above mention section.
  * @constructor
  */
-eYo.slot.makeBaseC9r({
-  init (brick, key) {
-    brick || eYo.throw('Missing slot owner brick')
+eYo.slot.makeBaseC9r(true, {
+  init (key, brick) {
     key || eYo.throw('Missing slot key')
+    brick || eYo.throw('Missing slot owner brick')
     eYo.isNA(this.model.order) && eYo.throw('Missing slot model order')
     
     this.key_ = key
@@ -118,6 +85,32 @@ eYo.slot.makeBaseC9r({
     if (key === 'comment') {
       this.bind_f && (this.bind_f.isComment = true)
     }
+  },
+  /**
+   * Dispose of all attributes.
+   * Asks the owner's renderer to do the same.
+   * @param {Boolean} [onlyThis]  Dispose of the inferior target iff healStack is a falsy value
+   */
+  dispose (onlyThis) {
+    eYo.field.disposeFields(this)
+    this.magnet_ && this.magnet_.dispose(onlyThis)
+    this.magnet_ = eYo.NA
+  },
+  /**
+   * UI management.
+   * Install this slot and its associate fields on their brick.
+   * No data change.
+   */
+  initUI () {
+    this.fieldForEach(f => f.initUI())
+  },
+  /**
+   * UI management.
+   * Install this slot and its associate fields on their brick.
+   * No data change.
+   */
+  disposeUI () {
+    this.fieldForEach(f => f.disposeUI())
   },
   properties: {
     magnet: eYo.NA,
@@ -155,8 +148,6 @@ eYo.slot.makeBaseC9r({
         })
       },
     },
-    key: eYo.NA,
-    model: eYo.NA,
     /**
      * Get the concrete required status.
      * For edython.
@@ -181,6 +172,12 @@ eYo.slot.makeBaseC9r({
         var m4t = this.magnet
         return m4t && m4t.targetBrick
       },
+    },
+    where: {
+      value () {
+        return new eYo.geom.Point()
+      },
+      copy: true,
     },
     /**
      * Position of the receiver in its board
@@ -212,15 +209,6 @@ eYo.slot.makeBaseC9r({
     xmlKey: {
       get () {
         return (this.model.xml && this.model.xml.key) || this.key
-      },
-    },
-    /**
-     * Convenience shortcut.
-     */
-    unwrappedTarget: {
-      get () {
-        var m4t = this.magnet
-        return m4t && m4t.unwrappedTarget
       },
     },
     requiredIncog: {
@@ -275,405 +263,402 @@ eYo.slot.makeBaseC9r({
         return this.requiredFromModel
       },
     },
-    where: {
-      value () {
-        return new eYo.geom.Point()
-      },
-      copy: true,
-    },
   },
-  /**
-   * Dispose of all attributes.
-   * Asks the owner's renderer to do the same.
-   * @param {Boolean} [onlyThis]  Dispose of the inferior target iff healStack is a falsy value
-   */
-  dispose (onlyThis) {
-    eYo.field.disposeFields(this)
-    this.magnet_ && this.magnet_.dispose(onlyThis)
-    this.magnet_ = eYo.NA
+  aliases: {
+    'magnet.unwrappedTarget': 'unwrappedTarget',
   },
-  ui: {
-    /**
-     * UI management.
-     * Install this slot and its associate fields on their brick.
-     * No data change.
-     */
-    init () {
-      this.fieldForEach(f => f.initUI())
+  methods: {
+    isSlot () {
+      return true
     },
     /**
-     * UI management.
-     * Install this slot and its associate fields on their brick.
-     * No data change.
+     * Take action when required from model.
+     * For edython.
+     * @param {Function} do_it
      */
-    dispose () {
-      this.fieldForEach(f => f.disposeUI())
-    },
-  },
-})
-
-Object.defineProperty(eYo.slot.BaseC9r_p, 'isSlot', {
-  get () {
-    return true
-  },
-})
-
-/**
- * Initialize the instance.
- * Calls the inherited method, then adds methods defined by the model.
- * The methods are managed by the |dataHandler| method of the |eYo.model|.
- * @param {Object} object - The object to initialize.
- */
-eYo.slot.Dlgt_p.initInstance = function (object) {
-  eYo.slot.Base_s.initInstance.call(this, object)
-  object.model['.methods'].forEach(f => {
-    f(object)
-  })
-}
-
-/**
- * Take action when required from model.
- * For edython.
- * @param {Function} do_it
- */
-eYo.slot.BaseC9r_p.whenRequiredFromModel = function (do_it) {
-  if (this.isRequiredFromModel) {
-    this.isRequiredFromModel = false
-    if (eYo.isF(do_it)) {
-      do_it.call(this)
-    }
-    return true
-  }
-}
-
-/**
- * Consolidate the state.
- * Forwards to the connection delegate.
- * For edython.
- * @param {Boolean} deep whether to consolidate connected bricks.
- * @param {Boolean} force whether to force synchronization.
- */
-eYo.slot.BaseC9r_p.consolidate = function (deep, force) { // eslint-disable-line
-  var m4t = this.magnet
-  if (m4t) {
-    m4t.incog = this.incog
-    m4t.wrapped_ && (m4t.hidden = true) // Don't ever connect any brick to this
-    var v
-    if ((v = this.model.check)) {
-      m4t.check = v.call(m4t, m4t.brick.type, m4t.brick.Variant_p)
-    }
-  }
-}
-
-/**
- * Set the UI state.
- * Called only by `synchronizeSlots`.
- * For edython.
- */
-eYo.slot.BaseC9r_p.synchronize = function () {
-  var d = this.ui_driver
-  if (!d) {
-    return
-  }
-  var after = this.incog
-  this.visible = !after
-  if (this.visible) {
-    this.fieldForEach(field => field.text.length > 0 && (field.visible = true))
-  }
-  d.displayedUpdate(this)
-}
-
-/**
- * Convert the slot's connected target into the given xml element.
- * List all the available data and converts them to xml.
- * For edython.
- * @param {Element} element the persistent element.
- * @param {Object} [opt]  See eponym parameter in `eYo.xml.brickToDom`.
- * @return a dom element, void lists may return nothing
- * @this a brick
- */
-eYo.slot.BaseC9r_p.save = function (element, opt) {
-  if (this.incog) {
-    return
-  }
-  var xml = this.model.xml
-  if (xml === false) {
-    return
-  }
-  var out = (() => {
-    var t9k = this.targetBrick
-    if (t9k) { // otherwise, there is nothing to remember
-      if (t9k.wrapped_) {
-        // wrapped bricks are just a convenient computational model.
-        // For lists only, we do create a further level
-        // Actually, every wrapped brick is a list
-        if (t9k instanceof eYo.expr.List) {
-          var child = eYo.xml.brickToDom(t9k, opt)
-          if (child.firstElementChild) {
-            child.setAttribute(eYo.xml.sLOT, this.xmlKey)
-            eYo.dom.appendChild(element, child)
-            return child
-          }
-        } else {
-          // let the target populate the given element
-          return eYo.xml.toDom(t9k, element, opt)
+    whenRequiredFromModel (do_it) {
+      if (this.isRequiredFromModel) {
+        this.isRequiredFromModel = false
+        if (eYo.isF(do_it)) {
+          do_it.call(this)
         }
-      } else {
-        child = eYo.xml.brickToDom(t9k, opt)
-        if (child.firstElementChild || child.hasAttributes()) {
-          child.setAttribute(eYo.xml.sLOT, this.xmlKey)
-          eYo.dom.appendChild(element, child)
-          return child
+        return true
+      }
+    },
+    /**
+     * Consolidate the state.
+     * Forwards to the connection delegate.
+     * For edython.
+     * @param {Boolean} deep whether to consolidate connected bricks.
+     * @param {Boolean} force whether to force synchronization.
+     */
+    consolidate (deep, force) { // eslint-disable-line
+      var m4t = this.magnet
+      if (m4t) {
+        m4t.incog = this.incog
+        m4t.wrapped_ && (m4t.hidden = true) // Don't ever connect any brick to this
+        var v
+        if ((v = this.model.check)) {
+          m4t.check = v.call(m4t, m4t.brick.type, m4t.brick.Variant_p)
         }
       }
-    }
-  })()
-  if (!out && this.isRequiredToModel) {
-    this.saveRequired(element, opt)
-  }
-}
-
-/**
- * Save a placeholder.
- * For edython.
- * @param {Element} element a dom element in which to save the receiver
- * @param {Object} opt
- */
-eYo.slot.BaseC9r_p.saveRequired = function (element) {
-  var child = eYo.dom.createDom(eYo.xml.EXPR)
-  child.setAttribute(eYo.key.EYO, eYo.key.PLACEHOLDER)
-  child.setAttribute(eYo.xml.sLOT, this.xmlKey)
-  eYo.dom.appendChild(element, child)
-}
-
-/**
- * Initialize the receiver from a dom element.
- * Given an element, initialize the slot target
- * brick with data from the given element.
- * The given element was created by the input's source brick
- * in a brickToDom method. If it contains a child element
- * which input attribute is exactly the input's name,
- * then we ask the input target brick to fromDom.
- * Target bricks are managed here too.
- * No consistency test is made however.
- * For edython.
- * @param {Element} element a dom element in which to save the input
- * @return true if this is loaded
- */
-eYo.slot.BaseC9r_p.load = function (element) {
-  this.loaded_ = false
-  var xml = this.model.xml
-  if (xml === false) {
-    return
-  }
-  this.requiredFromModel = false
-  var out
-  var t9k = this.targetBrick
-  if (t9k && t9k.wrapped_ && !(t9k instanceof eYo.expr.List)) {
-    this.requiredFromModel = true // this is not sure, it depends on how the target read the dom
-    out = eYo.xml.fromDom(t9k, element)
-    this.recover.dontResit(element)
-  } else {
-  // find the xml child with the proper slot attribute
-    eYo.do.SomeElementChild(element, child => {
-      var attribute = child.getAttribute(eYo.xml.sLOT)
-      if (attribute && (attribute === this.xmlKey || attribute === this.key || (this.model.xml && eYo.isF(this.model.xml.accept) && this.model.xml.accept.call(this, attribute)))) {
-        this.recover.dontResit(child)
-        if (child.getAttribute(eYo.key.EYO) === eYo.key.PLACEHOLDER) {
-          this.requiredFromModel = true
-          out = true
-        } else {
-          if (!t9k && this.model.promise) {
-            this.completePromise()
-            t9k = this.targetBrick
-          }
-          if (t9k) {
+    },
+    /**
+     * Set the UI state.
+     * Called only by `synchronizeSlots`.
+     * For edython.
+     */
+    synchronize () {
+      var d = this.ui_driver
+      if (!d) {
+        return
+      }
+      var after = this.incog
+      this.visible = !after
+      if (this.visible) {
+        this.fieldForEach(field => field.text.length > 0 && (field.visible = true))
+      }
+      d.displayedUpdate(this)
+    },
+    /**
+     * Convert the slot's connected target into the given xml element.
+     * List all the available data and converts them to xml.
+     * For edython.
+     * @param {Element} element the persistent element.
+     * @param {Object} [opt]  See eponym parameter in `eYo.xml.brickToDom`.
+     * @return a dom element, void lists may return nothing
+     * @this a brick
+     */
+    save (element, opt) {
+      if (this.incog) {
+        return
+      }
+      var xml = this.model.xml
+      if (xml === false) {
+        return
+      }
+      var out = (() => {
+        let t9k = this.targetBrick
+        if (t9k) { // otherwise, there is nothing to remember
+          if (t9k.wrapped_) {
+            // wrapped bricks are just a convenient computational model.
+            // For lists only, we do create a further level
+            // Actually, every wrapped brick is a list
             if (t9k instanceof eYo.expr.List) {
-              // var grandChildren = Array.prototype.slice.call(child.childNodes)
-              eYo.do.forEachElementChild(child, grandChild => {
-                var name = grandChild.getAttribute(eYo.xml.sLOT)
-                var slot = t9k.getSlot(name)
-                if (slot) {
-                  if (slot.magnet) {
-                    var grand_t_brick = slot.target
-                    if ((grand_t_brick)) {
-                      eYo.xml.fromDom(grand_t_brick, grandChild)
-                      this.recover.dontResit(grandChild)
-                    } else if ((grand_t_brick = eYo.xml.domToBrick(grandChild, this.brick_))) {
-                      var t_m4t = grand_t_brick.out_m
-                      if (t_m4t && t_m4t.checkType_(slot.magnet, true)) {
-                        t_m4t.connect(slot.magnet)
-                        this.requiredFromModel = true
-                      }
-                      this.recover.dontResit(grandChild)
-                    }
-                  } else {
-                    console.error('Missing connection')
-                  }
-                }
-              })
+              var child = eYo.xml.brickToDom(t9k, opt)
+              if (child.firstElementChild) {
+                child.setAttribute(eYo.xml.sLOT, this.xmlKey)
+                eYo.dom.appendChild(element, child)
+                return child
+              }
+            } else {
+              // let the target populate the given element
+              return eYo.xml.toDom(t9k, element, opt)
+            }
+          } else {
+            child = eYo.xml.brickToDom(t9k, opt)
+            if (child.firstElementChild || child.hasAttributes()) {
+              child.setAttribute(eYo.xml.sLOT, this.xmlKey)
+              eYo.dom.appendChild(element, child)
+              return child
+            }
+          }
+        }
+      })()
+      if (!out && this.isRequiredToModel) {
+        this.saveRequired(element, opt)
+      }
+    },
+    /**
+     * Save a placeholder.
+     * For edython.
+     * @param {Element} element a dom element in which to save the receiver
+     * @param {Object} opt
+     */
+    saveRequired (element) {
+      var child = eYo.dom.createDom(eYo.xml.EXPR)
+      child.setAttribute(eYo.key.EYO, eYo.key.PLACEHOLDER)
+      child.setAttribute(eYo.xml.sLOT, this.xmlKey)
+      eYo.dom.appendChild(element, child)
+    },
+    /**
+     * Initialize the receiver from a dom element.
+     * Given an element, initialize the slot target
+     * brick with data from the given element.
+     * The given element was created by the input's source brick
+     * in a brickToDom method. If it contains a child element
+     * which input attribute is exactly the input's name,
+     * then we ask the input target brick to fromDom.
+     * Target bricks are managed here too.
+     * No consistency test is made however.
+     * For edython.
+     * @param {Element} element a dom element in which to save the input
+     * @return true if this is loaded
+     */
+    load (element) {
+      this.loaded_ = false
+      var xml = this.model.xml
+      if (xml === false) {
+        return
+      }
+      this.requiredFromModel = false
+      var out
+      var t9k = this.targetBrick
+      if (t9k && t9k.wrapped_ && !(t9k instanceof eYo.expr.List)) {
+        this.requiredFromModel = true // this is not sure, it depends on how the target read the dom
+        out = eYo.xml.fromDom(t9k, element)
+        this.recover.dontResit(element)
+      } else {
+      // find the xml child with the proper slot attribute
+        eYo.do.SomeElementChild(element, child => {
+          var attribute = child.getAttribute(eYo.xml.sLOT)
+          if (attribute && (attribute === this.xmlKey || attribute === this.key || (this.model.xml && eYo.isF(this.model.xml.accept) && this.model.xml.accept.call(this, attribute)))) {
+            this.recover.dontResit(child)
+            if (child.getAttribute(eYo.key.EYO) === eYo.key.PLACEHOLDER) {
+              this.requiredFromModel = true
               out = true
             } else {
-              out = eYo.xml.fromDom(t9k, child)
+              if (!t9k && this.model.promise) {
+                this.completePromise()
+                t9k = this.targetBrick
+              }
+              if (t9k) {
+                if (t9k instanceof eYo.expr.List) {
+                  // var grandChildren = Array.prototype.slice.call(child.childNodes)
+                  eYo.do.forEachElementChild(child, grandChild => {
+                    var name = grandChild.getAttribute(eYo.xml.sLOT)
+                    var slot = t9k.getSlot(name)
+                    if (slot) {
+                      if (slot.magnet) {
+                        var grand_t_brick = slot.target
+                        if ((grand_t_brick)) {
+                          eYo.xml.fromDom(grand_t_brick, grandChild)
+                          this.recover.dontResit(grandChild)
+                        } else if ((grand_t_brick = eYo.xml.domToBrick(grandChild, this.brick_))) {
+                          var t_m4t = grand_t_brick.out_m
+                          if (t_m4t && t_m4t.checkType_(slot.magnet, true)) {
+                            t_m4t.connect(slot.magnet)
+                            this.requiredFromModel = true
+                          }
+                          this.recover.dontResit(grandChild)
+                        }
+                      } else {
+                        console.error('Missing connection')
+                      }
+                    }
+                  })
+                  out = true
+                } else {
+                  out = eYo.xml.fromDom(t9k, child)
+                }
+                this.recover.dontResit(child)
+              } else if ((t9k = eYo.xml.domToBrick(child, this.brick_))) {
+                var m5s = t9k.magnets
+                // we could create a brick from that child element
+                // then connect it
+                this.recover.dontResit(child)
+                var m4t = this.magnet
+                if (m4t && m5s.out && m4t.checkType_(m5s.out, true)) {
+                  m4t.connect(m5s.out)
+                  this.requiredFromModel = true
+                } else if (m5s.head && m4t.checkType_(m5s.head, true)) {
+                  m4t.connect(m5s.head)
+                }
+                out = t9k
+              }
             }
-            this.recover.dontResit(child)
-          } else if ((t9k = eYo.xml.domToBrick(child, this.brick_))) {
-            var m5s = t9k.magnets
-            // we could create a brick from that child element
-            // then connect it
-            this.recover.dontResit(child)
-            var m4t = this.magnet
-            if (m4t && m5s.out && m4t.checkType_(m5s.out, true)) {
-              m4t.connect(m5s.out)
-              this.requiredFromModel = true
-            } else if (m5s.head && m4t.checkType_(m5s.head, true)) {
-              m4t.connect(m5s.head)
-            }
-            out = t9k
+            return true // the element was found
+          }
+        })
+      }
+      return this.loaded_ = out
+    },
+    /**
+     * When all the slots and data have been loaded.
+     * For edython.
+     */
+    willLoad (...$) {
+      let f = this.model.willLoad
+      if (eYo.isF(f)) {
+        this.willLoad = eYo.doNothing
+        try {
+          f.call(this, ...$)
+        } finally {
+          delete this.willLoad
+        }
+      }
+    },
+    /**
+     * When all the slots and data have been loaded.
+     * This is sent once at creation time (when default data has been loaded)
+     * and possibly once when the saved representation has been loaded.
+     * For edython.
+     */
+    didLoad (...$) {
+      let f = this.model.didLoad
+      if (eYo.isF(f)) {
+        this.didLoad = eYo.doNothing
+        try {
+          f.call(this, ...$)
+        } finally {
+          delete this.didLoad
+        }
+      }
+    },
+    /**
+     * execute the given function for the receiver and its next siblings.
+     * For edython.
+     * @param {function} helper
+     */
+    forEach (helper, ...$) {
+      if (eYo.isF(helper)) {
+        var slot = this
+        do {
+          helper.call(slot, ...$)
+        } while ((slot = slot[eYo.$next]))
+      }
+    },
+    /**
+     * execute the given function for the receiver and its previous siblings.
+     * For edython.
+     * @param {function} helper
+     * @return {boolean} whether there was an slot to act upon or no helper given
+     */
+    forEachPrevious (helper, ...$) {
+      if (eYo.isF(helper)) {
+        var slot = this
+        do {
+          helper.call(slot, ...$)
+        } while ((slot = slot[eYo.$previous]))
+      }
+    },
+    /**
+     * execute the given function for the receiver and its next siblings.
+     * If the return value of the given function is true,
+     * then it was the last iteration and the loop breaks.
+     * For edython.
+     * @param {function} helper
+     * @return {?Object} The slot that returned true, eventually.
+     */
+    some (helper, ...$) {
+      if (eYo.isF(helper)) {
+        var slot = this
+        do {
+          if (helper.call(slot, ...$)) {
+            return slot
+          }
+        } while ((slot = slot[eYo.$next]))
+      }
+    },
+    /**
+     * execute the given function for the fields.
+     * For edython.
+     * @param {object} [$this] - optional `this` object
+     * @param {function} helper
+     */
+    fieldForEach ($this, helper) {
+      this.eyo.fieldForEach(this, $this, helper)
+    },
+    /**
+     * Connect the brick or magnet. When not given a magnet, the output magnet is used. It is natural for slots.
+     * The slot corresponds to a wrapped list block.
+     * @param {eYo.Brick | eYo.Magnet} bm - either a brick or a magnet.
+     * @param {String} [key] - an optional input key. When not given the last free input is used.
+     * @return {?eYo.Magnet} the eventual magnet target that was connected.
+     */
+    listConnect (bm, key) {
+      var t9k = this.targetBrick
+      if (!t9k) {
+        this.completePromise()
+        if (!(t9k = this.targetBrick)) {
+          return eYo.NA
+        }
+      }
+      if (!key) {
+        return t9k.connectLast(bm)
+      }
+      var slot = t9k.getSlot(key)
+      if (slot) {
+        var m4t = slot.magnet
+        if (m4t) {
+          var other = (bm.magnets && bm.out_m) || bm
+          return m4t.connect(other)
+        }
+      }
+    },
+    /**
+     * Connect to the target.
+     * For edython.
+     * @param {eYo.brick | eYo.magnet.BaseC9r} bm  The target is either a brick or another magnet.
+     * @return {?eYo.magnet.BaseC9r} the eventual target magnet
+     */
+    connect (bm) {
+      if (bm) {
+        var m4t = this.magnet
+        if(m4t) {
+          var other = (bm.magnets && bm.out_m) || bm
+          if (m4t.checkType_(other)) {
+            return m4t.connect(other)
           }
         }
-        return true // the element was found
       }
+    },
+    /**
+     * Complete with a promised brick.
+     * Forwards to the receiver's magnet.
+     * One shot in case of success.
+     * @return {Boolean} whether the complete was successfull
+     */
+    completePromise () {
+      var m4t = this.magnet
+      if (m4t && m4t.completePromise()) {
+        this.completePromise = eYo.doNothing
+        return true
+      }
+    },
+  },
+})
+
+eYo.mixinFR(eYo.slot.Dlgt_p, {
+  /**
+   * Initialize the instance.
+   * Calls the inherited method, then adds methods defined by the model.
+   * The methods are managed by the |dataHandler| method of the |eYo.model|.
+   * @param {Object} object - The object to initialize.
+   */
+  initInstance (object) {
+    eYo.Slot[eYo.$SuperC9r_p].initInstance.call(this, object)
+    object.model['.methods'].forEach(f => {
+      f(object)
     })
-  }
-  return this.loaded_ = out
-}
-
-/**
- * When all the slots and data have been loaded.
- * For edython.
- */
-eYo.slot.BaseC9r_p.willLoad = eYo.decorate.reentrant('willLoad', function () {
-  let f = this.model.willLoad
-  if (eYo.isF(f)) {
-    f.apply(this, arguments)
-  }
+  },
 })
 
-/**
- * When all the slots and data have been loaded.
- * This is sent once at creation time (when default data has been loaded)
- * and possibly once when the saved representation has been loaded.
- * For edython.
- */
-eYo.slot.BaseC9r_p.didLoad = eYo.decorate.reentrant('didLoad', function () {
-  let f = this.model.didLoad
-  if (eYo.isF(f)) {
-    f.apply(this, arguments)
-  }
+eYo.Slot[eYo.$].manyEnhanced('field', 'fields')
+
+eYo.Slot[eYo.$].finalizeC9r([
+  'order', // INTEGER,
+  'promise', // : eYo.t3.expr.value_list,
+  'plugged', // : eYo.t3.expr.primary,
+], [
+  'fields', // {},
+], [
+  'check', // :  BRICK_TYPE || [BRICK_TYPE] || () => {}, // last is expected
+  'validateIncog', //  () => {},
+  'accept', //  () => {},
+  'willConnect', //  () => {},
+  'willDisconnect', //  () => {},
+  'didConnect', //  () => {},
+  'didDisconnect', //  () => {},
+  'consolidate', // () => {},
+  'wrap', // : TYPE,
+  'xml', // : (() => {} || true) || false ||  first expected,
+], {
+  xml: {
+    foo: [
+      'accept', //  () => {},
+    ],
+  },
 })
 
-/**
- * execute the given function for the receiver and its next siblings.
- * For edython.
- * @param {function} helper
- */
-eYo.slot.BaseC9r_p.forEach = function (helper, ...$) {
-  var slot = this
-  if (eYo.isF(helper)) {
-    do {
-      helper.call(slot, ...$)
-    } while ((slot = slot[eYo.$next]))
-  }
-}
 
-/**
- * execute the given function for the receiver and its previous siblings.
- * For edython.
- * @param {function} helper
- * @return {boolean} whether there was an slot to act upon or no helper given
- */
-eYo.slot.BaseC9r_p.forEachPrevious = function (helper, ...$) {
-  var slot = this
-  if (eYo.isF(helper)) {
-    do {
-      helper.call(slot, ...$)
-    } while ((slot = slot[eYo.$previous]))
-  }
-}
-
-/**
- * execute the given function for the receiver and its next siblings.
- * If the return value of the given function is true,
- * then it was the last iteration and the loop breaks.
- * For edython.
- * @param {function} helper
- * @return {?Object} The slot that returned true, eventually.
- */
-eYo.slot.BaseC9r_p.some = function (helper, ...$) {
-  var slot = this
-  if (eYo.isF(helper)) {
-    do {
-      if (helper.call(slot, ...$)) {
-        return slot
-      }
-    } while ((slot = slot[eYo.$next]))
-  }
-}
-
-/**
- * execute the given function for the fields.
- * For edython.
- * @param {function} helper
- */
-eYo.slot.BaseC9r_p.fieldForEach = function ($this, helper) {
-  this.eyo.fieldForEach(this, $this, helper)
-}
-
-/**
- * Connect the brick or magnet. When not given a magnet, the output magnet is used. It is natural for slots.
- * The slot corresponds to a wrapped list block.
- * @param {eYo.brick | eYo.magnet.BaseC9r} bm  either a brick or a magnet.
- * @param {String} [key] an input key. When not given the last free input is used.
- * @return {?eYo.magnet.BaseC9r} the eventual magnet target that was connected.
- */
-eYo.slot.BaseC9r_p.listConnect = function (bm, key) {
-  var t9k = this.targetBrick
-  if (!t9k) {
-    this.completePromise()
-    if (!(t9k = this.targetBrick)) {
-      return false
-    }
-  }
-  if (!key) {
-    return t9k.connectLast(bm)
-  }
-  var slot = t9k.getSlot(key)
-  if (slot) {
-    var m4t = slot.magnet
-    if (m4t) {
-      var other = (bm.magnets && bm.out_m) || bm
-      return m4t.connect(other)
-    }
-  }
-}
-
-/**
- * Connect to the target.
- * For edython.
- * @param {eYo.brick | eYo.magnet.BaseC9r} bm  The target is either a brick or another magnet.
- * @return {?eYo.magnet.BaseC9r} the eventual target magnet
- */
-eYo.slot.BaseC9r_p.connect = function (bm) {
-  var m4t = this.magnet
-  if(m4t && bm) {
-    var other = (bm.magnets && bm.out_m) || bm
-    if (m4t.checkType_(other)) {
-      return m4t.connect(other)
-    }
-  }
-}
-
-/**
- * Complete with a promised brick.
- * Forwards to the receiver's magnet.
- * One shot in case of success.
- * @return {Boolean} whether the complete was successfull
- */
-eYo.slot.BaseC9r_p.completePromise = function () {
-  var m4t = this.magnet
-  if (m4t && m4t.completePromise()) {
-    this.completePromise = eYo.doNothing
-    return true
-  }
-}

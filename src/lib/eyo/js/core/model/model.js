@@ -11,6 +11,8 @@
  */
 'use strict'
 
+eYo.require('const')
+
 //<<< mochai: eYo.model
 
 /**

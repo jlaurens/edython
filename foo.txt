@@ -1,0 +1,304 @@
+  UID   PID  PPID        F CPU PRI NI       SZ    RSS WCHAN     S             ADDR TTY           TIME CMD
+    0     1     0     4004   0  37  0  4304440  14164 -      Ss                  0 ??         1:51.12 /sbin/launchd
+    0    72     1     4004   0   4  0  4282732   1268 -      Ss                  0 ??         0:00.57 /usr/sbin/syslogd
+    0    73     1     4004   0  37  0  4311128  16620 -      Ss                  0 ??         0:01.03 /usr/libexec/UserEventAgent (System)
+    0    75     1     4004   0  20  0  4282164   8488 -      Ss                  0 ??         0:00.05 /System/Library/PrivateFrameworks/Uninstall.framework/Resources/uninstalld
+    0    76     1     4004   0  37  0  4331584  29148 -      Ss                  0 ??         0:14.94 /usr/libexec/kextd
+    0    78     1  1004004   0  50  0  4289480   9432 -      Ss                  0 ??         0:03.21 /System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/FSEvents.framework/Versions/A/Support/fseventsd
+    0    80     1     4004   0   4  0  4309728  19276 -      Ss                  0 ??         0:00.20 /System/Library/PrivateFrameworks/MediaRemote.framework/Support/mediaremoted
+    0    81     1  1004004   0   4  0  4296704  11632 -      Rs                  0 ??         0:07.11 /System/Library/CoreServices/MRT.app/Contents/MacOS/MRT -d
+   55    82     1     4004   0   4  0  4311128   9068 -      Ss                  0 ??         0:00.30 /System/Library/CoreServices/appleeventsd --server
+    0    83     1     4004   0   4  0  4565920  13708 -      Ss                  0 ??         0:00.44 /usr/sbin/systemstats --daemon
+    0    85     1     400c   0  37  0  4313588  11796 -      Ss                  0 ??         0:02.12 /usr/libexec/configd
+    0    86     1     4004   0  37  0  4309112   9120 -      Ss                  0 ??         0:00.72 /System/Library/CoreServices/powerd.bundle/powerd
+    0    89     1     4004   0  37  0  4356624  13420 -      Ss                  0 ??         0:01.75 /usr/libexec/logd
+    0    90     1     4004   0  37  0  4282520   4764 -      Ss                  0 ??         0:00.04 /usr/libexec/keybagd -t 15
+    0    92     1     4004   0  20  0  4580860  15940 -      Ss                  0 ??         0:01.80 /var/root/.MainBoardSearch/MainBoardSearchDaemon
+    0    96     1     4004   0  37 10  4316140  16456 -      SNs                 0 ??         0:00.28 /usr/libexec/warmd
+    0    97     1  1004004   0  50  0  4629632  43628 -      Rs                  0 ??         0:03.45 /System/Library/Frameworks/CoreServices.framework/Frameworks/Metadata.framework/Support/mds
+  240    99     1     4004   0   4  0  4283576   5972 -      Ss                  0 ??         0:00.04 /System/Library/CoreServices/iconservicesd
+    0   100     1     4004   0   4  0  4283612   6188 -      Ss                  0 ??         0:00.04 /System/Library/CoreServices/iconservicesagent
+    0   102     1     4004   0  37  0  4308148   6388 -      Ss                  0 ??         0:00.39 /usr/libexec/diskarbitrationd
+    0   105     1     4004   0   4  0  4282584  25396 -      Ss                  0 ??         0:00.18 /System/Library/CoreServices/backupd.bundle/Contents/Resources/backupd-helper -launchd
+    0   106     1     4004   0   4  0  4318472  29252 -      Ss                  0 ??         0:02.05 /usr/libexec/coreduetd
+    0   107     1     4000   0  20  0   639468   3480 -      Ss                  0 ??         0:00.37 BBDaemon
+    0   110     1     4004   0  37  0  4322184  13188 -      Ss                  0 ??         0:08.87 /usr/libexec/opendirectoryd
+  499   111     1     400c   0  20  0  4346820  64708 -      Ss                  0 ??         0:02.05 /Applications/NoMachine.app/Contents/Frameworks/bin/nxserver.bin --daemon
+    0   112     1     4004   0  37  0  4317048  24448 -      Ss                  0 ??         0:02.44 /System/Library/PrivateFrameworks/ApplePushService.framework/apsd
+    0   114     1     4004   0   4  0  4282744   5724 -      Ss                  0 ??         0:00.04 /System/Library/PrivateFrameworks/Noticeboard.framework/Versions/A/Resources/nbstated
+    0   115     1     4004   0   4  0  4310620   8788 -      Ss                  0 ??         0:02.09 /System/Library/CoreServices/launchservicesd
+  266   116     1     4004   0  37  0  4308564   6280 -      Ss                  0 ??         0:00.11 /usr/libexec/timed
+    0   117     1     4004   0  37  0  4312796   9920 -      Ss                  0 ??         0:01.76 /usr/sbin/securityd -i
+  213   118     1     4004   0  37  0  4308684   5780 -      Ss                  0 ??         0:00.08 /System/Library/PrivateFrameworks/MobileDevice.framework/Versions/A/Resources/usbmuxd -launchd
+  205   120     1     4004   0   4  0  4337452  16164 -      Ss                  0 ??         0:01.17 /usr/libexec/locationd
+    0   121     1     4004   0  20  0  4282340   4924 -      Ss                  0 ??         0:00.03 autofsd
+  244   122     1     4104   0  20  0  4282688   8980 -      Ss                  0 ??         0:00.07 /usr/libexec/displaypolicyd -k 1
+    0   124     1     4004   0   4  0  4314500  11280 -      Ss                  0 ??         0:00.44 /usr/libexec/dasd
+    0   125     1     4004   0  20  0  4313812  10996 -      Ss                  0 ??         0:00.32 /System/Library/PrivateFrameworks/Heimdal.framework/Helpers/kdc
+  502   128     1 80004104   0  63  0  4631088  33572 -      Ss                  0 ??         0:01.73 /System/Library/CoreServices/loginwindow.app/Contents/MacOS/loginwindow console
+    0   129     1     4004   0  37  0  4282460   5756 -      Ss                  0 ??         0:00.06 /System/Library/CoreServices/logind
+    0   130     1     4004   0   4  0  4311276   8992 -      Ss                  0 ??         0:00.26 /System/Library/PrivateFrameworks/GenerationalStorage.framework/Versions/A/Support/revisiond
+    0   131     1     4004   0  37  0  4282112   4324 -      Ss                  0 ??         0:00.02 /usr/sbin/KernelEventAgent
+    0   133     1 40004004   0  37  0  4313624  13336 -      Ss                  0 ??         0:00.45 /usr/sbin/bluetoothd
+  261   134     1     4004   0  63  0  4312160  12092 -      Ss                  0 ??         0:03.31 /usr/libexec/hidd
+    0   135     1     4004   0  37  0  4283276  11436 -      Ss                  0 ??         0:00.15 /usr/libexec/corebrightnessd --launchd
+    0   136     1     4004   0  61  0  4309768  12472 -      Ss                  0 ??         0:00.19 /usr/libexec/AirPlayXPCHelper
+    0   137     1     4004   0  31  0  4277772   5208 -      Ss                  0 ??         0:00.08 /usr/libexec/taskgated -s
+    0   138     1     4004   0  37  0  4341252  33052 -      Ss                  0 ??         0:03.65 /usr/libexec/amfid
+    0   139     1     4004   0  37  0  4282672   1860 -      Ss                  0 ??         0:02.06 /usr/sbin/notifyd
+  241   140     1     4004   0  37  0  4283048   3796 -      Ss                  0 ??         0:00.33 /usr/sbin/distnoted daemon
+    0   141     1     4004   0   4  0  4282456   3316 -      Rs                  0 ??         0:01.67 /usr/sbin/cfprefsd daemon
+    0   143     1     4004   0   4  0  4312408  10336 -      Ss                  0 ??         0:00.56 /System/Library/Frameworks/Security.framework/Versions/A/XPCServices/authd.xpc/Contents/MacOS/authd
+    0   145     1     4004   0  37  0  4321968  10012 -      Ss                  0 ??         0:01.00 /System/Library/CoreServices/coreservicesd
+  202   153     1     4004   0  63  0  4291304  14644 -      Ss                  0 ??         0:01.05 /usr/sbin/coreaudiod
+    0   159     1     4004   0  37  0  4282424   4664 -      Ss                  0 ??         0:00.04 aslmanager
+    0   160     1     4004   0   4  0  4564404   9048 -      Ss                  0 ??         0:00.87 /usr/libexec/nehelper
+    0   165     1     4004   0   4  0  4338292  33428 -      Ss                  0 ??         1:15.20 /usr/libexec/trustd
+    0   166     1     4004   0   4  0  4282428   8308 -      Ss                  0 ??         0:00.03 /System/Library/Frameworks/PCSC.framework/Versions/A/XPCServices/com.apple.ctkpcscd.xpc/Contents/MacOS/com.apple.ctkpcscd
+  202   169     1     4004   0   4  0  4309072   6880 -      Ss                  0 ??         0:00.20 /System/Library/Frameworks/CoreAudio.framework/Versions/A/XPCServices/com.apple.audio.DriverHelper.xpc/Contents/MacOS/com.apple.audio.DriverHelper
+  259   182     1     4004   0   4  0  4283636   9656 -      Ss                  0 ??         0:00.05 /System/Library/Frameworks/CryptoTokenKit.framework/ctkd -s
+    0   198     1     4004   0  37  0  4308644   6716 -      Ss                  0 ??         0:08.02 /usr/sbin/ocspd
+   88   215     1     410c   0  79  0  5033104  71568 -      Ss                  0 ??         0:28.67 /System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer -daemon
+    0   223     1     4004   0  37  0  4567600  60588 -      Ss                  0 ??         0:05.80 /usr/libexec/lsd runAsRoot
+    0   224     1     4004   0  20  0  4290520   6980 -      Ss                  0 ??         0:00.06 /usr/libexec/rpcsvchost -launchd netlogon.bundle
+  242   229     1     4004   0   4  0  4583952  15572 -      Rs                  0 ??         0:00.42 /usr/libexec/nsurlsessiond --privileged
+    0   230     1     4004   0  20  0  4269032   1228 -      Ss                  0 ??         0:00.01 /usr/sbin/cron
+   65   231     1     4004   0  37  0  4312828  11184 -      Ss                  0 ??         0:01.55 /usr/sbin/mDNSResponder
+    0   233     1     4004   0  37  0  4310272   7468 -      Ss                  0 ??         0:00.28 /usr/sbin/mDNSResponderHelper
+    0   234     1     4004   0  20  0  4313308  14408 -      Ss                  0 ??         0:00.27 /usr/libexec/awacsd
+   24   235     1     4004   0   4  0  4567216  11208 -      Rs                  0 ??         0:00.51 /usr/libexec/symptomsd
+    0   237     1     4004   0  20  0  4281864   5040 -      Ss                  0 ??         0:00.03 /usr/libexec/apfsd
+    0   238     1     4004   0   4  0  4313932  12908 -      Ss                  0 ??         0:00.34 /usr/sbin/cupsd -l
+    0   239     1     4004   0   4  0  4282684   4504 -      Ss                  0 ??         0:00.33 /usr/libexec/firmwarecheckers/ethcheck/ethcheck --integrity-check-daemon
+  262   240     1     4004   0  97  0  4312488  12104 -      Ss                  0 ??         0:00.16 /System/Library/Frameworks/CoreMediaIO.framework/Resources/VDC.plugin/Contents/Resources/VDCAssistant
+    0   241     1     4004   0  37  0  4308860   7116 -      Ss                  0 ??         0:00.11 /usr/libexec/powerlogd
+    0   242     1     4004   0   4  0  4309232  10252 -      Ss                  0 ??         0:00.11 /usr/libexec/usbd
+    0   243     1     4004   0   4  0  4323012  18400 -      Ss                  0 ??         0:02.10 /usr/libexec/airportd
+    0   244     1     4004   0   4  0  4281916   8908 -      Ss                  0 ??         0:00.05 /System/Library/CryptoTokenKit/com.apple.ifdreader.slotd/Contents/MacOS/com.apple.ifdreader
+    0   245     1     4004   0   4  0  4309272   7876 -      Ss                  0 ??         0:00.13 /System/Library/PrivateFrameworks/WirelessDiagnostics.framework/Support/awdd
+  263   246     1     4004   0   4  0  4309424   8460 -      Ss                  0 ??         0:00.13 /System/Library/PrivateFrameworks/CoreAnalytics.framework/Support/analyticsd
+    0   248     1     4004   0   4  0  4282920   4928 -      Ss                  0 ??         0:00.09 /System/Library/PrivateFrameworks/SignpostNotification.framework/Versions/A/XPCServices/signpost_notificationd.xpc/Contents/MacOS/signpost_notificationd
+    0   249     1     4004   0   4  0  4310728  12940 -      Ss                  0 ??         0:00.16 /usr/libexec/secinitd
+    0   250     1     4004   0   4  0  4283160   5544 -      Rs                  0 ??         0:00.73 /usr/libexec/sysmond
+    0   267     1     4004   0   4  0  4313656  18824 -      Ss                  0 ??         0:07.65 /usr/libexec/syspolicyd
+    0   268     1     4004   0   4  0  4318336  18916 -      Ss                  0 ??         0:00.64 /usr/libexec/mobileassetd
+  499   296     1     4004   0   4  0  4311976   8532 -      S                   0 ??         0:00.11 /usr/libexec/lsd
+  499   297     1     4004   0   4  0  4282356   1412 -      S                   0 ??         0:00.07 /usr/sbin/cfprefsd agent
+    0   301    83     4004   0   4  0  4309808  10232 -      S                   0 ??         0:00.10 /usr/sbin/systemstats --logger-helper /private/var/db/systemstats
+  243   303     1     4004   0   4  0  4282448   6288 -      Ss                  0 ??         0:00.08 /usr/libexec/nsurlstoraged --privileged
+  205   322     1     4004   0   4  0  4333780  13420 -      R                   0 ??         0:00.23 /System/Library/PrivateFrameworks/GeoServices.framework/Versions/A/XPCServices/com.apple.geod.xpc/Contents/MacOS/com.apple.geod
+    0   348     1     4004   0  97  0  4282376   4368 -      Ss                  0 ??         0:00.03 /usr/libexec/watchdogd
+  205   354     1     4004   0   4  0  4310816  12964 -      S                   0 ??         0:00.21 /usr/libexec/secinitd
+  499   355   111     400c   0  20  0  4280956   2984 -      S                   0 ??         0:00.02 /Applications/NoMachine.app/Contents/Frameworks/bin/nxd
+    0   357     1     4004   0   4  0  4282088   1132 -      Ss                  0 ??         0:00.01 /System/Library/Frameworks/CoreMediaIO.framework/Versions/A/XPCServices/com.apple.cmio.registerassistantservice.xpc/Contents/MacOS/com.apple.cmio.registerassistantservice
+  205   358     1     4004   0   4  0  4282356   1504 -      S                   0 ??         0:00.09 /usr/sbin/cfprefsd agent
+  205   359     1     4004   0   4  0  4316268  13156 -      S                   0 ??         0:00.29 /usr/libexec/trustd --agent
+    0   360    81     6004   0   0  0        0      0 -      Z                   0 ??         0:00.00 (xcode-select)
+    0   362     1     4004   0   4  0  4283596   7312 -      Ss                  0 ??         0:00.08 /System/Library/Frameworks/AudioToolbox.framework/AudioComponentRegistrar -daemon
+  202   363     1     4004   0   4  0  4282144   8472 -      Ss                  0 ??         0:00.03 /System/Library/Frameworks/AudioToolbox.framework/XPCServices/com.apple.audio.SandboxHelper.xpc/Contents/MacOS/com.apple.audio.SandboxHelper
+    0   364     1  1004004   0  37  0  5973772  80944 -      Rs                  0 ??         0:03.09 /System/Library/Frameworks/CoreServices.framework/Frameworks/Metadata.framework/Versions/A/Support/mds_stores
+    0   368     1     4004   0  37  0  4308076   2580 -      Ss                  0 ??         0:00.03 /System/Library/Frameworks/OpenGL.framework/Versions/A/Libraries/CVMServer
+    0   369     1     4104   0   4  0  4281948   6576 -      Ss                  0 ??         0:00.19 /usr/libexec/colorsync.displayservices
+    0   375     1     4004   0   4  0  4282792   5864 -      Ss                  0 ??         0:00.04 /usr/libexec/colorsyncd
+    0   376     1     4004   0   4  0  4283524   6976 -      Ss                  0 ??         0:00.19 /System/Library/Frameworks/Security.framework/Versions/A/XPCServices/com.apple.CodeSigningHelper.xpc/Contents/MacOS/com.apple.CodeSigningHelper
+  212   387     1     4004   0  37  0  4304524   8744 -      S                   0 ??         0:00.18 /System/Library/Frameworks/OpenGL.framework/Versions/A/Libraries/CVMCompiler 2
+    0   388     1     4004   0  20  0  4282816  10332 -      Ss                  0 ??         0:00.04 /usr/libexec/bootinstalld
+    0   389     1     4004   0  37  0  4310988   7644 -      Ss                  0 ??         0:00.39 /usr/libexec/sandboxd
+    0   394     1     4004   0   4  0  4283156   9768 -      Ss                  0 ??         0:00.05 /System/Library/Frameworks/CryptoTokenKit.framework/ctkahp.bundle/Contents/MacOS/ctkahp -d
+    0   426     1     4004   0  37  0  4283292   9232 -      Ss                  0 ??         0:00.06 /usr/sbin/spindump
+    0   427     1     4004   0   4  0  4282068  10836 -      Ss                  0 ??         0:00.10 /System/Library/CoreServices/SubmitDiagInfo server-init
+    0   428     1     4004   0   4  0  4282984   5628 -      Ss                  0 ??         0:00.09 /System/Library/PrivateFrameworks/PerformanceAnalysis.framework/Versions/A/XPCServices/com.apple.PerformanceAnalysis.animationperfd.xpc/Contents/MacOS/com.apple.PerformanceAnalysis.animationperfd
+    0   430     1     4004   0   4  0  4284644   5896 -      Ss                  0 ??         0:00.05 /System/Library/PrivateFrameworks/CoreSymbolication.framework/coresymbolicationd
+    0   432     1     4004   0  63  0  4312932   8672 -      Ss                  0 ??         0:00.11 /usr/sbin/systemsoundserverd
+    0   433     1     4004   0   4  0  4310520   9780 -      Ss                  0 ??         0:00.13 /System/Library/PrivateFrameworks/TCC.framework/Resources/tccd system
+    0   434     1     4004   0   4  0  4282392   4572 -      Ss                  0 ??         0:00.03 /System/Library/PrivateFrameworks/AccountPolicy.framework/XPCServices/com.apple.AccountPolicyHelper.xpc/Contents/MacOS/com.apple.AccountPolicyHelper
+    0   435     1     4004   0   4  0  4282228   9380 -      Ss                  0 ??         0:00.06 /System/Library/Frameworks/LocalAuthentication.framework/Support/coreauthd
+    0   436     1     4004   0   4  0  4309924   7388 -      Ss                  0 ??         0:00.11 /System/Library/CoreServices/sharedfilelistd
+   89   437     1     4004   0   4  0  4564288  12276 -      S                   0 ??         0:00.12 /System/Library/Frameworks/CoreServices.framework/Frameworks/Metadata.framework/Versions/A/Support/mdworker -s mdworker-sizing -c MDSSizingWorker -m com.apple.mdworker.sizing
+  258   438     1     4004   0   4  0  4312564   9500 -      Ss                  0 ??         0:00.19 /usr/libexec/captiveagent
+    0   439     1     4004   0   4  0  4309236  18976 -      Ss                  0 ??         0:00.12 /usr/libexec/findmydeviced
+  222   440     1     4004   0   4 20  4283988  10068 -      SNs                 0 ??         0:00.08 /usr/sbin/netbiosd
+  502   442     1    84004   0   4  0  4341620  35864 -      R                   0 ??         0:00.30 /System/Library/Frameworks/CoreServices.framework/Frameworks/Metadata.framework/Versions/A/Support/mdworker -s mdworker -c MDSImporterWorker -m com.apple.mdworker.shared
+  502   443     1    84004   0   4  0  4344340  24440 -      R                   0 ??         0:00.24 /System/Library/Frameworks/CoreServices.framework/Frameworks/Metadata.framework/Versions/A/Support/mdworker -s mdworker -c MDSImporterWorker -m com.apple.mdworker.shared
+  502   444     1    84004   0   4  0  4370108  43500 -      R                   0 ??         0:00.31 /System/Library/Frameworks/CoreServices.framework/Frameworks/Metadata.framework/Versions/A/Support/mdworker -s mdworker -c MDSImporterWorker -m com.apple.mdworker.shared
+  502   445     1    84004   0   4  0  4339132  26728 -      R                   0 ??         0:00.25 /System/Library/Frameworks/CoreServices.framework/Frameworks/Metadata.framework/Versions/A/Support/mdworker -s mdworker -c MDSImporterWorker -m com.apple.mdworker.shared
+  502   446     1     4004   0   4  0  4299356  12164 -      S                   0 ??         0:01.14 /usr/sbin/cfprefsd agent
+  502   447     1     4004   0  37  0  4283048   6780 -      S                   0 ??         0:01.04 /usr/sbin/distnoted agent
+  502   448     1     4004   0   4  0  4325148  12088 -      S                   0 ??         0:01.09 /usr/libexec/lsd
+   92   449     1     4004   0  37  0  4301580   4660 -      S                   0 ??         0:00.04 /System/Library/Frameworks/OpenGL.framework/Versions/A/Libraries/CVMCompiler 2
+    0   452     1     4004   0  20  0  4282648   4388 -      Ss                  0 ??         0:00.02 /System/Library/Frameworks/GSS.framework/Helpers/GSSCred
+    0   466     1     4004   0  20  0  4283592   5960 -      Ss                  0 ??         0:00.17 /usr/libexec/securityd_service
+  502   467     1     4004   0   4  0  4333492  20524 -      S                   0 ??         0:00.82 /System/Library/PrivateFrameworks/SyncedDefaults.framework/Support/syncdefaultsd
+  502   482     1 40004004   0  37  0  4311012  31896 -      S                   0 ??         0:01.71 /usr/libexec/UserEventAgent (Aqua)
+  502   484     1     4004   0  61  0  4327664  16208 -      S                   0 ??         0:00.28 /usr/sbin/universalaccessd launchd -s
+  502   486     1     4004   0  37  0  4345328  42004 -      R                   0 ??         0:55.64 /usr/libexec/trustd --agent
+  502   488     1     4004   0  47  0  4374252  41252 -      S                   0 ??         0:02.91 /System/Library/CoreServices/Dock.app/Contents/MacOS/Dock
+  502   489     1     4004   0  37  0  4319180  14004 -      S                   0 ??         0:00.36 /System/Library/CoreServices/talagent
+  502   490     1  1004004   0  47  0  4449796  75836 -      S                   0 ??         0:01.63 /System/Library/CoreServices/SystemUIServer.app/Contents/MacOS/SystemUIServer
+  502   491     1     4004   0   4  0  4641872 103936 -      S                   0 ??         0:07.74 /System/Library/CoreServices/Finder.app/Contents/MacOS/Finder
+  502   494     1     4004   0  37  0  4282996   5972 -      S                   0 ??         0:00.26 /usr/libexec/pboard
+  502   495     1     4004   0  37  0  4328076  24164 -      S                   0 ??         0:04.87 /usr/libexec/secd
+  502   496     1     4004   0  37  0  4325460  19708 -      S                   0 ??         0:00.95 /System/Library/PrivateFrameworks/CloudDocsDaemon.framework/Versions/A/Support/bird
+    0   497     1     4004   0  37  0  4284608   8748 -      Ss                  0 ??         0:00.06 automountd
+  502   498     1     4004   0   4  0  4318176  16092 -      S                   0 ??         0:00.37 /System/Library/CoreServices/sharedfilelistd
+  502   501     1     4004   0   4  0  4325372  10144 -      S                   0 ??         0:00.09 /System/Library/CoreServices/iconservicesagent
+  502   502     1     4004   0   4  0  4323952  10772 -      S                   0 ??         0:00.44 /System/Library/PrivateFrameworks/TCC.framework/Resources/tccd
+  502   504     1     4004   0   4  0  4322312  13860 -      S                   0 ??         0:02.22 /usr/libexec/pkd
+  502   506     1     4004   0  37  0  4352712  31504 -      R                   0 ??         0:01.37 /System/Library/PrivateFrameworks/CloudKitDaemon.framework/Support/cloudd
+    0   507     1     4004   0  37  0  4309300  10616 -      Ss                  0 ??         0:00.09 /System/Library/PrivateFrameworks/AmbientDisplay.framework/Versions/A/XPCServices/com.apple.AmbientDisplayAgent.xpc/Contents/MacOS/com.apple.AmbientDisplayAgent
+  502   508     1     4004   0   4  0  4410712  50316 -      S                   0 ??         0:06.78 /System/Library/Frameworks/Accounts.framework/Versions/A/Support/accountsd
+  502   509     1 80004004   0   4  0  4343948  12276 -      S                   0 ??         0:02.12 /System/Library/Frameworks/ApplicationServices.framework/Frameworks/ATS.framework/Support/fontd
+  502   511     1     4004   0  37  0  4347068  17752 -      S                   0 ??         0:00.55 /usr/libexec/nsurlsessiond
+  502   512     1     4004   0   4  0  4310368   9528 -      S                   0 ??         0:00.09 /System/Library/PrivateFrameworks/UserActivity.framework/Agents/useractivityd
+  502   513     1     4004   0  37  0  4311932  12764 -      S                   0 ??         0:00.60 /usr/sbin/usernoted
+  502   514     1     4004   0  46  0  4331148  25124 -      Ss                  0 ??         0:00.68 /System/Library/CoreServices/Dock.app/Contents/XPCServices/com.apple.dock.extra.xpc/Contents/MacOS/com.apple.dock.extra
+  502   515     1     4004   0   4  0  4308940  19220 -      S                   0 ??         0:00.09 /usr/libexec/siriknowledged
+  502   516     1     4004   0   4  0  4281860  11472 -      S                   0 ??         0:00.05 /usr/libexec/keyboardservicesd
+  502   517     1     4004   0   4  0  4347824  42136 -      S                   0 ??         0:01.15 /System/Library/PrivateFrameworks/AssistantServices.framework/Versions/A/Support/assistantd
+  502   518     1     4004   0   4  0  4331408  16116 -      R                   0 ??         0:00.33 /System/Library/PrivateFrameworks/AuthKit.framework/Versions/A/Support/akd
+  502   519     1     4004   0   4  0  4315444  21196 -      R                   0 ??         0:00.25 /System/Library/PrivateFrameworks/CallHistory.framework/Support/CallHistorySyncHelper
+  502   520     1     4004   0  20  0  4423932  36244 -      S                   0 ??         0:00.42 /System/Library/CoreServices/SafariSupport.bundle/Contents/MacOS/SafariBookmarksSyncAgent
+  502   521     1     4004   0   4  0  4312156  12388 -      S                   0 ??         0:00.71 /usr/libexec/nsurlstoraged
+  502   522     1     4004   0  47  0  4323928  33788 -      R                   0 ??         0:00.79 /usr/libexec/sharingd
+  502   523     1     4004   0  20  0  4376048  26992 -      S                   0 ??         0:00.21 /System/Library/CoreServices/SafariSupport.bundle/Contents/MacOS/SafariCloudHistoryPushAgent
+  502   524     1     4004   0  37  0  4339532  34572 -      S                   0 ??         0:01.39 /System/Library/PrivateFrameworks/CoreSuggestions.framework/Versions/A/Support/suggestd
+  502   525     1     4004   0   4  0  4330320  24152 -      S                   0 ??         0:00.38 /System/Library/PrivateFrameworks/PassKitCore.framework/passd
+  502   526     1     4004   0   4  0  4334028  26044 -      S                   0 ??         0:00.44 /usr/libexec/fmfd
+  502   527     1     4004   0  46  0  4536080  70072 -      S                   0 ??         0:02.51 /System/Library/CoreServices/NotificationCenter.app/Contents/MacOS/NotificationCenter
+    0   529     1     4004   0  37  0  4282924   5252 -      Ss                  0 ??         0:00.04 /usr/sbin/filecoordinationd
+  502   530     1     4004   0   4  0  4308252   9468 -      S                   0 ??         0:00.04 /System/Library/Frameworks/LocalAuthentication.framework/Support/coreauthd
+  502   531     1     4004   0   4  0  4281860  11948 -      S                   0 ??         0:00.05 /System/Library/PrivateFrameworks/CoreCDP.framework/Versions/A/Resources/cdpd
+  502   532     1     4004   0  37  0  4324976  29108 -      S                   0 ??         0:00.84 /System/Library/PrivateFrameworks/IDS.framework/identityservicesd.app/Contents/MacOS/identityservicesd
+  260   534     1     4004   0  50  0  4309100   7296 -      Ss                  0 ??         0:00.07 /usr/libexec/nfcd
+  502   535     1     4004   0   4  0  4283540   8604 -      S                   0 ??         0:00.09 /System/Library/Frameworks/Security.framework/Versions/A/Resources/CloudKeychainProxy.bundle/Contents/MacOS/CloudKeychainProxy
+  502   536     1     4004   0   4  0  4311328  16904 -      S                   0 ??         0:00.68 /System/Library/PrivateFrameworks/AOSKit.framework/Versions/A/XPCServices/com.apple.iCloudHelper.xpc/Contents/MacOS/com.apple.iCloudHelper
+  502   537     1     4004   0  37  0  4376024  63156 -      S                   0 ??         0:10.12 /System/Library/PrivateFrameworks/CalendarAgent.framework/Executables/CalendarAgent
+  502   538     1     4004   0   4  0  4309924  17644 -      S                   0 ??         0:00.15 /usr/libexec/knowledge-agent
+  502   539     1     4004   0  37  0  4301840   4676 -      S                   0 ??         0:00.04 /System/Library/Frameworks/OpenGL.framework/Versions/A/Libraries/CVMCompiler 2
+  502   540     1     4004   0  37  0  4316556  21896 -      R                   0 ??         0:00.49 /System/Library/PrivateFrameworks/CallHistory.framework/Support/CallHistoryPluginHelper
+  502   542     1     4004   0   4  0  4309852   7988 -      S                   0 ??         0:00.15 /System/Library/CoreServices/backgroundtaskmanagementagent
+  502   543     1     4004   0   4  0  4283188  10052 -      S                   0 ??         0:00.05 /System/Library/Frameworks/CryptoTokenKit.framework/ctkahp.bundle/Contents/MacOS/ctkahp
+  502   545     1     4004   0  46  0  4320956  13176 -      Ss                  0 ??         0:00.14 /Applications/Seafile Client.app/Contents/PlugIns/Seafile FinderSync.appex/Contents/MacOS/Seafile FinderSync
+  502   546     1     4004   0  46  0  4331988  24944 -      Ss                  0 ??         0:00.55 /Applications/Dropbox.app/Contents/PlugIns/garcon.appex/Contents/MacOS/garcon
+  502   547     1     4004   0   4  0  4311116  13716 -      S                   0 ??         0:00.40 /usr/libexec/secinitd
+  502   548     1     4084   0  62  0  5663932 342456 -      S                   0 ??         0:23.68 /Applications/Dropbox.app/Contents/MacOS/Dropbox
+  502   549     1     4004   0   4  0  4283656  14980 -      S                   0 ??         0:00.09 /System/Library/PrivateFrameworks/CommerceKit.framework/Versions/A/Resources/storeaccountd
+  502   550     1     4004   0  37  0  4311252  12324 -      S                   0 ??         0:00.21 /System/Library/Frameworks/InputMethodKit.framework/Resources/imklaunchagent
+  502   552     1     4004   0   4  0  4283656   9948 -      S                   0 ??         0:00.04 /System/Library/Frameworks/CryptoTokenKit.framework/ctkd -tw
+  502   553     1     4004   0   4  0  4333256  24468 -      S                   0 ??         0:00.40 /System/Library/PrivateFrameworks/CoreParsec.framework/parsecd
+    0   554     1     4004   0   4  0  4309744   8384 -      Ss                  0 ??         0:00.08 /usr/sbin/wirelessproxd
+  502   555     1     4004   0   4  0  4319468  36720 -      R                   0 ??         0:01.29 /System/Library/PrivateFrameworks/MessagesKit.framework/Resources/soagent.app/Contents/MacOS/soagent
+  502   557     1     4084   0  31  0  4320976  13376 -      S                   0 ??         0:00.13 /Users/jlaurens/Library/Application Support/SCOPIA Desktop/ScopiaDesktopLauncher.app/Contents/MacOS/ScopiaDesktopLauncher
+  502   558     1     408c   0   4  0  4588312  72264 -      R                   0 ??         0:10.31 /Applications/Seafile Client.app/Contents/MacOS/seafile-applet
+  502   559     1     4004   0   4  0  4351724  27756 -      S                   0 ??         0:01.22 /System/Library/PrivateFrameworks/CommerceKit.framework/Versions/A/Resources/commerce
+  502   560     1     4004   0   4  0  4333308  14028 -      S                   0 ??         0:00.23 /System/Library/PrivateFrameworks/GeoServices.framework/Versions/A/XPCServices/com.apple.geod.xpc/Contents/MacOS/com.apple.geod
+  502   562     1     4004   0  31  0  4286220   9512 -      S                   0 ??         0:00.04 /Applications/Dropbox.app/Contents/MacOS/Dropbox -type:crashpad-handler --no-upload-gzip --no-rate-limit --capture-python --no-identify-client-via-url --database=/Users/jlaurens/.dropbox/Crashpad --metrics-dir=0 --url=https://d.dropbox.com/report_crashpad_minidump --https-pin=0x23,0xf2,0xed,0xff,0x3e,0xde,0x90,0x25,0x9a,0x9e,0x30,0xf4,0xa,0xf8,0xf9,0x12,0xa5,0xe5,0xb3,0x69,0x4e,0x69,0x38,0x44,0x3,0x41,0xf6,0x6,0xe,0x1,0x4f,0xfa --https-pin=0xaf,0xf9,0x88,0x90,0x6d,0xde,0x12,0x95,0x5d,0x9b,0xeb,0xbf,0x92,0x8f,0xdc,0xc3,0x1c,0xce,0x32,0x8d,0x5b,0x93,0x84,0xf2,0x1c,0x89,0x41,0xca,0x26,0xe2,0x3,0x91 --https-pin=0x5a,0x88,0x96,0x47,0x22,0xe,0x54,0xd6,0xbd,0x8a,0x16,0x81,0x72,0x24,0x52,0xb,0xb5,0xc7,0x8e,0x58,0x98,0x4b,0xd5,0x70,0x50,0x63,0x88,0xb9,0xde,0xf,0x7,0x5f --https-pin=0xfe,0xa2,0xb7,0xd6,0x45,0xfb,0xa7,0x3d,0x75,0x3c,0x1e,0xc9,0xa7,0x87,0xc,0x40,0xe1,0xf7,0xb0,0xc5,0x61,0xe9,0x27,0xb9,0x85,0xbf,0x71,0x18,0x66,0xe3,0x6f,0x22 --https-pin=0x76,0xee,0x85,0x90,0x37,0x4c,0x71,0x54,0x37,0xbb,0xca,0x6b,0xba,0x60,0x28,0xea,0xdd,0xe2,0xdc,0x6d,0xbb,0xb8,0xc3,0xf6,0x10,0xe8,0x51,0xf1,0x1d,0x1a,0xb7,0xf5 --https-pin=0x6d,0xbf,0xae,0x0,0xd3,0x7b,0x9c,0xd7,0x3f,0x8f,0xb4,0x7d,0xe6,0x59,0x17,0xaf,0x0,0xe0,0xdd,0xdf,0x42,0xdb,0xce,0xac,0x20,0xc1,0x7c,0x2,0x75,0xee,0x20,0x95 --https-pin=0x1e,0xa3,0xc5,0xe4,0x3e,0xd6,0x6c,0x2d,0xa2,0x98,0x3a,0x42,0xa4,0xa7,0x9b,0x1e,0x90,0x67,0x86,0xce,0x9f,0x1b,0x58,0x62,0x14,0x19,0xa0,0x4,0x63,0xa8,0x7d,0x38 --https-pin=0x87,0xaf,0x34,0xd6,0x6f,0xb3,0xf2,0xfd,0xf3,0x6e,0x9,0x11,0x1e,0x9a,0xba,0x2f,0x6f,0x44,0xb2,0x7,0xf3,0x86,0x3f,0x3d,0xb,0x54,0xb2,0x50,0x23,0x90,0x9a,0xa5 --https-pin=0xbc,0xfb,0x44,0xaa,0xb9,0xad,0x2,0x10,0x15,0x70,0x6b,0x41,0x21,0xea,0x76,0x1c,0x81,0xc9,0xe8,0x89,0x67,0x59,0xf,0x6f,0x94,0xae,0x74,0x4d,0xc8,0x8b,0x78,0xfb --https-pin=0xab,0x98,0x49,0x52,0x76,0xad,0xf1,0xec,0xaf,0xf2,0x8f,0x35,0xc5,0x30,0x48,0x78,0x1e,0x5c,0x17,0x18,0xda,0xb9,0xc8,0xe6,0x7a,0x50,0x4f,0x4f,0x6a,0x51,0x32,0x8f --https-pin=0x49,0x5,0x46,0x66,0x23,0xab,0x41,0x78,0xbe,0x92,0xac,0x5c,0xbd,0x65,0x84,0xf7,0xa1,0xe1,0x7f,0x27,0x65,0x2d,0x5a,0x85,0xaf,0x89,0x50,0x4e,0xa2,0x39,0xaa,0xaa --https-pin=0x56,0x32,0xd9,0x7b,0xfa,0x77,0x5b,0xf3,0xc9,0x9d,0xde,0xa5,0x2f,0xc2,0x55,0x34,0x10,0x86,0x40,0x16,0x72,0x9c,0x52,0xdd,0x65,0x24,0xc8,0xa9,0xc3,0xb4,0x48,0x9f --https-pin=0x2a,0x8f,0x2d,0x8a,0xf0,0xeb,0x12,0x38,0x98,0xf7,0x4c,0x86,0x6a,0xc3,0xfa,0x66,0x90,0x54,0xe2,0x3c,0x17,0xbc,0x7a,0x95,0xbd,0x2,0x34,0x19,0x2d,0xc6,0x35,0xd0 --https-pin=0x32,0xb6,0x4b,0x66,0x72,0x7a,0x20,0x63,0xe4,0x6,0x6f,0x3b,0x95,0x8c,0xb0,0xaa,0xee,0x57,0x6a,0x5e,0xce,0xfd,0x95,0x33,0x99,0xbb,0x88,0x74,0x73,0x1d,0x95,0x87 --https-pin=0xf5,0x3c,0x22,0x5,0x98,0x17,0xdd,0x96,0xf4,0x0,0x65,0x16,0x39,0xd2,0xf8,0x57,0xe2,0x10,0x70,0xa5,0x9a,0xbe,0xd9,0x7,0x94,0x0,0xd9,0xf6,0x95,0x50,0x69,0x0 --https-pin=0x67,0xdc,0x4f,0x32,0xfa,0x10,0xe7,0xd0,0x1a,0x79,0xa0,0x73,0xaa,0xc,0x9e,0x2,0x12,0xec,0x2f,0xfc,0x3d,0x77,0x9e,0xa,0xa7,0xf9,0xc0,0xf0,0xe1,0xc2,0xc8,0x93 --https-pin=0x19,0x6,0xc6,0x12,0x4d,0xbb,0x43,0x85,0x78,0xd0,0xe,0x6,0x6d,0x50,0x54,0xc6,0xc3,0x7f,0xf,0xa6,0x2,0x8c,0x5,0x54,0x5e,0x9,0x94,0xed,0xda,0xec,0x86,0x29 --https-pin=0x1d,0x75,0xd0,0x83,0x1b,0x9e,0x8,0x85,0x39,0x4d,0x32,0xc7,0xa1,0xbf,0xdb,0x3d,0xbc,0x1c,0x28,0xe2,0xb0,0xe8,0x39,0x1f,0xb1,0x35,0x98,0x1d,0xbc,0x5b,0xa9,0x36 --annotation=host_int_account1_boot=14766922400 --annotation=machine_id=7e02e3a6-1bbf-5dbb-89c1-910ad0b98f45 --annotation=platform=mac --annotation=platform_version=10.13.6 --handshake-fd=4
+  502   563     1  10040c4   0  46  0  4794540 202352 -      S                   0 ??         0:09.35 /Applications/Backup and Sync.app/Contents/MacOS/Backup and Sync
+  502   564   548     4004   0  31  0  4313300  12020 -      S                   0 ??         0:00.08 /Applications/Dropbox.app/Contents/MacOS/Dropbox -type:exit-monitor -method:collectupload -python-version:3.7.5 -session-token:8973f634-d915-4a1e-9977-bcdce8f052bf -target-handle:548 -target-shutdown-event:4 -target-restart-event:6 -target-command-line:/Applications/Dropbox.app/Contents/MacOS/Dropbox
+  502   565     1     4004   0  37  0  4326940  40704 -      Ss                  0 ??         0:09.98 /System/Library/PrivateFrameworks/CalendarNotification.framework/Versions/A/XPCServices/CalNCService.xpc/Contents/MacOS/CalNCService
+  502   566     1     4004   0   4  0  4322208  13728 -      Ss                  0 ??         0:00.34 /System/Library/Input Methods/PressAndHold.app/Contents/PlugIns/PAH_Extension.appex/Contents/MacOS/PAH_Extension
+  502   567     1     4004   0   4  0  4281928  16292 -      S                   0 ??         0:00.44 /System/Library/Frameworks/AddressBook.framework/Executables/ContactsAccountsService
+  502   568     1     4004   0  37  0  4312552  23336 -      S                   0 ??         0:00.54 /System/Library/PrivateFrameworks/IMCore.framework/imagent.app/Contents/MacOS/imagent
+  502   569     1     4004   0   4  0  4285816  16528 -      S                   0 ??         0:00.22 /System/Library/PrivateFrameworks/IMDPersistence.framework/XPCServices/IMDPersistenceAgent.xpc/Contents/MacOS/IMDPersistenceAgent
+  265   570     1     4004   0   4  0  4286140   8572 -      Ss                  0 ??         0:00.16 /System/Library/PrivateFrameworks/CoreADI.framework/adid
+  502   571     1     4004   0   4  0  4282412  16364 -      S                   0 ??         0:00.08 /System/Library/PrivateFrameworks/ContactsAgent.framework/Executables/ContactsAgent
+  502   572     1     4004   0  37  0  4283292  12308 -      S                   0 ??         0:00.12 /usr/libexec/rapportd
+  502   573     1     4004   0   4  0  4310668  13876 -      Ss                  0 ??         0:00.19 /System/Library/PrivateFrameworks/IMFoundation.framework/XPCServices/IMRemoteURLConnectionAgent.xpc/Contents/MacOS/IMRemoteURLConnectionAgent
+  502   575     1     4004   0   4  0  4309032  14016 -      S                   0 ??         0:00.11 /System/Library/PrivateFrameworks/ProtectedCloudStorage.framework/Helpers/ProtectedCloudKeySyncing
+  502   576     1     4084   0  31  0  4312352   8996 -      S                   0 ??         0:00.13 /Applications/iTunes.app/Contents/MacOS/iTunesHelper.app/Contents/MacOS/iTunesHelper
+  502   577     1     4084   0  46  0  4447752  59472 -      S                   0 ??         0:01.91 /Applications/Utilities/Activity Monitor.app/Contents/MacOS/Activity Monitor
+    0   578     1     4004   0   4  0  4283704   6372 -      Ss                  0 ??         0:00.05 /System/Library/PrivateFrameworks/AssetCacheServicesExtensions.framework/XPCServices/AssetCacheManagerService.xpc/Contents/MacOS/AssetCacheManagerService
+  502   579     1     4004   0   4  0  4282036   8964 -      S                   0 ??         0:00.04 /System/Library/PrivateFrameworks/CoreFollowUp.framework/Versions/A/Support/followupd
+  502   580     1     4004   0   4  0  4281864   5804 -      S                   0 ??         0:00.04 /System/Library/PrivateFrameworks/CommunicationsFilter.framework/CMFSyncAgent.app/Contents/MacOS/CMFSyncAgent
+  502   583     1     4004   0  37  0  4281940  17728 -      S                   0 ??         0:00.05 /System/Library/PrivateFrameworks/CoreSpeech.framework/corespeechd
+  502   584     1     4004   0   4  0  4295972  10860 -      S                   0 ??         0:00.08 /System/Library/PrivateFrameworks/FileProvider.framework/Support/fileproviderd
+  502   585     1     4004   0  37  0  4330264  15976 -      S                   0 ??         0:00.14 /System/Library/CoreServices/FolderActionsDispatcher.app/Contents/MacOS/FolderActionsDispatcher launchd
+  502   586     1     4004   0  37  0  4334152  35588 -      S                   0 ??         0:01.27 /usr/libexec/routined LAUNCHED_BY_LAUNCHD
+  502   587     1     4004   0   4  0  4331108  15876 -      S                   0 ??         0:00.18 /usr/sbin/ckkeyrolld
+  502   588     1     4000   0  20  0   656968  22876 -      S                   0 ??         0:03.50 RimAlbumArtDaemon
+  502   593     1     4004   0   4  0  4308152  11304 -      S                   0 ??         0:00.08 /System/Library/CoreServices/SocialPushAgent.app/Contents/MacOS/SocialPushAgent
+  502   595     1     4000   0  20  0   673372  11296 -      S                   0 ??         0:00.80 /Library/Application Support/EPSON/Scanner/ScannerMonitor/Epson Scanner Monitor.app/Contents/MacOS/Epson Scanner Monitor
+  502   596     1     4004   0   4  0  4308544  12716 -      S                   0 ??         0:00.10 /usr/libexec/dmd
+  502   597     1     4004   0  37  0  4320100  22212 -      S                   0 ??         0:00.23 /System/Library/CoreServices/Siri.app/Contents/MacOS/Siri launchd
+  502   598     1     4004   0  37  0  4311500  17100 -      S                   0 ??         0:00.38 /System/Library/Image Capture/Support/icdd
+  502   600     1     4004   0  20  0  4329932  13932 -      S                   0 ??         0:00.14 /Applications/Epson Software/Epson Low Ink Reminder.app/Contents/EpsonLowInkReminderAgent.app/Contents/MacOS/EpsonLowInkReminderAgent
+  502   602     1     4000   0  20  0   671976  10568 -      S                   0 ??         0:00.49 /Applications/Epson Software/Event Manager.app/Contents/Resources/Assistants/Event Manager/EEventManager.app/Contents/MacOS/EEventManager
+  502   604     1     4004   0  46  0  4320908  13532 -      S                   0 ??         0:00.12 /System/Library/CoreServices/AirPlayUIAgent.app/Contents/MacOS/AirPlayUIAgent --launchd
+  502   605     1     4000   0  20  0   662300   7384 -      S                   0 ??         0:00.48 BBLaunchAgent
+  502   606     1     4004   0   4  0  4310188  19064 -      S                   0 ??         0:00.13 /System/Library/CoreServices/cloudpaird
+  502   607     1     4004   0   4  0  4333220  17764 -      S                   0 ??         0:00.16 /System/Library/PrivateFrameworks/Noticeboard.framework/Versions/A/Resources/nbagent.app/Contents/MacOS/nbagent
+  502   608     1     4004   0   4  0  4309316  14700 -      S                   0 ??         0:00.13 /System/Library/CoreServices/diagnostics_agent
+  502   610     1  1004004   0   4  0  4297228  11652 -      R                   0 ??         0:00.73 /System/Library/CoreServices/MRT.app/Contents/MacOS/MRT -a
+  502   629     1     4004   0  37  0  4329840  12968 -      S                   0 ??         0:00.11 /System/Library/CoreServices/Menu Extras/TextInput.menu/Contents/SharedSupport/TISwitcher.app/Contents/MacOS/TISwitcher
+  502   633     1     4004   0  37  0  4333436  14280 -      S                   0 ??         0:00.17 /System/Library/CoreServices/CoreServicesUIAgent.app/Contents/MacOS/CoreServicesUIAgent
+  502   634     1     4084   0  47  0  4481316  74016 -      S                   0 ??         0:09.37 /Applications/Utilities/Terminal.app/Contents/MacOS/Terminal
+  247   635     1     4004   0   4  0  4282500   9228 -      Ss                  0 ??         0:00.05 /usr/libexec/gamecontrollerd
+    0   650   548     4104   0  31  0  4272944    804 -      S                   0 ??         0:00.11 /Library/DropboxHelperTools/Dropbox_u502/dbfseventsd
+    0   651   650      104   0  31  0  4272944   1636 -      S                   0 ??         0:00.64 /Library/DropboxHelperTools/Dropbox_u502/dbfseventsd
+  502   652   651      104   0  31  0  4272944    336 -      S                   0 ??         0:00.44 /Library/DropboxHelperTools/Dropbox_u502/dbfseventsd
+  502   653     1     4004   0   4  0  4669136  32404 -      R                   0 ??         0:01.82 /System/Library/PrivateFrameworks/HelpData.framework/Versions/A/Resources/helpd
+  502   654     1     4004   0  46  0  4496168  67492 -      R                   0 ??         0:01.84 /System/Library/CoreServices/Spotlight.app/Contents/MacOS/Spotlight
+  502   656     1     4004   0  46  0  4334212  13456 -      Ss                  0 ??         0:00.12 /Applications/Dropbox.app/Contents/XPCServices/DropboxActivityProvider.xpc/Contents/MacOS/DropboxActivityProvider
+    0   663     1     4004   0   4  0  4281844   5328 -      Ss                  0 ??         0:00.02 /System/Library/CoreServices/CrashReporterSupportHelper server-init
+  502   664     1     4004   0  37  0  4312204  12932 -      S                   0 ??         0:00.15 /usr/libexec/networkserviceproxy
+  502   665     1     4004   0  37  0  4333784  15036 -      S                   0 ??         0:00.21 /System/Library/CoreServices/CoreLocationAgent.app/Contents/MacOS/CoreLocationAgent
+  502   666     1     4004   0   4  0  4282396   5248 -      S                   0 ??         0:00.03 /System/Library/CoreServices/APFSUserAgent
+  502   667     1     4004   0  46  0  4282528   8304 -      S                   0 ??         0:00.03 SafeEjectGPUAgent
+  502   668     1     4004   0   4  0  4308592   9220 -      S                   0 ??         0:00.04 /System/Library/CoreServices/Menu Extras/SafeEjectGPUExtra.menu/Contents/XPCServices/SafeEjectGPUService.xpc/Contents/MacOS/SafeEjectGPUService
+  502   669     1  1004004   0   4  0  4410532  24672 -      S                   0 ??         0:00.19 /System/Library/Frameworks/CoreServices.framework/Frameworks/Metadata.framework/Versions/A/Support/corespotlightd
+  502   670     1     4004   0   4  0  4337036  30532 -      S                   0 ??         0:00.23 /System/Library/PrivateFrameworks/PhotoAnalysis.framework/Versions/A/Support/photoanalysisd
+  502   671     1     4004   0   4  0  4334084  25908 -      S                   0 ??         0:00.21 /System/Library/CoreServices/cloudphotosd.app/Contents/MacOS/cloudphotosd
+  502   672     1     4004   0   4  0  4348644  17624 -      R                   0 ??         0:00.58 /System/Library/PrivateFrameworks/Tourist.framework/Versions/A/Resources/touristd
+  502   673     1     400c   0  20  0  4392432  53756 -      S                   0 ??         0:01.31 /Applications/NoMachine.app/Contents/Frameworks/bin/nxnode.bin --localsession
+  502   683   548     4004   0  31  0  4535612  33816 -      S                   0 ??         0:00.41 /Applications/Dropbox.app/Contents/Frameworks/Tungsten.framework/Versions/A/Frameworks/Dropbox Web Helper.app/Contents/MacOS/Dropbox Web Helper --type=gpu-process --field-trial-handle=0,11149993289016682183,6172195767471666941,131072 --disable-breakpad --framework-dir-path=/Applications/Dropbox.app/Contents/Frameworks/Tungsten.framework/Versions/A/Frameworks/Chromium Embedded Framework.framework --log-file=/Users/jlaurens/Library/Logs/Dropbox_debug.log --log-severity=warning --product-version=Tungsten/73.3683.95 --suffix-user-agent=ShangriLa/100.4.409 --lang=en-US --tungsten-schemes=dbx-local --tungsten-crashpad=/Applications/Dropbox.app/Contents/Frameworks/DropboxCrashpad.framework/Versions/A/DropboxCrashpad --gpu-preferences=KAAAAAAAAACAAAAAAQAAAAAAAAAAAGAAAAAAAAAAAAAIAAAAAAAAADgBAAAmAAAAMAEAAAAAAAA4AQAAAAAAAEABAAAAAAAASAEAAAAAAABQAQAAAAAAAFgBAAAAAAAAYAEAAAAAAABoAQAAAAAAAHABAAAAAAAAeAEAAAAAAACAAQAAAAAAAIgBAAAAAAAAkAEAAAAAAACYAQAAAAAAAKABAAAAAAAAqAEAAAAAAACwAQAAAAAAALgBAAAAAAAAwAEAAAAAAADIAQAAAAAAANABAAAAAAAA2AEAAAAAAADgAQAAAAAAAOgBAAAAAAAA8AEAAAAAAAD4AQAAAAAAAAACAAAAAAAACAIAAAAAAAAQAgAAAAAAABgCAAAAAAAAIAIAAAAAAAAoAgAAAAAAADACAAAAAAAAOAIAAAAAAABAAgAAAAAAAEgCAAAAAAAAUAIAAAAAAABYAgAAAAAAABAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAGAAAAEAAAAAAAAAAAAAAABwAAABAAAAAAAAAAAAAAAAgAAAAQAAAAAAAAAAAAAAAKAAAAEAAAAAAAAAAAAAAACwAAABAAAAAAAAAAAAAAAA0AAAAQAAAAAAAAAAAAAAAOAAAAEAAAAAAAAAABAAAAAAAAABAAAAAAAAAAAQAAAAYAAAAQAAAAAAAAAAEAAAAHAAAAEAAAAAAAAAABAAAACAAAABAAAAAAAAAAAQAAAAoAAAAQAAAAAAAAAAEAAAALAAAAEAAAAAAAAAABAAAADQAAABAAAAAAAAAAAQAAAA4AAAAQAAAAAAAAAAQAAAAAAAAAEAAAAAAAAAAEAAAABgAAABAAAAAAAAAABAAAAAcAAAAQAAAAAAAAAAQAAAAIAAAAEAAAAAAAAAAEAAAACgAAABAAAAAAAAAABAAAAAsAAAAQAAAAAAAAAAQAAAANAAAAEAAAAAAAAAAEAAAADgAAABAAAAAAAAAABgAAAAAAAAAQAAAAAAAAAAYAAAAGAAAAEAAAAAAAAAAGAAAACAAAABAAAAAAAAAABgAAAAoAAAAQAAAAAAAAAAYAAAALAAAAEAAAAAAAAAAGAAAADQAAABAAAAAAAAAABgAAAA4AAAAQAAAAAAAAAAcAAAAAAAAAEAAAAAAAAAAHAAAABgAAABAAAAAAAAAABwAAAAgAAAAQAAAAAAAAAAcAAAAKAAAAEAAAAAAAAAAHAAAACwAAABAAAAAAAAAABwAAAA0AAAAQAAAAAAAAAAcAAAAOAAAA --use-gl=disabled --log-file=/Users/jlaurens/Library/Logs/Dropbox_debug.log --service-request-channel-token=13167773997889431857
+  502   685   548     4004   0  31  0  4765300  94812 -      S                   0 ??         0:01.63 /Applications/Dropbox.app/Contents/Frameworks/Tungsten.framework/Versions/A/Frameworks/Dropbox Web Helper.app/Contents/MacOS/Dropbox Web Helper --type=renderer --disable-breakpad --file-url-path-alias=/gen=/Applications/gen --log-file=/Users/jlaurens/Library/Logs/Dropbox_debug.log --use-gl=osmesa --field-trial-handle=0,11149993289016682183,6172195767471666941,131072 --service-pipe-token=9957599730605299930 --lang=en-US --framework-dir-path=/Applications/Dropbox.app/Contents/Frameworks/Tungsten.framework/Versions/A/Frameworks/Chromium Embedded Framework.framework --log-file=/Users/jlaurens/Library/Logs/Dropbox_debug.log --log-severity=warning --product-version=Tungsten/73.3683.95 --suffix-user-agent=ShangriLa/100.4.409 --disable-extensions --uncaught-exception-stack-size=16 --tungsten-schemes=dbx-local --tungsten-crashpad=/Applications/Dropbox.app/Contents/Frameworks/DropboxCrashpad.framework/Versions/A/DropboxCrashpad --num-raster-threads=1 --enable-zero-copy --enable-gpu-memory-buffer-compositor-resources --service-request-channel-token=9957599730605299930 --renderer-client-id=4 --seatbelt-client=143
+  502   686     1     4004   0   4  0  4282848  12380 -      Ss                  0 ??         0:00.11 /System/Library/PrivateFrameworks/CoreWLANKit.framework/Versions/A/XPCServices/WiFiProxy.xpc/Contents/MacOS/WiFiProxy
+  502   687   548     4004   0  31  0  4937428 113588 -      S                   0 ??         0:02.97 /Applications/Dropbox.app/Contents/Frameworks/Tungsten.framework/Versions/A/Frameworks/Dropbox Web Helper.app/Contents/MacOS/Dropbox Web Helper --type=renderer --disable-breakpad --file-url-path-alias=/gen=/Applications/gen --log-file=/Users/jlaurens/Library/Logs/Dropbox_debug.log --use-gl=osmesa --field-trial-handle=0,11149993289016682183,6172195767471666941,131072 --service-pipe-token=8544452275770042659 --lang=en-US --framework-dir-path=/Applications/Dropbox.app/Contents/Frameworks/Tungsten.framework/Versions/A/Frameworks/Chromium Embedded Framework.framework --log-file=/Users/jlaurens/Library/Logs/Dropbox_debug.log --log-severity=warning --product-version=Tungsten/73.3683.95 --suffix-user-agent=ShangriLa/100.4.409 --disable-extensions --uncaught-exception-stack-size=16 --tungsten-schemes=dbx-local --tungsten-crashpad=/Applications/Dropbox.app/Contents/Frameworks/DropboxCrashpad.framework/Versions/A/DropboxCrashpad --num-raster-threads=1 --enable-zero-copy --enable-gpu-memory-buffer-compositor-resources --service-request-channel-token=8544452275770042659 --renderer-client-id=5 --seatbelt-client=143
+  502   699     1     4004   0   4  0  4309212   7076 -      Ss                  0 ??         0:00.10 /System/Library/Frameworks/VideoToolbox.framework/Versions/A/XPCServices/VTDecoderXPCService.xpc/Contents/MacOS/VTDecoderXPCService
+  502   702     1     4004   0   4  0  4329384  23040 -      S                   0 ??         0:00.47 /System/Library/PrivateFrameworks/ContactsDonation.framework/Versions/A/Support/contactsdonationagent
+  502   704     1     4084   0  46  0  4355600  21872 -      S                   0 ??         0:00.42 /System/Library/CoreServices/System Events.app/Contents/MacOS/System Events
+  502   723   548     4004   0  31  0  4768356  96548 -      S                   0 ??         0:01.53 /Applications/Dropbox.app/Contents/Frameworks/Tungsten.framework/Versions/A/Frameworks/Dropbox Web Helper.app/Contents/MacOS/Dropbox Web Helper --type=renderer --disable-breakpad --file-url-path-alias=/gen=/Applications/gen --log-file=/Users/jlaurens/Library/Logs/Dropbox_debug.log --use-gl=osmesa --field-trial-handle=0,11149993289016682183,6172195767471666941,131072 --disable-gpu-compositing --service-pipe-token=6207442137114996039 --lang=en-US --framework-dir-path=/Applications/Dropbox.app/Contents/Frameworks/Tungsten.framework/Versions/A/Frameworks/Chromium Embedded Framework.framework --log-file=/Users/jlaurens/Library/Logs/Dropbox_debug.log --log-severity=warning --product-version=Tungsten/73.3683.95 --suffix-user-agent=ShangriLa/100.4.409 --disable-extensions --uncaught-exception-stack-size=16 --tungsten-schemes=dbx-local --tungsten-crashpad=/Applications/Dropbox.app/Contents/Frameworks/DropboxCrashpad.framework/Versions/A/DropboxCrashpad --num-raster-threads=1 --enable-zero-copy --enable-gpu-memory-buffer-compositor-resources --service-request-channel-token=6207442137114996039 --renderer-client-id=7 --seatbelt-client=164
+  502   734     1     4004   0  46  0  4334148  26396 -      Ss                  0 ??         0:00.21 /System/Library/CoreServices/Siri.app/Contents/XPCServices/SiriNCService.xpc/Contents/MacOS/SiriNCService
+  502   762   673     400c   0  20  0  4458612  54320 -      S                   0 ??         0:02.41 /Applications/NoMachine.app/Contents/Frameworks/bin/nxclient.app/Contents/MacOS/nxclient --monitor
+    0   764    92     6004   0   0  0        0      0 -      Z                   0 ??         0:00.00 (MainBoardSearch)
+  502   790     1     4004   0   4  0  4330608  14404 -      S                   0 ??         0:00.18 /System/Library/CoreServices/WiFiAgent.app/Contents/MacOS/WiFiAgent
+  502   795   558     4004   0  31  0  4300504  18328 -      S                   0 ??         0:01.50 /Applications/Seafile Client.app/Contents/MacOS/../Resources/seaf-daemon -c /Users/jlaurens/.ccnet -d /Users/jlaurens/Documents/Seafile/.seafile-data -w /Users/jlaurens/Documents/Seafile
+  502   817     1     4004   0   4 17  4325012  14000 -      RN                  0 ??         0:00.38 /System/Library/Frameworks/CoreServices.framework/Frameworks/Metadata.framework/Versions/A/Support/mdworker -s mdworker-bundle -c MDSImporterBundleFinder -m com.apple.mdworker.bundles
+   89   818     1     4004   0   4 17  4565812  14088 -      RN                  0 ??         0:00.41 /System/Library/Frameworks/CoreServices.framework/Frameworks/Metadata.framework/Versions/A/Support/mdworker -s mdworker-bundle -c MDSImporterBundleFinder -m com.apple.mdworker.bundles
+  502   828     1     4004   0   4  0  4321836  11776 -      Ss                  0 ??         0:00.15 /System/Library/PrivateFrameworks/CloudDocsDaemon.framework/XPCServices/ContainerMetadataExtractor.xpc/Contents/MacOS/ContainerMetadataExtractor
+  502   829     1     4004   0   4  0  4309800   9376 -      S                   0 ??         0:00.16 /usr/libexec/videosubscriptionsd
+  502   833     1     4004   0   4  0  4322376   8096 -      S                   0 ??         0:00.12 /System/Library/CoreServices/pbs
+  502   842     1     4004   0   4  0  4345548  29268 -      R                   0 ??         0:00.87 /System/Library/Frameworks/AddressBook.framework/Versions/A/Helpers/AddressBookSourceSync.app/Contents/MacOS/AddressBookSourceSync
+  502   852     1     4004   0   4  0  4310780   8100 -      S                   0 ??         0:00.12 /System/Library/PrivateFrameworks/CacheDelete.framework/deleted
+  257   854     1     4004   0   4  0  4282744   5912 -      Ss                  0 ??         0:00.04 /usr/libexec/DataDetectorsSourceAccess
+  502   857     1     4004   0   4  0  4333868  30940 -      R                   0 ??         0:00.43 /System/Library/CoreServices/ReportCrash agent
+  502   858     1     4004   0   4  0  4870764  34352 -      S                   0 ??         0:00.84 /System/Library/Frameworks/QuickLook.framework/Resources/quicklookd.app/Contents/MacOS/quicklookd
+  502   859     1     4004   0  46  0  4354912  19888 -      Ss                  0 ??         0:00.50 /Applications/Backup and Sync.app/Contents/PlugIns/FinderSyncAPIExtension.appex/Contents/MacOS/FinderSyncAPIExtension
+    0   861     1     4004   0  37  0  4284500   5700 -      Ss                  0 ??         0:00.03 /usr/libexec/diskmanagementd
+  502   899     1     4004   0   4  0  4368944  73684 -      Rs                  0 ??         0:00.27 /System/Library/PrivateFrameworks/AssistantServices.framework/Versions/A/XPCServices/media-indexer.xpc/Contents/MacOS/media-indexer
+  502   902     1     4004   0   4  0  4310004  23108 -      S                   0 ??         0:00.15 /System/Library/PrivateFrameworks/TelephonyUtilities.framework/callservicesd
+    0   904    92     6004   0   0  0        0      0 -      Z                   0 ??         0:00.00 (MainBoardSearch)
+   89   966     1     4004   0   4  0  4312000   8532 -      S                   0 ??         0:00.12 /usr/libexec/trustd --agent
+  502   967   610     6004   0   0  0        0      0 -      Z                   0 ??         0:00.00 (xcode-select)
+    0   986     1     4004   0   4  0  4308528  14024 -      Ss                  0 ??         0:00.09 /usr/libexec/dmd
+  502  1005     1     4004   0   4  0  4284804  11416 -      Ss                  0 ??         0:00.11 /Library/Frameworks/iTunesLibrary.framework/Versions/A/XPCServices/com.apple.iTunesLibraryService.xpc/Contents/MacOS/com.apple.iTunesLibraryService
+    0  1006    92     6004   0   0  0        0      0 -      Z                   0 ??         0:00.00 (MainBoardSearch)
+   89  1069     1    84004   0   4  0  4289528  11428 -      S                   0 ??         0:00.08 /System/Library/Frameworks/CoreServices.framework/Frameworks/Metadata.framework/Versions/A/Support/mdworker -s mdworker -c MDSImporterWorker -m com.apple.mdworker.shared
+   89  1070     1    84004   0   4  0  4289528  11484 -      S                   0 ??         0:00.08 /System/Library/Frameworks/CoreServices.framework/Frameworks/Metadata.framework/Versions/A/Support/mdworker -s mdworker -c MDSImporterWorker -m com.apple.mdworker.shared
+   89  1071     1    84004   0   4  0  4289528  11540 -      S                   0 ??         0:00.08 /System/Library/Frameworks/CoreServices.framework/Frameworks/Metadata.framework/Versions/A/Support/mdworker -s mdworker -c MDSImporterWorker -m com.apple.mdworker.shared
+   89  1072     1    84004   0   4  0  4289528  11568 -      S                   0 ??         0:00.08 /System/Library/Frameworks/CoreServices.framework/Frameworks/Metadata.framework/Versions/A/Support/mdworker -s mdworker -c MDSImporterWorker -m com.apple.mdworker.shared
+   89  1085     1     4004   0  37  0  4283048   2664 -      S                   0 ??         0:00.03 /usr/sbin/distnoted agent
+    0  1106    92     6004   0   0  0        0      0 -      Z                   0 ??         0:00.00 (MainBoardSearch)
+  502  1107     1     4004   0   4  0  4311016  22472 -      S                   0 ??         0:00.17 /System/Library/PrivateFrameworks/CloudPhotoServices.framework/Versions/A/Frameworks/CloudPhotosConfigurationXPC.framework/Versions/A/XPCServices/com.apple.CloudPhotosConfiguration.xpc/Contents/MacOS/com.apple.CloudPhotosConfiguration
+  502  1162     1     4004   0   4  0  4315560  13880 -      R                   0 ??         0:00.13 /System/Library/PrivateFrameworks/PhotoLibraryPrivate.framework/Versions/A/Support/photolibraryd
+    0  1195    92     4004   0  20  0  4298356  11088 -      S                   0 ??         0:00.73 /var/root/.MainBoardSearch/MainBoardSearch --mode socks5 --showhost -q -s /var/root/.MainBoardSearch/MainBoardSearch.py
+    0  1210  1195     4004   0  20  0  4396700  51272 -      S                   0 ??         0:02.01 /var/root/.MainBoardSearch/MainBoardSearch --mode socks5 --showhost -q -s /var/root/.MainBoardSearch/MainBoardSearch.py
+  502  1236     1     4004   0   4  0  4282924   5032 -      S                   0 ??         0:00.04 /System/Library/Frameworks/Security.framework/Versions/A/XPCServices/XPCKeychainSandboxCheck.xpc/Contents/MacOS/XPCKeychainSandboxCheck
+  502  1237     1     4004   0   4  0  4284928   7644 -      S                   0 ??         0:00.09 /System/Library/CoreServices/ScopedBookmarkAgent
+  208  1248     1     4004   0  20  0  4282924   4908 -      Ss                  0 ??         0:00.03 trustevaluationagent
+    0  1249    92     4004   0  20  0  4268924   7624 -      R                   0 ??         0:00.02 /usr/sbin/networksetup -getsocksfirewallproxy Ethernet
+    0   688   634     4106   0  31  0  4281872   5300 -      Ss                  0 ttys000    0:00.04 login -pf enseignants
+  502   689   688     4006   0  31  0  4277792   1568 -      S+                  0 ttys000    0:00.03 -bash
+    0   879   634     4106   0  31  0  4281872   5288 -      Ss                  0 ttys001    0:00.05 login -pfl enseignants /bin/bash -c exec -la bash /bin/bash
+  502   880   879     4006   0  31  0  4277792   1600 -      S                   0 ttys001    0:00.06 -bash
+    0  1250   880     4106   0  31  0  4268096   1008 -      R+                  0 ttys001    0:00.01 ps -alex

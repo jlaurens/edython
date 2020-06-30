@@ -6,7 +6,7 @@
  * @license EUPL-1.2
  */
 /**
- * @fileoverview eYo.p6y.BaseC9r is a class for a property controller.
+ * @fileoverview eYo.P6y is a class for a property controller.
  * It extends the JS property design by providing some hooks before, during and after changes, allowing observers to specify actions.
  * @author jerome.laurens@u-bourgogne.fr (Jérôme LAURENS)
  */
@@ -49,9 +49,9 @@ eYo.o3d.newNS(eYo, 'p6y')
 //... chai.assert(eYo.p6y)
 //>>> mochai: P6y
 
-// ANCHOR eYo.p6y.BaseC9r_p
+// ANCHOR eYo.P6y_p
 /**
- * @name{eYo.p6y.BaseC9r_p}
+ * @name{eYo.P6y_p}
  * Base property constructor.
  * The bounds between the property and the arguments are immutable.
  * For edython.
@@ -63,7 +63,7 @@ eYo.o3d.newNS(eYo, 'p6y')
  * @constructor
  */
 eYo.p6y.makeBaseC9r(true, {
-  //<<< mochai: eYo.p6y.BaseC9r
+  //<<< mochai: eYo.P6y
   //<<< mochai: Basic
   //... chai.expect(eYo.p6y.BaseC9r).equal(eYo.P6y)
   //>>>
@@ -80,9 +80,9 @@ eYo.p6y.makeBaseC9r(true, {
       }}.$,
       ),
     })
-    //<<< mochai: eYo.p6y.BaseC9r_p, init
+    //<<< mochai: eYo.P6y_p, init
     //... ;[
-    //...     new eYo.p6y.BaseC9r('foo', onr),
+    //...     new eYo.P6y('foo', onr),
     //...     eYo.p6y.new('foo', onr),
     //...     eYo.p6y.new({}, 'foo', onr),
     //... ].forEach(p6y => {
@@ -105,7 +105,7 @@ eYo.p6y.makeBaseC9r(true, {
     //>>>
   },
   dispose (...$) {
-    //<<< eYo.p6y.BaseC9r_p, dispose
+    //<<< eYo.P6y_p, dispose
     //... var p6y = eYo.p6y.new({}, 'foo', onr)
     //... let value = eYo.o3d.new({
     //...   dispose () {
@@ -127,10 +127,10 @@ eYo.p6y.makeBaseC9r(true, {
      * @param {Object} what
      */
     __disposeStored (what, ...$) {
-      //<<< mochai: eYo.p6y.BaseC9r_p.__disposeStored(what, ...$)
+      //<<< mochai: eYo.P6y_p.__disposeStored(what, ...$)
       if (eYo.isaC9r(what)) {
         what[eYo.$p6y] === this && what.dispose(...$)
-        //... var p6y = new eYo.p6y.BaseC9r('p6y', onr)
+        //... var p6y = new eYo.P6y('p6y', onr)
         //... what = eYo.c9r.new({
         //...   dispose (...$) {
         //...     flag.push(1, ...$)
@@ -264,7 +264,7 @@ eYo.p6y.makeBaseC9r(true, {
      * @private
      */
     recycle (...$) {
-      //<<< mochai: eYo.p6y.BaseC9r_p.recycle
+      //<<< mochai: eYo.P6y_p.recycle
       let before = this.stored__
       if (eYo.isDef(before)) {
         try {
@@ -279,7 +279,7 @@ eYo.p6y.makeBaseC9r(true, {
           delete this.validate
         }
       }
-      //... var p6y = new eYo.p6y.BaseC9r('p6y', onr)
+      //... var p6y = new eYo.P6y('p6y', onr)
       //... what = eYo.c9r.new({
       //...   dispose (...$) {
       //...     flag.push(1, ...$)
@@ -301,8 +301,8 @@ eYo.p6y.makeBaseC9r(true, {
      */
     reset (after) {
       return this.setValue(eYo.isDef(after) ? after : this.getValueStart())
-      //<<< mochai: eYo.p6y.BaseC9r_p.reset
-      //... let p6y = new eYo.p6y.BaseC9r('foo', onr)
+      //<<< mochai: eYo.P6y_p.reset
+      //... let p6y = new eYo.P6y('foo', onr)
       //... chai.expect(p6y.value).undefined
       //... p6y.value_ = 421
       //... chai.expect(p6y.value).equal(421)
@@ -318,8 +318,8 @@ eYo.p6y.makeBaseC9r(true, {
      */
     reset_ (after) {
       return this.setStored(eYo.isDef(after) ? after : this.getValueStart())
-      //<<< mochai: eYo.p6y.BaseC9r_p.reset_
-      //... let p6y = new eYo.p6y.BaseC9r('foo', onr)
+      //<<< mochai: eYo.P6y_p.reset_
+      //... let p6y = new eYo.P6y('foo', onr)
       //... chai.expect(p6y.value).undefined
       //... p6y.value_ = 421
       //... chai.expect(p6y.value).equal(421)
@@ -338,27 +338,28 @@ eYo.mixinFR(eYo._p, {
    * @param {*} what 
    */
   isaP6y (what) {
-    return !!what && what instanceof eYo.p6y.BaseC9r
+    return !!what && what instanceof eYo.P6y
   }
   //<<< mochai: eYo.isaP6y
   //... chai.assert(eYo.isaP6y)
   //... chai.expect(eYo.isaP6y()).false
   //... chai.expect(eYo.isaP6y(eYo.NA)).false
   //... chai.expect(eYo.isaP6y(421)).false
-  //... chai.expect(eYo.isaP6y(new eYo.p6y.BaseC9r('foo', onr))).true
+  //... chai.expect(eYo.isaP6y(new eYo.P6y('foo', onr))).true
   //>>>
 })
 
 /**
  * Id is used when observing
- * @name {eYo.p6y.BaseC9r_p.Id}
+ * @name {eYo.P6y_p.Id}
  */
-eYo.mixinRO(eYo.p6y.BaseC9r_p, {
+eYo.mixinRO(eYo.P6y_p, {
   Id: 'P6y',
   //<<< mochai: Id
-  //... chai.expect((new eYo.p6y.BaseC9r('foo', onr)).Id).equal('P6y')
+  //... chai.expect((new eYo.P6y('foo', onr)).Id).equal('P6y')
   //>>>
 })
+
 //<<< mochai: modelFormat
 //... var model = {
 //...   foo: {
@@ -368,7 +369,7 @@ eYo.mixinRO(eYo.p6y.BaseC9r_p, {
 //... let mf = eYo.P6y[eYo.$].modelFormat
 //... model = mf.validate(model)
 //... chai.assert(eYo.isF(model.foo.get))
-eYo.p6y.BaseC9r[eYo.$].finalizeC9r([
+eYo.P6y[eYo.$].finalizeC9r([
   'source',
 ], (() => {
   let m = eYo.model.descriptorD(before => {
@@ -499,10 +500,10 @@ eYo.p6y.BaseC9r[eYo.$].finalizeC9r([
 })())
 //>>>
 
-eYo.more.enhanceO3dValidate(eYo.p6y.BaseC9r[eYo.$], 'p6y', true)
+eYo.more.enhanceO3dValidate(eYo.P6y[eYo.$], 'p6y', true)
 
 //<<< mochai: validate
-//... var p6y = new eYo.p6y.BaseC9r('foo', onr)
+//... var p6y = new eYo.P6y('foo', onr)
 //... chai.expect(p6y.validate(1, 2)).equal(2)
 //... onr.p6yValidate = function (key, before, after) {
 //...   this.flag(2, key, before, after)
@@ -788,7 +789,7 @@ eYo.p6y.Dlgt_p.modelHandleStart = function (key, model, io) {
       //... p6y[K](3, 4, 5)
       //... flag.expect(12345)
     } else if (io[K]) {
-      //... chai.assert(eYo.p6y.BaseC9r_p.reset)
+      //... chai.assert(eYo.P6y_p.reset)
       _p[K] = (f_p => eYo.decorate.reentrant(K, function (...$) {
         return f_m.call(this.owner, f_p.bind(this), ...$)
       }))(_p[K]) // create a closure to store the old _p[K]
@@ -841,7 +842,7 @@ eYo.p6y.Dlgt_p.modelHandleStart = function (key, model, io) {
   }
   let lazy_m = model.lazy
   if (eYo.isDef(lazy_m)) {
-    model._starters.push(object => {
+    model[eYo.$$.starters].push(object => {
       object.getStored = function () {
         delete this.getStored
         var ans = this.getStored()
@@ -876,7 +877,7 @@ eYo.p6y.Dlgt_p.modelHandleStart = function (key, model, io) {
     //... chai.expect(p6y.reset().after).equal(3)
     //... flag.expect(1243) // change events fired
   } else if (eYo.isDef(value_m)) {
-    model._starters.push(object => {
+    model[eYo.$$.starters].push(object => {
       object.setStored(object.getValueStart())
     })
     //... var p6y = eYo.p6y.new({
@@ -898,7 +899,7 @@ eYo.p6y.Dlgt_p.modelHandleDispose = function (key, model) {
   //<<< mochai: modelHandleDispose
   let _p = this.C9r_p
   let K = '_disposeStored'
-  //... chai.assert(eYo.p6y.BaseC9r_p._disposeStored)
+  //... chai.assert(eYo.P6y_p._disposeStored)
   //... let ns = eYo.p6y.newNS()
   //... ns.makeBaseC9r()
   //... ns.BaseC9r_p._disposeStored = function(...$) {
@@ -1091,7 +1092,7 @@ eYo.p6y.Dlgt_p.modelHandleGetSet = function (key, model, io) {
   }
   let getK = 'getValue'
   let get_p = _p[getK]
-  //... chai.assert(eYo.p6y.BaseC9r_p.getValue)
+  //... chai.assert(eYo.P6y_p.getValue)
   let get_m = model.get // from model => suffix = '_m' and `@this` === property owner
   // get_m is computed means that it is meant to replace the standard getter
   if (get_m === eYo.doNothing) {
@@ -1524,14 +1525,18 @@ eYo.p6y.handler.makeBaseC9r({
     this[eYo.$$.target] = this.cover__ = eYo.NA
   },
   methods: {
-    get (target, prop) {
+    get (target, prop, receiver) { // eslint-disable-line
       if (eYo.objectHasOwnProperty(this.cover__, prop)) {
         return this.cover__[prop]
         //... restart()
         //... for (let [k, v] of Object.entries(handler.cover__)) {
         //...   chai.expect(p[k]).equal(v)
         //... }
-      } else if (['owner', eYo.$$.target].includes(prop)) {
+      } else if (prop === eYo.$$.target && !eYo.objectHasOwnProperty(target, prop)) {
+        return target
+      } else if (prop === eYo.$$.handler) {
+        return this
+      } else if (prop === 'owner') {
         return this[prop]
         //... restart()
         //... ;['owner', eYo.$$.target].forEach(K => {
@@ -1711,7 +1716,7 @@ eYo.mixinRO(eYo.p6y.handler.BaseC9r_p, {
  * Implementation details : uses proxies.
  * @param {String} dest_key
  * @param {Object} object
- * @param {String|eYo.p6y.BaseC9r} source
+ * @param {String|eYo.P6y} source
  * @param {String} key
  */
 eYo.p6y._p.aliasNew = function (key, owner, target, target_key) {
@@ -1904,10 +1909,10 @@ eYo.p6y._p.aliasNew = function (key, owner, target, target_key) {
 
 //<<< mochai: Utilities
 
-eYo.p6y.BaseC9r[eYo.$].observeEnhanced()
+eYo.P6y[eYo.$].observeEnhanced()
 
 ;(() => {
-  let _p = eYo.p6y.BaseC9r_p
+  let _p = eYo.P6y_p
 
   /**
    * The parent of the property is the object who declares the property,
@@ -2027,7 +2032,7 @@ eYo.p6y.BaseC9r[eYo.$].observeEnhanced()
       }
     },
   })
-  //<<< mochai: eYo.p6y.BaseC9r_p properties
+  //<<< mochai: eYo.P6y_p properties
   //... let p6y = eYo.p6y.new('p6y', onr)
   //... chai.expect(p6y.value).equal(p6y.value_).equal(p6y.value__).equal(eYo.NA)
   //... chai.expect(() => p6y.value = 421).throw()

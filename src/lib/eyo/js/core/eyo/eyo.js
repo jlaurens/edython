@@ -571,7 +571,7 @@ eYo._p.make$$ = function (...$) {
   //>>>
 }
 
-eYo.make$$('target') // used by proxies
+eYo.make$$('target', 'handler') // used by proxies
 
 /**
  * The props dictionary is a `key=>value` mapping where values

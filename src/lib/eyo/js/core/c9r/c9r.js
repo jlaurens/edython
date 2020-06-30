@@ -83,28 +83,28 @@ eYo.c9r._p.appendToMethod = (object, key, f) => {
 }
 
 // ANCHOR Top level constructor utilities
-{
-/**
- * @name{eYo.c9r._p.doNewC9r}
- * Make a constructor with an `eYo.$` property.
- * Caveat, constructors must have the same arguments.
- * Use a key->value design if you do not want that.
- * The `model` object has template: `{init: function, dispose: function}`.
- * Each namespace has its own `newC9r` method which creates classes in itself.
- * This is not used directly, only decorated.
- * 
- * If a namespace is given and key is `foo`,
- * `foo_p` is the protocol,
- * `foo_S` is the super class, 
- * `foo_s` is the protocol of the super class, 
- * All the given parameters have their normal meaning.
- * @param {Object} ns -  The namespace.
- * @param {String|Symbol} id -  The id.
- * @param {Function} SuperC9r -  The super class.
- * @param {Object|Function} model -  The dictionary of parameters.
- * @return {Function} the created constructor.
- */
-  eYo.c9r._p.doNewC9r = function (ns, id, SuperC9r, model) {
+eYo.mixinFR(eYo.c9r._p, {
+  /**
+   * @name{eYo.c9r._p.doNewC9r}
+   * Make a constructor with an `eYo.$` property.
+   * Caveat, constructors must have the same arguments.
+   * Use a key->value design if you do not want that.
+   * The `model` object has template: `{init: function, dispose: function}`.
+   * Each namespace has its own `newC9r` method which creates classes in itself.
+   * This is not used directly, only decorated.
+   * 
+   * If a namespace is given and key is `foo`,
+   * `foo_p` is the protocol,
+   * `foo_S` is the super class, 
+   * `foo_s` is the protocol of the super class, 
+   * All the given parameters have their normal meaning.
+   * @param {Object} ns -  The namespace.
+   * @param {String|Symbol} id -  The id.
+   * @param {Function} SuperC9r -  The super class.
+   * @param {Object|Function} model -  The dictionary of parameters.
+   * @return {Function} the created constructor.
+   */
+  doNewC9r (ns, id, SuperC9r, model) {
     !ns || ns === eYo.NULL_NS || eYo.isNS(ns) || eYo.throw(`${this.name}/doNewC9r: Bad ns: ${ns}`)
     !id || eYo.isId(id) || eYo.throw(`${this.name}/doNewC9r: Bad id: ${id.toString()}`)
     !SuperC9r || eYo.isC9r(SuperC9r) || eYo.throw(`${this.name}/doNewC9r: Bad SuperC9r: ${SuperC9r}`)
@@ -134,7 +134,7 @@ eYo.c9r._p.appendToMethod = (object, key, f) => {
       }
       eYo.inherits(C9r, SuperC9r)
       SuperC9r[eYo.$].addSubC9r(C9r)
-      eYo.assert(eYo.isSubclass(C9r, SuperC9r), 'MISSED inheritance)')
+      eYo.isSubclass(C9r, SuperC9r) || eYo.throw('MISSED inheritance)')
       // syntactic sugar shortcuts
       if (ns && id) {
         (eYo.objectHasOwnProperty(ns, id) || eYo.objectHasOwnProperty(ns._p, id)) && eYo.throw(`${id.toString ? id.toString() : id} is already a property of ns: ${ns.name}`)
@@ -177,21 +177,23 @@ eYo.c9r._p.appendToMethod = (object, key, f) => {
     let eyo = eYo.dlgt.new(ns, id, C9r, model)
     eyo === C9r[eYo.$] || eYo.throw('MISSED')
     C9r[eYo.$newSubC9r] = eyo.makeSubC9r.bind(eyo)
+    if (ns && eYo.isStr(id)) {
+      Object.defineProperty(ns._p, id + '$', {value: eyo})
+    }
     return C9r
-  }
-
+  },
   /**
- * This decorator turns `f` with signature
- * function (NS, id, SuperC9r, model) {...}
- * into
- * function ([NS], [id], [SuperC9r], [register], [model]) {...}.
- * Both functions have `this` bound to a namespace.
- * If argument `NS` is not provided, just replace it with the receiver.
- * `SuperC9r` will be given a default value when there are arguments.
- * @param{Function} f
- * @this{undefined}
- */
-  eYo.c9r._p.makeC9rDecorate = (f) => {
+   * This decorator turns `f` with signature
+   * function (NS, id, SuperC9r, model) {...}
+   * into
+   * function ([NS], [id], [SuperC9r], [register], [model]) {...}.
+   * Both functions have `this` bound to a namespace.
+   * If argument `NS` is not provided, just replace it with the receiver.
+   * `SuperC9r` will be given a default value when there are arguments.
+   * @param{Function} f
+   * @this{undefined}
+   */
+  makeC9rDecorate (f) {
   //<<< mochai: makeC9rDecorate
     return function (NS, id, SuperC9r, register, model) {
     // makeC9rDecorate
@@ -261,122 +263,9 @@ eYo.c9r._p.appendToMethod = (object, key, f) => {
       return C9r
     }
   //>>>
-  }
-  /**
- * @name{eYo.c9r.newC9r}
- * Make a constructor with an `[eYo.$]` property.
- * Caveat, constructors must have the same arguments.
- * Use a key->value design if you do not want that.
- * The `params` object has template: `{init: function, dispose: function}`.
- * Each namespace has its own `newC9r` method which creates classes in itself.
- * @param {Object} [ns] -  The namespace, defaults to the SuperC9r's one or the caller.
- * @param {String} id -  The id.
- * @param {Function} [SuperC9r] -  The eventual super class. There is no default value. Must be a subclass of `eYo.c9r.BaseC9r`, but not necessarily with an `eyo`.
- * @param {Object|Function} [model] -  The dictionary of parameters. Or a function to create such a dictionary. This might be overcomplicated.
- * @return {Function} the created constructor.
- */
-  eYo.c9r._p.newC9r = eYo.c9r.makeC9rDecorate(function (ns, id, SuperC9r, model) {
-  //<<< mochai: newC9r
-    return this.doNewC9r(ns, id, SuperC9r, model)
-  //... let NS = eYo.c9r.newNS()
-  //... chai.expect(NS.newC9r)
-  //... let C9r = NS.newC9r()
-  //... C9r[eYo.$].finalizeC9r()
-  //... chai.expect(C9r).eyo_C9r
-  //... let o = new C9r()
-  //... chai.expect(o).instanceOf(C9r)
-  //>>>
-  })
-}
-// ANCHOR Constructor utilities
-{
-  /**
-   * All the created constructors, by name. Private storage.
-   * @package
-   */
-  eYo.c9r.byName__ = new Map()
+  },
+})
 
-  /**
-   * All the created constructors, by id. Private storage.
-   * @package
-   */
-  eYo.c9r.byId__ = new Map()
-
-  /**
-   * All the created constructors, by type. Private storage.
-   * @package
-   */
-  eYo.c9r.byType__ = new Map()
-
-  /**
-   * All the created delegates. Public accessor by key.
-   * @param{String} id - the key used to create the constructor.
-   */
-  eYo.c9r.forId = (id) => {
-    return eYo.c9r.byId__.get(id)
-  }
-
-  /**
-   * All the created delegates. Public accessor by name.
-   * @param{String} name - the name used to create the constructor.
-   */
-  eYo.c9r.forName = (name) => {
-    return eYo.c9r.byName__.get(name)
-  }
-
-  /**
-   * All the created delegates. Public accessor by type.
-   * @param{String} type - the type used to create the constructor.
-   */
-  eYo.c9r.forType = (type) => {
-    return eYo.c9r.byType__.get(type)
-  }
-
-  /**
-   * @type{Array<String>}
-   * @property{types}
-   */
-  eYo.mixinRO(eYo.c9r._p, {
-    types () {
-      return eYo.c9r.byType__.keys()
-    },
-  })
-
-  /**
-   * Delegate registrator.
-   * The constructor has an eyo attached object for
-   * some kind of introspection.
-   * Computes and caches the model
-   * only once from the creation of the delegate.
-   *
-   * The last delegate registered for a given prototype name wins.
-   * @param {!String} [type] - the optional type
-   * @param {Object} C9r
-   * @private
-   */
-  eYo.c9r._p.register = function (id, C9r) {
-    if (!eYo.isStr(id)) {
-      C9r && eYo.throw(`UNEXPECTED ${C9r}`)
-      ;[id, C9r] = [C9r[eYo.$].id, id]
-    }
-    var type
-    if ((type = eYo.t3.expr[id])) {
-      eYo.t3.expr.available.push(type)
-    } else if ((type = eYo.t3.stmt[id])) {
-      eYo.t3.stmt.available.push(type)
-    }
-    var eyo = C9r[eYo.$]
-    id = eyo.id
-    id && eYo.c9r.byId__.set(id, C9r)
-    var name = eyo.name
-    name && eYo.c9r.byName__.set(name, C9r)
-    if (type) {
-      eYo.c9r.byType__.set(type, C9r)
-      // cache all the input, output and statement data at the prototype level
-    }
-  }
-}
-// ANCHOR eYo._p.makeDlgt
 eYo.mixinFR(eYo.dlgt.BaseC9r_p, {
   /**
    * This decorator turns f with signature
@@ -404,8 +293,124 @@ eYo.mixinFR(eYo.dlgt.BaseC9r_p, {
       var ff = (this.ns||eYo.c9r).makeC9rDecorate(f)
       return ff.call(this.ns||eYo.c9r, ns, id, SuperC9r, register, model)
     }
-  }
+  },
 })
+
+eYo.mixinFR(eYo.c9r._p, {
+  /**
+   * @name{eYo.c9r.newC9r}
+   * Make a constructor with an `[eYo.$]` property.
+   * Caveat, constructors must have the same arguments.
+   * Use a key->value design if you do not want that.
+   * The `params` object has template: `{init: function, dispose: function}`.
+   * Each namespace has its own `newC9r` method which creates classes in itself.
+   * @param {Object} [ns] -  The namespace, defaults to the SuperC9r's one or the caller.
+   * @param {String} id -  The id.
+   * @param {Function} [SuperC9r] -  The eventual super class. There is no default value. Must be a subclass of `eYo.c9r.BaseC9r`, but not necessarily with an `eyo`.
+   * @param {Object|Function} [model] -  The dictionary of parameters. Or a function to create such a dictionary. This might be overcomplicated.
+   * @return {Function} the created constructor.
+   */
+  newC9r: eYo.c9r.makeC9rDecorate(function (ns, id, SuperC9r, model) {
+  //<<< mochai: newC9r
+    return this.doNewC9r(ns, id, SuperC9r, model)
+  //... let NS = eYo.c9r.newNS()
+  //... chai.expect(NS.newC9r)
+  //... let C9r = NS.newC9r()
+  //... C9r[eYo.$].finalizeC9r()
+  //... chai.expect(C9r).eyo_C9r
+  //... let o = new C9r()
+  //... chai.expect(o).instanceOf(C9r)
+  //>>>
+  })
+})
+// ANCHOR Constructor utilities
+{
+  /**
+   * All the created constructors, by name. Private storage.
+   * @package
+   */
+  eYo.c9r.byName__ = new Map()
+
+  /**
+   * All the created constructors, by id. Private storage.
+   * @package
+   */
+  eYo.c9r.byId__ = new Map()
+
+  /**
+   * All the created constructors, by type. Private storage.
+   * @package
+   */
+  eYo.c9r.byType__ = new Map()
+
+  eYo.mixinFR(eYo.c9r, {
+    /**
+     * All the created delegates. Public accessor by key.
+     * @param{String} id - the key used to create the constructor.
+     */
+    forId (id) {
+      return eYo.c9r.byId__.get(id)
+    },
+    /**
+     * All the created delegates. Public accessor by name.
+     * @param{String} name - the name used to create the constructor.
+     */
+    forName (name) {
+      return eYo.c9r.byName__.get(name)
+    },
+    /**
+     * All the created delegates. Public accessor by type.
+     * @param{String} type - the type used to create the constructor.
+     */
+    forType (type) {
+      return eYo.c9r.byType__.get(type)
+    },
+  })
+  /**
+   * @type{Array<String>}
+   * @property{types}
+   */
+  eYo.mixinRO(eYo.c9r._p, {
+    types () {
+      return eYo.c9r.byType__.keys()
+    },
+  })
+
+  /**
+   * Delegate registrator.
+   * The constructor has an eyo attached object for
+   * some kind of introspection.
+   * Computes and caches the model
+   * only once from the creation of the delegate.
+   *
+   * The last delegate registered for a given prototype name wins.
+   * @param {!String} [id] - the optional id
+   * @param {Object} C9r
+   * @private
+   */
+  eYo.c9r._p.register = function (id, C9r) {
+    if (!eYo.isStr(id)) {
+      C9r && eYo.throw(`UNEXPECTED ${C9r}`)
+      ;[id, C9r] = [id[eYo.$].id, id]
+    }
+    var type
+    if ((type = eYo.t3.expr[id])) {
+      eYo.t3.expr.available.push(type)
+    } else if ((type = eYo.t3.stmt[id])) {
+      eYo.t3.stmt.available.push(type)
+    }
+    var eyo = C9r[eYo.$]
+    id = eyo.id
+    id && eYo.c9r.byId__.set(id, C9r)
+    var name = eyo.name
+    name && eYo.c9r.byName__.set(name, C9r)
+    if (type) {
+      eYo.c9r.byType__.set(type, C9r)
+      // cache all the input, output and statement data at the prototype level
+    }
+  }
+}
+// ANCHOR eYo._p.makeDlgt
 eYo.mixinFR(eYo.dlgt.BaseC9r_p, {
   /**
    * Convenient shortcut to create subclasses.
@@ -627,6 +632,8 @@ eYo.c9r.BaseC9r_p.inheritedMethod = eYo.c9r.Dlgt_p.inheritedMethod = function (m
 
 // ANCHOR Initers, Disposers
 
+eYo.make$$('starters')
+
 eYo.mixinFR(eYo.c9r._p, {
   /**
    * The model Base used to derive a new class.
@@ -644,7 +651,7 @@ eYo.mixinFR(eYo.c9r._p, {
    * @param {Object} model
    * @param {*} ...$ - other arguments
    */
-  modelMakeC9r (model) {
+  modelMakeC9r (model, id) {
     //<<< mochai: modelMakeC9r
     let C9r = this.newC9r('', model)
     C9r[eYo.$].finalizeC9r()
@@ -657,11 +664,19 @@ eYo.mixinFR(eYo.c9r._p, {
     //... model[eYo.$SuperC9r] = eYo.c9r.newNS().makeBaseC9r()
     //... var C9r = eYo.c9r.modelMakeC9r(model)
     //... chai.expect(eYo.isSubclass(C9r, model[eYo.$SuperC9r]))
-    model._starters = []
-    C9r[eYo.$].modelHandle()
-    Object.defineProperty(C9r[eYo.$], 'name', eYo.descriptorR({$ () {
-      return `${C9r[eYo.$].super.name}(${model.register || '...'})`
-    }}.$))
+    model[eYo.$$.starters] = []
+    let eyo = C9r[eYo.$]
+    eyo.modelHandle()
+    Object.defineProperty(eyo, 'name',
+      eYo.descriptorR((()=> {
+        return id
+          ? {$ () {
+            return `${eyo.ns.name}.${eYo.do.toTitleCase(id.description || id)}`
+          }}.$ : {$ () {
+            return `${eyo.super.name}(${model.register || '...'})`
+          }}.$
+      })())
+    )
     model.register && this.register(model.register, C9r)
     return C9r
     //>>>
@@ -704,7 +719,7 @@ eYo.mixinFR(eYo.c9r._p, {
     var ans = new C9r(...$)
     ans.preInit = function () {
       delete this.preInit
-      model._starters.forEach(f => f(this))
+      model[eYo.$$.starters].forEach(f => f(this))
     }
     return ans
     //... var o = eYo.c9r.prepare({
