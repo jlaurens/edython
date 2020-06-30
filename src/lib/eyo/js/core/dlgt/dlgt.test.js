@@ -183,6 +183,7 @@ describe ('Tests: Dlgt', function () {
     let dlgt = eYo.dlgt.new('Bar', C9r, {})
     chai.expect(!!superDlgt.hasFinalizedC9r).false
     chai.expect(!!dlgt.hasFinalizedC9r).false
+    console.error('IGNORE next error')
     chai.expect(() => {
       dlgt.finalizeC9r()
     }).throw()

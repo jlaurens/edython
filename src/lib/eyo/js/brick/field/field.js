@@ -23,7 +23,7 @@ eYo.dfs.newNS(eYo, 'field', {
   BIND: 'bind',
 })
 
-eYo.require('geom.Size')
+eYo.require('geom')
 eYo.require('xre')
 
 // actual field names
@@ -409,7 +409,7 @@ eYo.field.newC9r('Input', {
     'order', // number,
     'value', // '(',
     'reserved', // : '.',
-    'separator', // : true,
+    'separator', // : true, or false
     'hidden', // : true,
     'variable', // : true, obsolete
     'validate', // : true,

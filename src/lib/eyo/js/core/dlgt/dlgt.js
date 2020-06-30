@@ -91,7 +91,7 @@ eYo.dlgt.declareDlgt = function (_p) {
   object->constructor->eyo->contructor->eyo->constructor->[eYo.$]...
   The Base is its own delegate's constructor
 */
-eYo.Dlgt = eYo.dlgt.BaseC9r = function (ns, id, C9r, model) {
+eYo.dlgt.BaseC9r = function (ns, id, C9r, model) {
   //<<< mochai: eYo.dlgt.BaseC9r
   //... chai.expect(eYo.dlgt).property('BaseC9r')
   if (ns && !eYo.isNS(ns)) {
@@ -153,11 +153,23 @@ eYo.Dlgt = eYo.dlgt.BaseC9r = function (ns, id, C9r, model) {
   //>>>
 }
 
+Object.defineProperties(eYo, {
+  Dlgt: {
+    value: eYo.dlgt.BaseC9r,
+  },
+})
+
+eYo.mixinFR(eYo, {
+  isaDlgt (object) {
+    return object && object instanceof eYo.Dlgt
+  }
+})
+
 {
   //<<< mochai: utils
   let _p = eYo.Dlgt_p = eYo.dlgt.BaseC9r_p = eYo.dlgt.BaseC9r.prototype
   _p.init = eYo.doNothing
-  
+  new eYo.Dlgt(eYo.dlgt, 'BaseC9r', eYo.Dlgt, {})
   eYo.dlgt.declareDlgt(_p)
   //<<< mochai: delegate
   //... chai.expect(eYo.dlgt.eyo).equal(eYo.dlgt.constructor[eYo.$])
@@ -678,7 +690,7 @@ eYo.dlgt.new = function (ns, id, C9r, model) {
   }
   // in next function call, all the parameters are required
   // but some may be eYo.NA
-  /*Dlgt[eYo.$] = */new eYo.Dlgt(ns, 'BaseC9r', Dlgt, {})
+  /* Dlgt[eYo.$] = */new eYo.Dlgt(ns, 'BaseC9r', Dlgt, {})
   return new Dlgt(ns, id, C9r, model)
 }
 
@@ -789,7 +801,7 @@ eYo.mixinFR(eYo.dlgt.BaseC9r_p, {
    */
   methodsMerge (model) {
     let _p = this.C9r_p
-    for (var [k, m] in Object.entries(model)) {
+    for (let [k, m] of Object.entries(model)) {
       if (eYo.isF(m)) {
         if (m.length === 1 && _p[k] && XRegExp.exec(m.toString(), eYo.xre.function_overriden)) {
           _p[k] = eYo.asF(m.call(this, eYo.toF(_p[k]).bind(this)))

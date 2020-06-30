@@ -44,7 +44,7 @@ eYo.TESTING = true
  * @return {Boolean}
  */
 eYo.objectHasOwnProperty = function (object, key) {
-  return Object.prototype.hasOwnProperty.call(object, key)
+  return !!object && Object.prototype.hasOwnProperty.call(object, key)
   //<<< mochai: eYo.objectHasOwnProperty'
   //... chai.assert(eYo.objectHasOwnProperty)
   //... chai.expect(eYo.objectHasOwnProperty({foo: true}, 'foo')).true

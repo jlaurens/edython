@@ -137,7 +137,7 @@ eYo.c9r._p.appendToMethod = (object, key, f) => {
       eYo.assert(eYo.isSubclass(C9r, SuperC9r), 'MISSED inheritance)')
       // syntactic sugar shortcuts
       if (ns && id) {
-        eYo.objectHasOwnProperty((ns, id) || eYo.objectHasOwnProperty(ns._p, id)) && eYo.throw(`${id.toString ? id.toString() : id} is already a property of ns: ${ns.name}`)
+        (eYo.objectHasOwnProperty(ns, id) || eYo.objectHasOwnProperty(ns._p, id)) && eYo.throw(`${id.toString ? id.toString() : id} is already a property of ns: ${ns.name}`)
         Object.defineProperty(ns._p, id, {value: C9r})
         if (id.length) {
           if (id.startsWith('eyo:')) {
@@ -162,7 +162,7 @@ eYo.c9r._p.appendToMethod = (object, key, f) => {
       // store the constructor
       var _p = C9r.prototype
       if (ns && id) {
-        eYo.objectHasOwnProperty((ns, id) || eYo.objectHasOwnProperty(ns._p, id)) && eYo.throw(`${id.toString ? id.toString() : id} is already a property of ns: ${ns.name}`)
+        (eYo.objectHasOwnProperty(ns, id) || eYo.objectHasOwnProperty(ns._p, id)) && eYo.throw(`${id.toString ? id.toString() : id} is already a property of ns: ${ns.name}`)
         Object.defineProperty(ns._p, id, {value: C9r})
         if (id.length) {
           if (id.startsWith('eyo:')) {
@@ -201,6 +201,7 @@ eYo.c9r._p.appendToMethod = (object, key, f) => {
           console.error('BREAK HERE!!!')
         }
         model && eYo.throw(`${this.name}/makeC9rDecorate: Unexpected model(1/${model})`)
+        //... console.error('IGNORE next BREAK HERE')
         //... chai.expect(() => eYo.c9r.makeC9rDecorate(eYo.doNothing)(1, 2, 3, 4, 5)).throw()
         ;[NS, id, SuperC9r, register, model] = [this, NS, id, SuperC9r, register]
       //... var f = function (NS, id, SuperC9r, register, model) {

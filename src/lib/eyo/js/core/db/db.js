@@ -67,6 +67,7 @@ eYo.o3d.newC9r('DB', {
           eYo.throw(`${this.eyo.name}/add: object is not an eYo.O3d instance ${list[0]}`)
         }
         //... var db = new eYo.o3d.DB('db', onr, true)
+        //... chai.expect(db.add).eyo_F
         //... chai.expect(() => {
         //...   db.add(421)
         //... }).throw()
@@ -285,4 +286,5 @@ Object.defineProperties(eYo.o3d.DB_p, {
     }
   }
 })
+
 eYo.o3d.DB[eYo.$].finalizeC9r()

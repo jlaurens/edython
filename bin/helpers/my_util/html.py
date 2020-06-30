@@ -19,6 +19,8 @@ class HTML:
     self.path = path
     self.parent = path.parent
     self.auto = auto
+    self.testname = f'''{self.parent.with_suffix('').stem}/{self.basename}''' if self.basename == 'test' else self.basename
+    
 
   def head_begin(self):
     self.lines = []
@@ -26,7 +28,7 @@ class HTML:
 <html>
 <head>
   <meta charset="utf-8">
-  <title>Mocha Tests: {self.basename}</title>
+  <title>Mocha Tests: {self.testname}</title>
 ''')
     self.script_lib('xregexp-all/xregexp-all.js')
     self.script_lib('brython/www/src/brython.js')

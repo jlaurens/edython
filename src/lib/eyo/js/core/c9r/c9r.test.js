@@ -358,10 +358,11 @@ describe ('Tests: C9r', function () {
       Object.defineProperty(NS, 'BaseC9r', {
         value: 421
       })
-      chai.expect(() => { NS.makeBaseC9r() }).to.throw()
+      chai.expect(() => NS.makeBaseC9r()).to.throw()
       chai.expect(eYo.c9r.newC9r(NS)[eYo.$].key).equal('eYo.c9r.?')
-      chai.expect(() => { eYo.c9r.newC9r(NS, 'BaseC9r') }).to.throw()
-      chai.expect(() => { NS.newC9r('BaseC9r') }).to.throw()
+      chai.expect(NS).property('BaseC9r')
+      chai.expect(() => eYo.c9r.newC9r(NS, 'BaseC9r')).to.throw()
+      chai.expect(() => NS.newC9r('BaseC9r')).to.throw()
     })
     it(`NS.makeBaseC9r({...})`, function () {
       var NS = eYo.c9r.newNS()

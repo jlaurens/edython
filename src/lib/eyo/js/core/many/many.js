@@ -107,8 +107,8 @@ eYo.mixinFR(eYo.many, {
  * with some methods to manage a data model with many possible attributes.
  * 
  * @param{String} [id] - Unique identifier within the scope of the receiver, defaults to `type`.
- * @param{String} type - type is one of 'p6y', 'data', 'field', 'slots'
- * @param{String} path - Path, the separator is '/'
+ * @param{String} type - One of 'data', 'p6y', 'slots', 'views'...
+ * @param{String} path - Path, the separator is '.'
  * @param{Object} [manyModel] - Object, read only.
  * @return {Object} - With symbols
  * Known keys are
@@ -128,7 +128,7 @@ eYo.dlgt.BaseC9r_p.manyEnhanced = function (id, type, path, manyModel) {
   if (!eYo.isStr(path)) {
     eYo.isNA(manyModel) || eYo.throw(`${this.eyo.name}/manyEnhanced: Unexpected last argument`)
     //... chai.expect(() => eYo.C9r[eYo.$].manyEnhanced(1, 2, 3, 4)).throw()
-    ;[path, manyModel] = [eYo.NA, path || {}]
+    ;[type, path, manyModel] = [id, type, path || {}]
   } else if (!manyModel) {
     manyModel = {}
   }
@@ -177,13 +177,16 @@ eYo.dlgt.BaseC9r_p.manyEnhanced = function (id, type, path, manyModel) {
   Object.defineProperty(_p, type$.modelByKey, {
     get () {
       let model = this.model || Object.create(null)
-      for (let k of path.split('.')) {
-        if ((model = model[k])) {
-          continue
-        } else {
-          model = Object.create(null)
-          break
+      if (path) {
+        for (let k of path.split('.')) {
+          if ((model = model[k])) {
+            continue
+          } else {
+            model = Object.create(null)
+            break
+          }
         }
+
       }
       Object.defineProperty(this, type$.modelByKey, {
         get () {

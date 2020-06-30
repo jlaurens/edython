@@ -788,11 +788,10 @@ eYo.p6y.Dlgt_p.modelHandleStart = function (key, model, io) {
       //... p6y[K](3, 4, 5)
       //... flag.expect(12345)
     } else if (io[K]) {
-      let f_p = _p[K]
       //... chai.assert(eYo.p6y.BaseC9r_p.reset)
-      _p[K] = eYo.decorate.reentrant(K, function (...$) {
+      _p[K] = (f_p => eYo.decorate.reentrant(K, function (...$) {
         return f_m.call(this.owner, f_p.bind(this), ...$)
-      })
+      }))(_p[K]) // create a closure to store the old _p[K]
       //... var p6y = eYo.p6y.new({
       //...   reset (builtin, ...$) {
       //...     this.flag(2, ...$)
