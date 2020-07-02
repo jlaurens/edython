@@ -599,6 +599,7 @@ eYo.mixinFR(eYo.model, {
 
 /**
  * For subclassers.
+ * Create methods in the managed prototype according to the given model.
  * @param {String} [key] - 
  * @param {Object} model - model object
  */
@@ -611,7 +612,7 @@ eYo.c9r.Dlgt_p.modelHandle = function (key, model) { // eslint-disable-line
  * @param {Boolean} up - starts with the prototype or the inherited prototype
  * @return {Function} It never returns `this[methodName]`.
  */
-eYo.c9r.BaseC9r_p.inheritedMethod = eYo.c9r.Dlgt_p.inheritedMethod = function (methodName, up) {
+eYo.c9r.BaseC9r_p.inheritedMethod = eYo.c9r.Dlgt_p.inheritedMethod = {$ (methodName, up) {
   let method = this[methodName]
   var _p = up ? this.eyo.C9r_s : this.eyo.C9r_p
   while (_p) {
@@ -628,7 +629,7 @@ eYo.c9r.BaseC9r_p.inheritedMethod = eYo.c9r.Dlgt_p.inheritedMethod = function (m
     _p = _p[eYo.$].C9r_s
   }
   return eYo.doNothing
-}
+}}.$
 
 // ANCHOR Initers, Disposers
 

@@ -763,9 +763,9 @@ eYo.p6y.Dlgt_p.modelHandleStart = function (key, model, io) {
       //... chai.expect(() => eYo.p6y.new({
       //...   [K] () {},
       //... }, 'foo', onr).getValueStart()).throw()
-      _p[K] = eYo.decorate.reentrant(K, function (...$) {
+      _p[K] = eYo.decorate.reentrant(K, {$ (...$) {
         return f_m.call(this.owner, ...$)
-      })
+      }}.$)
       //... var x = 421
       //... var p6y = eYo.p6y.new({
       //...   [K] (...$) {
@@ -790,9 +790,9 @@ eYo.p6y.Dlgt_p.modelHandleStart = function (key, model, io) {
       //... flag.expect(12345)
     } else if (io[K]) {
       //... chai.assert(eYo.P6y_p.reset)
-      _p[K] = (f_p => eYo.decorate.reentrant(K, function (...$) {
+      _p[K] = (f_p => eYo.decorate.reentrant(K, {$ (...$) {
         return f_m.call(this.owner, f_p.bind(this), ...$)
-      }))(_p[K]) // create a closure to store the old _p[K]
+      }}.$))(_p[K]) // create a closure to store the old _p[K]
       //... var p6y = eYo.p6y.new({
       //...   reset (builtin, ...$) {
       //...     this.flag(2, ...$)
@@ -943,10 +943,10 @@ eYo.p6y.Dlgt_p.modelHandleChange = function (key, model) {
       let when_p = _p[when]
       if (when_m.length > 1) {
         if (when_p) {
-          _p[when] = eYo.decorate.reentrant(when,function (before, after) {
+          _p[when] = eYo.decorate.reentrant(when, {$ (before, after) {
             when_m.call(this.owner, before, after)
             when_p.call(this, before, after)
-          })
+          }}.$)
           //... var ns = eYo.p6y.newNS()
           //... ns.makeBaseC9r()
           //... ns.BaseC9r_p[when] = function (before, after) {
@@ -971,9 +971,9 @@ eYo.p6y.Dlgt_p.modelHandleChange = function (key, model) {
           //... p6y.value_ = 3
           //... flag.expect(1231523)
         } else {
-          _p[when] = eYo.decorate.reentrant(when,function (before, after) {
+          _p[when] = eYo.decorate.reentrant(when, {$ (before, after) {
             when_m.call(this.owner, before, after)
-          })
+          }}.$)
           //... var ns = eYo.p6y.newNS()
           //... ns.makeBaseC9r()
           //... var p6y = ns.new({
@@ -991,10 +991,10 @@ eYo.p6y.Dlgt_p.modelHandleChange = function (key, model) {
         }
       } else {
         if (when_p) {
-          _p[when] = eYo.decorate.reentrant(when,function (before, after) {
+          _p[when] = eYo.decorate.reentrant(when, {$ (before, after) {
             when_m.call(this.owner, after)  
             when_p.call(this, before, after)
-          })
+          }}.$)
           //... var ns = eYo.p6y.newNS()
           //... ns.makeBaseC9r()
           //... ns.BaseC9r_p[when] = function (before, after) {
@@ -1007,9 +1007,9 @@ eYo.p6y.Dlgt_p.modelHandleChange = function (key, model) {
           //... p6y.value_ = 3
           //... flag.expect(1231543)
         } else {
-          _p[when] = eYo.decorate.reentrant(when,function (before, after) {
+          _p[when] = eYo.decorate.reentrant(when, {$ (before, after) { // eslint-disable-line
             when_m.call(this.owner, after)
-          })
+          }}.$)
           //... var ns = eYo.p6y.newNS()
           //... ns.makeBaseC9r()
           //... var p6y = ns.new({
@@ -1043,10 +1043,10 @@ eYo.p6y.Dlgt_p.modelHandleGetSet = function (key, model, io) {
   let _p = this.C9r_p
   let gVRO = 'getValueRO'
   if (model.copy) {
-    _p[gVRO] = eYo.decorate.reentrant(gVRO, function () {
+    _p[gVRO] = eYo.decorate.reentrant(gVRO, {$ () {
       let ans = this.getValue()
       return eYo.isDef(ans) && ans.copy
-    })
+    }}.$)
     //... var p6y = eYo.p6y.new({
     //...   copy: true,
     //... }, 'foo', onr)
@@ -1109,9 +1109,9 @@ eYo.p6y.Dlgt_p.modelHandleGetSet = function (key, model, io) {
     //...   chai.expect(() => p6y.value__).not.throw()
     //... })
   } else if (io.pure_get) {
-    _p.getStored = _p[getK] = eYo.decorate.reentrant(getK, function () {
+    _p.getStored = _p[getK] = eYo.decorate.reentrant(getK, {$ () {
       return get_m.call(this.owner)
-    })
+    }}.$)
     //... var x = 3
     //... var p6y = eYo.p6y.new({
     //...   get () {
@@ -1131,9 +1131,9 @@ eYo.p6y.Dlgt_p.modelHandleGetSet = function (key, model, io) {
     //... chai.expect(p6y.value__).equal(3)
     //... flag.expect(123)
   } else if (io.get) {
-    _p[getK] = eYo.decorate.reentrant(getK, function () {
+    _p[getK] = eYo.decorate.reentrant(getK, {$ () {
       return get_m.call(this.owner, get_p.bind(this))
-    })
+    }}.$)
     //... var p6y = eYo.p6y.new({
     //...   get (builtin) {
     //...     let ans = builtin()
@@ -1169,9 +1169,9 @@ eYo.p6y.Dlgt_p.modelHandleGetSet = function (key, model, io) {
     //...   chai.expect(() => p6y.value__ = 421).not.throw()    
     //... })
   } else if (io.pure_set) {
-    _p[setK] = _p.setStored = eYo.decorate.reentrant(setK, function (after) {
+    _p[setK] = _p.setStored = eYo.decorate.reentrant(setK, {$ (after) {
       return set_m.call(this.owner, after)
-    })
+    }}.$)
     //... var x = 3
     //... var p6y = eYo.p6y.new({
     //...   set (after) {
@@ -1192,11 +1192,11 @@ eYo.p6y.Dlgt_p.modelHandleGetSet = function (key, model, io) {
     let set_p = _p[setK]
     if (set_m.length > 1) {
       if (XRegExp.exec(set_m.toString(), eYo.xre.function_stored_after)) {
-        _p[setK] = eYo.decorate.reentrant(setK, function (after) {
+        _p[setK] = eYo.decorate.reentrant(setK, {$ (after) {
           let before = this.stored__
           let ans = set_m.call(this.owner, this.stored__, after)
           return eYo.isDef(ans) ? ans : before
-        })
+        }}.$)
         //... var p6y = eYo.p6y.new({
         //...   set (stored, after) {
         //...     this.flag(2, after)
@@ -1207,13 +1207,13 @@ eYo.p6y.Dlgt_p.modelHandleGetSet = function (key, model, io) {
         //... chai.expect(p6y.setValue(3)).equal(421)
         //... flag.expect(123)
       } else {
-        _p[setK] = eYo.decorate.reentrant(setK, function (after) {
+        _p[setK] = eYo.decorate.reentrant(setK, {$ (after) {
           let before = this.stored__
           let ans = set_m.call(this.owner, after => {
             return set_p.call(this, after)
           }, after)
           return eYo.isDef(ans) ? ans : before
-        })
+        }}.$)
         //... var p6y = eYo.p6y.new({
         //...   set (builtin, after) {
         //...     this.flag(3, builtin(after).before, after)
@@ -1269,13 +1269,13 @@ eYo.p6y.Dlgt_p.modelHandleGetSet = function (key, model, io) {
         //... test(7)
       }
     } else {
-      _p[setK] = eYo.decorate.reentrant(setK, function (after) {
+      _p[setK] = eYo.decorate.reentrant(setK, {$ (after) {
         let before = this.stored__
         let ans = set_m.call(this.owner, after => {
           return set_p.call(this, after)
         }, after)
         return eYo.isDef(ans) ? ans : before
-      })
+      }}.$)
       //... var p6y = eYo.p6y.new({
       //...   set (after) {
       //...     this.flag(2, after)
@@ -1327,9 +1327,9 @@ eYo.p6y.Dlgt_p.modelHandleStored = function (key, model, io) {
     //... }, 'foo', onr)
     //... chai.expect(p6y.getStored).equal(p6y.getValue)
   } else if (io.pure_get_) {
-    _p[getK] = eYo.decorate.reentrant(getK, function () {
+    _p[getK] = eYo.decorate.reentrant(getK, {$ () {
       return get__m.call(this.owner)
-    })
+    }}.$)
     //... var x = 3
     //... var p6y = eYo.p6y.new({
     //...   get_ () {
@@ -1352,9 +1352,9 @@ eYo.p6y.Dlgt_p.modelHandleStored = function (key, model, io) {
       return `Write only (${this.owner.eyo.name}/${key})`
     })
   } else if (io.get_) {
-    _p[getK] = eYo.decorate.reentrant(getK, function () {
+    _p[getK] = eYo.decorate.reentrant(getK, {$ () {
       return get__m.call(this.owner, () => this.__getStored())
-    })
+    }}.$)
     //... var p6y = eYo.p6y.new({
     //...   get_ (builtin) {
     //...     let stored = builtin()
@@ -1369,9 +1369,9 @@ eYo.p6y.Dlgt_p.modelHandleStored = function (key, model, io) {
   let setK = 'setStored'
   let set__m = model.set_
   if (io.pure_set_) {
-    _p[setK] = eYo.decorate.reentrant(setK, function (after) {
+    _p[setK] = eYo.decorate.reentrant(setK, {$ (after) {
       return set__m.call(this.owner, after)
-    })
+    }}.$)
     //... var p6y = eYo.p6y.new({
     //...   set_ (after) {
     //...     this.flag(3, x = after)
@@ -1409,9 +1409,9 @@ eYo.p6y.Dlgt_p.modelHandleStored = function (key, model, io) {
     //... chai.expect(p6y.value).equal(x).equal(57)
     //... flag.expect(1257)
   } else if (io.set_) {
-    _p[setK] = eYo.decorate.reentrant(setK, function (after) {
+    _p[setK] = eYo.decorate.reentrant(setK, {$ (after) {
       return set__m.call(this.owner, $after => this.__setStored($after), after)
-    })
+    }}.$)
     //... var p6y = eYo.p6y.new({
     //...   set_ (builtin, after) {
     //...     after = builtin(after).after
