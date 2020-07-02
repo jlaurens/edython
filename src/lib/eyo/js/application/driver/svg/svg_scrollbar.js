@@ -190,13 +190,13 @@ eYo.svg.Scrollbar_p.onHandle_mousedown = function(e) {
     document,
     'mouseup',
     this,
-    this.ui_driver_mngr.scrollbarOn_mouseup
+    this.driver_mngr.scrollbarOn_mouseup
   )
   bound.mousemove = eYo.dom.bindEvent(
     document,
     'mousemove',
     this,
-    this.ui_driver_mngr.scrollbarOn_mousemove
+    this.driver_mngr.scrollbarOn_mousemove
   )
   eYo.dom.gobbleEvent(e)
 }

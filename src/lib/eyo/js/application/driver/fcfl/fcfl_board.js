@@ -26,7 +26,7 @@ eYo.board.BaseC9r[eYo.$].p6yMerge({
   up: false,
   dragging: {
     didChange (before, after) /** @suppress {globalThis} */ {
-      this.ui_driver.draggingSet(this, after)      
+      this.driver.draggingSet(this, after)      
     }
   },
   /**
@@ -478,7 +478,7 @@ eYo.fcfl.Board._p.renderMoveMagnets_ = function(board) {
       var t9k = m4t.targetBoard
       if (t9k) {
         m4t.tighten()
-        // t9k.ui_driver.placeMagnets_(t9k)
+        // t9k.driver.placeMagnets_(t9k)
       }
     }
   }
@@ -514,7 +514,7 @@ eYo.fcfl.Board._p.placeMagnets_ = function(board) {
       var t9k = m4t.targetBoard
       if (t9k) {
         m4t.tighten()
-        t9k.ui_driver.placeMagnets_(t9k)
+        t9k.driver.placeMagnets_(t9k)
       }
     }
   }

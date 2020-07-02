@@ -176,7 +176,7 @@ eYo.field.makeBaseC9r(true, {
        * @param {boolean} after True if visible.
        */
       didChange (after) /** @suppress {globalThis} */ { // eslint-disable-line
-        var d = this.ui_driver
+        var d = this.driver
         d && d.displayedUpdate(this)
         this.owner.rendered && this.owner.render()
       },
@@ -267,7 +267,7 @@ eYo.field.BaseC9r_p.render_ = function() {
     this.size_.width = 0
     return
   }
-  var d = this.ui_driver
+  var d = this.driver
   d && (d.textRemove(this), d.textCreate(this))
   this.updateWidth()
 }
@@ -276,7 +276,7 @@ eYo.field.BaseC9r_p.render_ = function() {
  * Updates the width of the field in the UI.
  **/
 eYo.field.BaseC9r_p.updateWidth = function() {
-  var d = this.ui_driver
+  var d = this.driver
   d && (d.updateWidth(this))
 }
 
@@ -297,7 +297,7 @@ eYo.field.BaseC9r_p.validate = function (txt) {
  * We should call `this.willRender()` from the model.
  */
 eYo.field.BaseC9r_p.willRender = function () {
-  var d = this.ui_driver
+  var d = this.driver
   if (d) {
     d.makePlaceholder(this, this.isPlaceholder)
     d.makeComment(this, this.isComment)

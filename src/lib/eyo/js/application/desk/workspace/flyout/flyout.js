@@ -129,7 +129,7 @@ eYo.flyout.newC9r('View', {
      */
     dispose () {
       this.hide()
-      var d = this.ui_driver_mngr
+      var d = this.driver_mngr
       this.toolbar_ && d.toolbarDisposeUI(this.toolbar_)
       d.disposeUI(this)
       
@@ -369,7 +369,7 @@ eYo.flyout.View_p.sizeChanged = function() {
  */
 eYo.flyout.View_p.updateDisplay_ = function() {
   var show = this.containerVisible_ && this.visible_
-  this.ui_driver_mngr.displaySet(show)
+  this.driver_mngr.displaySet(show)
   // Update the scrollbar's visiblity too since it should mimic the
   // flyout's visibility.
   this.scrollbar.containerVisible = show
@@ -383,7 +383,7 @@ eYo.flyout.View_p.hide = function() {
     return
   }
   this.visible = false
-  this.ui_driver_mngr.flyoutRemoveListeners(this)
+  this.driver_mngr.flyoutRemoveListeners(this)
   if (this.reflowWrapper_) {
     this.board_.removeChangeListener(this.reflowWrapper_)
     this.reflowWrapper_ = null
@@ -448,7 +448,7 @@ eYo.flyout.View_p.show = function(model) {
 
     // IE 11 is an incompetent browser that fails to fire mouseout events.
     // When the mouse is over the background, deselect all bricks.
-    this.ui_driver_mngr.listen_mouseover(this)
+    this.driver_mngr.listen_mouseover(this)
 
     this.board_.setResizesEnabled(true)
     this.reflow()
@@ -520,7 +520,7 @@ eYo.flyout.View_p.layout_ = function(contents) {
     brick.descendants.forEach(child => child.isInFlyout = true)
     brick.render()
     brick.moveTo(where)
-    this.ui_driver_mngr.addListeners(this, brick)
+    this.driver_mngr.addListeners(this, brick)
     where.y += brick.size.height + eYo.geom.Y / 4
   })
 }
@@ -618,8 +618,8 @@ eYo.flyout.View_p.place = function () {
     }
   }
   this.toolbar_.layout()
-  this.ui_driver_mngr.update(this)
-  this.ui_driver_mngr.place(this)
+  this.driver_mngr.update(this)
+  this.driver_mngr.place(this)
 }
 console.error('IN PROGRESS')
 /**
@@ -702,7 +702,7 @@ eYo.flyout.View_p.doSlide = function(close) {
       if ((this.closed_ = close)) {
         this.visible = false
       }
-      this.ui_driver_mngr.update(this)
+      this.driver_mngr.update(this)
       delete this.slide_locked
       this.desk_.recordDeleteAreas()
       this.slideOneStep(steps[n_steps])
@@ -710,7 +710,7 @@ eYo.flyout.View_p.doSlide = function(close) {
       this.abortSlide = eYo.doNothing
     } else {
       rect.x = positions[n]
-      this.ui_driver_mngr.place(this)
+      this.driver_mngr.place(this)
       // the scrollbar won't layout because the metrics of the board did not change
       this.slideOneStep(steps[n])
       ++n
@@ -779,7 +779,7 @@ eYo.flyout.View_p.updateMetrics = function() {
   } else {
     r.origin_.x_max = view.right
   }
-  this.ui_driver_mngr.updateMetrics(this)
+  this.driver_mngr.updateMetrics(this)
   this.toolbar.updateMetrics()
   this.board.updateMetrics()
 }

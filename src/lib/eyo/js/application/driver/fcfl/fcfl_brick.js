@@ -30,7 +30,7 @@ eYo.brick.BaseC9r[eYo.$].p6yMerge({
   up: false,
   dragging: {
     didChange (before, after) /** @suppress {globalThis} */ {
-      this.ui_driver.draggingSet(this, after)      
+      this.driver.draggingSet(this, after)      
     }
   },
   /**
@@ -481,7 +481,7 @@ eYo.fcfl.Brick._p.renderMoveMagnets_ = function(brick) {
       var t9k = m4t.targetBrick
       if (t9k) {
         m4t.tighten()
-        // t9k.ui_driver.placeMagnets_(t9k)
+        // t9k.driver.placeMagnets_(t9k)
       }
     }
   }
@@ -517,7 +517,7 @@ eYo.fcfl.Brick._p.placeMagnets_ = function(brick) {
       var t9k = m4t.targetBrick
       if (t9k) {
         m4t.tighten()
-        t9k.ui_driver.placeMagnets_(t9k)
+        t9k.driver.placeMagnets_(t9k)
       }
     }
   }
@@ -1578,7 +1578,7 @@ eYo.fcfl.Brick._p.getMagnetForEvent = function (brick, e) {
       if (magnet.isSlot) {
         var target = magnet.target
         if (target) {
-          var targetM4t = target.brick.ui_driver.getMagnetForEvent(target.brick, e)
+          var targetM4t = target.brick.driver.getMagnetForEvent(target.brick, e)
           if (targetM4t) {
             return targetM4t
           }

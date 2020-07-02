@@ -309,7 +309,7 @@ eYo.slot.makeBaseC9r(true, {
      * For edython.
      */
     synchronize () {
-      var d = this.ui_driver
+      var d = this.driver
       if (!d) {
         return
       }

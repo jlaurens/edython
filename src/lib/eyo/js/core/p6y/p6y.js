@@ -757,18 +757,18 @@ eYo.p6y.Dlgt_p.modelHandleStart = function (key, model, io) {
     let f_m = model[K]
     if (io[`pure_${K}`]) {
       // should go with pure getters and pure setters
-      _p.getValueStart = eYo.noGetter(function () {
+      _p.getValueStart = eYo.noGetter({$ () {
         return `No getValueStart for pure computed reset (${this.name}.${key})`
-      })
+      }}.$)
       //... chai.expect(() => eYo.p6y.new({
-      //...   [K]: function () {},
+      //...   [K] () {},
       //... }, 'foo', onr).getValueStart()).throw()
       _p[K] = eYo.decorate.reentrant(K, function (...$) {
         return f_m.call(this.owner, ...$)
       })
       //... var x = 421
       //... var p6y = eYo.p6y.new({
-      //...   [K]: function (...$) {
+      //...   [K] (...$) {
       //...     this.flag(2, ...$)
       //...     return {after: x}
       //...   }
@@ -830,9 +830,9 @@ eYo.p6y.Dlgt_p.modelHandleStart = function (key, model, io) {
   }
   let value_m = model.value
   if (eYo.isDef(value_m)) {
-    _p.getValueStart = function () {
+    _p.getValueStart = {$ () {
       return value_m.call(this.owner)
-    }
+    }}.$
     //... ;['value', 'lazy'].forEach(K => {
     //...   var p6y = eYo.p6y.new({
     //...    [K]: 421
@@ -1041,9 +1041,9 @@ eYo.p6y.Dlgt_p.modelHandleGetSet = function (key, model, io) {
   io || (io = this.modelHandleCheck(key, model))
   //<<< mochai: eYo.p6y.Dlgt_p.modelHandleGetSet
   let _p = this.C9r_p
-  let getKRO = 'getValueRO'
+  let gVRO = 'getValueRO'
   if (model.copy) {
-    _p[getKRO] = eYo.decorate.reentrant(getKRO, function () {
+    _p[gVRO] = eYo.decorate.reentrant(gVRO, function () {
       let ans = this.getValue()
       return eYo.isDef(ans) && ans.copy
     })
@@ -1096,7 +1096,7 @@ eYo.p6y.Dlgt_p.modelHandleGetSet = function (key, model, io) {
   let get_m = model.get // from model => suffix = '_m' and `@this` === property owner
   // get_m is computed means that it is meant to replace the standard getter
   if (get_m === eYo.doNothing) {
-    _p[getK] = _p[getKRO] = eYo.noGetter(function () {
+    _p[getK] = _p[gVRO] = eYo.noGetter(function () {
       return `Write only (${this.owner.eyo.name}/${key})`
     })
     //... ;[eYo.doNothing, false].forEach(what => {
@@ -1502,30 +1502,39 @@ eYo.o3d.newNS(eYo.p6y, 'handler')
  */
 eYo.p6y.handler.makeBaseC9r({
   //<<< mochai: eYo.p6y.handler.BaseC9r
-  //... var target, handler, p
-  //... let restart = () => {
-  //...   target = eYo.o3d.new('bar', onr)
-  //...   handler = eYo.p6y.handler.new('foo', onr, target)
-  //...   handler.flag = (...$) => flag.push(1, ...$)
-  //...   p = new Proxy(target, handler)
-  //... }
-  init (key, owner, target) {
-    if (target && !eYo.isaC9r(target)) {
-      console.error('BREAK HERE!!!')
-    }
-    !target || eYo.isaC9r(target) || eYo.throw(`${this.eyo.name}.init: target is not a C9r instance ${target}`)
-    //... restart()
-    //... chai.expect(handler[eYo.$$.target]).equal(target)
-    this[eYo.$$.target] = target
+  /**
+   * Initialize a proxy's handler.
+   * @param {String|Symbol} key 
+   * @param {eYo.C9r} owner 
+   * @param {eYo.P6y|Proxy} target 
+   */
+  init (key, owner) { // eslint-disable-line
     this.cover__ = {
       dispose: eYo.doNothing
     }
   },
   dispose () {
-    this[eYo.$$.target] = this.cover__ = eYo.NA
+    this.cover__ = eYo.NA
   },
   methods: {
+    //<<< mochai: methods
+    //... var target, handler, p
+    //... let restart = () => {
+    //...   target = eYo.p6y.new('bar', onr)
+    //...   handler = eYo.p6y.handler.new('foo', onr, target)
+    //...   handler.flag = (...$) => flag.push(1, ...$)
+    //...   p = new Proxy(target, handler)
+    //... }
+    getProxy(target) {
+      //<<< mochai: getProxy
+      if (eYo.objectHasOwnProperty(target, eYo.$$.target)) {
+        target = target[eYo.$$.target]
+      }
+      return Proxy(target, this)
+      //>>>
+    },
     get (target, prop, receiver) { // eslint-disable-line
+      //<<< mochai: get
       if (eYo.objectHasOwnProperty(this.cover__, prop)) {
         return this.cover__[prop]
         //... restart()
@@ -1534,14 +1543,16 @@ eYo.p6y.handler.makeBaseC9r({
         //... }
       } else if (prop === eYo.$$.target && !eYo.objectHasOwnProperty(target, prop)) {
         return target
+        //... restart()
+        //... chai.expect(p[eYo.$$.target]).equal(target)
       } else if (prop === eYo.$$.handler) {
         return this
+        //... restart()
+        //... chai.expect(p[eYo.$$.handler]).equal(handler)
       } else if (prop === 'owner') {
         return this[prop]
         //... restart()
-        //... ;['owner', eYo.$$.target].forEach(K => {
-        //...   chai.expect(p[K]).equal(handler[K])
-        //... })
+        //... chai.expect(p.owner).equal(handler.owner)
       } else if (prop === 'key') {
         return this.key_
         //... restart()
@@ -1563,8 +1574,10 @@ eYo.p6y.handler.makeBaseC9r({
         //... chai.expect(p.foo).undefined
         //... flag.expect('12foo')
       }
+      //>>>
     },
     set (target, prop, value) {
+      //<<< mochai: set
       if (this.isOwnedKeyRO(prop)) {
         eYo.throw(`...${prop} = ... is forbidden for ${this.eyo.name} instances.`)
         return false
@@ -1597,14 +1610,20 @@ eYo.p6y.handler.makeBaseC9r({
       } else {
         return this.doSet(target, prop, value)
         //... restart()
+        //... let K = Symbol()
+        //... p[K] = 421
+        //... chai.expect(p[K]).undefined
+        //... restart()
         //... handler.doSet = function (target, prop, value) {
         //...   this.flag(2, prop, value)
         //... }
         //... p.foo = 421
         //... flag.expect('12foo421')
       }
+      //>>>
     },
     getOwnPropertyDescriptor (target, name) {
+      //<<< mochai: getOwnPropertyDescriptor
       return Object.getOwnPropertyDescriptor(
         this.isOwnedKey(name) || name === eYo.$$.target
           ? this
@@ -1626,8 +1645,10 @@ eYo.p6y.handler.makeBaseC9r({
       //... ;['foo', 'bar'].forEach(K => {
       //...   chai.expect(Object.getOwnPropertyDescriptor(p, K)).eql(Object.getOwnPropertyDescriptor(target, K))
       //... })
+      //>>>
     },
     defineProperty (target, key, descriptor) {
+      //<<< mochai: defineProperty
       if (this.isOwnedKey(key) || key === eYo.$$.target) {
         Object.defineProperty(this, key, descriptor)
         return true
@@ -1652,8 +1673,10 @@ eYo.p6y.handler.makeBaseC9r({
       //...     Object.defineProperty(p, K, {value: 421})
       //...   }).throw()
       //... })
+      //>>>
     },
     deleteProperty (target, prop) {
+      //<<< mochai: deleteProperty
       let x = this.isOwnedKey(prop) ? this : this.cover__
       let ans = eYo.objectHasOwnProperty(x, prop)
       if (ans) {
@@ -1670,6 +1693,7 @@ eYo.p6y.handler.makeBaseC9r({
       //...   delete p[K]
       //...   chai.expect(p[K]).undefined
       //... })
+      //>>>
     },
     isOwnedKeyRO (key) {
       return this.keys_RO.includes(key)
@@ -1689,6 +1713,16 @@ eYo.p6y.handler.makeBaseC9r({
     doDelete (target, prop) { // eslint-disable-line
       return false
     },
+    //<<< mochai: do...
+    //... restart()
+    //... let s = Symbol()
+    //... chai.expect(p[s]).undefined
+    //... p[s] = 421
+    //... chai.expect(p[s]).undefined
+    //... delete p[s]
+    //... chai.expect(p[s]).undefined
+    //>>>
+    //>>>
   }
   //>>>
 })
@@ -1696,6 +1730,7 @@ eYo.p6y.handler.makeBaseC9r({
 eYo.mixinRO(eYo.p6y.handler.BaseC9r_p, {
   keys_RO: [
     eYo.$$.target, // expose the proxy target
+    eYo.$$.handler, // expose the proxy handler
     'owner', 'key', 'hasOwnProperty'
   ],
   keys_owned: [
@@ -1709,236 +1744,244 @@ eYo.mixinRO(eYo.p6y.handler.BaseC9r_p, {
   ],
 })
 
-/**
- * Declare the given alias.
- * It was declared in a model like
- * `{aliases: { 'source.key': 'alias' } }`
- * Implementation details : uses proxies.
- * @param {String} dest_key
- * @param {Object} object
- * @param {String|eYo.P6y} source
- * @param {String} key
- */
-eYo.p6y._p.aliasNew = function (key, owner, target, target_key) {
-  //<<< mochai: eYo.p6y.aliasNew, Proxy alias
-  var handler
-  if (target_key) {
-    //<<< mochai: target_key
-    let source_ = target + '_' // no copy!
-    let key_p = target_key + '_p'
-    target = owner
-    handler = eYo.p6y.handler.new({
-      methods: {
-        doGet (target, prop) {
-          let s = target[source_]
-          if (eYo.isDef(s)) {
-            var x = s[key_p]
-            if (eYo.isDef(x)) {
-              return x[prop]
+eYo.mixinFR(eYo.p6y._p, {
+  /**
+   * Declare the given alias to a property.
+   * It was declared in a model like
+   * `{aliases: { 'source.key': 'alias' } }`.
+   * Implementation details : uses proxies.
+   * @param {String} key - The result will be `owner[key + '_p']`
+   * @param {Object} owner - It may not be the same owner as the target property.
+   * @param {String|eYo.P6y|Proxy} source - If it is a string, `target.value_[source + '_']` is used.
+   * @param {String} [target_key] - When given, `target` is also a string
+   */
+  aliasNew (key, owner, source, target_key) {
+    //<<< mochai: eYo.p6y.aliasNew, Proxy alias
+    var handler, target$
+    if (target_key) {
+      eYo.isStr(source) || eYo.throw(`Unexpected string: ${source}`)
+      //<<< mochai: target_key
+      //... let source_ = onr.source_ = eYo.c9r.new()
+      //... let target_key_p = source_.target_key_p = eYo.p6y.new({
+      //...   value: 421,
+      //... }, 'target_key', onr)
+      //... let target = eYo.o3d.new('target', onr)
+      //... let alias = eYo.p6y.aliasNew('alias', onr, 'source', 'target_key')
+      //... chai.expect(alias.value).equal(421)
+      //... chai.expect(alias.getValue()).equal(421)
+      //... chai.expect(alias.getValueRO()).equal(421)
+      //... chai.expect(alias.getStored()).equal(421)
+      //... alias.value_ = 666
+      //... chai.expect(target_key_p.value).equal(666)
+      //... alias.value__ = 421
+      //... chai.expect(target_key_p.value).equal(421)
+      //... chai.expect(alias.setValue(666).after).equal(666)
+      //... chai.expect(alias.setStored(421).before).equal(666)
+      let source_ = source + '_' // no copy!
+      let target_key_p = target_key + '_p'
+      target$ = owner
+      handler = eYo.p6y.handler.new({
+        methods: {
+          /**
+           * Specific getter.
+           * @param {eYo.P6y} target
+           * @param {String|Symbol} prop - A property identifier.
+           */
+          doGet (target, prop) {
+            let s = target[source_]
+            if (eYo.isDef(s)) {
+              var p6y = s[target_key_p]
+              if (eYo.isDef(p6y)) {
+                return p6y[prop]
+              }
             }
-            x = s[target_key]
-            if (eYo.isDef(x)) {
-              return x[prop]
+            return eYo.NA
+          },
+          /**
+           * Specific setter.
+           * @param {eYo.P6y} target 
+           * @param {String|Symbol} prop 
+           * @param {*} value 
+           */
+          doSet (target, prop, value) {
+            let s = target[source_]
+            if (eYo.isDef(s)) {
+              let p6y = s[target_key_p]
+              if (eYo.isDef(p6y)) {
+                p6y[prop] = value
+                return true
+              }
             }
-          }
-          return eYo.NA
+          },
+          /**
+           * Specific deleter
+           * @param {eYo.P6y} target 
+           * @param {String|Symbol} prop 
+           */
+          doDelete (target, prop) {
+            let s = target[source_]
+            if (eYo.isDef(s)) {
+              let p6y = s[target_key_p]
+              if (eYo.isDef(p6y)) {
+                delete p6y[prop]
+                return true
+              }
+            }
+          },    
         },
-        doSet (target, prop, value) {
-          let s = target[source_]
-          if (eYo.isDef(s)) {
-            let p6y = s[key_p]
+      }, key, owner)
+      //>>>
+    } else if (eYo.isStr(source)) {
+      //<<< mochai: eYo.isStr(source)
+      //... var bar_p = eYo.p6y.new({
+      //...   value: 421,
+      //... }, 'bar', onr)
+      //... var target = eYo.o3d.new('target', onr)
+      //... target.bar_p = bar_p
+      //... var bar_alias = eYo.p6y.aliasNew('foo', target, 'bar')
+      //... chai.expect(bar_alias.value).equal(421)
+      //... bar_alias.value_ = 666
+      //... chai.expect(bar_p.value).equal(666)
+      let source_p = source + '_p'
+      target$ = owner
+      handler = eYo.p6y.handler.new({
+        methods: {
+          /**
+           * Specific getter.
+           * @param {eYo.P6y} target 
+           * @param {String|Symbol} prop 
+           */
+          doGet (target, prop) {
+            let p6y = target[source_p]
+            return eYo.isDef(p6y) ? p6y[prop] : eYo.NA
+          },
+          /**
+           * Specific setter.
+           * @param {eYo.P6y} target 
+           * @param {String|Symbol} prop 
+           * @param {*} value 
+           */
+          doSet (target, prop, value) {
+            let p6y = target[source_p]
             if (eYo.isDef(p6y)) {
               p6y[prop] = value
               return true
             }
-          }
-        },
-        doDelete (target, prop) {
-          let s = target[source_]
-          if (eYo.isDef(s)) {
-            let p6y = s[key_p]
+          },
+          /**
+           * Specific deleter
+           * @param {eYo.P6y} target 
+           * @param {String|Symbol} prop 
+           */
+          doDelete (target, prop) {
+            let p6y = target[source_p]
             if (eYo.isDef(p6y)) {
               delete p6y[prop]
               return true
             }
-          }
-        },    
-      },
-    }, key, owner)
-    //... var bar_p = eYo.p6y.new({
-    //...   value: 421,
-    //... }, 'bar', onr)
-    //... var foo_ = eYo.c9r.new()
-    //... foo_.bar_p = bar_p
-    //... var target = eYo.o3d.new('target', onr)
-    //... target.foo_ = foo_
-    //... var bar_alias = eYo.p6y.aliasNew('foo', target, 'foo', 'bar')
-    //... chai.expect(bar_alias.value).equal(421)
-    //... chai.expect(bar_alias.getValue()).equal(421)
-    //... chai.expect(bar_alias.getValueRO()).equal(421)
-    //... chai.expect(bar_alias.getStored()).equal(421)
-    //... bar_alias.value_ = 666
-    //... chai.expect(bar_p.value).equal(666)
-    //... bar_alias.value__ = 421
-    //... chai.expect(bar_p.value).equal(421)
-    //... chai.expect(bar_alias.setValue(666).after).equal(666)
-    //... chai.expect(bar_alias.setStored(421).before).equal(666)
-    //>>>
-  } else if (eYo.isStr(target)) {
-    //<<< mochai: eYo.isStr(target)
-    let source_p = target + '_p'
-    target = owner
-    handler = eYo.p6y.handler.new({
-      methods: {
-        doGet (target, prop) {
-          let p6y = target[source_p]
-          return eYo.isDef(p6y) ? p6y[prop] : eYo.NA
+          },    
         },
-        doSet (target, prop, value) {
-          let p6y = target[source_p]
-          if (eYo.isDef(p6y)) {
-            p6y[prop] = value
+      }, key, owner, source)
+      //>>>
+    } else if (eYo.isaP6y(source) || eYo.Def(source = source[eYo.$$.target])) {
+      //<<< mochai: eYo.isaP6y(source)
+      //... var source = eYo.p6y.new({
+      //...   value: 421,
+      //... }, 'bar', onr)
+      //... var alias = eYo.p6y.aliasNew('p', onr, source)
+      //... // key
+      //... eYo.objectHasOwnProperty(chai.expect(alias, 'key')).true
+      //... chai.expect(alias.key).equal('p')
+      //... chai.expect(() => alias.key = 0).throw()
+      //... alias.key_ = 'foo'
+      //... chai.expect(alias.key).equal('foo')
+      //... chai.expect(source.key).equal('bar')
+      //... source.key_ = 'barZ'
+      //... chai.expect(alias.key).equal('foo')
+      //... // owner
+      //... chai.expect(alias.owner).equal(onr)
+      //... chai.expect(() => alias.owner = 0).throw()
+      //... alias.owner__ = 0
+      //... chai.expect(alias.owner).equal(0)
+      //... chai.expect(source.owner).equal(onr)
+      //... source.owner__ = eYo.c9r.new('onr')
+      //... chai.expect(alias.owner).equal(0)
+      //... alias = eYo.p6y.aliasNew('p', onr, source)
+      //... eYo.objectHasOwnProperty(chai.expect(alias, eYo.$next)).false
+      //... Object.defineProperties(alias, {
+      //...   [eYo.$next]: {
+      //...     value: 1,
+      //...     configurable: true,
+      //...   }
+      //... })
+      //... eYo.objectHasOwnProperty(chai.expect(alias, eYo.$next)).true
+      //... chai.expect(alias[eYo.$next]).equal(1)
+      //... chai.expect(source[eYo.$next]).not.equal(1)
+      //... chai.expect(() => alias[eYo.$next] = 2).throw()
+      //... Object.defineProperties(alias, {
+      //...   [eYo.$next]: {
+      //...     value: 2,
+      //...     configurable: true,
+      //...   }
+      //... })
+      //... chai.expect(alias[eYo.$next]).equal(2)
+      //... alias = eYo.p6y.aliasNew('p', onr, source)
+      //... Object.defineProperties(source, {
+      //...   [eYo.$next]: {
+      //...     value: 1,
+      //...     configurable: true,
+      //...   }
+      //... })
+      //... eYo.objectHasOwnProperty(chai.expect(source, eYo.$next)).true
+      //... chai.expect(source[eYo.$next]).equal(1)
+      //... eYo.objectHasOwnProperty(chai.expect(alias, eYo.$next)).false
+      //... chai.expect(alias[eYo.$next]).not.equal(1)
+      handler = eYo.p6y.handler.new({
+        methods: {
+          doGet (target, prop) {
+            return target[prop]
+          },
+          doSet (target, prop, value) {
+            target[prop] = value
             return true
-          }
-        },
-        doDelete (target, prop) {
-          let p6y = target[source_p]
-          if (eYo.isDef(p6y)) {
-            delete p6y[prop]
+          },
+          doDelete (target, prop) {
+            if (this.keys_owned.includes(prop)) {
+              delete this[prop]
+            } else {
+              this.cover__.delete(prop)
+            }
             return true
-          }
-        },    
-      },
-    }, key, owner, target)
-    //... var bar_p = eYo.p6y.new({
-    //...   value: 421,
-    //... }, 'bar', onr)
-    //... var target = eYo.o3d.new('target', onr)
-    //... target.bar_p = bar_p
-    //... var bar_alias = eYo.p6y.aliasNew('foo', target, 'bar')
-    //... chai.expect(bar_alias.value).equal(421)
-    //... bar_alias.value_ = 666
-    //... chai.expect(bar_p.value).equal(666)
-    //>>>
-  } else if (eYo.isaP6y(target) || eYo.Def(target = target[eYo.$$.target])) {
-    //<<< mochai: eYo.isaP6y(target)
-    handler = eYo.p6y.handler.new({
-      methods: {
-        doGet (target, prop) {
-          return target[prop]
+          },    
         },
-        doSet (target, prop, value) {
-          target[prop] = value
-          return true
-        },
-        doDelete (target, prop) {
-          if (this.keys_owned.includes(prop)) {
-            delete this[prop]
-          } else {
-            this.cover__.delete(prop)
-          }
-          return true
-        },    
-      },
-    }, key, owner)
-    //... var bar_p = eYo.p6y.new({
-    //...   value: 421,
-    //... }, 'bar', onr)
-    //... var alias = eYo.p6y.aliasNew('p', onr, bar_p)
-    //... // key
-    //... eYo.objectHasOwnProperty(chai.expect(alias, 'key')).true
-    //... chai.expect(alias.key).equal('p')
-    //... chai.expect(() => alias.key = 0).throw()
-    //... alias.key_ = 'foo'
-    //... chai.expect(alias.key).equal('foo')
-    //... chai.expect(bar_p.key).equal('bar')
-    //... bar_p.key_ = 'barZ'
-    //... chai.expect(alias.key).equal('foo')
-    //... // owner
-    //... chai.expect(alias.owner).equal(onr)
-    //... chai.expect(() => alias.owner = 0).throw()
-    //... alias.owner__ = 0
-    //... chai.expect(alias.owner).equal(0)
-    //... chai.expect(bar_p.owner).equal(onr)
-    //... bar_p.owner__ = eYo.c9r.new('onr')
-    //... chai.expect(alias.owner).equal(0)
-    //... alias = eYo.p6y.aliasNew('p', onr, bar_p)
-    //... eYo.objectHasOwnProperty(chai.expect(alias, eYo.$next)).false
-    //... Object.defineProperties(alias, {
-    //...   [eYo.$next]: {
-    //...     value: 1,
-    //...     configurable: true,
-    //...   }
-    //... })
-    //... eYo.objectHasOwnProperty(chai.expect(alias, eYo.$next)).true
-    //... chai.expect(alias[eYo.$next]).equal(1)
-    //... chai.expect(bar_p[eYo.$next]).not.equal(1)
-    //... chai.expect(() => alias[eYo.$next] = 2).throw()
-    //... Object.defineProperties(alias, {
-    //...   [eYo.$next]: {
-    //...     value: 2,
-    //...     configurable: true,
-    //...   }
-    //... })
-    //... chai.expect(alias[eYo.$next]).equal(2)
-    //... alias = eYo.p6y.aliasNew('p', onr, bar_p)
-    //... Object.defineProperties(bar_p, {
-    //...   [eYo.$next]: {
-    //...     value: 1,
-    //...     configurable: true,
-    //...   }
-    //... })
-    //... eYo.objectHasOwnProperty(chai.expect(bar_p, eYo.$next)).true
-    //... chai.expect(bar_p[eYo.$next]).equal(1)
-    //... eYo.objectHasOwnProperty(chai.expect(alias, eYo.$next)).false
-    //... chai.expect(alias[eYo.$next]).not.equal(1)
+      }, key, owner)
+      target$ = source
+      //>>>
+    } else {
+      eYo.throw(`eYo.p6y.aliasNew: bad target ${source}`)
+      //<<< mochai: throw
+      //... chai.expect(() => eYo.p6y.aliasNew('foo', onr, 421)).throw()
+      //... chai.expect(() => eYo.p6y.aliasNew('foo', onr)).throw()
+      //>>>
+    }
+    return new Proxy(target$, handler)
     //>>>
-  } else {
-    eYo.throw(`eYo.p6y.aliasNew: bad target ${target}`)
-    //<<< mochai: throw
-    //... chai.expect(() => eYo.p6y.aliasNew('foo', onr, 421)).throw()
-    //... chai.expect(() => eYo.p6y.aliasNew('foo', onr)).throw()
-    //>>>
-  }
-  var p = new Proxy(target, handler)
-  handler[eYo.$$.target] = target
-  return p
-  //>>>
-}
+  },
+})
 //>>>
 
 //<<< mochai: Utilities
 
 eYo.P6y[eYo.$].observeEnhanced()
 
-;(() => {
-  let _p = eYo.P6y_p
-
-  /**
-   * The parent of the property is the object who declares the property,
-   * as part of its `properties:` section of its model.
-   * The owner is the object who creates the property with `new`.
-   * In general both are equal.
-   * @type {Object} parent
-   */
-  Object.defineProperties(_p, {
-    parent: eYo.descriptorR({$ () {
-      return this.owner
-    }}.$)
-    //<<< mochai: parent
-    //... var foo_p = eYo.p6y.new('foo', onr)
-    //... chai.expect(foo_p.parent).equal(onr)
-    //>>>
-  })  
-
+eYo.mixinFR(eYo.P6y_p, {
   /**
    * Get the stored value. May be overriden by the model's `get_` key.
    * @private
    */
-  _p.getStored = _p.__getStored = function () {
+  __getStored () {
     return this.stored__
-  }
-
+  },
   /**
    * Set the value of the receiver.
    * This can be overriden by the model's `set_` key.
@@ -1946,7 +1989,7 @@ eYo.P6y[eYo.$].observeEnhanced()
    * @param {*} after - the new value after the change.
    * @return {*} An object with keys before and after...
    */
-  _p.setStored = _p.__setStored = function (after) {
+  __setStored (after) {
     let before = this.stored__
     if (before && before[eYo.$p6y] === this) {
       // resign ownership
@@ -1958,38 +2001,58 @@ eYo.P6y[eYo.$].observeEnhanced()
       after[eYo.$p6y] = this
     }
     return {before, after}
-  }
-
+  },
   /**
-   * Get the value, may be overriden by the model's `get` key.
-   * Default implementation forwards to `getStored`. 
+   * Iterator.
+   */
+  ownedForEach: eYo.doNothing,
+})
+
+{
+  let _p = eYo.P6y_p
+  /**
+   * Get the stored value. May be overriden by the model's `get_` key.
    * @private
    */
-  _p.getValue = function () {
-    return this.getStored()
-  }
-
+  _p.getStored = eYo.P6y_p.__getStored
   /**
-   * Readonly getter. Used to manage copy.
-   * Default implementation forwards to `getValue`.
+   * Set the value of the receiver.
+   * This can be overriden by the model's `set_` key.
+   * The computed properties do not store values on their own.
+   * @param {*} after - the new value after the change.
+   * @return {*} An object with keys before and after...
    */
-  _p.getValueRO = function () {
-    return this.getValue()
-  }
-
+  _p.setStored = eYo.P6y_p.__setStored
   /**
    * Returns the starting value.
-   * Default implementation returns undefined.
+   * Default implementation returns undefined
+   * and might be overriden at runtime.
    */
   _p.getValueStart = eYo.doNothing
-
+  /**
+   * Get the value, may be overriden by the model's `get` key.
+   * Default implementation forwards to `getStored`
+   * and might be overriden at runtime. 
+   * @private
+   */
+  _p.getValue = {$ () {
+    return this.getStored()
+  }}.$,
+  /**
+   * Readonly getter. Used to manage copy.
+   * Default implementation forwards to `getValue`
+   * and might be overriden at runtime.
+   */
+  _p.getValueRO = {$ () {
+    return this.getValue()
+  }}.$
   /**
    * Set the value of the receiver.
    * This can be overriden by the model's `set` key.
    * @param {*} after - the new value after the change.
    * @return {*} An object with keys before and after...
    */
-  _p.setValue = function (after) {
+  _p.setValue = {$ (after) {
     var before = this.getStored()
     after = this.validate(before, after)
     if (eYo.isVALID(after)) {
@@ -2009,29 +2072,44 @@ eYo.P6y[eYo.$].observeEnhanced()
       }
       return {before, after}
     }
-  }
+  }}.$
+}
 
+
+/**
+ * The parent of the property is the object who declares the property,
+ * as part of its `properties:` section of its model.
+ * The owner is the object who creates the property with `new`.
+ * In general both are equal.
+ * @type {Object} parent
+ */
+Object.defineProperties(eYo.P6y_p, {
+  parent: eYo.descriptorR({$ () {
+    return this.owner
+  }}.$),
+  //<<< mochai: parent
+  //... var foo_p = eYo.p6y.new('foo', onr)
+  //... chai.expect(foo_p.parent).equal(onr)
+  //>>>
   /**
    * @property {*} value - computed
    */
-  Object.defineProperties(_p, {
-    value_: {
-      get () {
-        return this.getValue()
-      },
-      set (after) {
-        this.setValue(after)
-      }
+  value_: {
+    get () {
+      return this.getValue()
     },
-    value__: {
-      get () {
-        return this.getStored()
-      },
-      set (after) {
-        this.setStored(after)
-      }
+    set (after) {
+      this.setValue(after)
+    }
+  },
+  value__: {
+    get () {
+      return this.getStored()
     },
-  })
+    set (after) {
+      this.setStored(after)
+    }
+  },
   //<<< mochai: eYo.P6y_p properties
   //... let p6y = eYo.p6y.new('p6y', onr)
   //... chai.expect(p6y.value).equal(p6y.value_).equal(p6y.value__).equal(eYo.NA)
@@ -2041,11 +2119,6 @@ eYo.P6y[eYo.$].observeEnhanced()
   //... p6y.value__ = 666
   //... chai.expect(p6y.value).equal(p6y.value_).equal(p6y.value__).equal(666)
   //>>>
-
-  /**
-   * Iterator.
-   */
-  _p.ownedForEach = eYo.doNothing
-
-})()
+})
 //>>>
+

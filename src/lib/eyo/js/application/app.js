@@ -148,7 +148,7 @@ eYo.app._p.parseZoom_ = function (options = {}) {
  * @property {eYo.view.Desk} desk
  * @readonly
  * The ui drivers manager.
- * @property {eYo.driver.Mngr} ui_driver_mngr
+ * @property {eYo.driver.Mngr} driver_mngr
  * @readonly
  * The main focus manager.
  * @property {eYo.focus.Main} focus_main
@@ -181,7 +181,7 @@ eYo.app.makeBaseC9r({
     clipboard () {
       return new eYo.app.Clipboard(this)
     },
-    ui_driver_mngr: {
+    driver_mngr: {
       lazy () {
         let UI = this.options.UI || 'fcls'
         return new eYo[UI].Mngr(this)

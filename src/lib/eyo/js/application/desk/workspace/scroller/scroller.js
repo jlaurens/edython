@@ -82,7 +82,7 @@ eYo.view.newC9r('Scroller', {
 eYo.view.Scroller_p.disposeUI = function () {
   this.hScroll.disposeUI()
   this.vScroll.disposeUI()
-  this.ui_driver.doDispose(this)
+  this.driver.doDispose(this)
   this.disposeUI = eYo.doNothing
   delete this.initUI
 }
@@ -133,7 +133,7 @@ eYo.view.Scroller_p.layout = function() {
   r.top = rr.top
   r.bottom = rr.bottom
   // Reposition the corner square.
-  this.ui_driver_mngr.scrollerPlaceCorner(this)
+  this.driver_mngr.scrollerPlaceCorner(this)
 }
 
 /**

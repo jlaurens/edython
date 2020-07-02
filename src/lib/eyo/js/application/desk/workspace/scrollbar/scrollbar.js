@@ -106,7 +106,7 @@ eYo.view.newC9r('Scrollbar', {
         }
       },
       didChange () /** @suppress {globalThis} */ {
-        this.ui_driver.updateHandle(this)
+        this.driver.updateHandle(this)
       },
     },
     /**
@@ -127,7 +127,7 @@ eYo.view.newC9r('Scrollbar', {
         if (this.handlePosition + after > this.viewLength) {
           this.handlePosition_ = this.viewLength - after
         }
-        this.ui_driver.updateView(this)
+        this.driver.updateView(this)
       }
     },
     /**
@@ -161,7 +161,7 @@ eYo.view.newC9r('Scrollbar', {
             : (size.height = after)
           this.handlePosition_ *= ratio
           this.handleLength_ *= ratio
-          this.ui_driver.updateView(this)
+          this.driver.updateView(this)
         }
       },
     },
@@ -290,7 +290,7 @@ eYo.view.Scrollbar_p.updateDisplay_ = function() {
   var show = true
   // Check whether our parent/container is visible.
   show = this.containerVisible_ && this.visible_
-  this.ui_driver.updateDisplay(this, show)
+  this.driver.updateDisplay(this, show)
 }
 
 /**
@@ -298,7 +298,7 @@ eYo.view.Scrollbar_p.updateDisplay_ = function() {
  * @private
  */
 eYo.view.Scrollbar_p.cleanUp_ = function() {
-  this.ui_driver.cleanUp(this)
+  this.driver.cleanUp(this)
 }
 
 /**
@@ -307,6 +307,6 @@ eYo.view.Scrollbar_p.cleanUp_ = function() {
  * @private
  */
 eYo.view.Scrollbar_p.place = function() {
-  this.ui_driver.place(this)
+  this.driver.place(this)
 }
 

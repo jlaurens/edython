@@ -83,12 +83,12 @@ eYo.dnd.newC9r('Mngr', {
     dragger: {
       dispose: false
     },
-    ui_driver_mngr: {
+    driver_mngr: {
       get () {
         if (!this.motion) {
           console.error('BREAK HERE!')
         }
-        return this.motion.ui_driver_mngr
+        return this.motion.driver_mngr
       },
     },
     active: {

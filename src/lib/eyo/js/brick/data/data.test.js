@@ -329,41 +329,6 @@ describe ('Tests: data', function () {
       builtin()
     })
   })
-  it ('Data: aliases', function () {
-    /*aliases: {
-      owner: 'brick',
-      'brick.changer': 'changer',
-      'brick.type': 'brickType',
-      'brick.data': 'data',
-      'brick.ui': 'ui',
-      'brick.ui_driver': 'ui_driver',
-    },*/
-    let b3k = eYo.o4t.singleton(onr, {
-      properties: {
-        changer: 1,
-        type: 2,
-        data: 3,
-        ui: 4,
-        ui_driver: 5,
-      },
-    })
-    chai.expect(b3k[eYo.$].model.properties.changer.value).equal(1)
-    chai.expect(b3k.changer).equal(1)
-    chai.expect(b3k.type).equal(2)
-    let d = eYo.data.new({}, 'd', b3k)
-    chai.assert(d.brick_p)
-    chai.assert(d.changer_p)
-    chai.assert(d.brickType_p)
-    chai.assert(d.data_p)
-    chai.assert(d.ui_p)
-    chai.assert(d.ui_driver_p)
-    chai.expect(d.brick).equal(b3k)
-    chai.expect(d.changer).equal(1)
-    chai.expect(d.brickType).equal(2)
-    chai.expect(d.data).equal(3)
-    chai.expect(d.ui).equal(4)
-    chai.expect(d.ui_driver).equal(5)
-  })
   //   it('Data model', function () {
   //     let ns = eYo.data.newNS()
   //     ns.makeBaseC9r()

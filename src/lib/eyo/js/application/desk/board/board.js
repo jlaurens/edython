@@ -337,7 +337,7 @@ eYo.board.newC9r('Main', {
      */
     visible: {
       get () {
-        return this.ui_driver.visibleGet(this)
+        return this.driver.visibleGet(this)
       },
       /**
        * Toggles the visibility of the board.
@@ -355,7 +355,7 @@ eYo.board.newC9r('Main', {
         if (this.flyout_) {
           this.flyout_.containerVisible = after
         }
-        this.ui_driver.visibleSet(this, after)
+        this.driver.visibleSet(this, after)
         if (after) {
           this.render()
         } else {
@@ -430,7 +430,7 @@ eYo.board.BaseC9r_p.didScale = function() {
   this.updateMetrics()
   console.error('AFTER', this.metrics)
   this.place()
-  this.ui_driver_mngr && this.ui_driver_mngr.didScale(this)
+  this.driver_mngr && this.driver_mngr.didScale(this)
   // if (this.scrollbar) {
   //   this.scrollbar.layout()
   // } else {
@@ -680,7 +680,7 @@ eYo.board.BaseC9r_p.layout = function() {
  * chromes. (e.g. window layout).
  */
 eYo.board.BaseC9r_p.place = function() {
-  this.ui_driver_mngr && this.ui_driver_mngr.place(this)
+  this.driver_mngr && this.driver_mngr.place(this)
   this.updateScreenCalculations_()
 }
 
@@ -875,7 +875,7 @@ eYo.board.BaseC9r_p.inDeleteArea = function(motion) {
  * @param {eYo.geom.Point} xy Starting location of object.
  */
 eYo.board.BaseC9r_p.eventWhere = function(e) {
-  return this.ui_driver_mngr.eventWhere(this, e)
+  return this.driver_mngr.eventWhere(this, e)
 }
 
 /**
@@ -883,7 +883,7 @@ eYo.board.BaseC9r_p.eventWhere = function(e) {
  */
 eYo.board.BaseC9r_p.markFocused = function() {
   var board = this.desk.board
-  board.ui_driver_mngr.setBrowserFocus(board)
+  board.driver_mngr.setBrowserFocus(board)
 }
 
 /**
@@ -913,7 +913,7 @@ eYo.board.BaseC9r_p.zoom = function(center, amount) {
   if (eYo.isDef(center.clientX)) {
     center = new eYo.geom.Point(center)
   }
-  this.ui_driver_mngr.zoom(this, center, scaleChange)
+  this.driver_mngr.zoom(this, center, scaleChange)
 }
 
 /**

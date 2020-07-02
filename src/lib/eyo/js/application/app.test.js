@@ -28,7 +28,7 @@ describe('app', function() {
   //     console.error('BREAK HERE!')
   //     console.error(APP.options)
   //     chai.expect(APP.options.UI).equal(UI)
-  //     chai.expect(APP.ui_driver_mngr.constructor).equal(eYo[UI].Mngr)
+  //     chai.expect(APP.driver_mngr.constructor).equal(eYo[UI].Mngr)
   //   })
   // })
 })

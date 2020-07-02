@@ -44,7 +44,9 @@ eYo.forward('changer')
  * @namespace
  */
 eYo.o4t.newNS(eYo, 'data')
-
+//<<< mochai: eYo.data
+//... chai.expect(eYo.data).eyo_NS
+//>>>
 /**
  * @name {eYo.data.BaseC9r}
  * @constructor
@@ -58,68 +60,151 @@ eYo.o4t.newNS(eYo, 'data')
  * of owner. Great care should be taken when editing this model.
  */
 eYo.data.makeBaseC9r(true, {
+  //<<< mochai: eYo.Data
+  //<<< mochai: Basics
   init (key, brick) {
+    //<<< mochai: init
     eYo.isStr(key) || eYo.throw(`${this.eyo.name}: Missing key in makeBaseC9r`)
-    brick || eYo.throw(`${this.eyo.name}: Missing brick`)
-    let model = this.model
-    this.noUndo_ = !!model.noUndo
-    let xml = model.xml
-    if (eYo.isDef(xml) || xml !== false) {
-      this.attributeName = (xml && xml.attribute) || key
-    }
+    //... chai.expect(() => new eYo.Data(1)).throw()
+    eYo.isaC9r(brick) || eYo.throw(`${this.eyo.name}: Missing brick`)
+    //... chai.expect(() => new eYo.Data('foo', 'bar')).throw()
+    //... let d = new eYo.Data('foo', onr)
+    //>>>
   },
-  aliases: {
-    'owner': 'brick',
-    'brick.changer': 'changer',
-    'brick.type': 'brickType',
-    'brick.data': 'data',
-    'brick.ui': 'ui',
-    'brick.ui_driver': 'ui_driver',
-  },
+  //>>>
   properties: {
+    //<<< mochai: Properties
+    brick: {
+      //<<< mochai: brick
+      get () {
+        return this.owner
+      }
+      //... var d = new eYo.Data('foo', onr)
+      //... chai.expect(d.brick).equal(onr)
+      //... chai.expect(() => { d.brick_ = 1 }).throw()
+      //>>>
+    },
     name: {
+      //<<< mochai: name
       lazy () {
         return 'eyo:' + (this.model.name || this.key).toLowerCase()
       },
+      //... var d = new eYo.Data('foo', onr)
+      //... chai.expect(d.name).equal('eyo:foo')
+      //... var d = eYo.data.new({
+      //...   name: 'bar',  
+      //... }, 'foo', onr)
+      //... chai.expect(d.name).equal('eyo:bar')
+      //>>>
+    },
+    attributeName: {
+      //<<< mochai: attributeName
+      lazy () {
+        let model = this.model
+        let xml = model.xml
+        return (xml && xml.attribute) || this.key
+      },
+      //... var d = new eYo.Data('foo', onr)
+      //... chai.expect(d.attributeName).equal('foo')
+      //... let model = {
+      //...   xml: {
+      //...     attribute: 'bar',
+      //...   },
+      //... }
+      //... var d = eYo.data.new(model, 'foo', onr)
+      //... chai.expect(d.attributeName).equal('bar')
+      //>>>
     },
     value: '',
+    //<<< mochai: value
+    //... var d = new eYo.Data('foo', onr)
+    //... chai.expect(d.value).equal('')
+    //... d.value_ = 'foo'
+    //... chai.expect(d.value).equal('foo')
+    //>>>
     /**
      * Wether a value change fires an undo event.
      * May be overriden by the javascript model.
      */
-    noUndo: false,
+    noUndo: {
+      //<<< mochai: noUndo
+      lazy () {
+        return !!this.model.noUndo
+      }
+      //... var d = new eYo.Data('foo', onr)
+      //... chai.expect(d.noUndo).false
+      //... let model = {
+      //...   noUndo: 1,
+      //... }
+      //... var d = eYo.data.new (model, 'foo', onr)
+      //... chai.expect(d.noUndo).true
+      //>>>
+    },
     required_from_model: false,
+    //<<< mochai: noUndo
+    //... var d = new eYo.Data('foo', onr)
+    //... chai.expect(d.required_from_model).false
+    //... d.required_from_model_ = true
+    //... chai.expect(d.required_from_model).true
+    //>>>
     /**
      * Disabled data correspond to disabled input.
      * Changing this value will cause an UI synchronization and a change count.
      */
     incog: {
+      //<<< mochai: incog
       after: ['required_from_model', 'changer'],
+      value: false,
+      //... var d = new eYo.Data('foo', onr)
+      //... chai.expect(d.incog).false
+      validate (after) {
+        return eYo.isDef(after)
+          ? !!after
+          : !this.required_from_model_
+      },
+      //... let model = {
+      //...   noUndo: 1,
+      //... }
+      //... var d = eYo.data.new (model, 'foo', onr)
+      //... chai.expect(d.incog).false
+      //... d.incog_ = true
+      //... chai.expect(d.incog).true
+      //... d.incog_ = false
+      //... chai.expect(d.incog).false
+      //... d.incog_ = eYo.NA
+      //... chai.expect(d.incog).true
+      //... d.required_from_model_ = 421
+      //... d.incog_ = eYo.NA
+      //... chai.expect(d.incog).false
       /**
        * Disabled data correspond to disabled input.
        * Changing this value will cause an UI synchronization but no change count.
-       * @param {Boolean} after  When not defined, replaced by `!this.required_from_model_`
+       * @param {Boolean} after - When not defined, replaced by `!this.required_from_model_`
        */
-      set (after) {
-        if (!eYo.isDef(after)) {
-          after = !this.required_from_model_
-        } else {
-          after = !!after
-        }
-        var validator = this.model.validateIncog
-        if (validator) {
-          after = validator.call(this, after)
-        }
-        eYo.whenVALID(this.validateIncog(after), after => {
-          if (this.incog_ !== after) {
-            this.changer.wrap(() => {
-              this.incog_ = after
-              this.slot && (this.slot.incog = after)
-              this.field && (this.field.visible = !after)
-            })
-          }
+      set (builtin, after) {
+        this.changer.wrap(() => {
+          builtin(after)
+          this.slot && (this.slot.incog_ = after)
+          this.field && (this.field.visible_ = !after)
         })
-      }
+      },
+      //... onr.changer = eYo.changer.new(onr)
+      //... var d = eYo.data.new (model, 'foo', onr)
+      //... chai.expect(onr.changer.count).equal(0)
+      //... d.incog_ = true
+      //... chai.expect(onr.changer.count).equal(1)
+      //... d.incog_ = false
+      //... chai.expect(onr.changer.count).equal(2)
+      //... var d = eYo.data.new (model, 'foo', onr)
+      //... d.slot = {}
+      //... d.field = {}
+      //... d.incog_ = true
+      //... chai.expect(d.slot.incog_).equal(d.incog)
+      //... chai.expect(d.field.visible_).equal(!d.incog)
+      //... d.incog_ = false
+      //... chai.expect(d.slot.incog_).equal(d.incog)
+      //... chai.expect(d.field.visible_).equal(!d.incog)
+      //>>>
     },
     requiredIncog: {
       after: ['required_from_model'],
@@ -141,9 +226,44 @@ eYo.data.makeBaseC9r(true, {
         return this.required_from_model || this.value_ && this.value_.length || this.required_from_type
       },
     },
+    //>>>
+  },
+  aliases: {
+    //<<< mochai: Aliases
+    'brick.changer': 'changer',
+    'brick.type': 'brickType',
+    'brick.data': 'data',
+    'brick.ui': 'ui',
+    'brick.driver': 'driver',
+    //... let b3k = eYo.o4t.singleton({
+    //...   properties: {
+    //...     changer: 1,
+    //...     type: 2,
+    //...     data: 3,
+    //...     ui: 4,
+    //...     driver: 5,
+    //...   },
+    //... }, onr)
+    //... chai.expect(b3k[eYo.$].model.properties.changer.value()).equal(1)
+    //... chai.expect(b3k.changer).equal(1)
+    //... chai.expect(b3k.type).equal(2)
+    //... let d = eYo.data.new({}, 'd', b3k)
+    //... chai.expect(d).property('changer_p')
+    //... chai.expect(d).property('brickType_p')
+    //... chai.expect(d).property('data_p')
+    //... chai.expect(d).property('ui_p')
+    //... chai.expect(d).property('driver_p')
+    //... chai.expect(d.brick).equal(b3k)
+    //... chai.expect(d.changer).equal(1)
+    //... chai.expect(d.brickType).equal(2)
+    //... chai.expect(d.data).equal(3)
+    //... chai.expect(d.ui).equal(4)
+    //... chai.expect(d.driver).equal(5)
+    //>>>
   },
   // ANCHOR: Methods
   methods: {
+    //<<< mochai: methods
     /**
      * Get the value of the data
      */
@@ -440,7 +560,7 @@ eYo.data.makeBaseC9r(true, {
             } else {
               field.visible = true
             }
-            let d = field.ui_driver
+            let d = field.driver
             d && (d.makeError(field))
           })
         }
@@ -756,7 +876,9 @@ eYo.data.makeBaseC9r(true, {
         })
       }
     },
+  //>>>
   },    
+  //>>>
 })
 
 eYo.data.BaseC9r[eYo.$].finalizeC9r(

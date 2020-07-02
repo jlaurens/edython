@@ -1036,7 +1036,7 @@ eYo.expr.newC9r('primary', {
             this.willRender()
             var item = this.brick.item
             var reserved = item && item.module && (item.module.name === 'functions' || item.module.name === 'stdtypes' || item.module.name === 'datamodel')
-            var d = this.ui_driver_mngr
+            var d = this.driver_mngr
             d && (d.makeReserved(this, reserved))
           }
         }

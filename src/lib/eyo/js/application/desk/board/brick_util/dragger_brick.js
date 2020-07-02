@@ -70,9 +70,9 @@ eYo.dragger.newC9r('Brick', {
         return this.destination_.desk
       }
     },
-    ui_driver_mngr: {
+    driver_mngr: {
       get () {
-        return this.desk.ui_driver_mngr
+        return this.desk.driver_mngr
       }
     },
   },
@@ -210,7 +210,7 @@ eYo.dragger.newC9r('Brick', {
       
       eYo.event.beginGroup()
       this.destination.setResizesEnabled(false)
-      var d = this.ui_driver_mngr
+      var d = this.driver_mngr
       d.brickEffectStop()
       var healStack = motion.healStack_
       var b3k = this.brick_
@@ -297,9 +297,9 @@ eYo.dragger.newC9r('Brick', {
       if (bds) {
         bds.move()
       } else {
-        this.ui_driver_mngr.brickSetOffsetDuringDrag(b3k, xyNew)
+        this.driver_mngr.brickSetOffsetDuringDrag(b3k, xyNew)
       }
-      this.brick_.ui_driver.deleteStyleSet(this.wouldDelete_)
+      this.brick_.driver.deleteStyleSet(this.wouldDelete_)
       this.update()
 
       var trashCan = this.destination.trashCan
@@ -325,7 +325,7 @@ eYo.dragger.newC9r('Brick', {
       }
       return function(e, delta) {
         this.drag(delta)
-        this.ui_driver_mngr.draggerBrickEnd(this)
+        this.driver_mngr.draggerBrickEnd(this)
         var b3k = this.brick_
         if (this.wouldDelete_) {
           if (!this.motion_.flyout_) {
@@ -342,7 +342,7 @@ eYo.dragger.newC9r('Brick', {
             eYo.event.fireBrickCreate(b3k, true) 
           }
           fireMoveEvent(this)
-          b3k.ui_driver.scheduleSnapAndBump(b3k)
+          b3k.driver.scheduleSnapAndBump(b3k)
         }
         var trashCan = this.destination.trashCan
         if (trashCan) {

@@ -8,9 +8,9 @@ describe ('Tests: audio', function () {
     let app = new eYo.app.BaseC9r()
     chai.assert(app.audio)
     chai.expect(app.audio.app).equal(app)
-    chai.assert(app.ui_driver_mngr)
-    chai.assert(app.audio.ui_driver_mngr)
-    chai.assert(app.audio.ui_driver)
+    chai.assert(app.driver_mngr)
+    chai.assert(app.audio.driver_mngr)
+    chai.assert(app.audio.driver)
     chai.assert(app.audio.play)
   })
   it ('app.audio.play', function () {

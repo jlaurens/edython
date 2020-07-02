@@ -299,12 +299,12 @@ eYo.event.newC9r('Motion', {
       },
     },
     /**
-     * General purpose ui_driver_mngr from the creator board.
+     * General purpose driver_mngr from the creator board.
      */
-    ui_driver_mngr: {
+    driver_mngr: {
       get () {
         let b3d = this.board
-        return b3d && b3d.ui_driver_mngr
+        return b3d && b3d.driver_mngr
       },
     },
     /**
@@ -418,7 +418,7 @@ eYo.event.Motion[eYo.$].methodsMerge({
         this.pidCancel__ = 0
         this.cancel()
       }, this.ns.CANCEL_LATENCY)
-      this.ui_driver.disconnectStop()
+      this.driver.disconnectStop()
       var board = this.board_
       board.updateScreenCalculationsIfScrolled()
       board.markFocused()  
@@ -774,9 +774,9 @@ eYo.event.Motion[eYo.$].methodsMerge({
   handleLongPress (e) {
     var b = this.targetBrick
     if (b) {
-      b.ui_driver.showContextMenu_(b, e)
+      b.driver.showContextMenu_(b, e)
     } else if ((b = this.board)) {
-      b.ui_driver.showContextMenu_(b, e)
+      b.driver.showContextMenu_(b, e)
     }
     eYo.dom.gobbleEvent(e)
     this.reset()
@@ -834,7 +834,7 @@ eYo.event.Motion[eYo.$].methodsMerge({
           if (!b.disabled) {
             eYo.event.groupWrap(() => {
               var newBrick = this.flyout_.createBrick(b)
-              newBrick.ui_driver.scheduleSnapAndBump(newBrick)  
+              newBrick.driver.scheduleSnapAndBump(newBrick)  
             })
             return true
           }

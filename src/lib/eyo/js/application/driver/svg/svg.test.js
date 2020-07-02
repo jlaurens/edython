@@ -54,8 +54,8 @@ var x = () => {
       chai.assert(dom, `MISSING svg in value field of ${type}`)
       var ui = field.ui
       chai.assert(ui === d1.ui, `MISSING field.ui === d1.ui for value field of ${type}`)
-      var ui_driver_mngr = field.ui_driver_mngr
-      chai.assert(ui_driver_mngr, `MISSING ui_driver_mngr in value field of ${type}`)
+      var driver_mngr = field.driver_mngr
+      chai.assert(driver_mngr, `MISSING driver_mngr in value field of ${type}`)
       chai.assert(dom.svg.group_ === dom.svg.textElement_, `FAILED dom.svg.group_ === dom.svg.textElement_ in value field of ${type}`)
       d1.dispose()
       chai.assert(!d1.dom, `FAILED SVG dispose`)
@@ -70,8 +70,8 @@ var x = () => {
     //   chai.assert(dom, `MISSING svg in value field of ${type}`)
     //   var ui = field.ui
     //   chai.assert(ui === d1.ui, `MISSING field.ui === d1.ui for value field of ${type}`)
-    //   var ui_driver_mngr = field.ui_driver_mngr
-    //   chai.assert(ui_driver_mngr, `MISSING ui_driver_mngr in value field of ${type}`)
+    //   var driver_mngr = field.driver_mngr
+    //   chai.assert(driver_mngr, `MISSING driver_mngr in value field of ${type}`)
     //   eYo.test.SvgNodeParent(dom, 'textElement_', 'group_', type)
     //   eYo.test.tearItDown()
     // })

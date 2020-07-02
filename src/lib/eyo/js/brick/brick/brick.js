@@ -104,7 +104,7 @@ eYo.brick.makeBaseC9r({
         if (before) {
           // Remove this brick from the old parent_'s child list.
           eYo.do.arrayRemove(before.children__, this)
-          this.ui_driver.parentSet(null)
+          this.driver.parentSet(null)
         } else {
           // Remove this brick from the board's list of top-most bricks.
           this.board.removeBrick(before)
@@ -117,7 +117,7 @@ eYo.brick.makeBaseC9r({
         } else {
           this.board.addBrick(after)
         }
-        after && (this.ui_driver.parentSet(after))
+        after && (this.driver.parentSet(after))
       },
     },
     children: {
@@ -1827,10 +1827,10 @@ eYo.brick.makeBaseC9r({
      * Render the brick. Real function.
      */
     render_ () {
-      this.ui_driver.render(this)
+      this.driver.render(this)
     },
     updateDisabled_ () {
-      this.ui_driver.updateDisabled_(this)
+      this.driver.updateDisabled_(this)
       this.children.forEach(child => child.updateDisabled())
     },
     /**

@@ -33,7 +33,7 @@ eYo.expr.newC9r('Binary', {
       },
       synchronize (builtin, after) /** @suppress {globalThis} */ {
         builtin()
-        var d = this.field.ui_driver_mngr
+        var d = this.field.driver_mngr
         d && (d.makeReserved(this.field, ['in', 'or', 'and'].indexOf(after) >= 0))
       },
       fromType (type) /** @suppress {globalThis} */ {
@@ -304,7 +304,7 @@ eYo.expr.newC9r('unary', {
       },
       synchronize (builtin, after) /** @suppress {globalThis} */ {
         builtin()
-        var d = this.field.ui_driver_mngr
+        var d = this.field.driver_mngr
         d && (d.makeReserved(this.field, after === 'not'))
       },
       fromType (type) /** @suppress {globalThis} */ {

@@ -371,24 +371,24 @@ eYo.view.makeBaseC9r(true, {
      * The driver manager shared by all the instances in the app.
      * @type {eYo.driver.Mngr}
      */
-    ui_driver_mngr: {
+    driver_mngr: {
       get () {
         let a = this.app
-        return a && a.ui_driver_mngr
+        return a && a.driver_mngr
       },
     },
     /**
      * The driver.
      * @type {eYo.driver.BaseC9r}
      */
-    ui_driver: {
+    driver: {
       lazy () {
-        var mngr = this.ui_driver_mngr
+        var mngr = this.driver_mngr
         return mngr && mngr.driver(this)
       },
       reset (builtin) {
         this.ownedForEach(x => {
-          let p = x.ui_driver_p
+          let p = x.driver_p
           p && p.reset()
         })
         builtin()
@@ -531,7 +531,7 @@ eYo.View[eYo.$].methodsMerge({
   //...     },
   //...   },
   //... }
-  //... let ui_driver = {
+  //... let driver = {
   //...   prepareUI (instance, ...$) {
   //...     flag.push(1, instance.eyo.model.bar, ...$)
   //...   },
@@ -550,7 +550,7 @@ eYo.View[eYo.$].methodsMerge({
    */
   prepareUI (...$) {
     //<<< mochai: prepareUI
-    this.ui_driver.prepareUI(this, ...$)
+    this.driver.prepareUI(this, ...$)
     this.prepareUI = eYo.doNothing
     this.viewForEach(V => {
       delete V.prepareUI
@@ -562,9 +562,9 @@ eYo.View[eYo.$].methodsMerge({
     //... chai.expect(V.mee_v).instanceOf(eYo.View)
     //... V.viewForEach(V => flag.push(V[eYo.$].model.bar))
     //... flag.expect(567)
-    //... V.ui_driver = ui_driver
+    //... V.driver = driver
     //... V.viewForEach(V => {
-    //...   V.ui_driver = ui_driver
+    //...   V.driver = driver
     //... })
     //... V.prepareUI(8, 9)
     //... flag.expect(1489158916891789)
@@ -578,12 +578,12 @@ eYo.View[eYo.$].methodsMerge({
   do_initUI (...$) {
     //<<< mochai: do_initUI
     this.initUI = eYo.doNothing
-    this.ui_driver.do_initUI(this, ...$)
+    this.driver.do_initUI(this, ...$)
     this.viewForEach(v => v.do_initUI(...$))
     //... let V = eYo.view.new(model, 'V', onr)
-    //... V.ui_driver = ui_driver
+    //... V.driver = driver
     //... V.viewForEach(V => {
-    //...   V.ui_driver = ui_driver
+    //...   V.driver = driver
     //... })
     //... V.do_initUI(8, 9)
     //... flag.expect(2489258926892789)
@@ -610,12 +610,12 @@ eYo.View[eYo.$].methodsMerge({
    */
   do_disposeUI (...$) {
     //<<< mochai: do_initUI
-    this.ui_driver.do_disposeUI(this, ...$)
+    this.driver.do_disposeUI(this, ...$)
     this.viewForEach(v => v.disposeUI(...$))
     //... let V = eYo.view.new(model, 'V', onr)
-    //... V.ui_driver = ui_driver
+    //... V.driver = driver
     //... V.viewForEach(V => {
-    //...   V.ui_driver = ui_driver
+    //...   V.driver = driver
     //... })
     //... V.do_disposeUI(8, 9)
     //... flag.expect(3489358936893789)

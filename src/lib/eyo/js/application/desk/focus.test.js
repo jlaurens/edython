@@ -27,7 +27,7 @@ describe ('Tests: focus', function () {
     return new (eYo.o4t.newC9r('', {
       properties: {
         focus_mngr: mngr,
-        ui_driver: {
+        driver: {
           value: {
             on: on || eYo.doNothing,
             off: off || eYo.doNothing,

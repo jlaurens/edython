@@ -152,7 +152,7 @@ eYo.stmt.newC9r('decorator_stmt', true, {
       },
       synchronize (builtin, after) /** @suppress {globalThis} */ {
         builtin()
-        var d = this.field.ui_driver_mngr
+        var d = this.field.driver_mngr
         d && (d.setVisualAttribute(this.field, after))
       },
       xml: false

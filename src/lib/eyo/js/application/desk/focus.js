@@ -146,11 +146,11 @@ eYo.focus.newC9r('Mngr', {
      */
     board: {
       willChange (before, after) {
-        before && before.ui_driver.off(after)
+        before && before.driver.off(after)
         after && (this.brick_ = this.magnet_ = this.field_ = eYo.NA)
       },
       didChange (after) {
-        after && after.ui_driver.on(after)
+        after && after.driver.on(after)
       },
     },
     /**
@@ -165,7 +165,7 @@ eYo.focus.newC9r('Mngr', {
         }
       },
       willChange(before, after) {
-        before && before.ui_driver.off(before)
+        before && before.driver.off(before)
         if (after) {
           this.board_ = after.board
           let m4t = this.magnet
@@ -187,7 +187,7 @@ eYo.focus.newC9r('Mngr', {
       },
       didChange(after) {
         if (after) {
-          after.ui_driver.on(after)
+          after.driver.on(after)
           this.didAdd()
         } else {
           this.didRemove()
@@ -218,7 +218,7 @@ eYo.focus.newC9r('Mngr', {
         }
       },
       willChange(before, after) {
-        before && before.ui_driver.off(before)
+        before && before.driver.off(before)
         if (after) {
           this.field_ = eYo.NA
           if (after.wrapper !== this.brick) {
@@ -229,7 +229,7 @@ eYo.focus.newC9r('Mngr', {
       didChange (after) {
         if (after) {
           this.brick_ = after.brick
-          after.ui_driver.on(after)
+          after.driver.on(after)
         }
       },
     },
@@ -246,7 +246,7 @@ eYo.focus.newC9r('Mngr', {
         }
       },
       willChange (before, after) {
-        before && before.ui_driver.off(before)
+        before && before.driver.off(before)
         if (after) {
           this.magnet_ = eYo.NA
           if (after.wrapper !== this.brick) {
@@ -257,7 +257,7 @@ eYo.focus.newC9r('Mngr', {
       didChange (after) {
         if (after) {
           this.brick_ = after.brick
-          after.ui_driver.on(after)
+          after.driver.on(after)
         }
       },
     },
