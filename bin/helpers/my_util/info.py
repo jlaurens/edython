@@ -15,11 +15,11 @@ class Info:
 
   # eYo.info.newNS(ns, 'BAR')
   #eYo.Consolidator.newC9r(ns, 'Dlgt', ...
-  #eYo.dom.newDriver('Dlgt', ...
+  #eYo.dom.newDrvr('Dlgt', ...
   #eYo.dom.newSingleton('Dlgt', ...
   re_new = re.compile(r"""^\s*
   (?P<NS>eYo(?:\.[a-z][\w0-9_]*)*)
-  \.new(?:Driver)?(?P<what>C9r|NS|Singleton)\s*\(\s*
+  \.new(?:Drvr)?(?P<what>C9r|NS|Singleton)\s*\(\s*
   (?P<suite>.*)""", re.X)
 
   assert re.match(re_new, "eYo.newNS('Brick')"), 'BAD re_new 2'
@@ -96,7 +96,7 @@ class Info:
   re_makeBaseC9r = re.compile(r"""^\s*
   (?P<ns>eYo(?:\.[a-z]\w*)*)(?:\.(?P<key>[a-z]\w*))\.makeBaseC9r\s*\(.*""", re.X)
 
-  # eYo.driver.makeMngr(model)
+  # eYo.drvr.makeMngr(model)
   re_makeMngr = re.compile(r"""^\s*
   (?P<ns>eYo(?:\.[a-z]\w*)*)\.makeMngr\s*\(.*""", re.X)
   re_makeForwarder = re.compile(r"""^\s*
