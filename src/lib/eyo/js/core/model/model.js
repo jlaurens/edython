@@ -623,7 +623,13 @@ eYo.model.Format_p.validate = function (path, model, key) {
       : c.fallback && c.fallback.validate(eYo.NA, model, key)
     if (eYo.isINVALID(v)) {
       if (eYo.TESTING) {
-        console.error(model, c.path)
+        if (c.validate_) {
+          console.error('DEBUG BREAK:', model, key, c.path)
+          c.validate_(model, key)
+        } else if (c.fallback){
+          console.error('DEBUG BREAK FALLBACK:', model, key, c.path)
+          c.fallback.validate(eYo.NA, model, key)
+        }
       }
       eYo.throw(`validate: bad model at ${c.path} (set eYo.TESTING to true and see console)`)
     } else if (eYo.isDef(v)) {

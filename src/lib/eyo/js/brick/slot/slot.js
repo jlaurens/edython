@@ -15,7 +15,7 @@
  * @name{eYo.slot}
  * @namespace
  */
-eYo.dfs.newNS(eYo, 'slot')
+eYo.fsm.newNS(eYo, 'slot')
 
 eYo.require('do')
 eYo.require('decorate')

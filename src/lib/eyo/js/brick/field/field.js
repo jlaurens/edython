@@ -11,11 +11,13 @@
  */
 'use strict'
 
+eYo.forward('data')
+
 /**
  * @name{eYo.field}
  * @namespace
  */
-eYo.dfs.newNS(eYo, 'field', {
+eYo.fsm.newNS(eYo, 'field', {
   STATUS_NONE: '', // names correspond to `eyo-code-...` css class names
   STATUS_COMMENT: 'comment',
   STATUS_RESERVED: 'reserved',
@@ -89,7 +91,7 @@ eYo.mixinFR(eYo.field._p, {
 eYo.field.makeBaseC9r(true, {
   init (name, bsm) {
     //<<< mochai: init
-    this.text_ = this.eyo.model.text__ || ''
+    this.text__ = this.eyo.model.text__ || ''
     Object.defineProperty(bsm, `${name}_f`, { value: this})
     console.warn('Defer next line to the owner ?')
     bsm.hasUI && this.initUI()
@@ -243,26 +245,30 @@ eYo.mixinFR(eYo.field.Dlgt_p, {
    */
   methodsMergeRender (model) {
     //<<< mochai: methodsMergeChange
-    //... var ns, f
+    //... var ns, field
     //... let new_ns = () => {
     //...   flag.reset()
     //...   ns = eYo.field.newNS()
     //...   ns.makeBaseC9r()
     //... }
+    //... let driver = {}
+    //... setup({
+    //...   properties: {
+    //...     driver
+    //...   }
+    //... })
     let _p = this.C9r_p
     ;['willRender'].forEach(K => { // closure!
       //... ;['willRender'].forEach(K => {
       //...   new_ns()
       //...   let test = (expect, f) => {
-      //...     d = ns.new({
+      //...     field = ns.new({
       //...       methods: {
-      //...         [K] () {
-      //...           flag.push(1)
-      //...           f.call(this)
-      //...         },
+      //...         [K]: flag.decorate(1, f),
       //...       },
-      //...     }, 'd', onr)
-      //...     chai.expect(d[K]()).undefined
+      //...     }, 'field', onr)
+      //...     chai.expect(driver).equal(field.driver)
+      //...     chai.expect(field[K]()).undefined
       //...     flag.expect(expect)
       //...   }
       let f_m = model[K]
@@ -273,31 +279,32 @@ eYo.mixinFR(eYo.field.Dlgt_p, {
           var m = {$ () {
             f_m.call(this, f_p.bind(this))
           }}
-          //...   test(12, function (builtin) {
+          //...   var f_m = function (builtin) {
           //...     flag.push(2)
           //...     builtin()
-          //...   }) 
+          //...   }
+          //...   test(12, f_m) 
           //...   eYo.test.extend(ns.BaseC9r_p, K, function() {
           //...     flag.push(3)
           //...   })
-          //...   test(123, function (builtin) {
-          //...     flag.push(2)
-          //...     builtin()
-          //...   })
+          //...   test(123, f_m)
         } else {
           m = {$ () {
             //...   new_ns()
-            //...   test(1, function () {
+            //...   var f_m = function () {
             //...     flag.push(2)
-            //...   })
+            //...   }
+            //...   test(12, f_m)
             //...   new_ns()
+            //...   var f_m = function () {
+            //...     flag.push(2)
+            //...     this[K]()
+            //...   }
+            //...   test(12, f_m)
             //...   eYo.test.extend(ns.BaseC9r_p, K, function() {
             //...     flag.push(3)
             //...   })
-            //...   test(123, function () {
-            //...     flag.push(2)
-            //...     this[K]()
-            //...   })
+            //...   test(123, f_m)
             let owned = eYo.objectHasOwnProperty(this, K) && this[K]
             try {
               this[K] = f_p
@@ -326,14 +333,14 @@ eYo.mixinFR(eYo.field.Dlgt_p, {
  * Initializes the model of the field after it has been installed on a block.
  * No-op by default.
  */
-eYo.field.BaseC9r_p.initModel = eYo.doNothing
+eYo.Field_p.initModel = eYo.doNothing
 
 /**
  * Draws the border with the correct width.
  * Saves the computed width in a property.
  * @private
  */
-eYo.field.BaseC9r_p.render_ = function() {
+eYo.Field_p.render_ = function() {
   if (!this.visible_) {
     this.size_.width = 0
     return
@@ -346,7 +353,7 @@ eYo.field.BaseC9r_p.render_ = function() {
 /**
  * Updates the width of the field in the UI.
  **/
-eYo.field.BaseC9r_p.updateWidth = function() {
+eYo.Field_p.updateWidth = function() {
   var d = this.driver
   d && (d.updateWidth(this))
 }
@@ -358,7 +365,7 @@ eYo.field.BaseC9r_p.updateWidth = function() {
  * @param {String} txt
  * @return {String}
  */
-eYo.field.BaseC9r_p.validate = function (txt) {
+eYo.Field_p.validate = function (txt) {
   var v = this.data.validate(eYo.isDef(txt) ? txt : this.text)
   return eYo.isVALID(v) ? v : eYo.NA
 }
@@ -367,7 +374,7 @@ eYo.field.BaseC9r_p.validate = function (txt) {
  * Will render the field.
  * We should call `this.willRender()` from the model.
  */
-eYo.field.BaseC9r_p.willRender = function () {
+eYo.Field_p.willRender = function () {
   var d = this.driver
   if (d) {
     d.makePlaceholder(this, this.isPlaceholder)

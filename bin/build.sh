@@ -465,7 +465,7 @@ Miscellaneous:
 --js "eyo/js/application/desk/board/brick_util/consolidator.js" \
 --js "eyo/js/application/driver/dom/dom.js" \
 --js "eyo/js/brick/data/data.js" \
---js "eyo/js/brick/dfs/dfs.js" \
+--js "eyo/js/brick/fsm/fsm.js" \
 --js "eyo/js/brick/span/span.js" \
 --js "eyo/js/core/change_count/change_count.js" \
 --js "eyo/js/core/changer/changer.js" \

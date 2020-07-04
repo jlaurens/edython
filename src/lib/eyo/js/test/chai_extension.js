@@ -1,5 +1,7 @@
 eYo.provide('test')
 
+eYo.TESTING = true
+
 eYo.test.randN = (N = 2, snap) => {
   if (N === true || N === false) {
     [N, snap] = [2, N]
@@ -66,10 +68,17 @@ eYo.test.Flag = function (what) {
       this.reset()
       return ans
     },
+    decorate (tag, f) {
+      let flag = this
+      return new Proxy(f, {
+        apply(target, this$, args) {
+          flag.push(tag)
+          return target.apply(this$, args)
+        }
+      })
+    }
   }
 }
-
-eYo.TESTING = true
 
 chai.Assertion.addProperty('eyo_Num', function () {
   this.assert(

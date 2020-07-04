@@ -394,7 +394,7 @@ Object.defineProperties(eYo.brick.BaseC9r_p, {
  * @private
  * @suppress{accessControls}
  */
-eYo.field.BaseC9r_p.getPythonText_ = function() {
+eYo.Field_p.getPythonText_ = function() {
   return this.text
 }
 
