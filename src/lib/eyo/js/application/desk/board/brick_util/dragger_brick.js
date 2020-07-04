@@ -299,7 +299,7 @@ eYo.dragger.newC9r('Brick', {
       } else {
         this.driver_mngr.brickSetOffsetDuringDrag(b3k, xyNew)
       }
-      this.brick_.driver.deleteStyleSet(this.wouldDelete_)
+      this.brick_.drvr.deleteStyleSet(this.wouldDelete_)
       this.update()
 
       var trashCan = this.destination.trashCan
@@ -342,7 +342,7 @@ eYo.dragger.newC9r('Brick', {
             eYo.event.fireBrickCreate(b3k, true) 
           }
           fireMoveEvent(this)
-          b3k.driver.scheduleSnapAndBump(b3k)
+          b3k.drvr.scheduleSnapAndBump(b3k)
         }
         var trashCan = this.destination.trashCan
         if (trashCan) {

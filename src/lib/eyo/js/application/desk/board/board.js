@@ -337,7 +337,7 @@ eYo.board.newC9r('Main', {
      */
     visible: {
       get () {
-        return this.driver.visibleGet(this)
+        return this.drvr.visibleGet(this)
       },
       /**
        * Toggles the visibility of the board.
@@ -355,7 +355,7 @@ eYo.board.newC9r('Main', {
         if (this.flyout_) {
           this.flyout_.containerVisible = after
         }
-        this.driver.visibleSet(this, after)
+        this.drvr.visibleSet(this, after)
         if (after) {
           this.render()
         } else {

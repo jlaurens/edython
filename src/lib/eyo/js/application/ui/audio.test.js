@@ -10,7 +10,7 @@ describe ('Tests: audio', function () {
     chai.expect(app.audio.app).equal(app)
     chai.assert(app.driver_mngr)
     chai.assert(app.audio.driver_mngr)
-    chai.assert(app.audio.driver)
+    chai.assert(app.audio.drvr)
     chai.assert(app.audio.play)
   })
   it ('app.audio.play', function () {

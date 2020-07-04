@@ -20,7 +20,7 @@ eYo.control.newC9r('TrashCan', {
   properties: {
     isOpen: {
       get () {
-        return this.driver.openGet(this)
+        return this.drvr.openGet(this)
       }
     },
     /**
@@ -70,21 +70,21 @@ eYo.control.newC9r('TrashCan', {
      */
     place (bottom) {
       eYo.control.TrashCan[eYo.$].C9r_s.place.call(this, bottom)
-      this.driver.place(this)
+      this.drvr.place(this)
     },
     /**
      * Return the deletion rectangle for this trash can.
      * @return {eYo.geom.Rect} Rectangle in which to delete.
      */
     getClientRect () {
-      return this.driver.clientRect(this)
+      return this.drvr.clientRect(this)
     },
     /**
      * Flip the lid shut.
      * Called externally after a drag.
      */
     close () {
-      this.driver.openSet(this, false)
+      this.drvr.openSet(this, false)
     },
   },
 })

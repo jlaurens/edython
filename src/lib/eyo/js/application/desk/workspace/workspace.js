@@ -130,7 +130,7 @@ eYo.view.newC9r('Workspace', {
  * 2) Then the board dimensions.
  */
 eYo.view.Workspace_p.updateMetrics = function() {
-  this.driver.updateMetrics(this)
+  this.drvr.updateMetrics(this)
   this.board.updateMetrics()
   this.flyout.updateMetrics()
 }
@@ -147,7 +147,7 @@ eYo.view.Workspace_p.layout = function() {
  * Place the boards.
  */
 eYo.view.Workspace_p.place = function() {
-  this.driver.place(this)
+  this.drvr.place(this)
   this.board.place()
   this.flyout.place()
   var bottom = eYo.view.SCROLLBAR_THICKNESS

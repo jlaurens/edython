@@ -26,7 +26,7 @@ eYo.forward('css')
 eYo.forward('focus')
 eYo.forward('event.Motion')
 eYo.forward('view.Desk')
-eYo.forward('driver')
+eYo.forward('drvr')
 eYo.forward('audio')
 
 /**
@@ -148,7 +148,7 @@ eYo.app._p.parseZoom_ = function (options = {}) {
  * @property {eYo.view.Desk} desk
  * @readonly
  * The ui drivers manager.
- * @property {eYo.driver.Mngr} driver_mngr
+ * @property {eYo.drvr.Mngr} driver_mngr
  * @readonly
  * The main focus manager.
  * @property {eYo.focus.Main} focus_main

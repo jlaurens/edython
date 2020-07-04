@@ -154,7 +154,7 @@ eYo.flyout.Toolbar_p.layout = function(width, height) { // eslint-disable-line
  * @private
  */
 eYo.flyout.Toolbar_p.positionAt_ = function(width, height, x, y) {
-  this.driver.positionAt(this, width, height, x, y)
+  this.drvr.positionAt(this, width, height, x, y)
   this.div_.style.left = x + 'px'
   this.div_.style.top = y + 'px'
 }

@@ -47,7 +47,7 @@ eYo.audio.makeBaseC9r({
      * @param {number=} opt_volume Volume of sound (0-1).
      */
     play (name, opt_volume) {
-      this.driver.play(this, name, eYo.isNA(opt_volume) ? this.ns.SOUND_VOLUME : opt_volume)
+      this.drvr.play(this, name, eYo.isNA(opt_volume) ? this.ns.SOUND_VOLUME : opt_volume)
     },
   },
 })

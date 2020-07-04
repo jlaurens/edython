@@ -14,7 +14,7 @@
 'use strict'
 
 eYo.require('geom')
-eYo.require('driver')
+eYo.require('drvr')
 
 /**
  * @name {eYo.view}
@@ -369,7 +369,7 @@ eYo.view.makeBaseC9r(true, {
     },
     /**
      * The driver manager shared by all the instances in the app.
-     * @type {eYo.driver.Mngr}
+     * @type {eYo.drvr.Mngr}
      */
     driver_mngr: {
       get () {
@@ -379,12 +379,12 @@ eYo.view.makeBaseC9r(true, {
     },
     /**
      * The driver.
-     * @type {eYo.driver.BaseC9r}
+     * @type {eYo.drvr.BaseC9r}
      */
     driver: {
       lazy () {
         var mngr = this.driver_mngr
-        return mngr && mngr.driver(this)
+        return mngr && mngr.drvr(this)
       },
       reset (builtin) {
         this.ownedForEach(x => {
@@ -550,7 +550,7 @@ eYo.View[eYo.$].methodsMerge({
    */
   prepareUI (...$) {
     //<<< mochai: prepareUI
-    this.driver.prepareUI(this, ...$)
+    this.drvr.prepareUI(this, ...$)
     this.prepareUI = eYo.doNothing
     this.viewForEach(V => {
       delete V.prepareUI
@@ -562,9 +562,9 @@ eYo.View[eYo.$].methodsMerge({
     //... chai.expect(V.mee_v).instanceOf(eYo.View)
     //... V.viewForEach(V => flag.push(V[eYo.$].model.bar))
     //... flag.expect(567)
-    //... V.driver = driver
+    //... V.drvr = driver
     //... V.viewForEach(V => {
-    //...   V.driver = driver
+    //...   V.drvr = driver
     //... })
     //... V.prepareUI(8, 9)
     //... flag.expect(1489158916891789)
@@ -578,12 +578,12 @@ eYo.View[eYo.$].methodsMerge({
   do_initUI (...$) {
     //<<< mochai: do_initUI
     this.initUI = eYo.doNothing
-    this.driver.do_initUI(this, ...$)
+    this.drvr.do_initUI(this, ...$)
     this.viewForEach(v => v.do_initUI(...$))
     //... let V = eYo.view.new(model, 'V', onr)
-    //... V.driver = driver
+    //... V.drvr = driver
     //... V.viewForEach(V => {
-    //...   V.driver = driver
+    //...   V.drvr = driver
     //... })
     //... V.do_initUI(8, 9)
     //... flag.expect(2489258926892789)
@@ -610,12 +610,12 @@ eYo.View[eYo.$].methodsMerge({
    */
   do_disposeUI (...$) {
     //<<< mochai: do_initUI
-    this.driver.do_disposeUI(this, ...$)
+    this.drvr.do_disposeUI(this, ...$)
     this.viewForEach(v => v.disposeUI(...$))
     //... let V = eYo.view.new(model, 'V', onr)
-    //... V.driver = driver
+    //... V.drvr = driver
     //... V.viewForEach(V => {
-    //...   V.driver = driver
+    //...   V.drvr = driver
     //... })
     //... V.do_disposeUI(8, 9)
     //... flag.expect(3489358936893789)

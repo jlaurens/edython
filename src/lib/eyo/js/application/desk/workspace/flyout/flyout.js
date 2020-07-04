@@ -119,7 +119,7 @@ eYo.flyout.newC9r('View', {
       var switcher = this.flyoutOptions.switcher
       if (switcher) {
         var tb = this.toolbar_ = new eYo.flyout.Toolbar(this, switcher)
-        tb.driver.toolbarInitUI(tb)
+        tb.drvr.toolbarInitUI(tb)
         tb.doSelectGeneral(null) // is it necessary ?
       }
     },

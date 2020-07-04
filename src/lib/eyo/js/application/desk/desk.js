@@ -127,7 +127,7 @@ eYo.view.Desk_p.layout = function() {
 eYo.view.Desk_p.updateMetrics = function() {
   try {
     this.updateMetrics = eYo.doNothing
-    this.driver.updateMetrics(this)
+    this.drvr.updateMetrics(this)
     this.forEachPane(p => p.updateMetrics())
   } finally {
     delete this.updateMetrics
@@ -138,7 +138,7 @@ eYo.view.Desk_p.updateMetrics = function() {
  * Place the panes.
  */
 eYo.view.Desk_p.place = function() {
-  this.driver.place(this)
+  this.drvr.place(this)
   this.forEachPane(p => p.place())
 }
 
@@ -148,7 +148,7 @@ eYo.view.Desk_p.place = function() {
  * @return {eYo.geom.Point}
  */
 eYo.view.Desk_p.xyElementInDesk = function(element) {
-  return this.driver.whereElement(this, element)
+  return this.drvr.whereElement(this, element)
 }
 
 /**

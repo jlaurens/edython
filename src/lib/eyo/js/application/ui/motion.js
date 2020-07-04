@@ -418,7 +418,7 @@ eYo.event.Motion[eYo.$].methodsMerge({
         this.pidCancel__ = 0
         this.cancel()
       }, this.ns.CANCEL_LATENCY)
-      this.driver.disconnectStop()
+      this.drvr.disconnectStop()
       var board = this.board_
       board.updateScreenCalculationsIfScrolled()
       board.markFocused()  
@@ -774,9 +774,9 @@ eYo.event.Motion[eYo.$].methodsMerge({
   handleLongPress (e) {
     var b = this.targetBrick
     if (b) {
-      b.driver.showContextMenu_(b, e)
+      b.drvr.showContextMenu_(b, e)
     } else if ((b = this.board)) {
-      b.driver.showContextMenu_(b, e)
+      b.drvr.showContextMenu_(b, e)
     }
     eYo.dom.gobbleEvent(e)
     this.reset()
@@ -834,7 +834,7 @@ eYo.event.Motion[eYo.$].methodsMerge({
           if (!b.disabled) {
             eYo.event.groupWrap(() => {
               var newBrick = this.flyout_.createBrick(b)
-              newBrick.driver.scheduleSnapAndBump(newBrick)  
+              newBrick.drvr.scheduleSnapAndBump(newBrick)  
             })
             return true
           }

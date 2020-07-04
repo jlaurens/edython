@@ -82,7 +82,7 @@ eYo.view.newC9r('Scroller', {
 eYo.view.Scroller_p.disposeUI = function () {
   this.hScroll.disposeUI()
   this.vScroll.disposeUI()
-  this.driver.doDispose(this)
+  this.drvr.doDispose(this)
   this.disposeUI = eYo.doNothing
   delete this.initUI
 }
