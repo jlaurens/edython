@@ -62,7 +62,7 @@ eYo.stmt.newC9r('assignment_stmt', true, {
         b3k.annotated_d.requiredIncog_ = after === eYo.key.ANNOTATED || after === eYo.key.ANNOTATED_VALUED
         b3k.value_d.requiredIncog_ = after === eYo.key.TARGET_VALUED || after === eYo.key.ANNOTATED_VALUED || after === eYo.key.VALUED || after === eYo.key.EXPRESSION
       },
-      isChanging (builtin, after) /** @suppress {globalThis} */ {
+      onChange (builtin, after) /** @suppress {globalThis} */ {
         var b3k = this.brick
         if (after === eYo.key.VALUED) {
           b3k.Operator_p = ''

@@ -93,7 +93,7 @@ eYo.stmt.group[eYo.$newSubC9r]('branch', true, {
           this.brick.variant_p = element.getAttribute(eYo.key.EYO)
         },
       },
-      isChanging (builtin) /** @suppress {globalThis} */ { // same code for primary bricks
+      onChange (builtin) /** @suppress {globalThis} */ { // same code for primary bricks
         this.brick.consolidateType()
         this.brick.consolidateMagnets()
         builtin()

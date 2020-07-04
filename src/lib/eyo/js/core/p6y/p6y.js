@@ -1504,6 +1504,7 @@ eYo.p6y.handler.makeBaseC9r({
   //<<< mochai: eYo.p6y.handler.BaseC9r
   /**
    * Initialize a proxy's handler.
+   * Debug note: if `foo.eyo.name` is `eYo.p6y.handler.Changer` then `foo` is an alias to a property named `changer` (more precisely the handler of the proxy).
    * @param {String|Symbol} key 
    * @param {eYo.C9r} owner 
    * @param {eYo.P6y|Proxy} target 

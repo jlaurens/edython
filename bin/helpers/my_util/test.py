@@ -86,22 +86,27 @@ def getInlineTest(path):
   if len(tuple(filter(lambda l: l.n is not None, lines))):
     ans.append(f'describe(`Inline tests at {path.relative_to(path_js)}`' ''', function () {
   this.timeout(20000)
-  var flag, onr
-  let makeOnr = () => {
-    return eYo.c9r && eYo.c9r.new({
-      methods: {
-        flag (what, ...$) {
-          flag.push(1, what, ...$)
-          return what
-        },
+  var flag, onr, onrModel
+  let makeOnr = (model) => {
+    let m = {}
+    onrModel && Object.assign(m, onrModel)
+    model && eYo.provideFR(m, model)
+    m.methods || (m.methods = {})
+    eYo.provideFR(m.methods, {
+      flag (what, ...$) {
+        flag.push(1, what, ...$)
+        return what
       },
-    }, 'onr')
+    })
+    return eYo.o4t && eYo.o4t.new(m, 'onr', eYo) || eYo.o3d && eYo.o3d.new(m, 'onr', eYo) || eYo.c9r && eYo.c9r.new(m, 'onr')
   }
-  let setup = function () {
+  let setup = function (model) {
     flag = new eYo.test.Flag()
-    onr = makeOnr()
+    onr = makeOnr(model)
   }
-  beforeEach (setup)
+  beforeEach (function () {
+    setup()
+  })
   setup()
 ''')
     depth = 1

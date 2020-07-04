@@ -1447,7 +1447,7 @@ eYo.brick.makeBaseC9r({
      * Starts by completing the wrapped connections.
      * The wrapped connections are known at initialization time,
      * but that may not be always the case.
-     * Sent by `doConsolidate` and various `isChanging` methods.
+     * Sent by `doConsolidate` and various `onChange` methods.
      */
     consolidateMagnets () {
       this.completeWrap_()

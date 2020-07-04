@@ -243,10 +243,12 @@ eYo.changer.makeBaseC9r({
     /**
      * Wraps a mutation.
      * For edython.
-     * @param {Function} do_it - Function with no argument, and no `this`.
+     * @param {*} [$this] - Optional `this` parameter
+     * @param {Function} do_it - Function.
+     * @param  {...any} $ - arguments of `do_it`.
      * @return {*} whatever `do_it` returns.
      */
-    wrap (do_it) {
+    wrap ($this, do_it, ...$) {
       //<<< mochai: wrap+begin/end/done
       //... let onr = eYo.c9r.new({
       //...   methods: {
@@ -283,14 +285,21 @@ eYo.changer.makeBaseC9r({
       //...   })
       //... })
       //... flag.expect(119223)
-      if (eYo.isF(do_it)) {
+      if (eYo.isF($this)) {
         try {
           this.begin()
-          return do_it()
+          return $this(do_it, ...$)
         } finally {
           this.end()
         }
-      }
+      } else if (eYo.isF(do_it)) {
+        try {
+          this.begin()
+          return do_it.call($this, ...$)
+        } finally {
+          this.end()
+        }
+      } 
       //>>>
     },
   },

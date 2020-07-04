@@ -39,7 +39,7 @@ eYo.test.common_PID = setTimeout(() => {
  * Extends an existing method with the given functions.
  * Convenient method used for testing.
  * @param {Object} _p - Object, including prototypes
- * @param {String} key - Object, including prototypes
+ * @param {String} key - Name of the method to extend
  * @param {Function} [before] - handler before
  * @param {Function} after - handler after
  */

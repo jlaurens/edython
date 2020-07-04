@@ -8,326 +8,20 @@ describe ('Tests: data', function () {
     ns = eYo.data.newNS()
     ns.makeBaseC9r()
   }
-  it ('Data: basic', function () {
-    chai.assert(eYo.data)
-  })
-  it ('eYo.xre.function_builtin_before', function () {
-    let test = (s, builtin, before) => {
-      let m = XRegExp.exec(s, eYo.xre.function_builtin_before)
-      chai.assert(m)
-      chai.assert(!m.builtin === !builtin, `${m.builtin}`)
-      chai.assert(!m.before === !before, `${m.before}`)
-    }
-    test('function ( builtin, before ) ...', true, true)
-    test('function ( builtin, after ) ...', true, false)
-    test('function ( before, after ) ...', false, true)
-    test('function ( after ) ...', false, false)
-  })
-  it ('eYo.data.handle_validate: #', function () {
-    ['validate', 'validateIncog'].forEach(K => {
-      new_ns()
-      let test = (expect, f) => {
-        d = ns.new({
-          [K]: f,
-        }, 'd', onr)
-        chai.expect(d[K](1, 2)).equal(3)
-        flag.expect(expect)
+  it (`Merge only once`, function () {
+    // Absolutely ugly design
+    new_ns()
+    var model = {
+      methods: {
+        filter (after) {return after}
       }
-      test(123, function (builtin, before, after) {
-        flag.push(before, after)
-        after = builtin(after + 1)
-        flag.push(after)
-        return after
-      }) 
-      eYo.test.extend(ns.BaseC9r_p, K, function(before, after) {
-        flag.push(before + 2, after + 1)
-      })
-      test(12345, function (builtin, before, after) {
-        flag.push(before, after)
-        after = builtin(after + 1)
-        flag.push(after + 2)
-        return after
-      })
-      test(123456, function (builtin, before, after) {
-        flag.push(before, after)
-        after = builtin(after + 1)
-        flag.push(before + 4, after + 3)
-        return after
-      })
-      new_ns()
-      test(12, function(before, after) {
-        flag.push(before, after)
-        return after + 1
-      })
-      new_ns()
-      test(2, function (after) {
-        flag.push(after)
-        return after + 1
-      })
-      eYo.test.extend(ns.BaseC9r_p, K, function(before, after) {
-        flag.push(before + 2, after + 1)
-      })
-      test(123456, function (before, after) {
-        flag.push(before, after)
-        after = this[K](after + 1)
-        flag.push(before + 4, after + 3)
-        return after
-      })
-      new_ns()
-      eYo.test.extend(ns.BaseC9r_p, K, function(before, after) {
-        flag.push(before + 2, after + 1)
-      })
-      test(123456, function (after) {
-        flag.push(1, after)
-        after = this[K](after + 1)
-        flag.push(5, after + 3)
-        return after
-      })
-    })
-  })
-  it ('eYo.data.handle_synchronize: #', function () {
-    let K = 'synchronize'
-    flag.reset()
-    let test = (expect, f) => {
-      d = ns.new({
-        [K]: f,
-      }, 'd', onr)
-      d[K](1, 2)
-      flag.expect(expect)
     }
-    new_ns()
-    test(0, true)
-    test(0, false)
-    test(0, eYo.doNothing)
-    test(12, function (after) {
-      flag.push(1, after)
-    })
-    test(12, function (before, after) {
-      flag.push(before, after)
-    })
-    test(12, function (after) {
-      flag.push(1, after)
-      this[K]()
-    })
-    test(12, function (before, after) {
-      flag.push(before, after)
-      this[K]()
-    })
-    test(12, function (builtin, before, after) {
-      flag.push(before, after)
-    })
-    test(12, function (builtin, before, after) {
-      flag.push(before, after)
-      builtin()
-    })
-    new_ns()
-    eYo.test.extend(ns.BaseC9r_p, 'doSynchronize', function(before, after) {
-      flag.push(before + 2, after + 2)
-    })
-    test(12, function (after) {
-      flag.push(1, after)
-    })
-    test(12, function (before, after) {
-      flag.push(before, after)
-    })
-    test(1234, function (after) {
-      flag.push(1, after)
-      this[K]()
-    })
-    test(1234, function (before, after) {
-      flag.push(before, after)
-      this[K]()
-    })
-    test(12, function (builtin, before, after) {
-      flag.push(before, after)
-    })
-    test(1234, function (builtin, before, after) {
-      flag.push(before, after)
-      builtin()
-    })
-  })
-  it ('eYo.data.handle_change:', function () {
-    [
-      'willChange', 'didChange', 'isChanging',
-      'willUnchange', 'didUnchange', 'isUnchanging',
-    ].forEach(K => {
-      flag.reset()
-      let test = (expect, f) => {
-        d = ns.new({
-          [K]: f,
-        }, 'd', onr)
-        d[K](1, 2)
-        flag.expect(expect)
-      }
-      new_ns()
-      test(12, function (after) {
-        flag.push(1, after)
-      })
-      test(12, function (before, after) {
-        flag.push(before, after)
-      })
-      test(12, function (builtin, after) {
-        flag.push(1, after)
-      })
-      test(12, function (builtin, after) {
-        flag.push(1, after)
-        builtin()
-      })
-      test(12, function (after) {
-        flag.push(1, after)
-        this[K]()
-      })
-      test(12, function (before, after) {
-        flag.push(before, after)
-        this[K]()
-      })
-      test(12, function (builtin, before, after) {
-        flag.push(before, after)
-      })
-      test(12, function (builtin, before, after) {
-        flag.push(before, after)
-        builtin()
-      })
-      new_ns()
-      eYo.test.extend(ns.BaseC9r_p, K, function(before, after) {
-        flag.push(before + 2, after + 2)
-      })
-      test(12, function (after) {
-        flag.push(1, after)
-      })
-      test(12, function (before, after) {
-        flag.push(before, after)
-      })
-      test(12, function (builtin, after) {
-        flag.push(1, after)
-      })
-      test(1234, function (builtin, after) {
-        flag.push(1, after)
-        builtin()
-      })
-      test(1234, function (after) {
-        flag.push(1, after)
-        this[K]()
-      })
-      test(1234, function (before, after) {
-        flag.push(before, after)
-        this[K]()
-      })
-      test(12, function (builtin, before, after) {
-        flag.push(before, after)
-      })
-      test(1234, function (builtin, before, after) {
-        flag.push(before, after)
-        builtin()
-      })
-
-    })
-  })
-  it ('eYo.data.handle_consolidate', function () {
-    let b3k = eYo.o4t.new({
-      properties: {
-        changer: {
-          value () {
-            return eYo.changer.new({
-              wrap (f) {
-                flag.push(1)
-                f()
-              },    
-            }, this, 'changer')
-          },
-        },
-      },
-    }, 'b3k', onr)  
-    let d = eYo.data.new({}, 'd', b3k)
-    chai.assert(b3k.changer)
-    chai.expect(d.owner).equal(d.brick).equal(b3k)
-    chai.expect(d.changer).equal(b3k.changer)
-    let K = 'consolidate'
-    flag.reset()
-    let test = (expect, f) => {
-      d = ns.new({
-        [K]: f,
-      }, 'd', b3k)
-      d[K]()
-      flag.expect(expect)
-    }
-    new_ns()
-    test(1, function () {
-      flag.push(1)
-    })
-    test(1, function () {
-      flag.push(1)
-      this[K]()
-    })
-    test(1, function (builtin) {
-      flag.push(1)
-    })
-    test(1, function (builtin) {
-      flag.push(1)
-      builtin()
-    })
-    new_ns()
-    eYo.test.extend(ns.BaseC9r_p, K, function() {
-      flag.push(2)
-    })
-    test(1, function () {
-      flag.push(1)
-    })
-    test(12, function () {
-      flag.push(1)
-      this[K]()
-    })
-    test(1, function (builtin) {
-      flag.push(1)
-    })
-    test(12, function (builtin) {
-      flag.push(1)
-      builtin()
-    })
-  })
-  it ('eYo.data.handle_filter', function () {
-    let K = 'filter'
-    flag.reset()
-    let test = (expect, f) => {
-      d = ns.new({
-        [K]: f,
-      }, 'd', onr)
-      d[K](1)
-      flag.expect(expect)
-    }
-    new_ns()
-    test(1, function (after) {
-      flag.push(after)
-    })
-    test(1, function (after) {
-      flag.push(after)
-      this[K](after)
-    })
-    test(1, function (builtin, after) {
-      flag.push(after)
-    })
-    test(1, function (builtin, after) {
-      flag.push(after)
-      builtin()
-    })
-    new_ns()
-    eYo.test.extend(ns.BaseC9r_p, K, function(after) {
-      flag.push(after + 1)
-    })
-    test(1, function (after) {
-      flag.push(after)
-    })
-    test(12, function (after) {
-      flag.push(after)
-      this[K](after)
-    })
-    test(1, function (builtin, after) {
-      flag.push(after)
-    })
-    test(12, function (builtin, after) {
-      flag.push(after)
-      builtin()
-    })
+    // Break here
+    d = ns.new(model, 'd', onr)
+    // then break at data's delegate's modelMethodsFilter
+    // You stop here only once
+    ns.new(model, 'd', onr)
+    ns.new(model, 'd', onr)
   })
   //   it('Data model', function () {
   //     let ns = eYo.data.newNS()
@@ -362,10 +56,10 @@ describe ('Tests: data', function () {
   //       'validate', // (...) => {} || false || true,
   //       'validateIncog', // (...) => {}
   //       'willChange', // (...) => {}
-  //       'isChanging', // (...) => {}
+  //       'onChange', // (...) => {}
   //       'didChange', // (...) => {}
   //       'willUnchange', // (...) => {}
-  //       'isUnchanging', // (...) => {}
+  //       'onUnchange', // (...) => {}
   //       'didUnchange', // (...) => {}
   //       'willLoad', // () => {}
   //       'didLoad', // () => {}
@@ -428,10 +122,10 @@ describe ('Tests: data', function () {
   //     'validate', // (...) => {} || false || true,
   //     'validateIncog', // (...) => {}
   //     'willChange', // (...) => {}
-  //     'isChanging', // (...) => {}
+  //     'onChange', // (...) => {}
   //     'didChange', // (...) => {}
   //     'willUnchange', // (...) => {}
-  //     'isUnchanging', // (...) => {}
+  //     'onUnchange', // (...) => {}
   //     'didUnchange', // (...) => {}
   //     'willLoad', // () => {}
   //     'didLoad', // () => {}

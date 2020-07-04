@@ -155,7 +155,15 @@ eYo.data.makeBaseC9r(true, {
       //<<< mochai: incog
       after: ['required_from_model', 'changer'],
       value: false,
+      //... let changer = eYo.changer.new('changer', onr)
+      //... setup({
+      //...   properties: {
+      //...     changer
+      //...   }
+      //... })
       //... var d = new eYo.Data('foo', onr)
+      //... chai.expect(changer).equal(d.changer)
+      //... chai.expect(d).property('incog_p')
       //... chai.expect(d.incog).false
       validate (after) {
         return eYo.isDef(after)
@@ -188,13 +196,14 @@ eYo.data.makeBaseC9r(true, {
           this.field && (this.field.visible_ = !after)
         })
       },
-      //... onr.changer = eYo.changer.new(onr)
+      //... changer.reset()
       //... var d = eYo.data.new (model, 'foo', onr)
-      //... chai.expect(onr.changer.count).equal(0)
+      //... chai.expect(changer).equal(d.changer)
+      //... chai.expect(changer.count).equal(0)
       //... d.incog_ = true
-      //... chai.expect(onr.changer.count).equal(1)
+      //... chai.expect(changer.count).equal(1)
       //... d.incog_ = false
-      //... chai.expect(onr.changer.count).equal(2)
+      //... chai.expect(changer.count).equal(2)
       //... var d = eYo.data.new (model, 'foo', onr)
       //... d.slot = {}
       //... d.field = {}
@@ -259,6 +268,27 @@ eYo.data.makeBaseC9r(true, {
     //... chai.expect(d.data).equal(3)
     //... chai.expect(d.ui).equal(4)
     //... chai.expect(d.driver).equal(5)
+    //>>>
+    //<<< mochai: changer
+    //... let changer = eYo.o4t.new({
+    //...   methods: {
+    //...     wrap (f, ...$) {
+    //...       flag.push(1, f(...$), 4)
+    //...     },
+    //...   },
+    //... }, 'changer')
+    //... setup({
+    //...   properties: {
+    //...     changer
+    //...   }
+    //...})
+    //... chai.expect(changer).equal(onr.changer)
+    //... let d = eYo.data.new({}, 'd', onr)
+    //... chai.expect(changer).equal(d.changer)
+    //... d.changer.wrap(() => {
+    //...   return 23
+    //... })
+    //... flag.expect(1234)
     //>>>
   },
   // ANCHOR: Methods
@@ -340,32 +370,19 @@ eYo.data.makeBaseC9r(true, {
      * @param {Object} before
      * @param {Object} after
      */
-    validate (before, after) {
-      return after
-    },
+    validate: eYo.doReturn2nd,
     /**
      * Validates the value of the data
      * May be overriden by the model.
      * @param {Object} before
      * @param {Object} after
      */
-    validateIncog (before, after) {
-      return after
-    },
+    validateIncog: eYo.doReturn2nd,
     /**
      * Returns the text representation of the data.
      * @param {Object} [after]
      */
     toText () {
-      var ans = this.get()
-      eYo.isNum(ans) && (ans = ans.toString())
-      return ans || ''
-    },
-    /**
-     * Returns the text representation of the data.
-     * Called during synchronization.
-     */
-    toField () {
       var ans = this.get()
       eYo.isNum(ans) && (ans = ans.toString())
       return ans || ''
@@ -443,9 +460,7 @@ eYo.data.makeBaseC9r(true, {
      * @param {Object} before
      * @return eYo.NA
      */
-    didUnchange (before, after) {
-      this.didChange(before, after)
-    },
+    willUnchange: eYo.doNothing,
     /**
      * Did change the value of the property.
      * The signature is `didChange( before, after ) → void`
@@ -464,12 +479,10 @@ eYo.data.makeBaseC9r(true, {
      * @param {Object} after
      * @return eYo.NA
      */
-    willUnchange (before, after) {
-      this.willChange(before, after)
-    },
+    didUnchange: eYo.doNothing,
     /**
      * Before the didChange message is sent.
-     * The signature is `isChanging( before, after ) → void`
+     * The signature is `onChange( before, after ) → void`
      * May be overriden by the model.
      * No undo message is yet sent but the data has recorded the new value.
      * Other object may change to conform to this new state,
@@ -478,10 +491,10 @@ eYo.data.makeBaseC9r(true, {
      * @param {Object} after
      * @return eYo.NA
      */
-    isChanging: eYo.doNothing,
+    onChange: eYo.doNothing,
     /**
      * Before the didUnchange message is sent.
-     * The signature is `isUnchanging( before, after ) → void`
+     * The signature is `onUnchange( before, after ) → void`
      * May be overriden by the model.
      * No undo message is yet sent but the data has recorded the new value.
      * Other object may change to conform to this new state,
@@ -490,9 +503,7 @@ eYo.data.makeBaseC9r(true, {
      * @param {Object} after
      * @return eYo.NA
      */
-    isUnchanging (before, after) {
-      this.isChanging(before, after)
-    },
+    onUnchange: eYo.doNothing,
     /**
      * Before change the value of the property.
      * Branch to `willChange` or `willUnchange`.
@@ -508,13 +519,13 @@ eYo.data.makeBaseC9r(true, {
      * The new value has just been recorded,
      * but all the consequences are not yet managed.
      * In particular, no undo management has been recorded.
-     * Branch to `isChanging` or `isUnchanging`.
+     * Branch to `onChange` or `onUnchange`.
      * @param {Object} before
      * @param {Object} after
      * @return eYo.NA
      */
     duringChange (before, after) { // eslint-disable-line
-      (!eYo.event.recordingUndo ? this.isChanging : this.isUnchanging).apply(this, arguments)
+      (!eYo.event.recordingUndo ? this.onChange : this.onUnchange).apply(this, arguments)
     },
     /**
      * After change the value of the property.
@@ -542,7 +553,7 @@ eYo.data.makeBaseC9r(true, {
      * @param {Object} before
      * @param {Object} after
      */
-    doSynchronize () {
+    synchronize (before, after) { // eslint-disable-line
       let field = this.field
       if (field) {
         if (this.incog) {
@@ -553,12 +564,12 @@ eYo.data.makeBaseC9r(true, {
           }
         } else {
           eYo.event.disableWrap(() => {
-            field.text = this.toField()
+            field.text_ = this.toField()
             if (this.slot && this.slot.data === this) {
               this.slot.incog = false
-              field.visible = !this.slot.unwrappedTarget && (!eYo.app.noBoundField || this.model.allwaysBoundField || this.get().length)
+              field.visible_ = !this.slot.unwrappedTarget && (!eYo.app.noBoundField || this.model.allwaysBoundField || this.get().length)
             } else {
-              field.visible = true
+              field.visible_ = true
             }
             let d = field.driver
             d && (d.makeError(field))
@@ -630,23 +641,6 @@ eYo.data.makeBaseC9r(true, {
         }
       }
       return after
-    },
-    /**
-     * set the value of the property,
-     * with validation, undo and synchronization.
-     * Undo management and synchronization only occur when
-     * the old value and the new value are not the same.
-     * @param {Object} after
-     * @param {Boolean} noRender
-     */
-    set (after, validate = true) {
-      after = this.filter(after)
-      if ((this.stored__ === after) || (validate && (!eYo.isVALID(after = this.validate (before, after))))) { // eslint-disable-line
-        return false
-      }
-      this.error = false
-      this.setTrusted(after)
-      return true
     },
     /**
      * Consolidate the value.
@@ -823,7 +817,7 @@ eYo.data.makeBaseC9r(true, {
      * Before all the data and slots will load.
      * For edython.
      */
-    willLoad:eYo.doNothing,
+    willLoad: eYo.doNothing,
     /**
      * When all the data and slots have been loaded.
      * For edython.
@@ -881,7 +875,7 @@ eYo.data.makeBaseC9r(true, {
   //>>>
 })
 
-eYo.data.BaseC9r[eYo.$].finalizeC9r(
+eYo.Data[eYo.$].finalizeC9r(
   eYo.model.manyDescriptorRA('all', 'after'),
   eYo.model.manyDescriptorF(
     'consolidate', 'fromType',
@@ -889,8 +883,8 @@ eYo.data.BaseC9r[eYo.$].finalizeC9r(
     'toText', 'fromText',
     'validate', 'validateIncog',
     'willLoad', 'didLoad',
-    'willChange', 'isChanging', 'didChange',
-    'willUnchange', 'isUnchanging', 'didUnchange',
+    'willChange', 'onChange', 'didChange',
+    'willUnchange', 'onUnchange', 'didUnchange',
   ),
   {
     xml: (() => {
@@ -909,316 +903,691 @@ eYo.data.BaseC9r[eYo.$].finalizeC9r(
     'noUndo', // BOOLEAN
   ],
 )
-/**
- * When not eYo.NA, this is the array of all possible values.
- * May be overriden by the model.
- * Do not use this directly because this can be a function.
- * Always use `getAll` instead.
- */
-eYo.Data_p.all = eYo.NA
 
-// ANCHOR: Handling the model
 eYo.mixinFR(eYo.data.Dlgt_p, {
+  //<<< mochai: Delegate
   /**
-   * For subclassers.
-   * @param {String} key
-   * @param {Object} model
+   * The `validate` and `validateIncog` methods are translated.
+   * @param{Object} model - the model
    */
-  modelHandle (key, model) {
-    model || (model = this.model)
-    /**
-      * Get the value of the data.
-      * One shot.
-      */
-    let getLazyValue = eYo.decorate.reentrant('get', function () {
-      if (!eYo.isDef(this.stored__)) {
-        this.setFiltered_(this.model.init.call(this.owner))
-      }
-      return this.stored__
-    })
-    model[eYo.$$.starters].push(ans => (ans.get = getLazyValue))
+  methodsMerge (model) {
+    let _p = this.C9r_p
     ;[
-      'fromField', 'fromText',
-      'toField', 'toText',
-      'willLoad', 'didLoad'
-    ].forEach(K => {
-      this.handle_f(K, key, model)
+      ['willChange', 'willUnchange'], 
+      ['onChange', 'onUnchange'],
+      ['didChange', 'didChange']
+    ].forEach(([D, K]) => {
+      model[K] || (model[K] = model[D])
+      _p[K] || (_p[K] = _p[D])
     })
-    this.handle_consolidate(key, model)
-    this.handle_filter(key, model)
+    this.methodsMergeChange (model)
+    this.methodsMergeUnchange (model)
+    this.methodsMergeValidate (model)
+    this.methodsMergeSynchronize (model)
+    this.methodsMergeConsolidate (model)
+    this.methodsMergeFilter (model)
+    return eYo.data.Dlgt[eYo.$SuperC9r_p].methodsMerge.call(this, model)
+  },
+  methodsMergeChange (model) {
+    //<<< mochai: methodsMergeChange
+    //... var ns, d
+    //... let new_ns = () => {
+    //...   flag.reset()
+    //...   ns = eYo.data.newNS()
+    //...   ns.makeBaseC9r()
+    //... }
+    let _p = this.C9r_p
+    ;['willChange', 'onChange', 'didChange'].forEach(K => { // closure!
+      //... ;['willChange', 'onChange', 'didChange'].forEach(K => {
+      //...   new_ns()
+      //...   let test = (expect, f) => {
+      //...     d = ns.new({
+      //...       methods: {
+      //...         [K]: f,
+      //...       },
+      //...     }, 'd', onr)
+      //...     chai.expect(d[K](1, 2)).undefined
+      //...     flag.expect(expect)
+      //...   }
+      let f_m = model[K]
+      if (eYo.isF(f_m)) {
+        let f_p = _p[K] || eYo.doNothing
+        if (f_m.length > 2) {
+          // builtin/before/after
+          var m = {$ (before, after) {
+            f_m.call(this, f_p.bind(this), before, after)
+          }}
+          //...   test(123, function (builtin, before, after) {
+          //...     flag.push(before, after)
+          //...     builtin(before, after)
+          //...     flag.push(after + 1)
+          //...   }) 
+          //...   eYo.test.extend(ns.BaseC9r_p, K, function(before, after) {
+          //...     flag.push(before + 2, after + 2)
+          //...   })
+          //...   test(1234, function (builtin, before, after) {
+          //...     flag.push(before, after)
+          //...     builtin(before, after)
+          //...   })
+        } else if (XRegExp.exec(f_m.toString(), eYo.xre.function_builtin)) {
+          m = {$ (before, after) {
+            f_m.call(this, $after => {
+              f_p.call(this, before, $after)
+            }, after)
+          }}
+          //...   test(1234, function (builtin, after) {
+          //...     flag.push(1, after)
+          //...     builtin(after)
+          //...   }) 
+          //...   eYo.test.extend(ns.BaseC9r_p, K, function(before, after) {
+          //...     flag.push(before + 4, after + 4)
+          //...   })
+          //...   test(123456, function (builtin, after) {
+          //...     flag.push(1, after)
+          //...     builtin(after)
+          //...   })
+        } else {
+          m = f_m.length > 1
+            ? {$ (before, after) {
+              //...   new_ns()
+              //...   test(12, function(before, after) {
+              //...     flag.push(before, after)
+              //...   })
+              //...   eYo.test.extend(ns.BaseC9r_p, K, function(before, after) {
+              //...     flag.push(before + 2, after + 2)
+              //...   })
+              //...   test(123456, function (before, after) {
+              //...     flag.push(before, after)
+              //...     this[K](before, after)
+              //...     flag.push(before + 4, after + 4)
+              //...   })
+              let owned = eYo.objectHasOwnProperty(this, K) && this[K]
+              try {
+                this[K] = f_p
+                f_m.call(this, before, after)
+              } finally {
+                if (owned) {
+                  this[K] = owned
+                } else {
+                  delete this[K]
+                }
+              }
+            }} : {$ (before, after) { // eslint-disable-line
+              //...   new_ns()
+              //...   test(12, function (after) {
+              //...     flag.push(1, after)
+              //...   })
+              //...   new_ns()
+              //...   eYo.test.extend(ns.BaseC9r_p, K, function(before, after) {
+              //...     flag.push(before + 2, after + 2)
+              //...   })
+              //...   test(123456, function (after) {
+              //...     flag.push(1, after)
+              //...     this[K](after)
+              //...     flag.push(5, after + 4)
+              //...   })
+              let owned = eYo.objectHasOwnProperty(this, K) && this[K]
+              try {
+                this[K] = {$ ($after) {
+                  f_p.call(this, before, $after)
+                }}.$
+                f_m.call(this, after)
+              } finally {
+                if (owned) {
+                  this[K] = owned
+                } else {
+                  delete this[K]
+                }
+              }
+            }}
+        }
+        model[K] = m.$
+      } else {
+        f_m && eYo.throw(`Unexpected model (${this.name}/${K}) value validate -> ${f_m}`)
+      }
+      //... })
+    })
+    //>>>
+  },
+  methodsMergeUnchange (model) {
+    //<<< mochai: methodsMergeUnchange
+    //... var ns, d
+    //... let new_ns = () => {
+    //...   flag.reset()
+    //...   ns = eYo.data.newNS()
+    //...   ns.makeBaseC9r()
+    //... }
+    let _p = this.C9r_p
     ;[
-      'validate', 'validateIncog'
-    ].forEach(K => {
-      this.handle_validate(K, key, model)
+      ['willChange', 'willUnchange'], 
+      ['onChange', 'onUnchange'],
+      ['didChange', 'didChange']
+    ].forEach(([D, K]) => { // closure!
+      //... ;[
+      //...   'willUnchange',
+      //...   'onUnchange',
+      //...   'didUnchange'
+      //... ].forEach(K => {
+      //...   new_ns()
+      //...   let test = (expect, f) => {
+      //...     d = ns.new({
+      //...       methods: {
+      //...         [K]: f,
+      //...       },
+      //...     }, 'd', onr)
+      //...   }
+      let f_m = model[K] || (model[K] = model[D])
+      if (eYo.isF(f_m)) {
+        let f_p = _p[K] ||  (_p[D] = _p[K]) || eYo.doNothing
+        if (f_m.length > 2) {
+          // builtin/before/after
+          var m = {$ (before, after) {
+            f_m.call(this, f_p.bind(this), before, after)
+          }}
+          //...   test(12, function (builtin, before, after) {
+          //...     flag.push(before, after)
+          //...     builtin(before, after)
+          //...   }) 
+          //...   eYo.test.extend(ns.BaseC9r_p, K, function(before, after) {
+          //...     flag.push(before + 2, after + 2)
+          //...   })
+          //...   test(1234, function (builtin, before, after) {
+          //...     flag.push(before, after)
+          //...     builtin(before, after)
+          //...   })
+        } else if (XRegExp.exec(f_m.toString(), eYo.xre.function_builtin)) {
+          m = {$ (before, after) {
+            f_m.call(this, $after => {
+              f_p.call(this, before, $after)
+            }, after)
+          }}
+          //...   test(1234, function (builtin, after) {
+          //...     flag.push(1, after)
+          //...     builtin(after)
+          //...   }) 
+          //...   eYo.test.extend(ns.BaseC9r_p, K, function(before, after) {
+          //...     flag.push(before + 4, after + 4)
+          //...   })
+          //...   test(123456, function (builtin, after) {
+          //...     flag.push(1, after)
+          //...     builtin(after)
+          //...   })
+        } else {
+          m = f_m.length > 1
+            ? {$ (before, after) {
+              //...   new_ns()
+              //...   test(12, function(before, after) {
+              //...     flag.push(before, after)
+              //...   })
+              //...   eYo.test.extend(ns.BaseC9r_p, K, function(before, after) {
+              //...     flag.push(before + 2, after + 2)
+              //...   })
+              //...   test(123456, function (before, after) {
+              //...     flag.push(before, after)
+              //...     this[K](before, after)
+              //...     flag.push(before + 4, after + 4)
+              //...   })
+              let owned = eYo.objectHasOwnProperty(this, K) && this[K]
+              try {
+                this[K] = f_p
+                f_m.call(this, before, after)
+              } finally {
+                if (owned) {
+                  this[K] = owned
+                } else {
+                  delete this[K]
+                }
+              }
+            }} : {$ (before, after) { // eslint-disable-line
+              //...   new_ns()
+              //...   test(12, function (after) {
+              //...     flag.push(1, after)
+              //...   })
+              //...   new_ns()
+              //...   eYo.test.extend(ns.BaseC9r_p, K, function(before, after) {
+              //...     flag.push(before + 2, after + 2)
+              //...   })
+              //...   test(123456, function (after) {
+              //...     flag.push(1, after)
+              //...     this[K](after)
+              //...     flag.push(5, after + 4)
+              //...   })
+              let owned = eYo.objectHasOwnProperty(this, K) && this[K]
+              try {
+                this[K] = {$ ($after) {
+                  f_p.call(this, before, $after)
+                }}.$
+                f_m.call(this, after)
+              } finally {
+                if (owned) {
+                  this[K] = owned
+                } else {
+                  delete this[K]
+                }
+              }
+            }}
+        }
+        model[K] = m.$
+      } else {
+        f_m && eYo.throw(`Unexpected model (${this.name}/${K}) value validate -> ${f_m}`)
+      }
+      //... })
     })
-    this.handle_synchronize(key, model)
-    ;[
-      'willChange', 'isChanging', 'didChange',
-      'willUnchange', 'isUnchanging', 'didUnchange'
-    ].forEach(K => {
-      this.handle_change(K, key, model)
+    //>>>
+  },
+  methodsMergeValidate (model) {
+    //<<< mochai: methodsMergeValidate
+    //... var ns, d
+    //... let new_ns = () => {
+    //...   flag.reset()
+    //...   ns = eYo.data.newNS()
+    //...   ns.makeBaseC9r()
+    //... }
+    //... var K
+    let _p = this.C9r_p
+    ;['validate', 'validateIncog'].forEach(K => { // closure!
+    //... for (K of ['validate', 'validateIncog']) {
+    //...   new_ns()
+    //...   let test = (expect, f) => {
+    //...     d = ns.new({
+    //...       methods: {
+    //...         [K]: f,
+    //...       },
+    //...     }, 'd', onr)
+    //...     chai.expect(d[K](1, 2)).equal(3)
+    //...     flag.expect(expect)
+    //...   }
+      let f_m = model[K]
+      if (eYo.isF(f_m)) {
+        let f_p = _p[K] || eYo.doReturn2nd
+        if (f_m.length > 2) {
+        // builtin/before/after
+          var m = {$ (before, after) {
+            return f_m.call(this, f_p.bind(this), before, after)
+          }}
+        //...   test(123, function (builtin, before, after) {
+        //...     flag.push(before, after)
+        //...     after = builtin(before, after + 1)
+        //...     flag.push(after)
+        //...     return after
+        //...   }) 
+        //...   eYo.test.extend(ns.BaseC9r_p, K, function(before, after) {
+        //...     flag.push(before + 2, after + 1)
+        //...   })
+        //...   test(12345, function (builtin, before, after) {
+        //...     flag.push(before, after)
+        //...     after = builtin(before, after + 1)
+        //...     flag.push(after + 2)
+        //...     return after
+        //...   })
+        //...   test(123456, function (builtin, before, after) {
+        //...     flag.push(before, after)
+        //...     after = builtin(before, after + 1)
+        //...     flag.push(before + 4, after + 3)
+        //...     return after
+        //...   })
+        } else if (XRegExp.exec(f_m.toString(), eYo.xre.function_builtin)) {
+          m = {$ (before, after) {
+            return f_m.call(this, $after => {
+              return f_p.call(this, before, $after)
+            }, after)
+          }}
+        } else {
+          m = f_m.length > 1
+            ? {$ (before, after) {
+            //...   new_ns()
+            //...   test(12, function(before, after) {
+            //...     flag.push(before, after)
+            //...     return after + 1
+            //...   })
+            //...   eYo.test.extend(ns.BaseC9r_p, K, function(before, after) {
+            //...     flag.push(before + 2, after + 1)
+            //...   })
+            //...   test(123456, function (before, after) {
+            //...     flag.push(before, after)
+            //...     after = this[K](before, after + 1)
+            //...     flag.push(before + 4, after + 3)
+            //...     return after
+            //...   })
+              let owned = eYo.objectHasOwnProperty(this, K) && this[K]
+              try {
+                this[K] = f_p
+                return f_m.call(this, before, after)
+              } finally {
+                if (owned) {
+                  this[K] = owned
+                } else {
+                  delete this[K]
+                }
+              }
+          }} : {$ (before, after) { // eslint-disable-line
+            //...   new_ns()
+            //...   test(2, function (after) {
+            //...     flag.push(after)
+            //...     return after + 1
+            //...   })
+            //...   new_ns()
+            //...   eYo.test.extend(ns.BaseC9r_p, K, function(before, after) {
+            //...     flag.push(before + 2, after + 1)
+            //...   })
+            //...   test(123456, function (after) {
+            //...     flag.push(1, after)
+            //...     after = this[K](after + 1)
+            //...     flag.push(5, after + 3)
+            //...     return after
+            //...   })
+              let owned = eYo.objectHasOwnProperty(this, K) && this[K]
+              let used = owned === f_p ? eYo.doReturn2nd : f_p
+              try {
+                this[K] = {$ ($after) {
+                  return used.call(this, before, $after)
+                }}.$
+                return f_m.call(this, after)
+              } finally {
+                if (owned) {
+                  this[K] = owned
+                } else {
+                  delete this[K]
+                }
+              }
+            }}
+        }
+        model[K] = m.$
+      } else {
+        f_m && eYo.throw(`Unexpected model (${this.name}/${K}) value validate -> ${f_m}`)
+      }
+    //... }
     })
+    //>>>
   },
-  /**
-   * make the prototype's filter method based on the model's object for key filter.
-   * The prototype does inherit a filter method.
-   * @param {Object} prototype
-   * @param {String} key
-   * @param {Object} model
-   */
-  handle_filter (key, model) {
-    let K = 'filter'
+  methodsMergeSynchronize (model) {
+    //<<< mochai: methodsMergeSynchronize
+    //... var ns, d
+    //... let new_ns = () => {
+    //...   flag.reset()
+    //...   ns = eYo.data.newNS()
+    //...   ns.makeBaseC9r()
+    //... }
+    //... var K
     let _p = this.C9r_p
-    let f_m = model[K]
-    if (eYo.isDoIt(f_m)) {
-      let f_p = _p[K]
-      if (f_m.length > 1) { // arguments are builtin, after
-        _p[K] = eYo.decorate.reentrant(K, function (after) {
-          return f_m.call(this, ($after = after) => {
-            return f_p.call(this, $after)
-          }, after)
-        }, eYo.doReturn)
-      } else { // arguments are after
-        _p[K] = function (after) {
-          try {
-            this[K] = f_p
-            return f_m.call(this, after)
-          } finally {
-            delete this[K]
-          }
-        }  
-      }
-    }
-  },
-  /**
-   * make the prototype's fromField method based on the model's object for key fromField.
-   * The prototype may inherit a fromField method.
-   * @param {String} K - function name in the model and the prototype
-   * @param {String} key
-   * @param {Object} model
-   */
-  handle_f (K, key, model) {
-    let _p = this.C9r_p
-    let f_m = model[K]
-    if (eYo.isDoIt(f_m)) {
-      let f_p = _p[K]
-      if (XRegExp.exec(f_m.toString(), eYo.xre.function_builtin)) {
-        _p[K] = eYo.decorate.reentrant(K, function (...$) {
-          f_m.call(this, (...$) => {
-            return f_p.call(this, ...$) // return is not used in from... but it saves some space
-          }, ...$)
-        })
+    ;['synchronize'].forEach(K => { // closure!
+      //... K = 'synchronize'
+      //... {
+      //...   new_ns()
+      //...   let test = (expect, f) => {
+      //...     d = ns.new({
+      //...       methods: {
+      //...         [K]: f,
+      //...       },
+      //...     }, 'd', onr)
+      //...     chai.expect(d[K](1, 2)).undefined
+      //...     flag.expect(expect)
+      //...   }
+      let f_m = model[K]
+      if (eYo.isF(f_m)) {
+        let f_p = _p[K] || eYo.doNothing
+        if (f_m.length > 2) {
+          // builtin/before/after
+          var m = {$ (before, after) {
+            f_m.call(this, f_p.bind(this), before, after)
+          }}
+          //...   test(123, function (builtin, before, after) {
+          //...     flag.push(before, after)
+          //...     builtin(before, after)
+          //...     flag.push(after + 1)
+          //...   }) 
+          //...   eYo.test.extend(ns.BaseC9r_p, K, function(before, after) {
+          //...     flag.push(before + 2, after + 2)
+          //...   })
+          //...   test(1234, function (builtin, before, after) {
+          //...     flag.push(before, after)
+          //...     builtin(before, after)
+          //...   })
+        } else if (XRegExp.exec(f_m.toString(), eYo.xre.function_builtin)) {
+          m = {$ (before, after) {
+            f_m.call(this, $after => {
+              f_p.call(this, before, $after)
+            }, after)
+          }}
+          //...   test(1234, function (builtin, after) {
+          //...     flag.push(1, after)
+          //...     builtin(after)
+          //...   }) 
+          //...   eYo.test.extend(ns.BaseC9r_p, K, function(before, after) {
+          //...     flag.push(before + 4, after + 4)
+          //...   })
+          //...   test(123456, function (builtin, after) {
+          //...     flag.push(1, after)
+          //...     builtin(after)
+          //...   })
+        } else {
+          m = f_m.length > 1
+            ? {$ (before, after) {
+              //...   new_ns()
+              //...   test(12, function(before, after) {
+              //...     flag.push(before, after)
+              //...   })
+              //...   eYo.test.extend(ns.BaseC9r_p, K, function(before, after) {
+              //...     flag.push(before + 2, after + 2)
+              //...   })
+              //...   test(123456, function (before, after) {
+              //...     flag.push(before, after)
+              //...     this[K](before, after)
+              //...     flag.push(before + 4, after + 4)
+              //...   })
+              try {
+                this[K] = f_p
+                f_m.call(this, before, after)
+              } finally {
+                delete this[K]
+              }
+            }} : {$ (before, after) { // eslint-disable-line
+              //...   new_ns()
+              //...   test(12, function (after) {
+              //...     flag.push(1, after)
+              //...   })
+              //...   new_ns()
+              //...   eYo.test.extend(ns.BaseC9r_p, K, function(before, after) {
+              //...     flag.push(before + 2, after + 2)
+              //...   })
+              //...   test(123456, function (after) {
+              //...     flag.push(1, after)
+              //...     this[K](after)
+              //...     flag.push(5, after + 4)
+              //...   })
+              try {
+                this[K] = {$ ($after) {
+                  f_p.call(this, before, $after)
+                }}.$
+                f_m.call(this, after)
+              } finally {
+                delete this[K]
+              }
+            }}
+        }
+        model[K] = m.$
       } else {
-        _p[K] = function (...$) {
-          try {
-            this[K] = f_p
-            return f_m.call(this, ...$)
-          } finally {
-            delete this[K]
-          }
-        }
+        f_m && eYo.throw(`Unexpected model (${this.name}/${K}) value validate -> ${f_m}`)
       }
-    } else {
-      f_m && eYo.throw(`Unexpected model (${this.name}/${key}/${K}): ${f_m}`)
-    }
+      //... }
+    })
+    //>>>
   },
-  /**
-   * make the prototype's validate method based on the model's object for key validate.
-   * The prototype may inherit a validate method.
-   * The only difference with the property's eponym method is that in the model, `this` is the data object, not its owner.
-   * @param {String} key
-   * @param {Object} model
-   */
-  handle_consolidate (key, model) {
-    let K = 'consolidate'
-    let f_m = model[K]
-    if (eYo.isDoIt(f_m)) {
-      let _p = this.C9r_p
-      let f_p = _p[K]
-      if (XRegExp.exec(f_m.toString(), eYo.xre.function_builtin)) {
-        _p[K] = eYo.decorate.reentrant(K, function (...$) {
-          if (this.changer.level) {
-            return
-          }
-          f_m.call(this, (...$) => {
-            f_p.call(this, ...$)
-          }, ...$)
-        })
-      } else {
-        _p[K] = function (...$) {
-          if (this.changer.level) {
-            return
-          }
-          try {
-            this[K] = f_p
-            f_m.call(this, ...$)
-          } finally {
-            delete this[K]
-          }
-        }
-      }
-    } else {
-      f_m && eYo.throw(`Unexpected model (${this.name}/${key}/${K}): ${f_m}`)
-    }
-  },
-  /**
-   * make the prototype's validate method based on the model's object for key validate.
-   * The prototype may inherit a validate method.
-   * The only difference with the property's eponym method is that in the model, `this` is the data object, not its owner.
-   * @param {String} key
-   * @param {Object} model
-   */
-  handle_validate (K, key, model) {
+  methodsMergeConsolidate (model) {
+    //<<< mochai: methodsMergeConsolidate
+    //... var ns, d
+    //... let new_ns = () => {
+    //...   flag.reset()
+    //...   ns = eYo.data.newNS()
+    //...   ns.makeBaseC9r()
+    //... }
+    //... var K
     let _p = this.C9r_p
-    let f_m = model[K]
-    let f_p = this.C9r_p[K]
-    eYo.isDoIt(f_p) || eYo.throw(`handle_validate: missing ${K}`)
-    if (eYo.isDoIt(f_m)) {
-      if (f_m.length > 2) {
-        _p[K] = eYo.decorate.reentrant(K, function (before, after) {
-          return f_m.call(this, ($after = after) => {
-            return f_p.call(this, before, $after)
-          }, before, after)
-        })
-      } else if (f_m.length > 1) {
-        _p[K] = function (before, after) {
-          try {
-            this[K] = ($after = after) => {
-              return f_p.call(this, before, $after)
+    ;['consolidate'].forEach(K => { // closure!
+      //... K = 'consolidate'
+      //... {
+      //...   new_ns()
+      //...   let test = (expect, f) => {
+      //...     d = ns.new({
+      //...       methods: {
+      //...         [K]: f
+      //...         ? f.length
+      //...           ? {$ (x, ...$) {
+      //...             flag.push(1)
+      //...             f && f.call(this, x, ...$)
+      //...           }}.$
+      //...           : {$ () {
+      //...             flag.push(1)
+      //...             f && f.call(this)
+      //...           }}.$
+      //...         : {$ () {
+      //...           flag.push(1)
+      //...         }}.$,
+      //...       },
+      //...     }, 'd', onr)
+      //...     chai.expect(d[K]()).undefined
+      //...     flag.expect(expect)
+      //...   }
+      let f_m = model[K]
+      if (eYo.isF(f_m)) {
+        let f_p = _p[K] || eYo.doNothing
+        let m = f_m.length > 0
+          ? {$ () {
+            //...   new_ns()
+            //...   test(12, function(builtin) {
+            //...     flag.push(2)
+            //...     builtin()
+            //...   })
+            //...   eYo.test.extend(ns.BaseC9r_p, K, function() {
+            //...     flag.push(3)
+            //...   })
+            //...   test(123, function (builtin) {
+            //...     flag.push(2)
+            //...     builtin()
+            //...   })
+            f_m.call(this, f_p.bind(this))
+          }} : {$ () { // eslint-disable-line
+            //...   new_ns()
+            //...   test(12, function () {
+            //...     flag.push(2)
+            //...   })
+            //...   new_ns()
+            //...   eYo.test.extend(ns.BaseC9r_p, K, function() {
+            //...     flag.push(3)
+            //...   })
+            //...   test(123, function () {
+            //...     flag.push(2)
+            //...     this[K]()
+            //...   })
+            let owned = eYo.objectHasOwnProperty(this, K) && this[K]
+            try {
+              this[K] = f_p
+              f_m.call(this)
+            } finally {
+              if (owned) {
+                this[K] = owned
+              } else {
+                delete this[K]
+              }
             }
-            return f_m.call(this, before, after)
-          } finally {
-            delete this[K]
-          }
-        }
+          }}
+        model[K] = m.$
       } else {
-        _p[K] = function (before, after) {
-          try {
-            this[K] = ($after = after) => {
-              return f_p.call(this, before, $after)
-            }
-            return f_m.call(this, after)
-          } finally {
-            delete this[K]
-          }
-        }
+        f_m && eYo.throw(`Unexpected model (${this.name}/${K}) value validate -> ${f_m}`)
       }
-    } else {
-      f_m && eYo.throw(`Unexpected model (${this.name}/${key}/${K}) ${f_m}`)
-    }
+      //... }
+    })
+    //>>>
   },
-  /**
-   * make the prototype's synchronize method based on the model's object for key synchronize.
-   * The prototype may inherit a synchronize method.
-   * Changing the ancestor prototype afterwards is not a good idea.
-   * @param {String} key
-   * @param {Object} model
-   */
-  handle_synchronize (key, model) {
-    let K = 'synchronize'
+  methodsMergeFilter (model) {
+    //<<< mochai: methodsMergeFilter
+    //... var ns, d
+    //... let new_ns = () => {
+    //...   flag.reset()
+    //...   ns = eYo.data.newNS()
+    //...   ns.makeBaseC9r()
+    //... }
+    //... var K
     let _p = this.C9r_p
-    let f_m = model.synchronize
-    let f_p = _p.doSynchronize
-    eYo.isDoIt(f_p) || eYo.throw(`handle_validate: missing ${K}`)
-    if (eYo.isDoIt(f_m)) {
-      if (f_m.length > 2) {
-        _p[K] = eYo.decorate.reentrant(K, function (before, after) {
-          return f_m.call(this, ($after = after) => {
-            return f_p.call(this, before, $after)
-          }, before, after)
-        })
-      } else if (f_m.length > 1) {
-        _p[K] = function (before, after) {
-          try {
-            this[K] = ($after = after) => {
-              return f_p.call(this, before, $after)
+    ;['filter'].forEach(K => { // closure!
+      //... K = 'filter'
+      //... {
+      //...   new_ns()
+      //...   let test = (expect, f) => {
+      //...     d = ns.new({
+      //...       methods: {
+      //...         [K]: f
+      //...         ? f.length > 1
+      //...           ? {$ (builtin, after) {
+      //...             flag.push(1, after+1)
+      //...             return f ? f.call(this, builtin, after) : 9
+      //...           }}.$
+      //...           : {$ (after) {
+      //...             flag.push(1, after+1)
+      //...             return f ? f.call(this, after) : 9
+      //...           }}.$
+      //...         : {$ (after) {
+      //...           flag.push(1, after+1)
+      //...           return 9
+      //...         }}.$,
+      //...       },
+      //...     }, 'd', onr)
+      //...     chai.expect(d[K](1)).equal(1)
+      //...     flag.expect(expect)
+      //...   }
+      let f_m = model[K]
+      if (eYo.isF(f_m)) {
+        let f_p = _p[K] || eYo.doNothing
+        let m = f_m.length > 1
+          ? {$ (after) {
+            //...   new_ns()
+            //...   test(1234, function(builtin, after) {
+            //...     flag.push(3, after+3)
+            //...     return builtin(after)
+            //...   })
+            //...   eYo.test.extend(ns.BaseC9r_p, K, function(after) {
+            //...     flag.push(5, after+5)
+            //...   })
+            //...   test(123456, function (builtin, after) {
+            //...     flag.push(3, after+3)
+            //...     return builtin(after)
+            //...   })
+            return f_m.call(this, f_p.bind(this), after)
+          }} : {$ (after) {
+            //...   new_ns()
+            //...   test(1234, function (after) {
+            //...     flag.push(3, after+3)
+            //...     return after
+            //...   })
+            //...   new_ns()
+            //...   eYo.test.extend(ns.BaseC9r_p, K, function(after) {
+            //...     flag.push(5, after+5)
+            //...     return after
+            //...   })
+            //...   test(123456, function (after) {
+            //...     flag.push(3, after+3)
+            //...     this[K](after)
+            //...     return after
+            //...   })
+            let owned = eYo.objectHasOwnProperty(this, K) && this[K]
+            try {
+              this[K] = f_p
+              return f_m.call(this, after)
+            } finally {
+              if (owned) {
+                this[K] = owned
+              } else {
+                delete this[K]
+              }
             }
-            return f_m.call(this, before, after)
-          } finally {
-            delete this[K]
-          }
-        }
+          }}
+        model[K] = m.$
       } else {
-        _p[K] = function (before, after) {
-          try {
-            this[K] = ($after = after) => {
-              return f_p.call(this, before, $after)
-            }
-            return f_m.call(this, after)
-          } finally {
-            delete this[K]
-          }
-        }
+        f_m && eYo.throw(`Unexpected model (${this.name}/${K}) value validate -> ${f_m}`)
       }
-    } else if (f_m === true) {
-      _p[K] = f_p
-    } else {
-      f_m && f_m !== eYo.doNothing && eYo.throw(`Unexpected model (${this.name}/${key}/synchronize) -> ${f_m}`)
-      _p[K] = eYo.doNothing
-    }
+      //... }
+    })
+    //>>>
   },
-  /**
-   * Expands a data model.
-   * @param {String} K - type of change
-   * @param {Object} model - a data model object
-   * @param {String} key - the data key
-   * @return {Object}
-   */
-  handle_change (K, key, model) {
-    let _p = this.C9r_p
-    let f_m = model[K]
-    if (eYo.isDoIt(f_m)) {
-      let f_p = _p[K]
-      if (f_m.length > 2) { // f_m arguments are builtin, before, after
-        _p[K] = eYo.decorate.reentrant(K, eYo.isDoIt(f_p)
-          ? function (before, after) {
-            f_m.call(this, () => {
-              f_p.call(this, before, after)
-            }, before, after)
-          } : function (before, after) {
-            f_m.call(this, eYo.doNothing, before, after)
-          })
-        return
-      } else if (f_m.length > 1) {
-        let m = XRegExp.exec(f_m.toString(), eYo.xre.function_builtin)
-        if (m) { // f_m arguments are builtin, after
-          _p[K] = eYo.decorate.reentrant(K, eYo.isDoIt(f_p)
-            ? function (before, after) {
-              f_m.call(this, () => {
-                f_p.call(this, before, after)
-              }, after)
-            } : function (before, after) {
-              f_m.call(this, eYo.doNothing, after)
-            })
-          return
-        }
-        // f_m arguments are before, after
-        _p[K] = function (before, after) {
-          try {
-            this[K] = () => {
-              f_p.call(this, before, after)
-            }
-            f_m.call(this, before, after)
-          } finally {
-            delete this[K]
-          }
-        }
-        return
-      }
-      // f_m arguments are after
-      _p[K] = function (before, after) {
-        try {
-          this[K] = () => {
-            f_p.call(this, before, after)
-          }
-          f_m.call(this, after)
-        } finally {
-          delete this[K]
-        }
-      }
-      return
-    }
-    f_m && eYo.throw(`Unexpected model (${this.name}/${key}/${K}) -> ${f_m}`)
-  }
+  //>>>
 })
-

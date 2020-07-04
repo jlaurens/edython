@@ -785,7 +785,7 @@ eYo.expr.newC9r('primary', {
         eYo.key.COL_VALUED, // foo := bar
       ],
       init: eYo.key.NONE,
-      isChanging (builtin) /** @suppress {globalThis} */ {
+      onChange (builtin) /** @suppress {globalThis} */ {
         this.brick.consolidateType()
         this.brick.consolidateMagnets()
         builtin()
