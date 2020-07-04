@@ -11,6 +11,8 @@
  */
 'use strict'
 
+eYo.forward('changer')
+
 /**
  * Ancestor of object owning data, fields and slots.
  * @name {eYo.dfs}
@@ -29,6 +31,14 @@ eYo.o4t.newNS(eYo, 'dfs', {
   COMMENT: 'comment', // lowercase
 })
 
+//<<< mochai: Basics
+//... chai.assert(eYo.dfs)
+//... chai.assert(eYo.dfs.BaseC9r)
+//... chai.assert(eYo.Dfs)
+//... chai.assert(eYo.dfs.Dlgt_p)
+//... chai.assert(eYo.Dfs$)
+//>>>
+
 /**
  * Class for a basic object indirectly owned by a brick.
  * 
@@ -45,27 +55,93 @@ eYo.o4t.newNS(eYo, 'dfs', {
  * @property {eYo.magnet.BaseC9r} magnet - The magnet.
  */
 eYo.dfs.makeBaseC9r({
+  init (key, owner) {
+    this.resetBSM(owner)
+  },
   aliases: {
     'brick.ui': 'ui',
+    'brick.driver': 'driver',
   },
   properties: {
     brick: eYo.NA,
     slot: eYo.NA,
     magnet: eYo.NA,
   },
+  methods: {
+    //<<< mochai: methods
+    /**
+     * Reset the brick/slot/magnet properties.
+     * @param {*} owner 
+     */
+    resetBSM (owner) {
+      //<<< mochai: resetBSM
+      //... let ns = eYo.dfs.newNS()
+      //... ns.makeBaseC9r()
+      //... var f = ns.new({}, 'f', onr)
+      //... chai.expect(f.brick).equal(onr)
+      //... chai.expect(f.slot).undefined
+      //... chai.expect(f.magnet).undefined
+      this.slot_ = this.brick_ = this.magnet_ = eYo.NA
+      if (owner) {
+        if (owner.isSlot) {
+          //... setup({
+          //...   properties: {
+          //...     brick: 1
+          //...   },
+          //... })
+          //... onr.isSlot = true
+          //... f = ns.new({}, 'f', onr)
+          this.brick_ = owner.brick
+          this.slot_ = owner
+          //... chai.expect(f.brick).equal(1)
+          //... chai.expect(f.slot).equal(onr)
+          //... chai.expect(f.magnet).undefined
+        } else if (owner.isMagnet) {
+          //... setup({
+          //...   properties: {
+          //...     brick: 1
+          //...   },
+          //... })
+          //... onr.isMagnet = true
+          //... f = ns.new({}, 'f', onr)
+          this.magnet_ = owner
+          this.brick_ = owner.brick
+          //... chai.expect(f.brick).equal(1)
+          //... chai.expect(f.slot).undefined
+          //... chai.expect(f.magnet).equal(onr)
+        } else {
+          this.brick_ = owner
+          //... setup()
+          //... f = ns.new({}, 'f', onr)
+          //... chai.expect(f.brick).equal(onr)
+          //... chai.expect(f.slot).undefined
+          //... chai.expect(f.magnet).undefined
+        }  
+      }
+      //>>>
+    },
+    /**
+     * Hook for owner change
+     * @param {Object} before 
+     * @param {Object} after 
+     */
+    ownerDidChange (before, after) {
+      //<<< mochai: ownerDidChange
+      //... let ns = eYo.dfs.newNS()
+      //... ns.makeBaseC9r()
+      //... eYo.test.extend(ns.BaseC9r_p, 'ownerDidChange', function (before, after) {
+      //...   flag.push(421)
+      //... })
+      //... var f = ns.new({}, 'f', onr)
+      //... setup()
+      //... f.owner_ = onr
+      //... flag.expect(421)
+      let inherited = eYo.dfs.BaseC9r[eYo.$SuperC9r_p].ownerDidChange
+      inherited && inherited.call(this, before, after)
+      this.resetBSM()
+      //>>>
+    },
+    //>>>
+  },
 })
 
-eYo.dfs.BaseC9r_p.ownerDidChange = function (before, after) {
-  let inherited = eYo.dfs.BaseC9r[eYo.$SuperC9r_p].ownerDidChange
-  inherited && inherited.call(this, before, after)
-  this.slot_ = this.brick_ = this.magnet_ = eYo.NA
-  if (after.isSlot) {
-    this.slot_ = after
-    this.brick_ = after.brick
-  } else if (after.isMagnet) {
-    this.magnet_ = after
-    this.brick_ = after.brick
-  } else {
-    this.brick_ = after
-  }
-}

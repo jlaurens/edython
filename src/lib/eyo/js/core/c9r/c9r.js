@@ -473,6 +473,9 @@ eYo.mixinFR(eYo.dlgt.BaseC9r_p, {
           [K+'_p'] () {
             return C9r.prototype
           },
+          [K+'$'] () {
+            return C9r[eYo.$]
+          },
         })
         eYo.mixinRO(C9r[eYo.$], {
           name () {

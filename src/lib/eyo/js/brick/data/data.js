@@ -35,7 +35,6 @@
 eYo.forward('do')
 eYo.forward('xre')
 eYo.forward('decorate')
-eYo.forward('changer')
 
 //g@@g.require('g@@g.dom')
 
@@ -907,7 +906,7 @@ eYo.Data[eYo.$].finalizeC9r(
 eYo.mixinFR(eYo.data.Dlgt_p, {
   //<<< mochai: Delegate
   /**
-   * The `validate` and `validateIncog` methods are translated.
+   * Various methods are translated.
    * @param{Object} model - the model
    */
   methodsMerge (model) {

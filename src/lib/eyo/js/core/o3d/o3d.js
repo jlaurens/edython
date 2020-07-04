@@ -126,7 +126,7 @@ Object.defineProperties(eYo.o3d.BaseC9r.prototype, {
     },
     set (after) {
       let before = this.owner__
-      if (after !== this.owner__) {
+      if (after !== before) {
         this.ownerWillChange(before, after)
         this.owner__ =  after
         this.ownerDidChange(before, after)

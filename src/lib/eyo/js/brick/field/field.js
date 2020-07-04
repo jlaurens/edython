@@ -52,8 +52,6 @@ open
 close
 begin
 
-
-
 eYo.key.END,
 eYo.key.SUFFIX,
 eYo.key.COMMENT_MARK,
@@ -80,34 +78,6 @@ eYo.mixinFR(eYo.field._p, {
       ? eYo.field.Input
       : eYo.field.Label
   },
-  /**
-   * For subclassers.
-   * Called from ``modelMakeC9r``.
-   * @param {Object} prototype
-   * @param {String} key
-   * @param {Object} model
-   */
-  modelHandle (_p, name, model) {
-    let willRender_m = model.willRender
-    if (eYo.isF(willRender_m)) {
-      if (willRender_m.length) {
-        _p.willRender = function () {
-          willRender_m.call(this, () => {
-            eYo.field.BaseC9r_p.willRender.call(this)
-          })
-        }
-      } else {
-        _p.willRender = function () {
-          try {
-            this.willRender = eYo.field.BaseC9r_p.willRender
-            willRender_m.call(this)
-          } finally {
-            delete this.willRender
-          }
-        }
-      }
-    }
-  },
 })
 
 /**
@@ -119,11 +89,17 @@ eYo.mixinFR(eYo.field._p, {
 eYo.field.makeBaseC9r(true, {
   init (name, bsm) {
     //<<< mochai: init
-    this.text_ = this.model.text__ || ''
+    this.text_ = this.eyo.model.text__ || ''
     Object.defineProperty(bsm, `${name}_f`, { value: this})
     console.warn('Defer next line to the owner ?')
     bsm.hasUI && this.initUI()
-    //... let f = eYo.field.new('foo', onr)
+    //... let changer = eYo.changer.new('changer', onr)
+    //... setup({
+    //...   properties: {
+    //...     changer
+    //...   }
+    //... })
+    //... let f = eYo.field.new({}, 'foo', onr)
     //... chai.expect(f.text).equal('')
     //... chai.expect(onr.foo_f).equal(f)
     //>>>
@@ -249,6 +225,101 @@ eYo.field.makeBaseC9r(true, {
       },
     },
   },
+})
+
+eYo.mixinFR(eYo.field.Dlgt_p, {
+  //<<< mochai: Delegate
+  /**
+   * Various methods are translated.
+   * @param{Object} model - the model
+   */
+  methodsMerge (model) {
+    this.methodsMergeRender (model)
+    return eYo.data.Dlgt[eYo.$SuperC9r_p].methodsMerge.call(this, model)
+  },
+  /**
+   * Translate the `*Render` methods.
+   * @param {*} model 
+   */
+  methodsMergeRender (model) {
+    //<<< mochai: methodsMergeChange
+    //... var ns, f
+    //... let new_ns = () => {
+    //...   flag.reset()
+    //...   ns = eYo.field.newNS()
+    //...   ns.makeBaseC9r()
+    //... }
+    let _p = this.C9r_p
+    ;['willRender'].forEach(K => { // closure!
+      //... ;['willRender'].forEach(K => {
+      //...   new_ns()
+      //...   let test = (expect, f) => {
+      //...     d = ns.new({
+      //...       methods: {
+      //...         [K] () {
+      //...           flag.push(1)
+      //...           f.call(this)
+      //...         },
+      //...       },
+      //...     }, 'd', onr)
+      //...     chai.expect(d[K]()).undefined
+      //...     flag.expect(expect)
+      //...   }
+      let f_m = model[K]
+      if (eYo.isF(f_m)) {
+        let f_p = _p[K] || eYo.doNothing
+        if (f_m.length > 0) {
+          // builtin
+          var m = {$ () {
+            f_m.call(this, f_p.bind(this))
+          }}
+          //...   test(12, function (builtin) {
+          //...     flag.push(2)
+          //...     builtin()
+          //...   }) 
+          //...   eYo.test.extend(ns.BaseC9r_p, K, function() {
+          //...     flag.push(3)
+          //...   })
+          //...   test(123, function (builtin) {
+          //...     flag.push(2)
+          //...     builtin()
+          //...   })
+        } else {
+          m = {$ () {
+            //...   new_ns()
+            //...   test(1, function () {
+            //...     flag.push(2)
+            //...   })
+            //...   new_ns()
+            //...   eYo.test.extend(ns.BaseC9r_p, K, function() {
+            //...     flag.push(3)
+            //...   })
+            //...   test(123, function () {
+            //...     flag.push(2)
+            //...     this[K]()
+            //...   })
+            let owned = eYo.objectHasOwnProperty(this, K) && this[K]
+            try {
+              this[K] = f_p
+              f_m.call(this)
+            } finally {
+              if (owned) {
+                this[K] = owned
+              } else {
+                delete this[K]
+              }
+            }
+          }}
+        }
+        model[K] = m.$
+      } else {
+        f_m && eYo.throw(`Unexpected model (${this.name}/${K}) value validate -> ${f_m}`)
+      }
+      //... })
+    })
+    //>>>
+  },
+  //>>>
 })
 
 /**
