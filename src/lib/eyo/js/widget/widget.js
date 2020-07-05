@@ -13,8 +13,6 @@
 
 eYo.require('dlgt')
 
-eYo.dlgt.makeDriven
-
 /**
  * Ancestor of object owning data, fields and slots.
  * @name {eYo.driven}
