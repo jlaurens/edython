@@ -19,6 +19,7 @@
 //...   ['eYo.foo.mee.Bar', 'mee.Bar'],
 //...   ['(foo).mee.Bar', 'Bar'],
 //...   ['(chi).foo.mee.Bar', 'mee.Bar'],
+//...   ['(eYo.o4t).Foo', 'Foo'],
 //... ]
 //>>>
 
@@ -29,7 +30,13 @@ eYo.mixinRO(eYo.xre, {
    * @name{eYo.xre.drvrId}
    * @private
    */
-  drvrId: XRegExp(`^(?:(?:\\(.*?\\)|eYo)\\..*?\\.)?(?<path>.*\\.)?(?<Id>.*?)$`),
+  drvrId: XRegExp(`^
+  (?:(?:
+    \\(.*?\\)(?:\\..*?)?|
+    eYo\\..*?
+  )\\.)?
+  (?<path>.*\\.)?
+  (?<Id>.*?)$`, 'x'),
   //<<< mochai: drvrId
   //... ;[
   //...   ['Bar', eYo.NA, 'Bar'],
@@ -38,6 +45,7 @@ eYo.mixinRO(eYo.xre, {
   //...   ['eYo.foo.mee.Bar', 'mee.', 'Bar'],
   //...   ['(foo).mee.Bar', eYo.NA, 'Bar'],
   //...   ['(chi).foo.mee.Bar', 'mee.', 'Bar'],
+  //...   ['(eYo.o4t).Foo', eYo.NA, 'Foo'],
   //... ].forEach(ra => {
   //...   let m = XRegExp.exec(ra[0], eYo.xre.drvrId)
   //...   chai.expect(m).not.undefined
@@ -47,7 +55,7 @@ eYo.mixinRO(eYo.xre, {
   //>>>
   /**
    * Regular expression to extract the parent driver ID form an identifier.
-   * @name{eYo.xre.drvrId}
+   * @name{eYo.xre.drvrParentId}
    * @private
    */
   drvrParentId: XRegExp(`^(?<parentId>.*)\\..*?$`),//
@@ -297,6 +305,8 @@ eYo.make$$('parent')
      */
     getDrvr (object, ...$) {
       //<<< mochai: (get|set)Drvr
+      //... // The base driver is directly accessible.
+      //... chai.expect(eYo.drvr.getDrvr('')[eYo.$$.target]).not.undefined
       object.eyo && (object = object.eyo.name)
       var drvrId = this.getDrvrId(object)
       //... var NS, NS1, drvr, drvr1, target
@@ -305,16 +315,16 @@ eYo.make$$('parent')
       //...   var NS = eYo.drvr.newNS()
       //...   let drvr = newDrvr(NS, eYo.genUID())
       //...   NS.setDrvr(ra[0], drvr)
-      //...   chai.expect(NS.getDrvr(ra[0])).equal(drvr)
-      //...   chai.expect(NS.getDrvr(ra[1])).equal(drvr)
-      //...   chai.expect(NS.getDrvr(ra[0])).equal(drvr)
-      //...   chai.expect(NS.getDrvr(ra[1])).equal(drvr)
+      //...   chai.expect(NS.getDrvr(ra[0])[eYo.$$.target]).equal(drvr)
+      //...   chai.expect(NS.getDrvr(ra[1])[eYo.$$.target]).equal(drvr)
+      //...   chai.expect(NS.getDrvr(ra[0])[eYo.$$.target]).equal(drvr)
+      //...   chai.expect(NS.getDrvr(ra[1])[eYo.$$.target]).equal(drvr)
       //...   var NS = eYo.drvr.newNS()
       //...   NS.setDrvr(ra[1], drvr)
-      //...   chai.expect(NS.getDrvr(ra[0])).equal(drvr)
-      //...   chai.expect(NS.getDrvr(ra[1])).equal(drvr)
-      //...   chai.expect(NS.getDrvr(ra[0])).equal(drvr)
-      //...   chai.expect(NS.getDrvr(ra[1])).equal(drvr)
+      //...   chai.expect(NS.getDrvr(ra[0])[eYo.$$.target]).equal(drvr)
+      //...   chai.expect(NS.getDrvr(ra[1])[eYo.$$.target]).equal(drvr)
+      //...   chai.expect(NS.getDrvr(ra[0])[eYo.$$.target]).equal(drvr)
+      //...   chai.expect(NS.getDrvr(ra[1])[eYo.$$.target]).equal(drvr)
       //... })
       //... var C9rA = eYo.drvr.newC9r()
       //... C9rA[eYo.$].finalizeC9r()
@@ -362,7 +372,7 @@ eYo.make$$('parent')
           //... var drvr_t = drvr[eYo.$$.target]
           //... chai.expect(drvr.eyo).equal(drvr_t.eyo)
           //... chai.expect(drvr.ns).equal(drvr_t.ns)
-          return this.setDrvr(saveId, this.newDrvrProxy_(drvr_t))
+          return this.setDrvr(saveId, drvr_t)
         }
         var m = XRegExp.exec(drvrId, eYo.xre.drvrParentId)
         if (m) {
@@ -378,7 +388,7 @@ eYo.make$$('parent')
             //... target = eYo.drvr.getDrvr('A')[eYo.$$.target]
             //... chai.expect(NS.getDrvr('A.B')[eYo.$$.target]).equal(target)
             //... chai.expect(NS.getDrvr('A.B.C')[eYo.$$.target]).equal(target)
-            return this.setDrvr(saveId, this.newDrvrProxy_(drvr[eYo.$$.target]))
+            return this.setDrvr(saveId, drvr[eYo.$$.target])
           }
         } else {
           //... NS = eYo.drvr.newNS()
@@ -389,11 +399,11 @@ eYo.make$$('parent')
           //... chai.expect(NS.getDrvr('A.B')[eYo.$$.target]).equal(target)
           //... chai.expect(NS.getDrvr('A.B.C')[eYo.$$.target]).equal(target)
           if ((drvr = this[$map].get(''))) {
-            return this.setDrvr(saveId, this.newDrvrProxy_(drvr[eYo.$$.target]))
+            return this.setDrvr(saveId, drvr[eYo.$$.target])
           }
           drvr_t = this.new('')
-          this.setDrvr('', this.newDrvrProxy_(drvr_t))
-          return this.setDrvr(saveId, this.newDrvrProxy_(drvr_t))
+          this.setDrvr('', drvr_t)
+          return this.setDrvr(saveId, drvr_t)
         }
         //... NS = eYo.drvr.newNS()
         //... NS.setDrvrC9r('A', C9rA)
@@ -409,10 +419,12 @@ eYo.make$$('parent')
       //>>>
     },
     /**
-     * Set the driver constructor for the given id.
+     * Set the driver for the given id.
      * @param {String} id
+     * @param {*} drvr_t - Driver instance, not a proxy.
      */
-    setDrvr (object, drvr) {
+    setDrvr (object, drvr_t) {
+      let drvr = this.newDrvrProxy_(drvr_t)
       object.eyo && (object = object.eyo.name)
       var id = this.getDrvrId(object)
       this[$map].set(id, drvr)
@@ -449,7 +461,11 @@ eYo.c9r.newC9r(eYo.drvr, eYo.$$.Handler, {
     construct(target, args) { // eslint-disable-line
       eYo.throw(`${target.eyo.name} instances are not constructors.`)
     },
-    defineProperty(target, key, descriptor) { // eslint-disable-line
+    defineProperty(target, key, descriptor) {
+      if (key === eYo.$p6y) {
+        Object.defineProperty(target, key, descriptor)
+        return
+      }
       eYo.throw(`${target.eyo.name} instances are frozen (no defineProperty).`)
     },
     deleteProperty(target, prop) { // eslint-disable-line
@@ -477,6 +493,9 @@ eYo.c9r.newC9r(eYo.drvr, eYo.$$.Handler, {
       var ans = this.cache.get(prop)
       if (ans) {
         return ans
+      }
+      if (prop === eYo.$p6y) {
+        return this[prop]
       }
       ans = Reflect.get(target, prop)
       if (eYo.isDef(ans) && !eYo.isF(ans)) {
@@ -528,11 +547,11 @@ eYo.c9r.newC9r(eYo.drvr, eYo.$$.Handler, {
         })
         if (ra.length === 1) return ra[0]
         if (ra.length) return {
-          f (...$) {
+          $ (...$) {
             var ans = true
             ra.forEach(f => ans = f.call(this, ...$) && ans)
           }
-        }.f // not a constructor
+        }.$ // not a constructor
         return ans
       })()
       ans_f && this.cache.set(prop, ans_f)
@@ -573,13 +592,18 @@ eYo.c9r.newC9r(eYo.drvr, eYo.$$.Handler, {
     preventExtensions(target) {
       return Reflect.preventExtensions(target)
     },
-    set(target, prop, value) { // eslint-disable-line
+    set(target, prop, value) {
       //<<< mochai: set
-      return Reflect.set(...arguments)
       //... let drvr = new eYo.O4t('drvr', onr)
       //... let handler = new eYo.drvr[eYo.$$.Handler]()
       //... let p = new Proxy(drvr, handler)
+      if (prop === eYo.$p6y) {
+        this[prop] = value
+        return true
+        //... chai.expect(p[eYo.$p6y] = 421).equal(p[eYo.$p6y])
+      }
       //... chai.expect(() => p.foo = 'bar').throw()
+      eYo.throw(`Frozen proxy to driver ${target.driverId}: forbidden key is ${prop}`)
       //>>>
     },
     setPrototypeOf(target, proto) { // eslint-disable-line
@@ -640,9 +664,18 @@ eYo.drvr.makeBaseC9r(true, {
     //<<< mochai: properties
     mngr: {
       //<<< mochai: mngr
-      //... let drvr = new eYo.Drvr('foo', onr)
+      //... var drvr = new eYo.Drvr('foo', onr)
       //... chai.expect(drvr.owner).equal(onr)
       //... chai.expect(drvr.mngr).equal(onr)
+      //... chai.expect(() => drvr.mngr_ = 'bar').throw()
+      //... chai.expect(() => drvr.mngr = 'bar').throw()
+      //... let ns = eYo.drvr.newNS()
+      //... ns.makeBaseC9r()
+      //... driver = ns.new({}, 'foo', onr)
+      //... chai.expect(drvr.owner).equal(onr)
+      //... chai.expect(drvr.mngr).equal(onr)
+      //... chai.expect(() => drvr.mngr_ = 'bar').throw()
+      //... chai.expect(() => drvr.mngr = 'bar').throw()
       get () {
         return this.owner
       },
@@ -764,19 +797,41 @@ eYo.mixinFR(eYo.o4t.Dlgt_p, {
    */
   drvrEnhanced () {
     //<<< mochai: drvrEnhanced
-    //... let drvrMngr = eYo.drvr.newNS()
-    //... 
-    //... let ns = eYo.o4t.newNS()
-    //... ns.makeBaseC9r()
-    //... ns.BaseC9r$.drvrEnhanced()
+    //... let mngr = eYo.drvr.newNS()
+    //... mngr.makeBaseC9r({
+    //...   methods: {
+    //...     do_push1 (instance, ...$) {
+    //...       flag.push(1, ...$)
+    //...     },
+    //...   },
+    //... })
+    //... let drvr = mngr.getDrvr('')
+    //... chai.expect(drvr).instanceOf(mngr.BaseC9r)
     //... setup({
     //...   properties: {
-    //...     drvrMngr
+    //...     drvr
     //...   }
     //... })
-    //... chai.expect(onr.drvrMngr).equal(drvrMngr)
-    //... let driven = ns.new({}, 'driven', onr)
-    //... chai.expect(driven.drvrMngr).equal(drvrMngr)
+    //... chai.expect(onr.drvr).equal(drvr)
+    //... let ns = eYo.o4t.newNS()
+    //... ns.makeBaseC9r()
+    //... mngr.newDrvrC9r('Foo', {
+    //...   methods: {
+    //...     do_push2 (instance, ...$) {
+    //...       flag.push(2, ...$)
+    //...     },
+    //...   },
+    //... })
+    //... ns.newC9r('Foo')
+    //... ns.Foo$.drvrEnhanced()
+    //... ns.Foo$.finalizeC9r()    
+    //... eYo.drvr.makeForwarder(ns.Foo_p, 'push1')
+    //... eYo.drvr.makeForwarder(ns.Foo_p, 'push2')
+    //... let driven = new ns.Foo('foo', onr)
+    //... driven.push1(2, 3)
+    //... flag.expect(123)
+    //... driven.push2(4, 6)
+    //... flag.expect(246)
     
     this.p6yMerge({
       /**
@@ -784,16 +839,9 @@ eYo.mixinFR(eYo.o4t.Dlgt_p, {
        */
       drvr: {
         lazy () {
-          return this.drvrMngr.getDrvr(this.name)
-        },
-      },
-      /**
-       * The driver manager of the receiver.
-       * In general this is the same as the onwer's.
-       */
-      drvrMngr: {
-        lazy () {
-          return this.owner.drvrMngr
+          let onr = this.owner
+          let mngr = onr ? onr.drvr.mngr: eYo.driver
+          return mngr.getDrvr(this)
         },
       },
     })

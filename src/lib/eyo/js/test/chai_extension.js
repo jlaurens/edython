@@ -177,6 +177,22 @@ eYo.test.makeComparator = function (tol = 0) {
   }
 }
 
+chai.Assertion.addMethod('hasProxyTarget', function (expected) {
+  var actual = this._obj
+  let target = actual[eYo.$$.target]
+  this.assert(
+    target === expected
+    , `expected #{this}/${actual}[eYo.$$.target] to be ${expected} but got ${target}`
+    , `expected #{this}/${actual}[eYo.$$.target] not to be ${expected}`
+    , expected        // expected
+    , target   // actual
+  )
+})
+
+chai.Assertion.addMethod('hasSameProxyTarget', function (drvr) {
+  this.hasProxyTarget(drvr[eYo.$$.target])
+})
+
 chai.use(function (_chai, utils) {
   // language chain method
   chai.Assertion.addMethod('eqlPoint', function (expected) {

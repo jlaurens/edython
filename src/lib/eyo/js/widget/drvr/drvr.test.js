@@ -102,71 +102,85 @@ describe('drvr', function() {
     chai.expect(1234)
   })
   it ('Drvr: diamond', function () {
-    var NS = eYo.drvr.newNS()
-    NS._p.flag = (...$) => {
+    // the root namespace
+    var root = eYo.drvr.newNS()
+    root._p.flag = (...$) => {
       flag.push(1, ...$)
     }
-    NS.makeBaseC9r({
+    root.makeBaseC9r({
       methods: {
-        base (...$) {
+        fromBaseC9r (...$) {
           this.owner.flag(2, ...$)
         },
       },
     })
-    chai.expect(NS.BaseC9r.prototype.base).eyo_F
-    var base = NS.new('base', onr)
-    chai.expect(base).instanceOf(NS.BaseC9r)
-    base.base(3, 4)
+    chai.expect(root.BaseC9r_p.fromBaseC9r).eyo_F
+    // base root driver
+    var rootDrvr = root.new('root', onr)
+    chai.expect(rootDrvr).instanceOf(root.BaseC9r)
+    rootDrvr.fromBaseC9r(3, 4)
     flag.expect(1234)
-    var C9r = NS.newDrvrC9r('Foo', {
+    // inherited Foo driver <- base
+    root.newDrvrC9r('Foo', {
       methods: {
-        foo (...$) {
+        fromFoo (...$) {
           this.owner.flag(3, ...$)
         },
       },
     })
-    chai.expect(C9r).equal(NS.Foo)
-    var foo = NS.getDrvr('Foo')
-    foo.foo(5, 7)
+    var foo = root.getDrvr('Foo')
+    chai.expect(foo).instanceOf(root.Foo)
+    foo.fromBaseC9r(3, 4)
+    flag.expect(1234)
+    foo.fromFoo(5, 7)
     flag.expect(1357)
-    NS.newNS('chi')
-    NS.chi.makeBaseC9r({
+    // Inherited namespace
+    root.newNS('chi')
+    root.chi.makeBaseC9r({
       methods: {
-        chi (...$) {
+        fromChiBaseC9r (...$) {
           this.owner.flag(4, ...$)
         },
       },
     })
-    var chi = NS.chi.getDrvr('')
-    chi.chi(7)
+    var rootChiDrvr = root.chi.getDrvr('')
+    rootChiDrvr.fromBaseC9r(3)
+    flag.expect(123)
+    rootChiDrvr.fromChiBaseC9r(7)
     flag.expect(147)
-    var C9r = NS.chi.newDrvrC9r('Foo', {
+    root.chi.newDrvrC9r('Foo', {
       methods: {
-        mee (...$) {
+        fromChiFoo (...$) {
           this.owner.flag(5, ...$)
         },
       },
     })
-    chai.expect(C9r).equal(NS.chi.Foo)
-    var drvr = new NS.chi.Foo('foo', onr)
-    drvr.base(3)
+    let chi = root.chi.new({}, 'chi', onr)
+    chi.fromChiBaseC9r(7)
+    flag.expect(147)
+    var rootChiFoo = new root.chi.Foo('foo', onr)
+    // Next is a driver
+    rootChiFoo.fromBaseC9r(3)
     flag.expect(123)
-    drvr.foo(5)
+    rootChiFoo.fromFoo(5)
     flag.expect(135)
     chai.expect(() => {
-      drvr.chi(7)
+      rootChiFoo.fromChiBaseC9r(7)
       flag.expect(147)
     }).throw()
-    drvr.mee(9)
+    rootChiFoo.fromChiFoo(9)
     flag.expect(159)
-    var diamond = NS.chi.getDrvr('Foo')
-    diamond.base(3)
+    var diamond = root.chi.getDrvr('Foo')
+    // This is a proxy to the preceding driver
+    // This is a diamond because it implements messages
+    // from different origins
+    diamond.fromBaseC9r(3)
     flag.expect(123)
-    diamond.foo(5)
+    diamond.fromFoo(5)
     flag.expect(135)
-    diamond.chi(7)
+    diamond.fromChiBaseC9r(7)
     flag.expect(147)
-    diamond.mee(9)
+    diamond.fromChiFoo(9)
     flag.expect(159)
   })
 })
