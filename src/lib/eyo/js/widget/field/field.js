@@ -11,7 +11,7 @@
  */
 'use strict'
 
-eYo.forward('data')
+eYo.require('data')
 
 /**
  * @name{eYo.field}
@@ -76,9 +76,19 @@ eYo.mixinFR(eYo.field._p, {
    * @param {Object} key
    */
   modelBaseC9r (model, key) { // eslint-disable-line
+    //<<< mochai: modelBaseC9r
+    //... ['edit', 'endEditing', 'startEditing'].forEach(K => {
+    //...   let field = eYo.field.new({
+    //...     [K]: true,
+    //...   }, 'field', onr)
+    //...   chai.expect(field).instanceOf(eYo.field.Input)
+    //... })
+    //... let field = eYo.field.new({}, 'field', onr)
+    //... chai.expect(field).instanceOf(eYo.field.Label)
     return model.edit || model.endEditing || model.startEditing
       ? eYo.field.Input
       : eYo.field.Label
+    //>>>
   },
 })
 
@@ -89,10 +99,13 @@ eYo.mixinFR(eYo.field._p, {
  * @constructor
  */
 eYo.field.makeBaseC9r(true, {
+  //<<< mochai: eYo.Field
+  //<<< mochai: Basics
+  //... chai.expect(eYo.Field).not.undefined
+  //>>>
   init (name, bsm) {
     //<<< mochai: init
     this.text__ = this.eyo.model.text__ || ''
-    Object.defineProperty(bsm, `${name}_f`, { value: this})
     console.warn('Defer next line to the owner ?')
     bsm.hasUI && this.initUI()
     //... let changer = eYo.changer.new('changer', onr)
@@ -103,10 +116,10 @@ eYo.field.makeBaseC9r(true, {
     //... })
     //... let f = eYo.field.new({}, 'foo', onr)
     //... chai.expect(f.text).equal('')
-    //... chai.expect(onr.foo_f).equal(f)
     //>>>
   },
   properties: {
+    //<<< mochai: properties
     status: eYo.field.STATUS_NONE, // one of STATUS_... above
     isEditing: false,
     editable: false,
@@ -226,7 +239,61 @@ eYo.field.makeBaseC9r(true, {
         }
       },
     },
+    //>>>
   },
+  methods: {
+    //<<< mochai: methods
+    /**
+     * Initializes the model of the field after it has been installed on a block.
+     * No-op by default.
+     */
+    initModel: eYo.doNothing,
+    /**
+     * Draws the border with the correct width.
+     * Saves the computed width in a property.
+     * @private
+     */
+    render_ () {
+      if (!this.visible_) {
+        this.size_.width = 0
+        return
+      }
+      var d = this.drvr
+      d && (d.textRemove(this), d.textCreate(this))
+      this.updateWidth()
+    },
+    /**
+     * Updates the width of the field in the UI.
+     **/
+    updateWidth () {
+      var d = this.drvr
+      d && (d.updateWidth(this))
+    },
+    /**
+     * Validate the keyed data of the source brick.
+     * Asks the data object to do so.
+     * The bound data must exist.
+     * @param {String} txt
+     * @return {String}
+     */
+    validate (txt) {
+      var v = this.data.validate(eYo.isDef(txt) ? txt : this.text)
+      return eYo.isVALID(v) ? v : eYo.NA
+    },
+    /**
+     * Will render the field.
+     * We should call `this.willRender()` from the model.
+     */
+    willRender () {
+      var d = this.drvr
+      if (d) {
+        d.makePlaceholder(this, this.isPlaceholder)
+        d.makeComment(this, this.isComment)
+      }
+    },
+    //>>>
+  },
+  //>>>
 })
 
 eYo.mixinFR(eYo.field.Dlgt_p, {
@@ -244,20 +311,31 @@ eYo.mixinFR(eYo.field.Dlgt_p, {
    * @param {*} model 
    */
   methodsMergeRender (model) {
-    //<<< mochai: methodsMergeChange
+    //<<< mochai: methodsMergeRender
+    //... let mngr = eYo.drvr.newNS()
+    //... let drvr = mngr.getDrvr('')
+    //... setup({
+    //...   properties: {
+    //...     drvr
+    //...   }
+    //... })
+    //... chai.expect(drvr).equalDrvr(onr.drvr)
     //... var ns, field
     //... let new_ns = () => {
     //...   flag.reset()
     //...   ns = eYo.field.newNS()
     //...   ns.makeBaseC9r()
     //... }
-    //... let drvr = eYo.c9r.new('drvr')
-    //... setup({
+    //... mngr.newDrvrC9r('Field', {
     //...   properties: {
-    //...     drvr
-    //...   }
+    //...     makePlaceholder (instance) {
+    //...       flag.push(3)  
+    //...     },
+    //...     makeComment (instance) {
+    //...       flag.push(4)  
+    //...     },
+    //...   }, 
     //... })
-    //... chai.expect(drvr).equal(onr.drvr)
     let _p = this.C9r_p
     ;['willRender'].forEach(K => { // closure!
       //... ;['willRender'].forEach(K => {
@@ -268,7 +346,7 @@ eYo.mixinFR(eYo.field.Dlgt_p, {
       //...         [K]: flag.decorate(1, f),
       //...       },
       //...     }, 'field', onr)
-      //...     chai.expect(drvr).equal(field.drvr)
+      //...     chai.expect(drvr).equalDrvr(field.drvr)
       //...     chai.expect(field[K]()).undefined
       //...     flag.expect(expect)
       //...   }
@@ -330,57 +408,50 @@ eYo.mixinFR(eYo.field.Dlgt_p, {
   //>>>
 })
 
-/**
- * Initializes the model of the field after it has been installed on a block.
- * No-op by default.
- */
-eYo.Field_p.initModel = eYo.doNothing
+{
+  let endEditing = { $ () {
+    var data = this.data
+    eYo.assert(data, `No data bound to field ${this.name}/${this.owner.type}`)
+    var ans = this.validate(this.text)
+    if (ans) {
+      data.fromField(ans)
+    } else {
+      this.text = data.toText()
+    }
+  }}.$
 
-/**
- * Draws the border with the correct width.
- * Saves the computed width in a property.
- * @private
- */
-eYo.Field_p.render_ = function() {
-  if (!this.visible_) {
-    this.size_.width = 0
-    return
-  }
-  var d = this.drvr
-  d && (d.textRemove(this), d.textCreate(this))
-  this.updateWidth()
-}
-
-/**
- * Updates the width of the field in the UI.
- **/
-eYo.Field_p.updateWidth = function() {
-  var d = this.drvr
-  d && (d.updateWidth(this))
-}
-
-/**
- * Validate the keyed data of the source brick.
- * Asks the data object to do so.
- * The bound data must exist.
- * @param {String} txt
- * @return {String}
- */
-eYo.Field_p.validate = function (txt) {
-  var v = this.data.validate(eYo.isDef(txt) ? txt : this.text)
-  return eYo.isVALID(v) ? v : eYo.NA
-}
-
-/**
- * Will render the field.
- * We should call `this.willRender()` from the model.
- */
-eYo.Field_p.willRender = function () {
-  var d = this.drvr
-  if (d) {
-    d.makePlaceholder(this, this.isPlaceholder)
-    d.makeComment(this, this.isComment)
-  }
+  eYo.Field$.finalizeC9r([
+    'order', // number,
+    'value', // '(',
+    'reserved', // : '.',
+    'separator', // : true, or false
+    'hidden', // : true,
+    'variable', // : true, obsolete
+    'validate', // : true,
+    'edit', // : foo,
+  ], eYo.model.manyDescriptorF(
+    'didLoad', //  () => {},
+    'willRender', //  () => {},
+  ), {
+    startEditing: {
+      [eYo.model.VALIDATE] (before, p) { // eslint-disable-line
+        return eYo.isF(before)
+          ? before
+          : before
+            ? eYo.doNothing
+            : eYo.INVALID
+      },
+    },
+    endEditing: {
+      [eYo.model.VALIDATE] (before, p) { // eslint-disable-line
+        return eYo.isF(before)
+          ? before
+          : before
+            ? endEditing
+            : eYo.INVALID
+      },
+    },
+  })
 }
 
 /**
@@ -397,6 +468,7 @@ eYo.field.newC9r('Label', {
     isLabel: true
   },
 })
+eYo.field.Label$.finalizeC9r()
 
 /**
  * Class for an editable code field.
@@ -472,49 +544,5 @@ eYo.field.newC9r('Input', {
     },
   },
 })
-{
-  let endEditing = { $ () {
-    var data = this.data
-    eYo.assert(data, `No data bound to field ${this.name}/${this.owner.type}`)
-    var ans = this.validate(this.text)
-    if (ans) {
-      data.fromField(ans)
-    } else {
-      this.text = data.toText()
-    }
-  }}.$
-
-  eYo.Field[eYo.$].finalizeC9r([
-    'order', // number,
-    'value', // '(',
-    'reserved', // : '.',
-    'separator', // : true, or false
-    'hidden', // : true,
-    'variable', // : true, obsolete
-    'validate', // : true,
-    'edit', // : foo,
-  ], eYo.model.manyDescriptorF(
-    'didLoad', //  () => {},
-    'willRender', //  () => {},
-  ), {
-    startEditing: {
-      [eYo.model.VALIDATE] (before, p) { // eslint-disable-line
-        return eYo.isF(before)
-          ? before
-          : before
-            ? eYo.doNothing
-            : eYo.INVALID
-      },
-    },
-    endEditing: {
-      [eYo.model.VALIDATE] (before, p) { // eslint-disable-line
-        return eYo.isF(before)
-          ? before
-          : before
-            ? endEditing
-            : eYo.INVALID
-      },
-    },
-  })
-}
+eYo.field.Input$.finalizeC9r()
 

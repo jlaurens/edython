@@ -740,7 +740,7 @@ eYo.mixinFR(eYo.dlgt.BaseC9r_p, {
     this.makeC9rInit()
     this.makeC9rDispose()
     eYo.mixinFR(this, {
-      finalizeC9r: eYo.oneShot('finalizeC9r cannot be called twice on the same delegate.')
+      finalizeC9r: eYo.oneShot('finalizeC9r cannot be sent twice to the same delegate.')
     })
     return ans
   }, 

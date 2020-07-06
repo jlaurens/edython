@@ -657,7 +657,7 @@ eYo.mixinFR(eYo.c9r._p, {
    */
   modelMakeC9r (model, id) {
     //<<< mochai: modelMakeC9r
-    let C9r = this.newC9r('', model)
+    let C9r = this.newC9r('', this.modelBaseC9r(model, id), model)
     C9r[eYo.$].finalizeC9r()
     model = C9r[eYo.$].model
     model[eYo.$C9r] = C9r

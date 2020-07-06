@@ -135,10 +135,10 @@ eYo.make$$('parent')
     newNS (...$) {
       //<<< mochai: newNS
       //... chai.expect(eYo.drvr.newNS).not.equal(eYo.drvr.super.newNS)
-      //... var NS1 = eYo.drvr.newNS()
-      //... chai.expect(NS1.newNS).not.equal(eYo.drvr.super.newNS)
-      //... var NS2 = NS1.newNS()
-      //... chai.expect(NS2.newNS).not.equal(eYo.drvr.super.newNS)
+      //... var mngr1 = eYo.drvr.newNS()
+      //... chai.expect(mngr1.newNS).not.equal(eYo.drvr.super.newNS)
+      //... var mngr2 = mngr1.newNS()
+      //... chai.expect(mngr2.newNS).not.equal(eYo.drvr.super.newNS)
       let NS = eYo.drvr.super.newNS.call(this, ...$)
       eYo.mixinFR(NS, {
         [$C9rMap]: new Map(),
@@ -152,15 +152,15 @@ eYo.make$$('parent')
         var parent = super$[NS.key]
         if (parent) {
           NS[eYo.$$.parent] = parent
-          //... NS1.newNS('foo')
-          //... NS2.newNS('foo')
-          //... chai.expect(NS2.foo[eYo.$$.parent]).equal(NS1.foo)
-          //... var NS3 = NS2.newNS()
-          //... NS3.newNS('foo')
-          //... chai.expect(NS3.foo[eYo.$$.parent]).equal(NS2.foo)
-          //... NS1.newNS('bar')
-          //... NS3.newNS('bar')
-          //... chai.expect(NS3.bar[eYo.$$.parent]).equal(NS1.bar)
+          //... mngr1.newNS('foo')
+          //... mngr2.newNS('foo')
+          //... chai.expect(mngr2.foo[eYo.$$.parent]).equal(mngr1.foo)
+          //... var mngr3 = mngr2.newNS()
+          //... mngr3.newNS('foo')
+          //... chai.expect(mngr3.foo[eYo.$$.parent]).equal(mngr2.foo)
+          //... mngr1.newNS('bar')
+          //... mngr3.newNS('bar')
+          //... chai.expect(mngr3.bar[eYo.$$.parent]).equal(mngr1.bar)
           break
         }
       }
@@ -309,22 +309,22 @@ eYo.make$$('parent')
       //... chai.expect(eYo.drvr.getDrvr('')[eYo.$$.target]).not.undefined
       object.eyo && (object = object.eyo.name)
       var drvrId = this.getDrvrId(object)
-      //... var NS, NS1, drvr, drvr1, target
-      //... NS = eYo.drvr.newNS()
+      //... var mngr, mngr1, drvr, drvr1, target
+      //... mngr = eYo.drvr.newNS()
       //... NAMES.forEach(ra => {
-      //...   var NS = eYo.drvr.newNS()
-      //...   let drvr = newDrvr(NS, eYo.genUID())
-      //...   NS.setDrvr(ra[0], drvr)
-      //...   chai.expect(NS.getDrvr(ra[0])[eYo.$$.target]).equal(drvr)
-      //...   chai.expect(NS.getDrvr(ra[1])[eYo.$$.target]).equal(drvr)
-      //...   chai.expect(NS.getDrvr(ra[0])[eYo.$$.target]).equal(drvr)
-      //...   chai.expect(NS.getDrvr(ra[1])[eYo.$$.target]).equal(drvr)
-      //...   var NS = eYo.drvr.newNS()
-      //...   NS.setDrvr(ra[1], drvr)
-      //...   chai.expect(NS.getDrvr(ra[0])[eYo.$$.target]).equal(drvr)
-      //...   chai.expect(NS.getDrvr(ra[1])[eYo.$$.target]).equal(drvr)
-      //...   chai.expect(NS.getDrvr(ra[0])[eYo.$$.target]).equal(drvr)
-      //...   chai.expect(NS.getDrvr(ra[1])[eYo.$$.target]).equal(drvr)
+      //...   var mngr = eYo.drvr.newNS()
+      //...   let drvr = newDrvr(mngr, eYo.genUID())
+      //...   mngr.setDrvr(ra[0], drvr)
+      //...   chai.expect(mngr.getDrvr(ra[0])[eYo.$$.target]).equal(drvr)
+      //...   chai.expect(mngr.getDrvr(ra[1])[eYo.$$.target]).equal(drvr)
+      //...   chai.expect(mngr.getDrvr(ra[0])[eYo.$$.target]).equal(drvr)
+      //...   chai.expect(mngr.getDrvr(ra[1])[eYo.$$.target]).equal(drvr)
+      //...   var mngr = eYo.drvr.newNS()
+      //...   mngr.setDrvr(ra[1], drvr)
+      //...   chai.expect(mngr.getDrvr(ra[0])[eYo.$$.target]).equal(drvr)
+      //...   chai.expect(mngr.getDrvr(ra[1])[eYo.$$.target]).equal(drvr)
+      //...   chai.expect(mngr.getDrvr(ra[0])[eYo.$$.target]).equal(drvr)
+      //...   chai.expect(mngr.getDrvr(ra[1])[eYo.$$.target]).equal(drvr)
       //... })
       //... var C9rA = eYo.drvr.newC9r()
       //... C9rA[eYo.$].finalizeC9r()
@@ -334,41 +334,49 @@ eYo.make$$('parent')
       //... C9rABC[eYo.$].finalizeC9r()
       var drvr = this[$map].get(drvrId)
       if (drvr) {
-        //... NS = eYo.drvr.newNS()
-        //... NS.setDrvrC9r('A', C9rA)
-        //... drvr = NS.getDrvr('A')
-        //... chai.expect(drvr).equal(NS.getDrvr('A'))
+        //... mngr = eYo.drvr.newNS()
+        //... mngr.setDrvrC9r('A', C9rA)
+        //... drvr = mngr.getDrvr('A')
+        //... chai.expect(drvr).equal(mngr.getDrvr('A'))
         return drvr
       }
       var saveId = drvrId
-      while(true) { // eslint-disable-line
+      // eslint-disable-next-line no-constant-condition
+      while(true) {
         var C9r = this.getDrvrC9r(drvrId)
         if (C9r) {
-          //... NS = eYo.drvr.newNS()
-          //... NS.setDrvrC9r('A', C9rA)
-          //... chai.expect(NS.getDrvrC9r('A')).equal(C9rA)
-          //... drvr = NS.getDrvr('A')
+          //... mngr = eYo.drvr.newNS()
+          //... mngr.setDrvrC9r('A', C9rA)
+          //... chai.expect(mngr.getDrvrC9r('A')).equal(C9rA)
+          //... drvr = mngr.getDrvr('A')
           //... chai.expect(drvr.eyo.C9r).equal(C9rA)
           //... chai.expect(drvr[eYo.$$.target]).instanceOf(eYo.Drvr)
           //... chai.expect(drvr[eYo.$$.target][eYo.$$.target]).undefined
           var drvr_t = new C9r(drvrId, this, ...$)
-        } else if (this.super && this.super.getDrvr) {
-          drvr_t = this.super.getDrvr(drvrId)[eYo.$$.target]
-          //... NS = eYo.drvr.newNS()
-          //... NS.setDrvrC9r('A', C9rA)
-          //... NS1 = NS.newNS()
-          //... chai.expect(NS.getDrvrC9r('A')).equal(C9rA)
-          //... chai.expect(NS1.getDrvrC9r('A')).undefined
-          //... drvr1 = NS1.getDrvr('A')
-          //... chai.expect(drvr1.eyo.C9r).equal(C9rA)
-          //... drvr = NS.getDrvr('A')
-          //... chai.expect(drvr1).not.equal(drvr)
-          //... chai.expect(drvr1[eYo.$$.target]).equal(drvr[eYo.$$.target])
+        } else {
+          var super$ = this
+          while ((super$ = super$.super) && super$.getDrvr) {
+            if ((drvr = super$[$map].get(drvrId))) {
+              drvr_t = drvr[eYo.$$.target]
+              break
+            }
+            //... mngr = eYo.drvr.newNS()
+            //... mngr.setDrvrC9r('A', C9rA)
+            //... chai.expect(mngr.getDrvrC9r('A')).equal(C9rA)
+            //... drvr = mngr.getDrvr('A')
+            //... chai.expect(drvr.eyo.C9r).equal(C9rA)
+            //... mngr1 = mngr.newNS()
+            //... chai.expect(mngr1.getDrvrC9r('A')).undefined
+            //... drvr1 = mngr1.getDrvr('A')
+            //... chai.expect(drvr1).not.equal(drvr)
+            //... chai.expect(drvr1).instanceOf(C9rA)
+            //... chai.expect(drvr1).equalDrvr(drvr)
+          }
         }
         if (drvr_t) {
-          //... NS = eYo.drvr.newNS()
-          //... NS.setDrvrC9r('A', C9rA)
-          //... drvr = NS.getDrvr('A')
+          //... mngr = eYo.drvr.newNS()
+          //... mngr.setDrvrC9r('A', C9rA)
+          //... drvr = mngr.getDrvr('A')
           //... var drvr_t = drvr[eYo.$$.target]
           //... chai.expect(drvr.eyo).equal(drvr_t.eyo)
           //... chai.expect(drvr.ns).equal(drvr_t.ns)
@@ -379,42 +387,51 @@ eYo.make$$('parent')
           drvrId = m['parentId']
           drvr = this[$map].get(drvrId)
           if (drvr) {
-            //... NS = eYo.drvr.newNS()
-            //... NS.setDrvrC9r('A', C9rA)
-            //... target = NS.getDrvr('A')[eYo.$$.target]
-            //... chai.expect(NS.getDrvr('A')[eYo.$$.target]).equal(target)
-            //... chai.expect(NS.getDrvr('A.B')[eYo.$$.target]).not.equal(target)
-            //... chai.expect(NS.getDrvr('A.B.C')[eYo.$$.target]).not.equal(target)
-            //... target = eYo.drvr.getDrvr('A')[eYo.$$.target]
-            //... chai.expect(NS.getDrvr('A.B')[eYo.$$.target]).equal(target)
-            //... chai.expect(NS.getDrvr('A.B.C')[eYo.$$.target]).equal(target)
+            //... mngr = eYo.drvr.newNS()
+            //... mngr.setDrvrC9r('A', C9rA)
+            //... drvr = mngr.getDrvr('A')
+            //... chai.expect(mngr.getDrvr('A')).equalDrvr(drvr)
+            //... chai.expect(mngr.getDrvr('A.B')).equalDrvr(drvr)
+            //... chai.expect(mngr.getDrvr('A.B.C')).equalDrvr(drvr)
+            //... mngr = eYo.drvr.newNS()
+            //... mngr.setDrvrC9r('A', C9rA)
+            //... mngr.setDrvrC9r('A.B', C9rAB)
+            //... chai.expect(mngr.getDrvr('A.B')).not.equalDrvr(mngr.getDrvr('A'))
+            //... chai.expect(mngr.getDrvr('A.B.C')).equalDrvr(mngr.getDrvr('A.B'))
+            //... mngr = eYo.drvr.newNS()
+            //... mngr.setDrvrC9r('A', C9rA)
+            //... mngr.setDrvrC9r('A.B', C9rAB)
+            //... mngr.setDrvrC9r('A.B.C', C9rABC)
+            //... chai.expect(mngr.getDrvr('A.B')).not.equalDrvr(mngr.getDrvr('A'))
+            //... chai.expect(mngr.getDrvr('A.B.C')).not.equalDrvr(mngr.getDrvr('A.B'))
             return this.setDrvr(saveId, drvr[eYo.$$.target])
           }
         } else {
-          //... NS = eYo.drvr.newNS()
-          //... drvr = NS.getDrvr('')
-          //... chai.expect(drvr).equal(NS.getDrvr(''))
+          //... mngr = eYo.drvr.newNS()
+          //... drvr = mngr.getDrvr('')
+          //... chai.expect(drvr).equal(mngr.getDrvr(''))
           //... target = drvr[eYo.$$.target]
-          //... chai.expect(NS.getDrvr('A')[eYo.$$.target]).equal(target)
-          //... chai.expect(NS.getDrvr('A.B')[eYo.$$.target]).equal(target)
-          //... chai.expect(NS.getDrvr('A.B.C')[eYo.$$.target]).equal(target)
+          //... chai.expect(mngr.getDrvr('A')[eYo.$$.target]).equal(target)
+          //... chai.expect(mngr.getDrvr('A.B')[eYo.$$.target]).equal(target)
+          //... chai.expect(mngr.getDrvr('A.B.C')[eYo.$$.target]).equal(target)
           if ((drvr = this[$map].get(''))) {
-            return this.setDrvr(saveId, drvr[eYo.$$.target])
+            drvr_t = drvr[eYo.$$.target]
+          } else {
+            drvr_t = this.new('')
+            this.setDrvr('', drvr_t)
           }
-          drvr_t = this.new('')
-          this.setDrvr('', drvr_t)
           return this.setDrvr(saveId, drvr_t)
         }
-        //... NS = eYo.drvr.newNS()
-        //... NS.setDrvrC9r('A', C9rA)
-        //... var drvr = NS.getDrvr({
+        //... mngr = eYo.drvr.newNS()
+        //... mngr.setDrvrC9r('A', C9rA)
+        //... var drvr = mngr.getDrvr({
         //...   eyo: {
         //...     name: `${eYo.genUID(eYo.IDENT)}.${eYo.genUID(eYo.IDENT)}`,
         //...   },
         //... })
-        //... chai.expect(drvr[eYo.$$.target]).equal(eYo.drvr.getDrvr('')[eYo.$$.target])
-        //... var drvr = NS.getDrvr(`${eYo.genUID(eYo.IDENT)}.${eYo.genUID(eYo.IDENT)}`)
-        //... chai.expect(drvr[eYo.$$.target]).equal(NS.getDrvr('')[eYo.$$.target])
+        //... chai.expect(drvr).equalDrvr(mngr.getDrvr(''))
+        //... var drvr = mngr.getDrvr(`${eYo.genUID(eYo.IDENT)}.${eYo.genUID(eYo.IDENT)}`)
+        //... chai.expect(drvr).equalDrvr(mngr.getDrvr(''))
       }
       //>>>
     },
@@ -472,8 +489,8 @@ eYo.c9r.newC9r(eYo.drvr, eYo.$$.Handler, {
       eYo.throw(`${target.eyo.name} instances are frozen (no deleteProperty).`)
     },
     //<<< mochai: frozen or forbidden
-    //... let NS = eYo.drvr.newNS()
-    //... let d = newDrvr(NS, 'drvr')
+    //... let mngr = eYo.drvr.newNS()
+    //... let d = newDrvr(mngr, 'drvr')
     //... chai.expect(() => d()).throw()
     //... chai.expect(() => new d()).throw()
     //... chai.expect(() => d.defineProperty()).throw()
@@ -483,9 +500,9 @@ eYo.c9r.newC9r(eYo.drvr, eYo.$$.Handler, {
       //<<< mochai: get
       if (prop === eYo.$$.target && !eYo.objectHasOwnProperty(target, prop)) {
         return target
-        //... var NS = eYo.drvr.newNS()
+        //... var mngr = eYo.drvr.newNS()
         //... var seed = eYo.genUID(eYo.IDENT)
-        //... var d = newDrvr(NS, 'X' + seed)
+        //... var d = newDrvr(mngr, 'X' + seed)
         //... chai.expect(d[eYo.$$.target]).instanceOf(eYo.Drvr)
         //... chai.expect(d.eyo).not.undefined
         //... chai.expect(d.eyo).equal(d[eYo.$$.target].eyo)
@@ -529,10 +546,10 @@ eYo.c9r.newC9r(eYo.drvr, eYo.$$.Handler, {
               if (eYo.objectHasOwnProperty(C9r.prototype, prop)) {
                 ra.push(C9r.prototype[prop])
               }
-              //... var NS = eYo.drvr.newNS()
+              //... var mngr = eYo.drvr.newNS()
               //... var seed = eYo.genUID(eYo.IDENT)
               //... var drvrId = 'X' + seed
-              //... var d = newDrvr(NS, drvrId, {
+              //... var d = newDrvr(mngr, drvrId, {
               //...   methods: {
               //...     foo (...$) {
               //...       flag.push(1, ...$)
@@ -556,9 +573,9 @@ eYo.c9r.newC9r(eYo.drvr, eYo.$$.Handler, {
       })()
       ans_f && this.cache.set(prop, ans_f)
       return ans_f
-      //... var NS = eYo.drvr.newNS()
+      //... var mngr = eYo.drvr.newNS()
       //... var seed = eYo.genUID(eYo.IDENT)
-      //... var d = newDrvr(NS, 'X' + seed, {
+      //... var d = newDrvr(mngr, 'X' + seed, {
       //...   methods: {
       //...     do_it_1 (...$) {
       //...       flag.push(1, ...$)  
@@ -622,9 +639,9 @@ eYo.mixinFR(eYo.drvr._p, {
     var C9r = eYo.drvr.super._p.makeBaseC9r.call(this, ...$)
     this.setDrvrC9r('', C9r)
     return C9r
-    //... let NS = eYo.drvr.newNS()
-    //... let C9r = NS.makeBaseC9r()
-    //... chai.expect(C9r).equal(NS.getDrvrC9r(''))
+    //... let mngr = eYo.drvr.newNS()
+    //... let C9r = mngr.makeBaseC9r()
+    //... chai.expect(C9r).equal(mngr.getDrvrC9r(''))
     //>>>
   },
   /**
@@ -669,9 +686,9 @@ eYo.drvr.makeBaseC9r(true, {
       //... chai.expect(drvr.mngr).equal(onr)
       //... chai.expect(() => drvr.mngr_ = 'bar').throw()
       //... chai.expect(() => drvr.mngr = 'bar').throw()
-      //... let ns = eYo.drvr.newNS()
-      //... ns.makeBaseC9r()
-      //... driver = ns.new({}, 'foo', onr)
+      //... let mngr = eYo.drvr.newNS()
+      //... mngr.makeBaseC9r()
+      //... driver = mngr.new({}, 'foo', onr)
       //... chai.expect(drvr.owner).equal(onr)
       //... chai.expect(drvr.mngr).equal(onr)
       //... chai.expect(() => drvr.mngr_ = 'bar').throw()
@@ -728,8 +745,8 @@ eYo.mixinFR(eYo.Drvr$._p, {
    */
   uiMerge (model) {
     //<<< mochai: eYo.Drvr$._p.uiMerge
-    //... var NS = eYo.drvr.newNS()
-    //... NS.newDrvrC9r('Foo', {
+    //... var mngr = eYo.drvr.newNS()
+    //... mngr.newDrvrC9r('Foo', {
     //...   init (key, owner, ...$) {
     //...     owner.flag(...$, 4)
     //...   },
@@ -741,14 +758,14 @@ eYo.mixinFR(eYo.Drvr$._p, {
     //...     what.flag(...$, 4)
     //...   },
     //... })
-    //... var foo = new NS.Foo('foo', onr, 2, 3)
+    //... var foo = new mngr.Foo('foo', onr, 2, 3)
     //... flag.expect(1234)
     //... chai.expect(foo.do_initUI(onr, 3, 4)).true
     //... flag.expect(1234)
     //... foo.do_disposeUI(onr, 2, 3)
     //... flag.expect(1234)
-    //... var NS = eYo.drvr.newNS()
-    //... var d = newDrvr(NS, 'X', {
+    //... var mngr = eYo.drvr.newNS()
+    //... var d = newDrvr(mngr, 'X', {
     //...   do_initUI(onr, ...$) {
     //...     onr.flag(2, ...$)
     //...   },
@@ -797,6 +814,7 @@ eYo.mixinFR(eYo.o4t.Dlgt_p, {
    */
   drvrEnhanced () {
     //<<< mochai: drvrEnhanced
+    //<<< mochai: Basics
     //... let mngr = eYo.drvr.newNS()
     //... mngr.makeBaseC9r({
     //...   methods: {
@@ -832,7 +850,7 @@ eYo.mixinFR(eYo.o4t.Dlgt_p, {
     //... flag.expect(123)
     //... driven.push2(4, 6)
     //... flag.expect(246)
-    
+    //>>>
     this.p6yMerge({
       /**
        * The driver of the receiver
@@ -844,6 +862,68 @@ eYo.mixinFR(eYo.o4t.Dlgt_p, {
           return mngr.getDrvr(this)
         },
       },
+    })
+    let SuperC9r_p = this.C9r[eYo.$SuperC9r_p]
+    eYo.mixinFR(this.C9r_p, {
+      /**
+       * Hook for owner change
+       * @param {Object} before 
+       * @param {Object} after 
+       */
+      ownerDidChange:
+        //<<< mochai: ownerDidChange
+        //... let mngr1 = eYo.drvr.newNS()
+        //... mngr1.makeBaseC9r({
+        //...   methods: {
+        //...     do_push (instance, ...$) {
+        //...       flag.push(1, ...$)
+        //...     },
+        //...   },
+        //... })
+        //... setup({
+        //...   properties: {
+        //...     drvr: mngr1.getDrvr(''),
+        //...   },
+        //... })
+        //... let ns = eYo.o4t.newNS()
+        //... ns.makeBaseC9r(true)
+        //... mngr1.makeForwarder(ns.BaseC9r_p, 'push')
+        //... ns.BaseC9r$.drvrEnhanced()
+        //... ns.BaseC9r$.finalizeC9r()    
+        //... let foo = ns.new({}, 'foo', onr)
+        //... chai.expect(foo.drvr.do_push).eyo_F
+        //... foo.push(2, 3)
+        //... flag.expect(123)
+        //... let mngr2 = eYo.drvr.newNS()
+        //... mngr2.makeBaseC9r({
+        //...   methods: {
+        //...     do_push (instance, ...$) {
+        //...       flag.push(2, ...$)
+        //...     },
+        //...   },
+        //... })
+        //... setup({
+        //...   properties: {
+        //...     drvr: mngr2.getDrvr(''),
+        //...   },
+        //... })
+        //... foo.owner_ = onr
+        //... chai.expect(foo.drvr.do_push).eyo_F
+        //... foo.push(3, 4)
+        //... flag.expect(234)
+        SuperC9r_p ? {
+          $ (before, after) {
+            SuperC9r_p.ownerDidChange.call(this, before, after)
+            this.drvr_p.reset()
+          }
+        }.$ : {
+          $ (before, after) {
+            SuperC9r_p.ownerDidChange.call(this, before, after)
+            this.drvr_p.reset()
+          }
+        }.$
+        //>>>
+      ,
     })
     //>>>
   },
