@@ -11,6 +11,7 @@
  */
 'use strict'
 
+eYo.require('drvr')
 eYo.forward('changer')
 
 /**
@@ -54,25 +55,27 @@ eYo.o4t.newNS(eYo, 'fsm', {
  * @readonly
  * @property {eYo.magnet.BaseC9r} magnet - The magnet.
  */
-eYo.fsm.makeBaseC9r({
-  init (key, owner) {
+eYo.fsm.makeBaseC9r(true, {
+  init (key, owner) { // eslint-disable-line
     this.resetBSM(owner)
   },
   aliases: {
     //<<< mochai: aliases
-    //... let ns = eYo.fsm.newNS()
-    //... ns.makeBaseC9r()
+    //... let mngr = eYo.drvr.newNS()
+    //... let drvr = mngr.getDrvr('')
     //... setup({
     //...   properties: {
     //...     ui: 421,
-    //...     drvr: 666,
-    //...   },
+    //...     drvr,
+    //...   }
     //... })
+    //... let ns = eYo.fsm.newNS()
+    //... ns.makeBaseC9r()
     //... var fsm = ns.new({}, 'fsm', onr)
     //... chai.expect(fsm.brick).equal(onr)
     'brick.ui': 'ui',
     //... chai.expect(onr.ui).equal(fsm.ui)
-    //... chai.expect(onr.drvr).equal(fsm.drvr)
+    //... chai.expect(onr.drvr).equalDrvr(fsm.drvr)
     'brick.drvr': 'drvr',
     //>>>
   },
@@ -161,3 +164,35 @@ eYo.fsm.makeBaseC9r({
   },
 })
 
+eYo.Fsm$.drvrEnhanced()
+//<<< mochai: drvrEnhanced
+//... let mngr = eYo.drvr.newNS()
+//... mngr.makeBaseC9r()
+//... let drvr = mngr.getDrvr('')
+//... setup({
+//...   properties: {
+//...     drvr
+//...   }
+//... })
+//... chai.expect(onr.drvr).equalDrvr(drvr)
+//... let ns = eYo.fsm.newNS()
+//... let fsm = ns.new({}, 'fsm', onr)
+//... chai.expect(fsm.drvr).not.equalDrvr(drvr)
+//... chai.expect(fsm.drvr).equalDrvr(eYo.drvr.getDrvr(''))
+//... mngr.newDrvrC9r('Foo', {
+//...   methods: {
+//...     do_push (instance, ...$) {
+//...       flag.push(1, ...$)
+//...     },
+//...   },
+//... })
+//... let NS = ns.newNS('foo')
+//... chai.expect(NS.makeBaseC9r(true)).equal(ns.Foo)
+//... chai.expect(ns.Foo_p).not.undefined
+//... mngr.makeForwarder(ns.Foo_p, 'push')
+//... ns.Foo$.finalizeC9r()
+//... let foo = new ns.Foo('foo', onr)
+//... foo.push(2, 3)
+//... flag.expect(123)
+//>>>
+eYo.Fsm$.finalizeC9r()

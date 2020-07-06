@@ -189,12 +189,11 @@ chai.Assertion.addMethod('hasProxyTarget', function (expected) {
   )
 })
 
-chai.Assertion.addMethod('hasSameProxyTarget', function (drvr) {
-  this.hasProxyTarget(drvr[eYo.$$.target])
-})
-
 chai.use(function (_chai, utils) {
   // language chain method
+  chai.Assertion.addMethod('equalDrvr', function (drvr) {
+    this.hasProxyTarget(drvr[eYo.$$.target])
+  })
   chai.Assertion.addMethod('eqlPoint', function (expected) {
     var actual = this._obj
 

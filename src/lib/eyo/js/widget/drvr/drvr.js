@@ -825,8 +825,8 @@ eYo.mixinFR(eYo.o4t.Dlgt_p, {
     //... ns.newC9r('Foo')
     //... ns.Foo$.drvrEnhanced()
     //... ns.Foo$.finalizeC9r()    
-    //... eYo.drvr.makeForwarder(ns.Foo_p, 'push1')
-    //... eYo.drvr.makeForwarder(ns.Foo_p, 'push2')
+    //... mngr.makeForwarder(ns.Foo_p, 'push1')
+    //... mngr.makeForwarder(ns.Foo_p, 'push2')
     //... let driven = new ns.Foo('foo', onr)
     //... driven.push1(2, 3)
     //... flag.expect(123)
@@ -840,7 +840,7 @@ eYo.mixinFR(eYo.o4t.Dlgt_p, {
       drvr: {
         lazy () {
           let onr = this.owner
-          let mngr = onr ? onr.drvr.mngr: eYo.driver
+          let mngr = onr ? onr.drvr.mngr: eYo.drvr
           return mngr.getDrvr(this)
         },
       },

@@ -451,7 +451,6 @@ Miscellaneous:
 --js "eyo/js/py/parser.js" \
 --js "eyo/js/widget/data/data.js" \
 --js "eyo/js/widget/drvr/drvr.js" \
---js "eyo/js/widget/fsm/fsm.js" \
 --js "eyo/js/widget/span/span.js" \
 --js "eyo/js/widget/widget.js" \
 --js "eyo/js/application/desk/board/metrics/metrics.js" \
@@ -465,9 +464,8 @@ Miscellaneous:
 --js "eyo/js/module/module.js" \
 --js "eyo/js/py/parsetok.js" \
 --js "eyo/js/py/tokenizer.js" \
---js "eyo/js/widget/field/field.js" \
+--js "eyo/js/widget/fsm/fsm.js" \
 --js "eyo/js/widget/magnet/magnet.js" \
---js "eyo/js/widget/slot/slot.js" \
 --js "eyo/js/application/abstract/control.js" \
 --js "eyo/js/application/desk/board/board.js" \
 --js "eyo/js/application/desk/board/brick_util/brick_events.js" \
@@ -530,7 +528,9 @@ Miscellaneous:
 --js "eyo/js/module/profile.js" \
 --js "eyo/js/other/scaler.js" \
 --js "eyo/js/widget/brick/brick.js" \
+--js "eyo/js/widget/field/field.js" \
 --js "eyo/js/widget/shape/shape.js" \
+--js "eyo/js/widget/slot/slot.js" \
 --js "eyo/js/application/desk/board/brick_util/navigate.js" \
 --js "eyo/js/application/desk/board/brick_util/python_exporter.js" \
 --js "eyo/js/application/desk/workspace/flyout/flyout-toolbar.js" \
