@@ -11,6 +11,21 @@
  */
 'use strict'
 
+eYo.mixinFR(eYo._p, {
+  /**
+   * Whether the argument is a property instance.
+   * @param {*} what 
+   */
+  isOwner (what) {
+    return eYo.isaC9r(what) || eYo.isNS(what)
+    //<<< mochai: isOwner (what)
+    //... chai.expect(eYo.isOwner(true)).false
+    //... chai.expect(eYo.isOwner(new eYo.c9r.BaseC9r())).true
+    //... chai.expect(eYo.isOwner(eYo.newNS())).true
+    //>>>
+  }
+})
+
 /**
  * Namespace for owned objects.
  * Quite all the objects are owned.
@@ -73,7 +88,7 @@ eYo.mixinFR(eYo._p, {
  */
 eYo.o3d.Dlgt_p.o3dInitInstance = function (instance, key, owner, configurable) {
   eYo.isId(key) || eYo.throw(`${this.eyo.name}: Bad key in init`)
-  if (!eYo.isaC9r(owner)) {
+  if (!eYo.isOwner(owner)) {
     eYo.isNA(configurable) || eYo.throw(`${this.name}.o3dInitInstance: Unexpected argument (${configurable})`)
     ;[owner, configurable] = [this.ns, owner]
   }
