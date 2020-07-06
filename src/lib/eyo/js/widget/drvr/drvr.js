@@ -245,44 +245,44 @@ eYo.make$$('parent')
       Drvr[eYo.$].finalizeC9r()
       return this.setDrvrC9r(id, Drvr)
       //... NAMES.forEach(ra => {
-      //...   var NS = eYo.drvr.newNS()
-      //...   var Drvr = NS.newDrvrC9r(ra[0])
-      //...   chai.expect(Drvr).equal(NS[ra[0]])
-      //...   var NS = eYo.drvr.newNS()
-      //...   var Drvr = NS.newDrvrC9r(ra[1])
-      //...   chai.expect(Drvr).equal(NS[ra[1]])
+      //...   var mngr = eYo.drvr.newNS()
+      //...   var Drvr = mngr.newDrvrC9r(ra[0])
+      //...   chai.expect(Drvr).equal(mngr[ra[0]])
+      //...   var mngr = eYo.drvr.newNS()
+      //...   var Drvr = mngr.newDrvrC9r(ra[1])
+      //...   chai.expect(Drvr).equal(mngr[ra[1]])
       //... })
-      //... var NS = eYo.drvr.newNS()
+      //... var mngr = eYo.drvr.newNS()
       //... var id = `X${eYo.genUID(eYo.IDENT)}`
-      //... var D1 = NS.newDrvrC9r(id)
-      //... chai.expect(D1).equal(NS[id])
-      //... var Drvr = NS.getDrvrC9r(id)
+      //... var D1 = mngr.newDrvrC9r(id)
+      //... chai.expect(D1).equal(mngr[id])
+      //... var Drvr = mngr.getDrvrC9r(id)
       //... chai.expect(D1).equal(Drvr)
-      //... var drvr = NS.getDrvr(id)
+      //... var drvr = mngr.getDrvr(id)
       //... chai.expect(drvr).instanceOf(Drvr)
       //... var id = `X${eYo.genUID(eYo.IDENT)}`
-      //... var D2 = NS.newDrvrC9r(id, D1)
-      //... var Drvr = NS.getDrvrC9r(id)
+      //... var D2 = mngr.newDrvrC9r(id, D1)
+      //... var Drvr = mngr.getDrvrC9r(id)
       //... chai.expect(D2).equal(Drvr)
-      //... var drvr = NS.getDrvr(id)
+      //... var drvr = mngr.getDrvr(id)
       //... chai.expect(drvr).instanceOf(D1)
       //... chai.expect(drvr).instanceOf(D2)
       //... var id = eYo.genUID(eYo.IDENT)
-      //... NS.newDrvrC9r(id, {
+      //... mngr.newDrvrC9r(id, {
       //...   do_initUI (onr, ...$) {
       //...     onr.flag(2, ...$)
       //...   },
       //... })
-      //... var drvr = NS.getDrvr(id)
+      //... var drvr = mngr.getDrvr(id)
       //... drvr.do_initUI(onr, 3, 4)
       //... flag.expect(1234)
       //... var id = eYo.genUID(eYo.IDENT)
-      //... NS.newDrvrC9r(id, {
+      //... mngr.newDrvrC9r(id, {
       //...   do_disposeUI (onr, ...$) {
       //...     onr.flag(2, ...$)
       //...   },
       //... })
-      //... var drvr = NS.getDrvr(id)
+      //... var drvr = mngr.getDrvr(id)
       //... drvr.do_disposeUI(onr, 3, 4)
       //... flag.expect(1234)
       //>>>
@@ -294,7 +294,13 @@ eYo.make$$('parent')
      * @return {eYo.drvr.BaseC9r}
      */
     newDrvrProxy_ (target) {
-      return new Proxy(target, new eYo.drvr[eYo.$$.Handler]())
+      let handler = new eYo.drvr[eYo.$$.Handler]('', this)
+      let ans = new Proxy(target, handler)
+      if (ans.mngr !== this) {
+        console.error('ERROR: BREAK HERE !!!')
+        new eYo.drvr[eYo.$$.Handler]('', this)
+      }
+      return ans
     },
     /**
      * @name{getDrvr}
@@ -453,7 +459,7 @@ eYo.make$$('parent')
 
 eYo.make$$('parentId', 'Handler')
 
-eYo.c9r.newC9r(eYo.drvr, eYo.$$.Handler, {
+eYo.o3d.newC9r(eYo.drvr, eYo.$$.Handler, {
   //<<< mochai: eYo.drvr[eYo.$$.Handler]
   //<<< mochai: Basics
   //... chai.expect(eYo.drvr).property(eYo.$$.Handler)
@@ -461,7 +467,8 @@ eYo.c9r.newC9r(eYo.drvr, eYo.$$.Handler, {
   /**
    * Handler for real driver proxy.
    */
-  init () {
+  // eslint-disable-next-line no-unused-vars
+  init (key, owner) {
     //<<< mochai: init
     this.cache = new Map()
     //>>>
@@ -513,6 +520,18 @@ eYo.c9r.newC9r(eYo.drvr, eYo.$$.Handler, {
       }
       if (prop === eYo.$p6y) {
         return this[prop]
+      }
+      if (prop === 'mngr') {
+        return this.owner
+        //... chai.expect(eYo.drvr.getDrvr('').mngr).equal(eYo.drvr)
+        //... var mngr = eYo.drvr.newNS()
+        //... chai.expect(mngr.getDrvr('').mngr).equal(mngr)
+        //... var mngr_mngr = mngr.newNS()
+        //... chai.expect(mngr_mngr.getDrvr('').mngr).equal(mngr_mngr)
+        //... mngr.newDrvrC9r('Foo')
+        //... chai.expect(mngr.getDrvr('Foo').mngr).equal(mngr)
+        //... mngr_mngr.newDrvrC9r('Foo')
+        //... chai.expect(mngr_mngr.getDrvr('Foo').mngr).equal(mngr_mngr)
       }
       ans = Reflect.get(target, prop)
       if (eYo.isDef(ans) && !eYo.isF(ans)) {
@@ -612,7 +631,7 @@ eYo.c9r.newC9r(eYo.drvr, eYo.$$.Handler, {
     set(target, prop, value) {
       //<<< mochai: set
       //... let drvr = new eYo.O4t('drvr', onr)
-      //... let handler = new eYo.drvr[eYo.$$.Handler]()
+      //... let handler = new eYo.drvr[eYo.$$.Handler]('', onr)
       //... let p = new Proxy(drvr, handler)
       if (prop === eYo.$p6y) {
         this[prop] = value
@@ -863,68 +882,73 @@ eYo.mixinFR(eYo.o4t.Dlgt_p, {
         },
       },
     })
-    let SuperC9r_p = this.C9r[eYo.$SuperC9r_p]
-    eYo.mixinFR(this.C9r_p, {
-      /**
-       * Hook for owner change
-       * @param {Object} before 
-       * @param {Object} after 
-       */
-      ownerDidChange:
-        //<<< mochai: ownerDidChange
-        //... let mngr1 = eYo.drvr.newNS()
-        //... mngr1.makeBaseC9r({
-        //...   methods: {
-        //...     do_push (instance, ...$) {
-        //...       flag.push(1, ...$)
-        //...     },
-        //...   },
-        //... })
-        //... setup({
-        //...   properties: {
-        //...     drvr: mngr1.getDrvr(''),
-        //...   },
-        //... })
-        //... let ns = eYo.o4t.newNS()
-        //... ns.makeBaseC9r(true)
-        //... mngr1.makeForwarder(ns.BaseC9r_p, 'push')
-        //... ns.BaseC9r$.drvrEnhanced()
-        //... ns.BaseC9r$.finalizeC9r()    
-        //... let foo = ns.new({}, 'foo', onr)
-        //... chai.expect(foo.drvr.do_push).eyo_F
-        //... foo.push(2, 3)
-        //... flag.expect(123)
-        //... let mngr2 = eYo.drvr.newNS()
-        //... mngr2.makeBaseC9r({
-        //...   methods: {
-        //...     do_push (instance, ...$) {
-        //...       flag.push(2, ...$)
-        //...     },
-        //...   },
-        //... })
-        //... setup({
-        //...   properties: {
-        //...     drvr: mngr2.getDrvr(''),
-        //...   },
-        //... })
-        //... foo.owner_ = onr
-        //... chai.expect(foo.drvr.do_push).eyo_F
-        //... foo.push(3, 4)
-        //... flag.expect(234)
-        SuperC9r_p ? {
-          $ (before, after) {
-            SuperC9r_p.ownerDidChange.call(this, before, after)
-            this.drvr_p.reset()
-          }
-        }.$ : {
-          $ (before, after) {
-            SuperC9r_p.ownerDidChange.call(this, before, after)
-            this.drvr_p.reset()
-          }
-        }.$
-        //>>>
-      ,
-    })
+    let _p = this.C9r_p
+    let f_p = _p.ownerDidChange
+    /**
+     * Hook for owner change
+     * @name {ownerDidChange}
+     * @param {Object} before 
+     * @param {Object} after 
+     */
+    //<<< mochai: ownerDidChange
+    var model
+    if (f_p) {
+      model = {
+        $ (before, after) {
+          f_p.call(this, before, after)
+          this.drvr_p.reset()
+        }
+      }  
+    } else {
+      model = {
+        // eslint-disable-next-line no-unused-vars
+        $ (before, after) {
+          this.drvr_p.reset()
+        }
+      }  
+    }
+    _p.ownerDidChange = model.$
+    //... let mngr1 = eYo.drvr.newNS()
+    //... mngr1.makeBaseC9r({
+    //...   methods: {
+    //...     do_push (instance, ...$) {
+    //...       flag.push(1, ...$)
+    //...     },
+    //...   },
+    //... })
+    //... setup({
+    //...   properties: {
+    //...     drvr: mngr1.getDrvr(''),
+    //...   },
+    //... })
+    //... let ns = eYo.o4t.newNS()
+    //... ns.makeBaseC9r(true)
+    //... mngr1.makeForwarder(ns.BaseC9r_p, 'push')
+    //... ns.BaseC9r$.drvrEnhanced()
+    //... ns.BaseC9r$.finalizeC9r()    
+    //... let foo = ns.new({}, 'foo', onr)
+    //... chai.expect(foo.drvr.do_push).eyo_F
+    //... foo.push(2, 3)
+    //... flag.expect(123)
+    //... let mngr2 = eYo.drvr.newNS()
+    //... mngr2.makeBaseC9r({
+    //...   methods: {
+    //...     do_push (instance, ...$) {
+    //...       flag.push(2, ...$)
+    //...     },
+    //...   },
+    //... })
+    //... setup({
+    //...   properties: {
+    //...     drvr: mngr2.getDrvr(''),
+    //...   },
+    //... })
+    //... foo.owner_ = onr
+    //... chai.expect(foo.drvr.do_push).eyo_F
+    //... foo.push(3, 4)
+    //... flag.expect(234)
+    //>>>
+
     //>>>
   },
   //>>>
