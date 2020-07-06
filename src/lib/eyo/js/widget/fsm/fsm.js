@@ -177,8 +177,7 @@ eYo.Fsm$.drvrEnhanced()
 //... chai.expect(onr.drvr).equalDrvr(drvr)
 //... let ns = eYo.fsm.newNS()
 //... let fsm = ns.new({}, 'fsm', onr)
-//... chai.expect(fsm.drvr).not.equalDrvr(drvr)
-//... chai.expect(fsm.drvr).equalDrvr(eYo.drvr.getDrvr(''))
+//... chai.expect(fsm.drvr).equalDrvr(drvr)
 //... mngr.newDrvrC9r('Foo', {
 //...   methods: {
 //...     do_push (instance, ...$) {
