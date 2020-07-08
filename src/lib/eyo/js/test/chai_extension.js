@@ -191,7 +191,7 @@ chai.Assertion.addMethod('hasProxyTarget', function (expected) {
 
 chai.use(function (_chai, utils) {
   // language chain method
-  chai.Assertion.addMethod('equalDrvr', function (drvr) {
+  chai.Assertion.addMethod('eqlDrvr', function (drvr) {
     this.hasProxyTarget(drvr[eYo.$$.target])
   })
   chai.Assertion.addMethod('eqlPoint', function (expected) {

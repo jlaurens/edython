@@ -376,7 +376,7 @@ eYo.make$$('parent')
             //... drvr1 = mngr1.getDrvr('A')
             //... chai.expect(drvr1).not.equal(drvr)
             //... chai.expect(drvr1).instanceOf(C9rA)
-            //... chai.expect(drvr1).equalDrvr(drvr)
+            //... chai.expect(drvr1).eqlDrvr(drvr)
           }
         }
         if (drvr_t) {
@@ -396,20 +396,20 @@ eYo.make$$('parent')
             //... mngr = eYo.drvr.newNS()
             //... mngr.setDrvrC9r('A', C9rA)
             //... drvr = mngr.getDrvr('A')
-            //... chai.expect(mngr.getDrvr('A')).equalDrvr(drvr)
-            //... chai.expect(mngr.getDrvr('A.B')).equalDrvr(drvr)
-            //... chai.expect(mngr.getDrvr('A.B.C')).equalDrvr(drvr)
+            //... chai.expect(mngr.getDrvr('A')).eqlDrvr(drvr)
+            //... chai.expect(mngr.getDrvr('A.B')).eqlDrvr(drvr)
+            //... chai.expect(mngr.getDrvr('A.B.C')).eqlDrvr(drvr)
             //... mngr = eYo.drvr.newNS()
             //... mngr.setDrvrC9r('A', C9rA)
             //... mngr.setDrvrC9r('A.B', C9rAB)
-            //... chai.expect(mngr.getDrvr('A.B')).not.equalDrvr(mngr.getDrvr('A'))
-            //... chai.expect(mngr.getDrvr('A.B.C')).equalDrvr(mngr.getDrvr('A.B'))
+            //... chai.expect(mngr.getDrvr('A.B')).not.eqlDrvr(mngr.getDrvr('A'))
+            //... chai.expect(mngr.getDrvr('A.B.C')).eqlDrvr(mngr.getDrvr('A.B'))
             //... mngr = eYo.drvr.newNS()
             //... mngr.setDrvrC9r('A', C9rA)
             //... mngr.setDrvrC9r('A.B', C9rAB)
             //... mngr.setDrvrC9r('A.B.C', C9rABC)
-            //... chai.expect(mngr.getDrvr('A.B')).not.equalDrvr(mngr.getDrvr('A'))
-            //... chai.expect(mngr.getDrvr('A.B.C')).not.equalDrvr(mngr.getDrvr('A.B'))
+            //... chai.expect(mngr.getDrvr('A.B')).not.eqlDrvr(mngr.getDrvr('A'))
+            //... chai.expect(mngr.getDrvr('A.B.C')).not.eqlDrvr(mngr.getDrvr('A.B'))
             return this.setDrvr(saveId, drvr[eYo.$$.target])
           }
         } else {
@@ -435,9 +435,9 @@ eYo.make$$('parent')
         //...     name: `${eYo.genUID(eYo.IDENT)}.${eYo.genUID(eYo.IDENT)}`,
         //...   },
         //... })
-        //... chai.expect(drvr).equalDrvr(mngr.getDrvr(''))
+        //... chai.expect(drvr).eqlDrvr(mngr.getDrvr(''))
         //... var drvr = mngr.getDrvr(`${eYo.genUID(eYo.IDENT)}.${eYo.genUID(eYo.IDENT)}`)
-        //... chai.expect(drvr).equalDrvr(mngr.getDrvr(''))
+        //... chai.expect(drvr).eqlDrvr(mngr.getDrvr(''))
       }
       //>>>
     },

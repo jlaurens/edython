@@ -75,7 +75,7 @@ eYo.fsm.makeBaseC9r(true, {
     //... chai.expect(fsm.brick).equal(onr)
     'brick.ui': 'ui',
     //... chai.expect(onr.ui).equal(fsm.ui)
-    //... chai.expect(onr.drvr).equalDrvr(fsm.drvr)
+    //... chai.expect(onr.drvr).eqlDrvr(fsm.drvr)
     'brick.drvr': 'drvr',
     //>>>
   },
@@ -174,10 +174,10 @@ eYo.Fsm$.drvrEnhanced()
 //...     drvr
 //...   }
 //... })
-//... chai.expect(onr.drvr).equalDrvr(drvr)
+//... chai.expect(onr.drvr).eqlDrvr(drvr)
 //... let ns = eYo.fsm.newNS()
 //... let fsm = ns.new({}, 'fsm', onr)
-//... chai.expect(fsm.drvr).equalDrvr(drvr)
+//... chai.expect(fsm.drvr).eqlDrvr(drvr)
 //... mngr.newDrvrC9r('Foo', {
 //...   methods: {
 //...     do_push (instance, ...$) {

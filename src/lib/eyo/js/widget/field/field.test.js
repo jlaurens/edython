@@ -18,7 +18,7 @@ describe('Field', function () {
       let f = eYo.field.new({
         [k]: '421',
       }, 'foo', onr)
-      chai.expect(!f).true
+      chai.expect(!f).false
     })
 
   })

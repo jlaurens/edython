@@ -86,8 +86,8 @@ eYo.mixinFR(eYo.field._p, {
     //... let field = eYo.field.new({}, 'field', onr)
     //... chai.expect(field).instanceOf(eYo.field.Label)
     return model.edit || model.endEditing || model.startEditing
-      ? eYo.field.Input
-      : eYo.field.Label
+      ? this.Input || eYo.field.Input
+      : this.Label || eYo.field.Label
     //>>>
   },
 })
@@ -282,9 +282,10 @@ eYo.field.makeBaseC9r(true, {
     },
     /**
      * Will render the field.
-     * We should call `this.willRender()` from the model.
      */
     willRender () {
+      let willRender = eYo.Field[eYo.$SuperC9r_p].willRender
+      willRender && willRender.call(this) // inherited
       var d = this.drvr
       if (d) {
         d.makePlaceholder(this, this.isPlaceholder)
@@ -302,16 +303,17 @@ eYo.mixinFR(eYo.field.Dlgt_p, {
    * Various methods are translated.
    * @param{Object} model - the model
    */
-  methodsMerge (model) {
-    this.methodsMergeRender (model)
-    return eYo.data.Dlgt[eYo.$SuperC9r_p].methodsMerge.call(this, model)
+  modelMerge (model) {
+    eYo.field.super.Dlgt_p.modelMerge.call(this, model)
+    this.modelMergeRender (model)
+    this.modelMergeOther (model)
   },
   /**
    * Translate the `*Render` methods.
    * @param {*} model 
    */
-  methodsMergeRender (model) {
-    //<<< mochai: methodsMergeRender
+  modelMergeRender (model) {
+    //<<< mochai: modelMergeRender
     //... let mngr = eYo.drvr.newNS()
     //... let drvr = mngr.getDrvr('')
     //... setup({
@@ -319,15 +321,17 @@ eYo.mixinFR(eYo.field.Dlgt_p, {
     //...     drvr
     //...   }
     //... })
-    //... chai.expect(drvr).equalDrvr(onr.drvr)
+    //... chai.expect(drvr).eqlDrvr(onr.drvr)
     //... var ns, field
     //... let new_ns = () => {
     //...   flag.reset()
     //...   ns = eYo.field.newNS()
     //...   ns.makeBaseC9r()
+    //...   ns.BaseC9r[eYo.$newSubC9r]('Label')[eYo.$].finalizeC9r()
+    //...   ns.BaseC9r[eYo.$newSubC9r]('Input')[eYo.$].finalizeC9r()
     //... }
     //... mngr.newDrvrC9r('Field', {
-    //...   properties: {
+    //...   methods: {
     //...     makePlaceholder (instance) {
     //...       flag.push(3)  
     //...     },
@@ -342,11 +346,107 @@ eYo.mixinFR(eYo.field.Dlgt_p, {
       //...   new_ns()
       //...   let test = (expect, f) => {
       //...     field = ns.new({
-      //...       methods: {
-      //...         [K]: flag.decorate(1, f),
-      //...       },
+      //...       [K]: flag.decorate(1, f),
       //...     }, 'field', onr)
-      //...     chai.expect(drvr).equalDrvr(field.drvr)
+      //...     chai.expect(field.drvr).eqlDrvr(mngr.getDrvr('Field'))
+      //...     chai.expect(field[K]()).undefined
+      //...     flag.expect(expect)
+      //...   }
+      let f_m = model[K]
+      if (eYo.isF(f_m)) {
+        let f_p = _p[K] || eYo.doNothing
+        if (f_m.length > 0) {
+          // builtin
+          var m = {$ () {
+            f_m.call(this, f_p.bind(this))
+          }}
+          //...   var f_m = function (builtin) {
+          //...     flag.push(2)
+          //...     builtin()
+          //...   }
+          //...   test(1234, f_m) 
+          //...   eYo.test.extend(ns.BaseC9r_p, K, function() {
+          //...     flag.push(5)
+          //...   })
+          //...   test(12345, f_m)
+        } else {
+          m = {$ () {
+            //...   new_ns()
+            //...   var f_m = function () {
+            //...     flag.push(2)
+            //...   }
+            //...   test(12, f_m)
+            //...   new_ns()
+            //...   var f_m = function () {
+            //...     flag.push(2)
+            //...     this[K]()
+            //...   }
+            //...   test(1234, f_m)
+            //...   eYo.test.extend(ns.BaseC9r_p, K, function() {
+            //...     flag.push(5)
+            //...   })
+            //...   test(12345, f_m)
+            let owned = eYo.objectHasOwnProperty(this, K) && this[K]
+            try {
+              this[K] = f_p
+              f_m.call(this)
+            } finally {
+              if (owned) {
+                this[K] = owned
+              } else {
+                delete this[K]
+              }
+            }
+          }}
+        }
+        _p[K] = m.$
+      } else {
+        f_m && eYo.throw(`Unexpected model (${this.name}/${K}) value validate -> ${f_m}`)
+      }
+      //... })
+    })
+    //>>>
+  },
+  /**
+   * Translate the `*Render` methods.
+   * @param {*} model 
+   */
+  modelMergeOther (model) {
+    //<<< mochai: modelMergeOther
+    //... let mngr = eYo.drvr.newNS()
+    //... let drvr = mngr.getDrvr('')
+    //... setup({
+    //...   properties: {
+    //...     drvr
+    //...   }
+    //... })
+    //... chai.expect(drvr).eqlDrvr(onr.drvr)
+    //... var ns, field
+    //... let new_ns = () => {
+    //...   flag.reset()
+    //...   ns = eYo.field.newNS()
+    //...   ns.makeBaseC9r()
+    //...   ns.BaseC9r[eYo.$newSubC9r]('Label')[eYo.$].finalizeC9r()
+    //...   ns.BaseC9r[eYo.$newSubC9r]('Input')[eYo.$].finalizeC9r()
+    //... }
+    //... mngr.newDrvrC9r('Field', {})
+    let _p = this.C9r_p
+    ;[
+      'didLoad',
+      'startEditing',
+      'endEditing'
+    ].forEach(K => { // closure!
+      //... ;[
+      //...   'didLoad',
+      //...   'startEditing',
+      //...   'endEditing'
+      //... ].forEach(K => {
+      //...   new_ns()
+      //...   let test = (expect, f) => {
+      //...     field = ns.new({
+      //...       [K]: flag.decorate(1, f),
+      //...     }, 'field', onr)
+      //...     chai.expect(field.drvr).eqlDrvr(mngr.getDrvr('Field'))
       //...     chai.expect(field[K]()).undefined
       //...     flag.expect(expect)
       //...   }
@@ -397,7 +497,7 @@ eYo.mixinFR(eYo.field.Dlgt_p, {
             }
           }}
         }
-        model[K] = m.$
+        _p[K] = m.$
       } else {
         f_m && eYo.throw(`Unexpected model (${this.name}/${K}) value validate -> ${f_m}`)
       }
@@ -421,7 +521,7 @@ eYo.mixinFR(eYo.field.Dlgt_p, {
   }}.$
 
   eYo.Field$.finalizeC9r([
-    'order', // number,
+    'after', // String: field key,
     'value', // '(',
     'reserved', // : '.',
     'separator', // : true, or false
@@ -429,11 +529,13 @@ eYo.mixinFR(eYo.field.Dlgt_p, {
     'variable', // : true, obsolete
     'validate', // : true,
     'edit', // : foo,
+    'builtin', // : ?,
+    'comment', // : ?,
   ], eYo.model.manyDescriptorF(
     'didLoad', //  () => {},
     'willRender', //  () => {},
   ), {
-    startEditing: {
+    startEditing: { //  () => {},
       [eYo.model.VALIDATE] (before, p) { // eslint-disable-line
         return eYo.isF(before)
           ? before
@@ -442,7 +544,7 @@ eYo.mixinFR(eYo.field.Dlgt_p, {
             : eYo.INVALID
       },
     },
-    endEditing: {
+    endEditing: { //  () => {},
       [eYo.model.VALIDATE] (before, p) { // eslint-disable-line
         return eYo.isF(before)
           ? before
