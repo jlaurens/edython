@@ -465,7 +465,6 @@ Miscellaneous:
 --js "eyo/js/py/parsetok.js" \
 --js "eyo/js/py/tokenizer.js" \
 --js "eyo/js/widget/fsm/fsm.js" \
---js "eyo/js/widget/magnet/magnet.js" \
 --js "eyo/js/application/abstract/control.js" \
 --js "eyo/js/application/desk/board/board.js" \
 --js "eyo/js/application/desk/board/brick_util/brick_events.js" \
@@ -529,6 +528,7 @@ Miscellaneous:
 --js "eyo/js/other/scaler.js" \
 --js "eyo/js/widget/brick/brick.js" \
 --js "eyo/js/widget/field/field.js" \
+--js "eyo/js/widget/magnet/magnet.js" \
 --js "eyo/js/widget/shape/shape.js" \
 --js "eyo/js/widget/slot/slot.js" \
 --js "eyo/js/application/desk/board/brick_util/navigate.js" \

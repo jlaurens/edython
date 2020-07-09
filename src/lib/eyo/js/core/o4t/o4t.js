@@ -261,7 +261,7 @@ eYo.dlgt.BaseC9r_p.p6yEnhanced = function (id = 'p6y') {
           get: function () {
             let p6y = this[this.p6y$.map].get(k)
             if (!p6y.getValue) {
-              console.error('BREAK HERE!')
+              console.error('BREAK HERE!', p6y, p6y[eYo.$$.target])
               p6y.getValue
             }
             return p6y.getValue()
@@ -567,18 +567,18 @@ eYo.dlgt.BaseC9r_p.o4tEnhanced = function () {
     initInstance (object, ...$) {
       //<<< mochai: initInstance
       //... chai.expect(eYo.o4t.Dlgt_p.initInstance).eyo_F
-      let $init = this.p6y$.init
-      this[$init](object, ...$)
-      this[this.p6y$.links](object)
       let $super = this.super
+      let $init = this.p6y$.init
       if ($super) {
         try {
-          $super[$init] = eYo.doNothing // prevent to recreate the same properties
+          $super[$init] = eYo.doNothing
           $super.initInstance(object, ...$)
         } finally {
           delete $super[$init]
         }
       }
+      this[$init](object, ...$)
+      this[this.p6y$.links](object)
       //>>>
     },
     /**
