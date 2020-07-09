@@ -37,6 +37,11 @@ eYo.fsm.newNS(eYo, 'magnet', {
   REASON_DIFFERENT_WORKSPACES: 5,
 })
 
+//<<< mochai: Basics
+//... chai.expect(!eYo.magnet).false
+//... chai.expect(!eYo.Magnet).false
+//>>>
+
 // Magnet opposite types, once the types are created
 Object.defineProperties(eYo.magnet._p, {
   TYPES: {
@@ -129,9 +134,16 @@ eYo.magnet.makeBaseC9r(true, {
   //<<< mochai: eYo.Magnet
   init (key, bs, type) { //eslint-disable-line
     //<<< mochai: init
+    //... let magnetDBList = eYo.c9r.new('magnetDBList', onr)
+    //... let board = eYo.o4t.new({
+    //...   properties: {
+    //...     magnetDBList
+    //...   },
+    //... }, 'board', onr)
     //... setup({
     //...   properties: {
     //...     isBrick: true,
+    //...     board,
     //...   },
     //...   methods: {
     //...     changeDone() {
@@ -151,7 +163,7 @@ eYo.magnet.makeBaseC9r(true, {
     //... var m = eYo.magnet.new('magnet', brick, eYo.magnet.OUT)
     //... var m = eYo.magnet.new('magnet', brick, eYo.magnet.HEAD)
     //... var m = eYo.magnet.new('magnet', brick, eYo.magnet.FOOT)
-    //... var m = eYo.magnet.new('magnet', brick, eYo.magnet.LEFt)
+    //... var m = eYo.magnet.new('magnet', brick, eYo.magnet.LEFT)
     //... var m = eYo.magnet.new('magnet', brick, eYo.magnet.RIGHT)
     eYo.magnet.TYPES.includes(type) || eYo.throw(`Unexpected type: ${type}`)
     this.type_ = type
