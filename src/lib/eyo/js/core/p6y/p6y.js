@@ -74,8 +74,7 @@ eYo.p6y.makeBaseC9r(true, {
         lazy () {
           return `....value = ... forbidden for ${this.eyo.name} instances.`
         },
-      },
-      {$ () {
+      }, {$ () {
         return this.getValueRO()
       }}.$,
       ),
@@ -369,8 +368,9 @@ eYo.mixinRO(eYo.P6y_p, {
 //... let mf = eYo.P6y[eYo.$].modelFormat
 //... model = mf.validate(model)
 //... chai.assert(eYo.isF(model.foo.get))
-eYo.P6y[eYo.$].finalizeC9r([
+eYo.P6y$.finalizeC9r([
   'source',
+  'change',
 ], (() => {
   let m = eYo.model.descriptorD(before => {
     return {value: eYo.isF(before) ? before: () => before}
@@ -1901,9 +1901,10 @@ eYo.mixinFR(eYo.p6y._p, {
            * @param {eYo.P6y} target 
            * @param {String|Symbol} prop 
            */
+          // eslint-disable-next-line no-unused-vars
           doDelete (target, prop) {
             return false
-          },    
+          },
         },
       }, key, owner)
       //>>>

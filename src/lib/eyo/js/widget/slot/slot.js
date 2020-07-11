@@ -30,6 +30,8 @@ eYo.forward('magnet')
 
 //g@@g.forwardDeclare('g@@g.dom');
 
+eYo.make$$('modelSetUp')
+
 /**
  * @name {eYo.Slot}
  * The model is one of the entries of the `slots` section
@@ -58,30 +60,29 @@ eYo.forward('magnet')
  * @constructor
  */
 eYo.slot.makeBaseC9r(true, {
+  //<<< mochai: eYo.Slot
   init (key, brick) {
     key || eYo.throw('Missing slot key')
     brick || eYo.throw('Missing slot owner brick')
     eYo.isNA(this.model.order) && eYo.throw('Missing slot model order')
     
-    this.key_ = key
-    var setupModel = model => {
-      model.setup_ = true
+    let setupModel = model => {
+      model[eYo.$$.modelSetUp] = true
       if (model.validateIncog && !eYo.isF(model.validateIncog)) {
         delete model.validateIncog
       }
     }
     var model = this.model_
     model.setup_ || setupModel(model)
-    if (!eYo.isNA(model.check)) {
+    if (eYo.isDef(model.check)) {
       this.magnet_ = eYo.magnet.new(model, eYo.magnet.IN, this)
       if (model.wrap) {
         this.magnet_.wrapped = model.wrap   
       } else if (model.promise) {
         this.magnet_.promised = model.promise
-        this.incog = true
+        this.incog_ = true
       }
     }
-    eYo.field.makeFields(this, model.fields)
     if (key === 'comment') {
       this.bind_f && (this.bind_f.isComment = true)
     }
@@ -120,6 +121,7 @@ eYo.slot.makeBaseC9r(true, {
     data: eYo.NA,
     visible: true,
     incog: {
+      after: 'brick',
       value () {
         return true
       },
@@ -143,7 +145,7 @@ eYo.slot.makeBaseC9r(true, {
           // forward to the connection
           var m4t = this.magnet
           if (m4t) {
-            m4t.incog = after
+            m4t.incog_ = after
           }
         })
       },
@@ -617,6 +619,7 @@ eYo.slot.makeBaseC9r(true, {
       }
     },
   },
+  //>>>
 })
 
 eYo.mixinFR(eYo.slot.Dlgt_p, {
@@ -626,15 +629,29 @@ eYo.mixinFR(eYo.slot.Dlgt_p, {
    * The methods are managed by the |dataHandler| method of the |eYo.model|.
    * @param {Object} object - The object to initialize.
    */
-  initInstance (object) {
-    eYo.Slot[eYo.$SuperC9r_p].initInstance.call(this, object)
-    object.model['.methods'].forEach(f => {
-      f(object)
+  initInstance (object, ...$) {
+    //<<< mochai: initInstance
+    let $super = this.super
+    if ($super) {
+      $super.initInstance(object, ...$)
+    }
+    let methods = this.model['.methods']
+    methods && methods.forEach(f => {
+      f(object, ...$)
     })
+    //... setup({
+    //...   properties: {
+    //...     isBrick: true,
+    //...   },
+    //... })
+    //... let slot = eYo.slot.new({}, 'key', onr)
+    //>>>
   },
 })
 
-eYo.Slot[eYo.$].manyEnhanced('field', 'fields')
+eYo.Slot$.manyEnhanced('field', 'fields')
+//<<< mochai: fields
+//>>>
 
 eYo.Slot[eYo.$].finalizeC9r([
   'order', // INTEGER,

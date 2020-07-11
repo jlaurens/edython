@@ -24,8 +24,59 @@ eYo.require('do')
 eYo.newNS('dlgt')
 
 eYo.mixinRO(eYo, {
+  //<<< mochai: symbols
   $: Symbol('$'),
   $_p: Symbol('$_p'),
+  $SuperC9r: Symbol('SuperC9r'),
+  $SuperC9r_p: Symbol('SuperC9r_p'),
+  //... chai.expect(!eYo.$).false
+  //... chai.expect(!eYo.$_p).false
+  //... chai.expect(!eYo.$SuperC9r).false
+  //... chai.expect(!eYo.$SuperC9r_p).false
+  //>>>
+})
+
+eYo.mixinFR(eYo._p, {
+  /**
+   * Contrary to goog.inherits, does not erase the childC9r.prototype.
+   * IE<11
+   * No delegation managed yet.
+   * @param {Function} ChildC9r
+   * @param {Function} SuperC9r
+   */
+  inherits (ChildC9r, SuperC9r) {
+    ChildC9r[eYo.$SuperC9r] = SuperC9r
+    let Super_p = SuperC9r.prototype
+    let Child_p = ChildC9r.prototype
+    ChildC9r[eYo.$SuperC9r_p] = Child_p[eYo.$SuperC9r_p] = Super_p
+    Object.setPrototypeOf(Child_p, Super_p)
+    Object.defineProperty(Child_p, 'constructor', {
+      value: ChildC9r
+    })
+    //<<< mochai: eYo.isSubclass | eYo.inherits
+    //... chai.assert(eYo.isSubclass)
+    //... chai.expect(eYo.isSubclass()).false
+    //... chai.expect(eYo.isSubclass(123)).false
+    //... chai.expect(eYo.isSubclass(123, 421)).false
+    //... let SuperC9r = function () {}
+    //... chai.expect(eYo.isSubclass(SuperC9r, SuperC9r)).true
+    //... let ChildC9r = function () {}
+    //... chai.expect(eYo).property('inherits')
+    //... eYo.inherits(ChildC9r, SuperC9r)
+    //... chai.expect(eYo.isSubclass(ChildC9r, SuperC9r)).true
+    //... chai.expect(ChildC9r[eYo.$SuperC9r_p]).equal(ChildC9r.prototype[eYo.$SuperC9r_p]).equal(SuperC9r.prototype)
+    //>>>
+  },
+  /**
+   * Whether the argument is a constructor, in edython paradigm.
+   * Such a constructor is a function with an `[eYo.$]` property pointing to
+   * a delegate. It is not advisable to change this property on the fly.
+   * @param {*} What
+   * @return {!Boolean}
+   */
+  isC9r (What) {
+    return !!What && !!What[eYo.$] && eYo.isF(What)
+  },
 })
 
 /**
@@ -160,9 +211,12 @@ Object.defineProperties(eYo, {
 })
 
 eYo.mixinFR(eYo, {
+  //<<< mochai: isaDlgt
   isaDlgt (object) {
     return object && object instanceof eYo.Dlgt
   }
+  //... chai.expect(eYo.isaDlgt(dlgt)).true
+  //>>>
 })
 
 {
@@ -278,6 +332,158 @@ eYo.mixinFR(eYo, {
      * @this {eYo.Dlgt}
      * @param {Object} model
      */
+    makeDoInit (model) {
+      //<<< mochai: eYo.dlgt.BaseC9r_p.makeDoInit
+      //... var prepare = (model, f) => {
+      //...   return preparator(_p => {
+      //...     f && (_p.init = f)
+      //...   })(model)
+      //... }
+      eYo.mixinFR(this, {
+        makeDoInit: eYo.oneShot('makeDoInit only once'),
+      })
+      model || (model = this.model)
+      let K = 'init'
+      let f_m = model[K]
+      let f_p = _p[K]
+      if (f_m) {
+        if (!eYo.isF(f_m)) {
+          console.error('BREAK HERE! BUG')
+        }
+        if (XRegExp.exec(f_m.toString(), eYo.xre.function_builtin)) {
+          if (f_p) {
+            var f = function ($this, ...$) {
+              try {
+                this[K] = eYo.doNothing
+                f_m.call(this, () => {
+                  this.doPrepare(...$)
+                  f_p.call(this, ...$)              
+                  this.doInit(...$)
+                }, ...$)
+              } finally {
+                delete this.dispose
+              }
+            }
+            //... prepare({
+            //...   init (builtin, ...$) {
+            //...     flag.push('<')
+            //...     builtin(...$)
+            //...     flag.push('>')
+            //...   }
+            //... }, function (...$) {
+            //...   this.flag(4, ...$) 
+            //... })
+            //... new C9r(5, 6)
+            //... flag.expect('<125614561356>')
+          } else {
+            f = function (...$) {
+              try {
+                this[K] = eYo.doNothing
+                f_m.call(this, () => {
+                  this.doPrepare(...$)
+                  this.doInit(...$)
+                }, ...$)
+              } finally {
+                delete this.dispose
+              }
+            }
+            //... // no inherited `init`.
+            //... prepare({
+            //...   init (builtin, ...$) {
+            //...     flag.push('<')
+            //...     builtin(...$)
+            //...     flag.push('>')
+            //...   }
+            //... })
+            //... new C9r(5, 6)
+            //... flag.expect('<12561356>')
+          }
+        } else if (f_p) {
+          f = function (...$) {
+            try {
+              this[K] = eYo.doNothing
+              if (!this.doPrepare) {
+                console.error('BREAK HERE!!! !this.doPrepare')
+              }
+              this.doPrepare(...$)
+              f_p.call(this, ...$)
+              if (!eYo.isF(f_m)) {
+                console.error(f_m)
+                console.error('BREAK HERE!')
+              }
+              f_m.call(this, ...$)
+              this.doInit(...$)
+            } finally {
+              delete this.dispose
+            }
+          }
+          //... prepare({
+          //...   init (...$) {
+          //...     flag.push('<', ...$, '>')
+          //...   }
+          //... }, function (...$) {
+          //...   this.flag(4, ...$) 
+          //... })
+          //... new C9r(5, 6)
+          //... flag.expect('12561456<56>1356')
+        } else {
+          f = function (...$) {
+            try {
+              this[K] = eYo.doNothing
+              this.doPrepare(...$)
+              f_m.call(this, ...$)
+              this.doInit(...$)
+            } finally {
+              delete this.dispose
+            }
+          }
+          //... prepare({
+          //...   init (...$) {
+          //...     flag.push('<', ...$, '>')
+          //...   }
+          //... })
+          //... new C9r(5, 6)
+          //... flag.expect('1256<56>1356')
+        }
+      } else if (f_p) {
+        f = function (...$) {
+          try {
+            this[K] = eYo.doNothing
+            if (!this.eyo) {
+              console.error('BREAK HERE! NO EYO')
+            }
+            this.doPrepare(...$)
+            f_p.call(this, ...$)
+            this.doInit(...$) 
+          } finally {
+            delete this.dispose
+          }
+        }
+        //... prepare({}, function (...$) {
+        //...   this.flag(4, ...$) 
+        //... })
+        //... new C9r(5, 6)
+        //... flag.expect(125614561356)
+      } else {
+        f = function (...$) {
+          try {
+            this[K] = eYo.doNothing
+            if (!this.eyo) {
+              console.error('BREAK HERE!')
+            }
+            this.doPrepare(...$)
+            this.doInit(...$) 
+          } finally {
+            delete this.dispose
+          }
+        }
+        //... prepare()
+        //... new C9r(5, 6)
+        //... flag.expect(12561356)
+      }
+      C9r_p[K] = f
+      //>>>
+    },
     makeC9rInit (model) {
       //<<< mochai: eYo.dlgt.BaseC9r_p.makeC9rInit
       //... var prepare = (model, f) => {

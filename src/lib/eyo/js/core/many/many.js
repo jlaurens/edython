@@ -371,7 +371,7 @@ eYo.dlgt.BaseC9r_p.manyEnhanced = function (id, type, path, manyModel) {
     //... var o = {}
     //... C9r[eYo.$][foo$.prepare](o)
     //... flag.expect(12)
-    } : function (object, ...$) {
+    } : function (instance, ...$) {
       if (!eYo.objectHasOwnProperty(this, type$.merge)) {
         this[type$.merge] = eYo.neverShot(`Do not change the model of ${this.name} once an instance has been created`)
         var $super = this
@@ -400,7 +400,7 @@ eYo.dlgt.BaseC9r_p.manyEnhanced = function (id, type, path, manyModel) {
       //... C9r[eYo.$][foo$.prepare](o)
       //... flag.expect(1)
       let attributes = []
-      var map = object[type$.map]
+      var map = instance[type$.map]
       if (map) {
       //... preparator()()
       //... var foo$ = C9r[eYo.$].manyEnhanced('foo', 'foo')
@@ -428,7 +428,7 @@ eYo.dlgt.BaseC9r_p.manyEnhanced = function (id, type, path, manyModel) {
       //... o = {}
       //... C9r[eYo.$][foo$.prepare](o)
       //... flag.expect(1)
-      map = object[type$.map] = new Map()
+      map = instance[type$.map] = new Map()
       /**
      * The maker is responsible of making new `key` objects from a model.
      */
@@ -436,7 +436,7 @@ eYo.dlgt.BaseC9r_p.manyEnhanced = function (id, type, path, manyModel) {
         return eYo[type].new(...$)
       }
       for (let [k, model] of this[type$.modelMap]) {
-        let attr = make(model, k, object, ...$)
+        let attr = make(model, k, instance, ...$)
         if (attr) {
           map.set(k, attr)
           attributes.push(attr)

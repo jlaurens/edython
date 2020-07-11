@@ -26,6 +26,12 @@ eYo.forward('t3')
  */
 eYo.newNS('c9r')
 
+eYo.mixinRO(eYo, {
+  $C9r: Symbol('C9r'),
+  $newSubC9r: Symbol('newSubC9r'),
+  $new: Symbol('$new'),
+})
+
 //<<< mochai: C9r
 
 // ANCHOR: Utilities
@@ -83,6 +89,79 @@ eYo.c9r._p.appendToMethod = (object, key, f) => {
 }
 
 // ANCHOR Top level constructor utilities
+
+eYo.mixinFR(eYo.Dlgt_p, {
+  newC9r(SuperC9r) {
+    let ns = this.ns
+    let id = this.id
+    let eyo = this // catch this
+    if (SuperC9r) {
+      var C9r = function (...$) {
+      // Class
+        if (!this) {
+        SuperC9r.call(this, ...$) // top down call
+        eyo.do_prepare(this, ...$)
+      }
+      eYo.inherits(C9r, SuperC9r)
+      SuperC9r[eYo.$].addSubC9r(C9r)
+      eYo.isSubclass(C9r, SuperC9r) || eYo.throw('MISSED inheritance)')
+      // syntactic sugar shortcuts
+      if (ns && id) {
+        (eYo.objectHasOwnProperty(ns, id) || eYo.objectHasOwnProperty(ns._p, id)) && eYo.throw(`${id.toString ? id.toString() : id} is already a property of ns: ${ns.name}`)
+        Object.defineProperty(ns._p, id, {value: C9r})
+        if (id.length) {
+          if (id.startsWith('eyo:')) {
+            id = id.substring(4)
+          }
+          Object.defineProperties(ns._p, {
+            [id + '_p']: { value: C9r.prototype },
+            [id + '_s']: { value: SuperC9r.prototype },
+            [id + '_S']: { value: SuperC9r },
+          })
+        }
+      }
+    } else {
+      // create the constructor
+      C9r = function (...$) {
+        eyo.do_prepare(this, ...$)
+      }
+      // store the constructor
+      var _p = C9r.prototype
+      if (ns && id) {
+        (eYo.objectHasOwnProperty(ns, id) || eYo.objectHasOwnProperty(ns._p, id)) && eYo.throw(`${id.toString ? id.toString() : id} is already a property of ns: ${ns.name}`)
+        Object.defineProperty(ns._p, id, {value: C9r})
+        if (id.length) {
+          if (id.startsWith('eyo:')) {
+            id = id.substring(4)
+          }
+          Object.defineProperty(ns._p, id + '_p', {value: _p})
+        }
+      }
+      eYo.dlgt.declareDlgt(_p) // computed properties `eyo`
+      _p.doPrepare = _p.doInit = eYo.doNothing
+    }
+    eyo === C9r[eYo.$] || eYo.throw('MISSED')
+    eYo.mixinFr(C9r, {
+      [eYo.$newSubC9r]: eyo.makeSubC9r.bind(eyo),
+      [eYo.$new] (...$) {
+        let ans = new C9r(...$) // top to bottom
+        ans.init() // bottom to top
+        return ans
+      },
+    })
+    if (ns && eYo.isStr(id)) {
+      eYo.mixinRO(ns._p, {
+        [id + '$'] () {
+          return C9r[eYo.$]
+        },
+        ['new' + id] () {
+          return C9r[eYo.$new]
+        },
+      })
+    }
+    return C9r  
+  }
+})
 eYo.mixinFR(eYo.c9r._p, {
   /**
    * @name{eYo.c9r._p.doNewC9r}
@@ -107,80 +186,14 @@ eYo.mixinFR(eYo.c9r._p, {
   doNewC9r (ns, id, SuperC9r, model) {
     !ns || ns === eYo.NULL_NS || eYo.isNS(ns) || eYo.throw(`${this.name}/doNewC9r: Bad ns: ${ns}`)
     !id || eYo.isId(id) || eYo.throw(`${this.name}/doNewC9r: Bad id: ${id.toString()}`)
+
     !SuperC9r || eYo.isC9r(SuperC9r) || eYo.throw(`${this.name}/doNewC9r: Bad SuperC9r: ${SuperC9r}`)
     if (!eYo.isD(model)) {
       console.error(model)
     }
     eYo.isD(model) || eYo.throw(`${this.name}/doNewC9r: Bad model: ${model}`)
-    if (SuperC9r) {
-    // create the constructor
-    // TODO: due to the makeC9rInit method, this constructor may be badly designed.
-      var C9r = function (...$) {
-      // Class
-        if (!this) {
-          console.error('BREAK HERE!!!')
-        }
-        var old = this.init
-        old || eYo.throw(`Unfinalized contructor: ${this.eyo.name}`)
-        this.init = eYo.doNothing
-        SuperC9r.call(this, ...$)
-        if (!this) {
-          console.error('BREAK HERE!')
-        }
-        if (old !== eYo.doNothing) {
-          delete this.dispose
-          old.call(this, ...$)
-        }
-      }
-      eYo.inherits(C9r, SuperC9r)
-      SuperC9r[eYo.$].addSubC9r(C9r)
-      eYo.isSubclass(C9r, SuperC9r) || eYo.throw('MISSED inheritance)')
-      // syntactic sugar shortcuts
-      if (ns && id) {
-        (eYo.objectHasOwnProperty(ns, id) || eYo.objectHasOwnProperty(ns._p, id)) && eYo.throw(`${id.toString ? id.toString() : id} is already a property of ns: ${ns.name}`)
-        Object.defineProperty(ns._p, id, {value: C9r})
-        if (id.length) {
-          if (id.startsWith('eyo:')) {
-            id = id.substring(4)
-          }
-          Object.defineProperties(ns._p, {
-            [id + '_p']: { value: C9r.prototype },
-            [id + '_s']: { value: SuperC9r.prototype },
-            [id + '_S']: { value: SuperC9r },
-          })
-        }
-      }
-    } else {
-    // create the constructor
-      C9r = function (...$) {
-      // Class
-        if (!this) {
-          console.error('BREAK HERE! C9r')
-        }
-        this.init.call(this, ...$)
-      }
-      // store the constructor
-      var _p = C9r.prototype
-      if (ns && id) {
-        (eYo.objectHasOwnProperty(ns, id) || eYo.objectHasOwnProperty(ns._p, id)) && eYo.throw(`${id.toString ? id.toString() : id} is already a property of ns: ${ns.name}`)
-        Object.defineProperty(ns._p, id, {value: C9r})
-        if (id.length) {
-          if (id.startsWith('eyo:')) {
-            id = id.substring(4)
-          }
-          Object.defineProperty(ns._p, id + '_p', {value: _p})
-        }
-      }
-      eYo.dlgt.declareDlgt(_p) // computed properties `eyo`
-      _p.doPrepare = _p.doInit = eYo.doNothing
-    }
-    let eyo = eYo.dlgt.new(ns, id, C9r, model)
-    eyo === C9r[eYo.$] || eYo.throw('MISSED')
-    C9r[eYo.$newSubC9r] = eyo.makeSubC9r.bind(eyo)
-    if (ns && eYo.isStr(id)) {
-      Object.defineProperty(ns._p, id + '$', {value: eyo})
-    }
-    return C9r
+    let eyo = eYo.dlgt.new(ns, id, model)
+    return eyo.makeC9r(SuperC9r)
   },
   /**
    * This decorator turns `f` with signature
@@ -243,10 +256,10 @@ eYo.mixinFR(eYo.c9r._p, {
         id = Symbol(`${this.name}.?`)
         //... var NS = eYo.c9r.newNS()
         //... chai.expect(NS.BaseC9r).equal(eYo.c9r.BaseC9r)
-        //... chai.expect(NS.BaseC9r_p).equal(eYo.c9r.BaseC9r_p)
+        //... chai.expect(NS.BaseC9r_p).equal(eYo.C9r_p)
         //... NS.makeBaseC9r()
         //... chai.expect(NS.BaseC9r).not.equal(eYo.c9r.BaseC9r)
-        //... chai.expect(NS.BaseC9r_p).not.equal(eYo.c9r.BaseC9r_p)
+        //... chai.expect(NS.BaseC9r_p).not.equal(eYo.C9r_p)
         //... chai.expect(NS.newC9r({
         //...   [eYo.$SuperC9r]: eYo.NA,
         //... })[eYo.$SuperC9r]).undefined
@@ -294,6 +307,14 @@ eYo.mixinFR(eYo.dlgt.BaseC9r_p, {
       return ff.call(this.ns||eYo.c9r, ns, id, SuperC9r, register, model)
     }
   },
+  /**
+   * See the makeDoInit
+   */
+  do_init: eYo.doNothing,
+  /**
+   * See the makeDoDispose
+   */
+  do_dispose: eYo.doNothing,
 })
 
 eYo.mixinFR(eYo.c9r._p, {
@@ -544,7 +565,7 @@ eYo.mixinFR(eYo.dlgt.BaseC9r_p, {
    * Default implementation forwards to the delegate.
    * One shot method: any subsequent call is useless.
    */
-  eYo.c9r.BaseC9r_p.doPrepare = function (...$) {
+  eYo.C9r_p.doPrepare = function (...$) {
     this.doPrepare = eYo.doNothing
     this.eyo.prepareInstance(this, ...$)
   }
@@ -553,12 +574,12 @@ eYo.mixinFR(eYo.dlgt.BaseC9r_p, {
    * Default implementation does nothing.
    * @param {Object} instance -  instance is an instance of a subclass of the `C9r_` of the receiver
    */
-  eYo.c9r.BaseC9r_p.doInit = function (...$) {
+  eYo.C9r_p.doInit = function (...$) {
     this.doInit = eYo.doNothing
     this.eyo.initInstance(this, ...$)
   }
 
-  eYo.mixinRO(eYo.c9r.BaseC9r_p, {
+  eYo.mixinRO(eYo.C9r_p, {
     /**
      * Convenience shortcut to the model
      */
@@ -608,31 +629,6 @@ eYo.mixinFR(eYo.model, {
  */
 eYo.c9r.Dlgt_p.modelHandle = function (key, model) { // eslint-disable-line
 }
-
-/**
- * Get the inherited method with the given name.
- * @param {String} methodName
- * @param {Boolean} up - starts with the prototype or the inherited prototype
- * @return {Function} It never returns `this[methodName]`.
- */
-eYo.c9r.BaseC9r_p.inheritedMethod = eYo.c9r.Dlgt_p.inheritedMethod = {$ (methodName, up) {
-  let method = this[methodName]
-  var _p = up ? this.eyo.C9r_s : this.eyo.C9r_p
-  while (_p) {
-    if (eYo.objectHasOwnProperty(_p, methodName)) {
-      var ans = _p[methodName]
-      if (eYo.isF(ans)) {
-        if (ans !== method) {
-          return ans
-        }
-      } else {
-        break
-      }
-    }
-    _p = _p[eYo.$].C9r_s
-  }
-  return eYo.doNothing
-}}.$
 
 // ANCHOR Initers, Disposers
 
@@ -848,8 +844,43 @@ eYo.mixinFR(eYo.c9r._p, {
 
 // Prepares the constructors.
 
-eYo.c9r.BaseC9r[eYo.$].finalizeC9r(
-  //<<< mochai: eYo.c9r.BaseC9r[eYo.$].finalizeC9r
+eYo.mixinFR(eYo.C9r_p, {
+  /**
+   * Initialize the receiver, it should not be overriden but it is still exposed for debugging puposes mainly.
+   * Called by `newFoo` creator.
+   * @param  {...any} $ 
+   */
+  init (...$) {
+    //<<< mochai: eYo.C9r_p.init
+    try {
+      this.init = eYo.doNothing
+      this.eyo.do_init(this, ...$)
+    } finally {
+      delete this.dispose
+    }
+    //... chai.expect(eYo.C9r_p.init).eyo_F
+    //>>>
+  },
+  /**
+   * Initialize the receiver, it should not be overriden but it is still exposed for debugging puposes mainly.
+   * Must be called.
+   * @param  {...any} $ 
+   */
+  dispose (...$) {
+    //<<< mochai: eYo.C9r_p.init
+    try {
+      this.dispose = eYo.doNothing
+      this.eyo.do_dispose(this, ...$)
+    } finally {
+      delete this.init
+    }
+    //... chai.expect(eYo.C9r_p.dispose).eyo_F
+    //>>>
+  },
+})
+
+eYo.C9r$.finalizeC9r(
+  //<<< mochai: eYo.C9r$.finalizeC9r
   //... chai.expect(eYo.C9r[eYo.$].hasFinalizedC9r).true
   eYo.model.manyDescriptorF('dlgt', 'init'),
   //... ;['dlgt', 'init'].forEach(K => {

@@ -562,9 +562,9 @@ eYo.dlgt.BaseC9r_p.o4tEnhanced = function () {
     },
     /**
      * Initialize an instance with valued, cached, owned and copied properties.
-     * @param {Object} object -  object is an instance of a subclass of the `C9r_` of the receiver
+     * @param {Object} instance -  object is an instance of a subclass of the `C9r_` of the receiver
      */
-    initInstance (object, ...$) {
+    initInstance (instance, ...$) {
       //<<< mochai: initInstance
       //... chai.expect(eYo.o4t.Dlgt_p.initInstance).eyo_F
       let $super = this.super
@@ -572,13 +572,13 @@ eYo.dlgt.BaseC9r_p.o4tEnhanced = function () {
       if ($super) {
         try {
           $super[$init] = eYo.doNothing
-          $super.initInstance(object, ...$)
+          $super.initInstance(instance, ...$)
         } finally {
           delete $super[$init]
         }
       }
-      this[$init](object, ...$)
-      this[this.p6y$.links](object)
+      this[$init](instance, ...$)
+      this[this.p6y$.links](instance)
       //>>>
     },
     /**

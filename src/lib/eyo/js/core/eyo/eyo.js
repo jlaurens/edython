@@ -1094,16 +1094,6 @@ eYo.mixinFR(eYo, {
     //>>>
   },
   /**
-   * Whether the argument is a constructor, in edython paradigm.
-   * Such a constructor is a function with an `[eYo.$]` property pointing to
-   * a delegate. It is not advisable to change this property on the fly.
-   * @param {*} What
-   * @return {!Boolean}
-   */
-  isC9r (What) {
-    return !!What && !!What[eYo.$] && eYo.isF(What)
-  },
-  /**
    * Returns the evaluated argument if its a function,
    * the argument itself otherwise.
    * @param {*} what
@@ -1122,12 +1112,6 @@ eYo.mixinFR(eYo, {
 })
 
 eYo.mixinRO(eYo._p, {
-  //<<< mochai: symbols
-  $C9r: Symbol('C9r'),
-  $SuperC9r: Symbol('SuperC9r'),
-  $newSubC9r: Symbol('newSubC9r'),
-  $SuperC9r_p: Symbol('SuperC9r_p'),
-  //>>>
   /**
    * The name of the namespace.
    */
@@ -1212,36 +1196,12 @@ eYo.mixinFR(eYo._p, {
   isSubclass (Sub, Super) {
     return !!Super && !!Sub && eYo.isF(Super) && (Sub === Super || Sub.prototype instanceof Super)
   },
-  /**
-   * Contrary to goog.inherits, does not erase the childC9r.prototype.
-   * IE<11
-   * No delegation managed yet.
-   * @param {Function} ChildC9r
-   * @param {Function} SuperC9r
-   */
-  inherits (ChildC9r, SuperC9r) {
-    ChildC9r[eYo.$SuperC9r] = SuperC9r
-    let Super_p = SuperC9r.prototype
-    let Child_p = ChildC9r.prototype
-    ChildC9r[eYo.$SuperC9r_p] = Child_p[eYo.$SuperC9r_p] = Super_p
-    Object.setPrototypeOf(Child_p, Super_p)
-    Object.defineProperty(Child_p, 'constructor', {
-      value: ChildC9r
-    })
-    //<<< mochai: eYo.isSubclass | eYo.inherits
-    //... chai.assert(eYo.isSubclass)
-    //... chai.expect(eYo.isSubclass()).false
-    //... chai.expect(eYo.isSubclass(123)).false
-    //... chai.expect(eYo.isSubclass(123, 421)).false
-    //... let SuperC9r = function () {}
-    //... chai.expect(eYo.isSubclass(SuperC9r, SuperC9r)).true
-    //... let ChildC9r = function () {}
-    //... chai.expect(eYo).property('inherits')
-    //... eYo.inherits(ChildC9r, SuperC9r)
-    //... chai.expect(eYo.isSubclass(ChildC9r, SuperC9r)).true
-    //... chai.expect(ChildC9r[eYo.$SuperC9r_p]).equal(ChildC9r.prototype[eYo.$SuperC9r_p]).equal(SuperC9r.prototype)
-    //>>>
-  },
+  //<<< mochai: Symbol
+  $SuperC9r: Symbol('SuperC9r'),
+  $SuperC9r_p: Symbol('SuperC9r_p'),
+  //... chai.expect(!eYo.$SuperC9r).false
+  //... chai.expect(!eYo.$SuperC9r_p).false
+  //>>>
 })
 
 // ANCHOR newNS, provide
@@ -1271,6 +1231,36 @@ eYo.mixinFR(eYo._p, {
     //... }
     //... chai.expect(eYo.valueForKeyPath(`eYo.test.${key}.foo.bar`)).equal(421)
     //... delete eYo.test[key]
+    //>>>
+  },
+  /**
+   * Contrary to goog.inherits, does not erase the childC9r.prototype.
+   * IE<11
+   * No delegation managed yet.
+   * @param {Function} ChildC9r
+   * @param {Function} SuperC9r
+   */
+  inherits (ChildC9r, SuperC9r) {
+    ChildC9r[eYo.$SuperC9r] = SuperC9r
+    let Super_p = SuperC9r.prototype
+    let Child_p = ChildC9r.prototype
+    ChildC9r[eYo.$SuperC9r_p] = Child_p[eYo.$SuperC9r_p] = Super_p
+    Object.setPrototypeOf(Child_p, Super_p)
+    Object.defineProperty(Child_p, 'constructor', {
+      value: ChildC9r
+    })
+    //<<< mochai: eYo.isSubclass | eYo.inherits
+    //... chai.assert(eYo.isSubclass)
+    //... chai.expect(eYo.isSubclass()).false
+    //... chai.expect(eYo.isSubclass(123)).false
+    //... chai.expect(eYo.isSubclass(123, 421)).false
+    //... let SuperC9r = function () {}
+    //... chai.expect(eYo.isSubclass(SuperC9r, SuperC9r)).true
+    //... let ChildC9r = function () {}
+    //... chai.expect(eYo).property('inherits')
+    //... eYo.inherits(ChildC9r, SuperC9r)
+    //... chai.expect(eYo.isSubclass(ChildC9r, SuperC9r)).true
+    //... chai.expect(ChildC9r[eYo.$SuperC9r_p]).equal(ChildC9r.prototype[eYo.$SuperC9r_p]).equal(SuperC9r.prototype)
     //>>>
   },
   /**
