@@ -105,25 +105,18 @@ eYo.mixinFR(eYo.dlgt, {
       //... chai.expect(() => {new eYo.delegate.C9rBase(1, 2, 3, 4)}).throw()
       ;[ns, id, model] = [eYo.NA, ns, id]
     }
-    var $id
-    if (ns) {
-      if (eYo.isSym(id)) {
-        [$id, id] = [id, id.description]
-      } else {
-        if (!eYo.isStr(id)) {
-          [id, model] = ['?', id]
-          this.anonymous = true
-        }
-        $id = Symbol(`${ns.name}.${id}`)
-      }
-    } else if (eYo.isSym(id)) {
+    var anonymous = false
+    var $id // for debugging purposes mainly (2020/08)
+    if (eYo.isSym(id)) {
       [$id, id] = [id, id.description]
+      anonymous = true
     } else {
       if (!eYo.isStr(id)) {
-        id = '?'
-        this.anonymous = true
+        model && eYo.throw(`eYo.dlgt.C9rBase: unexpected model 2 (${model})`)
+        ;[id, model] = ['?', id]
+        anonymous = true
       }
-      $id = Symbol(`(...).${id}`)
+      $id = Symbol(`${ns ? ns.name : '(...)'}.${id}`)
     }
     eYo.mixinRO(this, {
       ns__: ns,
@@ -131,7 +124,8 @@ eYo.mixinFR(eYo.dlgt, {
       id__: id,
       model__: model,
       subC9rs__: new Set(), // change it to map ?
-      modelFormat__: new eYo.model.Format()
+      modelFormat__: new eYo.model.Format(),
+      anonymous__: anonymous,
     })
     this.makeC9rPrepare()
     //... C9r = function () {}
@@ -257,7 +251,7 @@ eYo.mixinFR(eYo._p, {
   })
 
   // Readonly access to some properties
-  ;['ns', 'id', '$id', 'C9r', 'model', 'modelFormat'].forEach(k => {
+  ;['ns', 'id', '$id', 'C9r', 'model', 'modelFormat', 'anonymous'].forEach(k => {
     let d = eYo.descriptorR({$ () {
       return this[k + '__']
     }}.$)
@@ -266,7 +260,7 @@ eYo.mixinFR(eYo._p, {
       [k + '_']: d,
     })
   })
-  //... ;['ns', 'id', '$id', 'C9r', 'model', 'modelFormat'].forEach(k => {
+  //... ;['ns', 'id', '$id', 'C9r', 'model', 'modelFormat', 'anonymous'].forEach(k => {
   //...   chai.expect(dlgt[k]).equal(dlgt[k+'_']).equal(dlgt[k+'__'])
   //... })
   ;['name', '$super', 'genealogy'].forEach(k => {
@@ -843,7 +837,7 @@ eYo.mixinFR(eYo._p, {
         eYo.isSubclass(C9r, SuperC9r) || eYo.throw('MISSED inheritance)')
         SuperC9r[eYo.$].addSubC9r(C9r)
         // syntactic sugar shortcuts
-        if (ns && id) {
+        if (ns && id && !this.anonymous) {
           (eYo.objectHasOwnProperty(ns, id) || eYo.objectHasOwnProperty(ns._p, id)) && eYo.throw(`${id.toString ? id.toString() : id} is already a property of ns: ${ns.name}`)
           eYo.mixinFR(ns._p, { [id]: C9r })
           if (id.length) {
@@ -864,7 +858,7 @@ eYo.mixinFR(eYo._p, {
         }
         // store the constructor
         var _p = C9r.prototype
-        if (ns && id) {
+        if (ns && id && !this.anonymous) {
           (eYo.objectHasOwnProperty(ns, id) || eYo.objectHasOwnProperty(ns._p, id)) && eYo.throw(`${id.toString ? id.toString() : id} is already a property of ns: ${ns.name}`)
           eYo.mixinFR(ns._p, { [id]: C9r })
           if (id.length) {
