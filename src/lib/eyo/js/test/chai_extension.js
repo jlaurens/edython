@@ -417,8 +417,8 @@ chai.use(function (chai, utils) {
     var actual = this._obj
     this.assert(
       eYo.isSubclass(actual, expected),
-      `expected ${actual && actual.eyo && actual.eyo.name} to be a subclass of ${expected && expected.eyo && expected.eyo.name}`,
-      `expected ${actual && actual.eyo && actual.eyo.name} not to be a subclass of ${expected && expected.eyo && expected.eyo.name}`,
+      `expected ${actual && actual.eyo$ && actual.eyo$.name} to be a subclass of ${expected && expected.eyo$ && expected.eyo$.name}`,
+      `expected ${actual && actual.eyo$ && actual.eyo$.name} not to be a subclass of ${expected && expected.eyo$ && expected.eyo$.name}`,
       expected,
       actual
     )

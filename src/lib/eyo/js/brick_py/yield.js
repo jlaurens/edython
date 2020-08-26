@@ -164,7 +164,7 @@ eYo.expr.newC9r('yield_expr', true, {
  */
 eYo.expr.yield_expr.prototype.populateContextMenuFirst_ = function (mngr) {
   var yorn = eYo.expr.yield_expr.populateContextMenuFirst_.call(this, mngr)
-  return eYo.expr.yield_expr.eyo.C9r_s.populateContextMenuFirst_.call(this, mngr) || yorn
+  return eYo.expr.yield_expr.eyo$.C9r_s.populateContextMenuFirst_.call(this, mngr) || yorn
 }
 
 /**
@@ -183,6 +183,6 @@ eYo.stmt.newC9r('yield_stmt', true, {
  */
 eYo.stmt.yield_stmt.prototype.populateContextMenuFirst_ = function (mngr) {
   eYo.expr.yield_expr.populateContextMenuFirst_.call(this, mngr)
-  return eYo.stmt.yield_stmt.eyo.C9r_s.populateContextMenuFirst_.call(this, mngr)
+  return eYo.stmt.yield_stmt.eyo$.C9r_s.populateContextMenuFirst_.call(this, mngr)
 }
 

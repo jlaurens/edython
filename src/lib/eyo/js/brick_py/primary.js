@@ -350,7 +350,7 @@ eYo.expr.target_list_p.xdidDisconnect = function (m4t, oldTargetM4t) {
       (x = x.target_s) && (x.boundField.visible = true)
     }
   }
-  eYo.expr.target_list.eyo.C9r_s.didDisconnect.call(this, m4t, oldTargetM4t)
+  eYo.expr.target_list.eyo$.C9r_s.didDisconnect.call(this, m4t, oldTargetM4t)
 }
 
 /**
@@ -361,7 +361,7 @@ eYo.expr.target_list_p.xdidDisconnect = function (m4t, oldTargetM4t) {
  * @param {eYo.magnet.C9rBase} targetOldM4t
  */
 eYo.expr.target_list_p.xdidConnect = function (m4t, oldTargetM4t, targetOldM4t) {
-  eYo.expr.target_list.eyo.C9r_s.didConnect.call(this, m4t, oldTargetM4t, targetOldM4t)
+  eYo.expr.target_list.eyo$.C9r_s.didConnect.call(this, m4t, oldTargetM4t, targetOldM4t)
   // BEWARE: the brick is NOT consolidated
   if (m4t.isSlot) {
     var parent = this.parent
@@ -1255,7 +1255,7 @@ eYo.register.add(eYo.expr, 'primary', function (b3k) {
  * For subclassers eventually
  */
 eYo.expr.primary_p.init = function () {
-  eYo.expr.primary.eyo.C9r_s.init.call(this)
+  eYo.expr.primary.eyo$.C9r_s.init.call(this)
   this.profile_ = eYo.NA
 }
 
@@ -1425,7 +1425,7 @@ eYo.expr.primary_p.getProfile = eYo.changer.memoize(
  * the brick type has changed.
  */
 eYo.expr.primary_p.consolidateMagnets = function () {
-  eYo.expr.primary.eyo.C9r_s.consolidateMagnets.call(this)
+  eYo.expr.primary.eyo$.C9r_s.consolidateMagnets.call(this)
   this.target_s.magnet.hidden = this.variant === eYo.key.NONE && this.Dotted_p === 0
 }
 
@@ -1766,7 +1766,7 @@ eYo.expr.primary_p.getSubtype = function () {
  * @return {eYo.slot.C9rBase} The slot object, or null if slot does not exist or eYo.NA for the default brick implementation.
  */
 eYo.expr.primary_p.getSlot = function (name) {
-  var slot = eYo.expr.primary.eyo.C9r_s.getSlot.call(this, name)
+  var slot = eYo.expr.primary.eyo$.C9r_s.getSlot.call(this, name)
   if (!slot) {
     // we suppose that ary is set
     var f = (slot) => {
@@ -1836,7 +1836,7 @@ eYo.stmt.call_stmt_p.getProfile = eYo.expr.primary_p.getProfile
  * For subclassers eventually
  */
 eYo.stmt.call_stmt_p.init = function () {
-  eYo.stmt.call_stmt.eyo.C9r_s.init.call(this)
+  eYo.stmt.call_stmt.eyo$.C9r_s.init.call(this)
   this.profile = eYo.NA
 }
 

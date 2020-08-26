@@ -63,9 +63,9 @@ eYo.data.makeC9rBase(true, {
   //<<< mochai: Basics
   init (key, brick) {
     //<<< mochai: init
-    eYo.isStr(key) || eYo.throw(`${this.eyo.name}: Missing key in makeC9rBase`)
+    eYo.isStr(key) || eYo.throw(`${this.eyo$.name}: Missing key in makeC9rBase`)
     //... chai.expect(() => new eYo.Data(1)).throw()
-    eYo.isaC9r(brick) || eYo.throw(`${this.eyo.name}: Missing brick`)
+    eYo.isaC9r(brick) || eYo.throw(`${this.eyo$.name}: Missing brick`)
     //... chai.expect(() => new eYo.Data('foo', 'bar')).throw()
     //... let d = new eYo.Data('foo', onr)
     //>>>

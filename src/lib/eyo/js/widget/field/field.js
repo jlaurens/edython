@@ -105,7 +105,7 @@ eYo.field.makeC9rBase(true, {
   //>>>
   init (name, bsm) {
     //<<< mochai: init
-    this.text__ = this.eyo.model.text__ || ''
+    this.text__ = this.eyo$.model.text__ || ''
     console.warn('Defer next line to the owner ?')
     bsm.hasUI && this.initUI()
     //... let changer = eYo.changer.new('changer', onr)

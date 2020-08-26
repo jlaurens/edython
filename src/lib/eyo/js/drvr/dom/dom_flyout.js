@@ -37,8 +37,8 @@ eYo.dom.flyout.newDrvrC9r('View', {
     let div = flyout.owner_.dom.flyout_
     Object.defineProperty(dom, 'div_', { value: div, writable: true})
     // flyout toolbar, on top of the flyout
-    div.appendChild(dom.toolbar_ = this.ns.createDIV('toolbar', flyout.eyo.name))
-    div.appendChild(dom.board_ = this.ns.createDIV('board', flyout.eyo.name))
+    div.appendChild(dom.toolbar_ = this.ns.createDIV('toolbar', flyout.eyo$.name))
+    div.appendChild(dom.board_ = this.ns.createDIV('board', flyout.eyo$.name))
     return dom
   },
   /**

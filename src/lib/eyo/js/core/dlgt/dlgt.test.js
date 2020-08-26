@@ -62,7 +62,7 @@ describe ('Tests: Dlgt', function () {
     dlgt.finalizeC9r()
     let o = new C9r()
     eYo.dlgt.declareDlgt(C9r.prototype)
-    chai.expect(o.eyo).equal(dlgt)
+    chai.expect(o.eyo$).equal(dlgt)
   })
   it ('Dlgt methodsMerge', function () {
     let C9r = function () {}

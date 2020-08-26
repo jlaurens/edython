@@ -169,13 +169,13 @@ eYo.dlgt.C9rBase_p.p6yEnhanced = function (id = 'p6y') {
         }}.$),
         [k + '_t']: {
           get () {
-            let p6y = this[this.eyo.p6y$.map].get(k)
+            let p6y = this[this.eyo$.p6y$.map].get(k)
             return p6y && p6y[eYo.$$.target]
           },
           set (after) {
-            let p6y = this[this.eyo.p6y$.map].get(k)
+            let p6y = this[this.eyo$.p6y$.map].get(k)
             if (p6y && after !== p6y[eYo.$$.target]) {
-              this[this.eyo.p6y$.replace](k, after)
+              this[this.eyo$.p6y$.replace](k, after)
             }
           },
           //<<< mochai: foo_t
@@ -221,8 +221,8 @@ eYo.dlgt.C9rBase_p.p6yEnhanced = function (id = 'p6y') {
         //...     }
         //...   }
         //... }, 'o')
-        //... o.eyo[eyo.p6y$.prepare](o)
-        //... o.eyo[eyo.p6y$.init](o)
+        //... o.eyo$[eyo.p6y$.prepare](o)
+        //... o.eyo$[eyo.p6y$.init](o)
         //... let foo_p = o[eyo.p6y$.map].get('foo')
         //... foo_p.flag = function (...$) {
         //...   this.owner.flag(...$)
@@ -346,7 +346,7 @@ eYo.dlgt.C9rBase_p.p6yEnhanced = function (id = 'p6y') {
     if (!eYo.isDef(old_p)) {
       console.error('BREAK HERE!!!')
     }
-    eYo.isDef(old_p) || eYo.throw(`${this.eyo.name}/p6y$.replace: no replacement for ${k}`)
+    eYo.isDef(old_p) || eYo.throw(`${this.eyo$.name}/p6y$.replace: no replacement for ${k}`)
     var p6y = eYo.p6y.aliasNew(k, this, source)
     eYo.many.link(old_p[eYo.$previous], p6y)
     eYo.many.link(p6y, old_p[eYo.$next])
@@ -617,7 +617,7 @@ eYo.dlgt.C9rBase_p.o4tEnhanced = function () {
       //... o.foo_p.dispose(2, 3)
       //... flag.expect(1234)
       //... var o = eYo.o4t.new(model, 'foo', onr)
-      //... o = o.eyo.c9rDispose(o, 2, 3)
+      //... o = o.eyo$.c9rDispose(o, 2, 3)
       //... flag.expect(1234)
       //>>>
     },
@@ -703,7 +703,7 @@ eYo.dlgt.C9rBase_p.o4tEnhanced = function () {
         for (let p of object[this.p6y$.map].values()) {
           if (p.owner === object) {
             let v = p.stored__
-            if (v && /* v.eyo && p === v[eYo.$p6y] &&*/ f.call($this, v)) {
+            if (v && /* v.eyo$ && p === v[eYo.$p6y] &&*/ f.call($this, v)) {
               return true
             }
           }
@@ -737,7 +737,7 @@ eYo.dlgt.C9rBase_p.o4tEnhanced = function () {
       if (eYo.isF($this)) {
         [$this, f] = [f, $this]
       }
-      return this.eyo[this.p6y$.valueForEach](this, $this, f, true)
+      return this.eyo$[this.p6y$.valueForEach](this, $this, f, true)
       //>>>
     },
     /**
@@ -751,7 +751,7 @@ eYo.dlgt.C9rBase_p.o4tEnhanced = function () {
       if (eYo.isF($this)) {
         [$this, f] = [f, $this]
       }
-      return this.eyo[this.p6y$.valueSome](this, $this, f, true)
+      return this.eyo$[this.p6y$.valueSome](this, $this, f, true)
       //>>>
     }
     //>>>

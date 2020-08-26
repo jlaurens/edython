@@ -72,7 +72,7 @@ eYo.p6y.makeC9rBase(true, {
     Object.defineProperties(this, {
       value: eYo.descriptorR({
         lazy () {
-          return `....value = ... forbidden for ${this.eyo.name} instances.`
+          return `....value = ... forbidden for ${this.eyo$.name} instances.`
         },
       }, {$ () {
         return this.getValueRO()
@@ -1097,7 +1097,7 @@ eYo.p6y.Dlgt_p.modelHandleGetSet = function (key, model, io) {
   // get_m is computed means that it is meant to replace the standard getter
   if (get_m === eYo.doNothing) {
     _p[getK] = _p[gVRO] = eYo.noGetter(function () {
-      return `Write only (${this.owner.eyo.name}/${key})`
+      return `Write only (${this.owner.eyo$.name}/${key})`
     })
     //... ;[eYo.doNothing, false].forEach(what => {
     //...   var p6y = eYo.p6y.new({
@@ -1157,7 +1157,7 @@ eYo.p6y.Dlgt_p.modelHandleGetSet = function (key, model, io) {
   let set_m = model.set
   if (set_m === eYo.doNothing) {
     _p[setK] = eYo.noSetter(function () {
-      return `Read only ${this.owner.eyo.name}/${key}`
+      return `Read only ${this.owner.eyo$.name}/${key}`
     })
     //... ;[eYo.doNothing, false].forEach(what => {
     //...   var p6y = eYo.p6y.new({
@@ -1288,7 +1288,7 @@ eYo.p6y.Dlgt_p.modelHandleGetSet = function (key, model, io) {
     }
   } else if (io.pure_get) {
     _p[setK] = eYo.noSetter(function () {
-      return `Read only ${this.owner.eyo.name}/${key}`
+      return `Read only ${this.owner.eyo$.name}/${key}`
     })
     //... var x = 421
     //... let p = eYo.p6y.new({
@@ -1349,7 +1349,7 @@ eYo.p6y.Dlgt_p.modelHandleStored = function (key, model, io) {
     //... flag.expect(123)
   } else if (get__m === eYo.doNothing) {
     _p[getK] = eYo.noGetter(function () {
-      return `Write only (${this.owner.eyo.name}/${key})`
+      return `Write only (${this.owner.eyo$.name}/${key})`
     })
   } else if (io.get_) {
     _p[getK] = eYo.decorate.reentrant(getK, {$ () {
@@ -1474,7 +1474,7 @@ eYo.p6y.Dlgt_p.modelHandleStored = function (key, model, io) {
     //... chai.expect(p6y.stored__).equal(123)
   } else if (set__m === eYo.doNothing) {
     _p[setK] = eYo.noSetter(function () {
-      return `Read only (${this.owner.eyo.name}/${key})`
+      return `Read only (${this.owner.eyo$.name}/${key})`
     })
   }
   //>>>
@@ -1504,7 +1504,7 @@ eYo.p6y.handler.makeC9rBase({
   //<<< mochai: eYo.p6y.handler.C9rBase
   /**
    * Initialize a proxy's handler.
-   * Debug note: if `foo.eyo.name` is `eYo.p6y.handler.Changer` then `foo` is an alias to a property named `changer` (more precisely the handler of the proxy).
+   * Debug note: if `foo.eyo$.name` is `eYo.p6y.handler.Changer` then `foo` is an alias to a property named `changer` (more precisely the handler of the proxy).
    * @param {String|Symbol} key 
    * @param {eYo.C9r} owner 
    * @param {eYo.P6y|Proxy} target 
@@ -1580,7 +1580,7 @@ eYo.p6y.handler.makeC9rBase({
     set (target, prop, value) {
       //<<< mochai: set
       if (this.isOwnedKeyRO(prop)) {
-        eYo.throw(`...${prop} = ... is forbidden for ${this.eyo.name} instances.`)
+        eYo.throw(`...${prop} = ... is forbidden for ${this.eyo$.name} instances.`)
         return false
         //... restart()
         //... handler.keys_RO.forEach(K => {
@@ -1666,7 +1666,7 @@ eYo.p6y.handler.makeC9rBase({
         //...   p[K] = 421
         //... })
       }
-      eYo.throw(`${this.eyo.name} instance: can't define property ${key.toString ? key.toString() : key}`)
+      eYo.throw(`${this.eyo$.name} instance: can't define property ${key.toString ? key.toString() : key}`)
       // return false
       //... restart()
       //... ;['foo', 'bar'].forEach(K => {

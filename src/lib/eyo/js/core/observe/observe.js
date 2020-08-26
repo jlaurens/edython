@@ -78,18 +78,18 @@ eYo.mixinFR(eYo.observe, {
    */
   new (when, $this, callback) {
     if (!eYo.observe.HOOKS.includes(when)) {
-      eYo.isDef(callback) && eYo.throw(`${this.eyo.name}/addObserver: Too many arguments ${callback}`)
+      eYo.isDef(callback) && eYo.throw(`${this.eyo$.name}/addObserver: Too many arguments ${callback}`)
       ;[when, $this, callback] = [eYo.NA, when, $this]
     }
     if ($this instanceof eYo.observe.C9rBase) {
-      eYo.isDef(callback) && eYo.throw(`${this.eyo.name}/addObserver: Too many arguments ${callback}`)
+      eYo.isDef(callback) && eYo.throw(`${this.eyo$.name}/addObserver: Too many arguments ${callback}`)
       if (!eYo.isDef(when) || when === $this.when) {
         return $this
       }
       return new eYo.observe.C9rBase(when, $this.$this, $this.callback_)
     }
     if (eYo.isF($this)) {
-      eYo.isDef(callback) && eYo.throw(`${this.eyo.name}: unexpected (last?) parameter, got ${callback}`)
+      eYo.isDef(callback) && eYo.throw(`${this.eyo$.name}: unexpected (last?) parameter, got ${callback}`)
       ;[$this, callback] = [eYo.NA, $this]
     } else {
       eYo.isF(callback) || eYo.throw(`Callback must be a function, got ${callback}`)
@@ -309,7 +309,7 @@ eYo.dlgt.C9rBase_p.observeEnhanced = function () {
   _p.fireObservers = function (when, before, after) {
     try {
       this.fireObservers = eYo.doNothing // do not reenter
-      this.eyo.C9r_p_down.forEach(_p => {
+      this.eyo$.C9r_p_down.forEach(_p => {
         let byWhen = _p.observersByWhen__
         if (byWhen) {
           let observers = byWhen[when]

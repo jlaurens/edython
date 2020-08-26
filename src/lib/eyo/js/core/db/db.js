@@ -64,7 +64,7 @@ eYo.o3d.newC9r('DB', {
         //<<< mochai: owner
         let list = $.filter(object => !eYo.isaO3d(object))
         if (list.length) {
-          eYo.throw(`${this.eyo.name}/add: object is not an eYo.O3d instance ${list[0]}`)
+          eYo.throw(`${this.eyo$.name}/add: object is not an eYo.O3d instance ${list[0]}`)
         }
         //... var db = new eYo.o3d.DB('db', onr, true)
         //... chai.expect(db.add).eyo_F
@@ -131,7 +131,7 @@ eYo.o3d.newC9r('DB', {
       //... db.add(a, b)
       if (eYo.isF($this)) {
         //<<< mochai: no $this
-        f && eYo.throw(`${this.eyo.name}/forEach: unexpected last argument (${f})`)
+        f && eYo.throw(`${this.eyo$.name}/forEach: unexpected last argument (${f})`)
         //... chai.expect(() => {
         //...   db.forEach(eYo.doNothing, 1)
         //... }).throw()
@@ -168,7 +168,7 @@ eYo.o3d.newC9r('DB', {
       //... db.add(a, b)
       if (eYo.isF($this)) {
         //<<< mochai: no $this
-        f && eYo.throw(`${this.eyo.name}/forEach: unexpected last argument (${f})`)
+        f && eYo.throw(`${this.eyo$.name}/forEach: unexpected last argument (${f})`)
         //... chai.expect(() => {
         //...   db.some(eYo.doNothing, 1)
         //... }).throw()

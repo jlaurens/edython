@@ -101,13 +101,13 @@ eYo.mixinFR(eYo.Dlgt_p, {
 
     let ns = this.ns
     let id = this.id
-    let eyo = this // catch this
+    let eyo$ = this // catch this
     if (SuperC9r) {
       eYo.isC9r(SuperC9r) || eYo.throw(`${this.name}/newC9r: Bad SuperC9r: ${SuperC9r}`)
       // create the constructor
       var C9r = function (...$) {
         SuperC9r.call(this, ...$) // top down call
-        eyo.doPrepare(this, ...$)
+        eyo$.doPrepare(this, ...$)
       }
       eYo.inherits(C9r, SuperC9r)
       eYo.isSubclass(C9r, SuperC9r) || eYo.throw('MISSED inheritance)')
@@ -131,7 +131,7 @@ eYo.mixinFR(eYo.Dlgt_p, {
     } else {
       // create the constructor
       C9r = function (...$) {
-        eyo.doPrepare(this, ...$)
+        eyo$.c9rPrepare(this, ...$)
       }
       // store the constructor
       var _p = C9r.prototype
@@ -148,7 +148,7 @@ eYo.mixinFR(eYo.Dlgt_p, {
       eYo.dlgt.declareDlgt(_p) // computed properties `eyo`
     }
     this.setC9r(C9r)
-    eyo === C9r[eYo.$] || eYo.throw('MISSED')
+    eyo$ === C9r[eYo.$] || eYo.throw('MISSED')
     return C9r
     //>>>
   }
@@ -185,7 +185,7 @@ eYo.mixinFR(eYo.c9r._p, {
     eYo.isD(model) || eYo.throw(`${this.name}/doNewC9r: Bad model: ${model}`)
 
     // process
-    let SuperDlgt = SuperC9r && SuperC9r[eYo.$] && SuperC9r[eYo.$].constructor
+    let SuperDlgt = SuperC9r && SuperC9r[eYo.$] && SuperC9r[eYo.$].constructor || eYo.Dlgt
     let eyo = eYo.dlgt.new(ns, id, SuperDlgt, model)
     let C9r = eyo.newC9r(SuperC9r)
     eYo.mixinFR(C9r, {
@@ -564,10 +564,10 @@ eYo.mixinFR(eYo.c9r._p, {
      * Convenience shortcut to the model
      */
     model () {
-      return this.eyo.model
+      return this.eyo$.model
     },
     ns () {
-      return this.eyo.ns
+      return this.eyo$.ns
     },
   })
 }
@@ -817,7 +817,7 @@ eYo.mixinFR(eYo.c9r._p, {
     //... ans = NS.newSingleton('id3', {
     //...   [eYo.$SuperC9r]: eYo.NA
     //... })
-    //... chai.expect(ans.eyo.SuperC9r).undefined
+    //... chai.expect(ans.eyo$.SuperC9r).undefined
     //>>>
   },
 })
@@ -834,7 +834,7 @@ Object.assign(eYo.C9r_p, {
    */
   init (...$) {
     //<<< mochai: eYo.C9r_p.init
-    var eyo = this.eyo
+    var eyo = this.eyo$
     try {
       this.init = eYo.doNothing
       do {
@@ -853,7 +853,7 @@ Object.assign(eYo.C9r_p, {
    */
   dispose (...$) {
     //<<< mochai: eYo.C9r_p.dispose
-    var eyo = this.eyo
+    var eyo = this.eyo$
     try {
       this.dispose = eYo.doNothing
       do {

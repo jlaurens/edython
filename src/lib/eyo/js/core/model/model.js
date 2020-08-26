@@ -443,7 +443,7 @@ eYo.mixinFR(eYo.model.Format_p, {
     var c = this
     $.forEach(arg => {
       if (arg) {
-        var mf = arg.eyo && arg.eyo.modelFormat || arg
+        var mf = arg.eyo$ && arg.eyo$.modelFormat || arg
         if (mf && mf instanceof eYo.model.Format) {
           c.fallback = mf
           //... var mf = new eYo.model.Format()

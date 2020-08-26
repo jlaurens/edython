@@ -50,7 +50,7 @@ eYo.KHandler = (() => {
   var current_ = []
   var target_
   var menu_ = new eYo.KHandler.Menu(/* eYo.NA, ContextMenuRenderer */)
-  // menu_.eyo = me
+  // menu_.eyo$ = me
   /**
  * Setup the shared key handler.
  * For edython.

@@ -424,7 +424,7 @@ eYo.expr.newC9r('lambda', true, {
  * For edython.
  */
 eYo.magnet.C9rBase_p.consolidateType = function () {
-  eYo.magnet.eyo.C9r_s.consolidateType.call(this)
+  eYo.magnet.eyo$.C9r_s.consolidateType.call(this)
   var brick = this.brick
   var m4tOut = brick.out_m
   var slot = brick.getSlot(eYo.key.EXPRESSION)

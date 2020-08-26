@@ -60,15 +60,15 @@ describe ('Tests: Owned', function () {
       }
     })
     let o = ns_o3d.new('abc', eYo.c9r.new())
-    o.eyo.C9r_p.ownerWillChange = function (before, after) {
+    o.eyo$.C9r_p.ownerWillChange = function (before, after) {
       flag.push(1)
     }
-    o.eyo.C9r_p.ownerDidChange = function (before, after) {
+    o.eyo$.C9r_p.ownerDidChange = function (before, after) {
       flag.push(2)
-      o.eyo.C9r_s.ownerDidChange.call(this, before, after)
+      o.eyo$.C9r_s.ownerDidChange.call(this, before, after)
     }
     onr.hasUI = true
-    o.eyo.C9r_p.initUI = function () {
+    o.eyo$.C9r_p.initUI = function () {
       flag.push(3)
     }
     o.owner_ = onr

@@ -402,7 +402,7 @@ eYo.stmt.decorator_stmt.prototype.populateContextMenuFirst_ = function (mngr) {
     })
   }
   mngr.shouldSeparate()
-  return eYo.stmt.decorator_stmt.eyo.C9r_s.populateContextMenuFirst_.call(this, mngr)
+  return eYo.stmt.decorator_stmt.eyo$.C9r_s.populateContextMenuFirst_.call(this, mngr)
 }
 
 /**

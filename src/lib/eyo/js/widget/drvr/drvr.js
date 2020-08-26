@@ -313,7 +313,7 @@ eYo.make$$('parent')
       //<<< mochai: (get|set)Drvr
       //... // The base driver is directly accessible.
       //... chai.expect(eYo.drvr.getDrvr('')[eYo.$$.target]).not.undefined
-      object.eyo && (object = object.eyo.name)
+      object.eyo$ && (object = object.eyo$.name)
       var drvrId = this.getDrvrId(object)
       //... var mngr, mngr1, drvr, drvr1, target
       //... mngr = eYo.drvr.newNS()
@@ -355,7 +355,7 @@ eYo.make$$('parent')
           //... mngr.setDrvrC9r('A', C9rA)
           //... chai.expect(mngr.getDrvrC9r('A')).equal(C9rA)
           //... drvr = mngr.getDrvr('A')
-          //... chai.expect(drvr.eyo.C9r).equal(C9rA)
+          //... chai.expect(drvr.eyo$.C9r).equal(C9rA)
           //... chai.expect(drvr[eYo.$$.target]).instanceOf(eYo.Drvr)
           //... chai.expect(drvr[eYo.$$.target][eYo.$$.target]).undefined
           var drvr_t = new C9r(drvrId, this, ...$)
@@ -370,7 +370,7 @@ eYo.make$$('parent')
             //... mngr.setDrvrC9r('A', C9rA)
             //... chai.expect(mngr.getDrvrC9r('A')).equal(C9rA)
             //... drvr = mngr.getDrvr('A')
-            //... chai.expect(drvr.eyo.C9r).equal(C9rA)
+            //... chai.expect(drvr.eyo$.C9r).equal(C9rA)
             //... mngr1 = mngr.newNS()
             //... chai.expect(mngr1.getDrvrC9r('A')).undefined
             //... drvr1 = mngr1.getDrvr('A')
@@ -384,7 +384,7 @@ eYo.make$$('parent')
           //... mngr.setDrvrC9r('A', C9rA)
           //... drvr = mngr.getDrvr('A')
           //... var drvr_t = drvr[eYo.$$.target]
-          //... chai.expect(drvr.eyo).equal(drvr_t.eyo)
+          //... chai.expect(drvr.eyo$).equal(drvr_t.eyo$)
           //... chai.expect(drvr.ns).equal(drvr_t.ns)
           return this.setDrvr(saveId, drvr_t)
         }
@@ -448,7 +448,7 @@ eYo.make$$('parent')
      */
     setDrvr (object, drvr_t) {
       let drvr = this.newDrvrProxy_(drvr_t)
-      object.eyo && (object = object.eyo.name)
+      object.eyo$ && (object = object.eyo$.name)
       var id = this.getDrvrId(object)
       this[$map].set(id, drvr)
       return drvr
@@ -480,20 +480,20 @@ eYo.o3d.newC9r(eYo.drvr, eYo.$$.Handler, {
   methods: {
     //<<< mochai: methods
     apply (target, thisArg, argumentsList) { // eslint-disable-line
-      eYo.throw(`${target.eyo.name} instances are not callable.`)
+      eYo.throw(`${target.eyo$.name} instances are not callable.`)
     },
     construct(target, args) { // eslint-disable-line
-      eYo.throw(`${target.eyo.name} instances are not constructors.`)
+      eYo.throw(`${target.eyo$.name} instances are not constructors.`)
     },
     defineProperty(target, key, descriptor) {
       if (key === eYo.$p6y) {
         Object.defineProperty(target, key, descriptor)
         return
       }
-      eYo.throw(`${target.eyo.name} instances are frozen (no defineProperty).`)
+      eYo.throw(`${target.eyo$.name} instances are frozen (no defineProperty).`)
     },
     deleteProperty(target, prop) { // eslint-disable-line
-      eYo.throw(`${target.eyo.name} instances are frozen (no deleteProperty).`)
+      eYo.throw(`${target.eyo$.name} instances are frozen (no deleteProperty).`)
     },
     //<<< mochai: frozen or forbidden
     //... let mngr = eYo.drvr.newNS()
@@ -511,8 +511,8 @@ eYo.o3d.newC9r(eYo.drvr, eYo.$$.Handler, {
         //... var seed = eYo.genUID(eYo.IDENT)
         //... var d = newDrvr(mngr, 'X' + seed)
         //... chai.expect(d[eYo.$$.target]).instanceOf(eYo.Drvr)
-        //... chai.expect(d.eyo).not.undefined
-        //... chai.expect(d.eyo).equal(d[eYo.$$.target].eyo)
+        //... chai.expect(d.eyo$).not.undefined
+        //... chai.expect(d.eyo$).equal(d[eYo.$$.target].eyo$)
       }
       var ans = this.cache.get(prop)
       if (ans) {
@@ -540,7 +540,7 @@ eYo.o3d.newC9r(eYo.drvr, eYo.$$.Handler, {
       var ans_f = (() => {
         // list all the model methods
         // make the table entries of all the drivers
-        var ra = target.eyo.drvrId.split('.')
+        var ra = target.eyo$.drvrId.split('.')
         var x = ra.shift()
         var ids = x
           ? ['', eYo.do.toTitleCase(x)]
@@ -550,7 +550,7 @@ eYo.o3d.newC9r(eYo.drvr, eYo.$$.Handler, {
           ids.push(`${x}.${eYo.do.toTitleCase(component)}`)
           x = `${x}.${component}`
         }
-        var nss = [x = target.eyo.ns]
+        var nss = [x = target.eyo$.ns]
         if (!x) {
           console.error('NOT x')
         }
@@ -575,7 +575,7 @@ eYo.o3d.newC9r(eYo.drvr, eYo.$$.Handler, {
               //...     },
               //...   },
               //... })
-              //... eYo.objectHasOwnProperty(chai.expect(d.eyo.C9r_p, 'foo')).true
+              //... eYo.objectHasOwnProperty(chai.expect(d.eyo$.C9r_p, 'foo')).true
               //... d.foo(2, 3)
               //... flag.expect(123)
             }

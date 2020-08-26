@@ -126,7 +126,7 @@ eYo.Dlgt_p.manyEnhanced = function (id, type, path, manyModel) {
   //<<< mochai: manyEnhanced
   //<<< mochai: Basics
   if (!eYo.isStr(path)) {
-    eYo.isNA(manyModel) || eYo.throw(`${this.eyo.name}/manyEnhanced: Unexpected last argument`)
+    eYo.isNA(manyModel) || eYo.throw(`${this.eyo$.name}/manyEnhanced: Unexpected last argument`)
     //... chai.expect(() => eYo.C9r[eYo.$].manyEnhanced(1, 2, 3, 4)).throw()
     ;[type, path, manyModel] = [id, type, path || {}]
   } else if (!manyModel) {
@@ -134,7 +134,7 @@ eYo.Dlgt_p.manyEnhanced = function (id, type, path, manyModel) {
   }
   var _p = this._p
   let id$ = id + '$'
-  eYo.objectHasOwnProperty(_p, id$) && eYo.throw(`${this.eyo.name}/manyEnhanced: Already used (${id$})`)
+  eYo.objectHasOwnProperty(_p, id$) && eYo.throw(`${this.eyo$.name}/manyEnhanced: Already used (${id$})`)
   //... preparator()()
   //... var foo$ = C9r[eYo.$].manyEnhanced('foo', 'foo')
   //... chai.expect(() => C9r[eYo.$].manyEnhanced('foo', 'foo')).throw()
@@ -295,7 +295,7 @@ eYo.Dlgt_p.manyEnhanced = function (id, type, path, manyModel) {
         } else if (more) {
           [more, todo, again] = [false, again, todo]
         } else {
-          again.length && eYo.throw(`Cycling/Missing properties in ${this.eyo.name}: ${again}`)
+          again.length && eYo.throw(`Cycling/Missing properties in ${this.eyo$.name}: ${again}`)
           break
         }
       }
@@ -539,7 +539,7 @@ eYo.Dlgt_p.manyEnhanced = function (id, type, path, manyModel) {
     let suffix = (manyModel.suffix || `_${type[0]}`)
     for (let k of object[type$.map].keys()) {
       if (eYo.isSym(k)) {
-        eYo.objectHasOwnProperty(object, k) && eYo.throw(`${this.eyo.name}/${id}$.shortcuts: Already property ${object.eyo.name}/${k.toString()}`)
+        eYo.objectHasOwnProperty(object, k) && eYo.throw(`${this.eyo$.name}/${id}$.shortcuts: Already property ${object.eyo$.name}/${k.toString()}`)
         eYo.mixinRO(object, {
           [k] () {
             return this[type$.map].get(k).value
@@ -549,9 +549,9 @@ eYo.Dlgt_p.manyEnhanced = function (id, type, path, manyModel) {
       }
       let k_p = k + suffix
       if (eYo.objectHasOwnProperty(object, k_p)) {
-        console.error(`BREAK HERE!!! ALREADY object ${object.eyo.name}/${k_p}`)
+        console.error(`BREAK HERE!!! ALREADY object ${object.eyo$.name}/${k_p}`)
       }
-      eYo.objectHasOwnProperty(object, k_p) && eYo.throw(`${this.eyo.name}/${id}$.shortcuts: Already property ${object.eyo.name}/${k_p}`)
+      eYo.objectHasOwnProperty(object, k_p) && eYo.throw(`${this.eyo$.name}/${id}$.shortcuts: Already property ${object.eyo$.name}/${k_p}`)
       eYo.mixinRO(object, {
         [k_p] () {
           return this[type$.map].get(k)
@@ -576,7 +576,7 @@ eYo.Dlgt_p.manyEnhanced = function (id, type, path, manyModel) {
     //... o = eYo.c9r.new('foo')
     //... C9r[eYo.$][foo$.prepare](o)
     //... C9r[eYo.$][foo$.shortcuts](o)
-    //... o.foo_x.eyo.model.bar(3)
+    //... o.foo_x.eyo$.model.bar(3)
     //... flag.expect('1foo23')
     //>>>
   }

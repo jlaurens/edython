@@ -53,7 +53,7 @@ eYo.o3d.makeC9rBase({
    * @param {eYo.c9r.C9rBase} owner - the immediate owner of this object.
    */
   init (key, owner) {
-    this.eyo.o3dInitInstance(this, key, owner)
+    this.eyo$.o3dInitInstance(this, key, owner)
     this.disposeUI = eYo.doNothing
   },
   dispose () {
@@ -87,7 +87,7 @@ eYo.mixinFR(eYo._p, {
  * @param{Boolean} [configurable] - Whether descriptors should be configurable, necessary for proxy.
  */
 eYo.o3d.Dlgt_p.o3dInitInstance = function (instance, key, owner, configurable) {
-  eYo.isId(key) || eYo.throw(`${this.eyo.name}: Bad key in init`)
+  eYo.isId(key) || eYo.throw(`${this.eyo$.name}: Bad key in init`)
   if (!eYo.isOwner(owner)) {
     eYo.isNA(configurable) || eYo.throw(`${this.name}.o3dInitInstance: Unexpected argument (${configurable})`)
     ;[owner, configurable] = [this.ns, owner]
@@ -223,7 +223,7 @@ eYo.mixinFR(eYo.o3d._p, {
       //... })).instanceOf(NS.C9rBase)
       //... chai.expect(NS.newSingleton(Symbol(), {
       //...   [eYo.$SuperC9r]: eYo.NA,
-      //... }).eyo.SuperC9r).undefined
+      //... }).eyo$.SuperC9r).undefined
     } else {
       model = {
         [eYo.$SuperC9r]: this.C9rBase,

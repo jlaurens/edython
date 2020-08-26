@@ -189,7 +189,7 @@ eYo.xml.domToBoard = function (xml, owner) {
   // children beyond the lists' length.  Trust the length, do not use the
   // looping pattern of checking the index for an object.
 
-  board.eyo.recover.whenRecovered(
+  board.eyo$.recover.whenRecovered(
     brick => newBlockIds.push(brick.id)
   )
 
@@ -256,7 +256,7 @@ eYo.xml.domToBoard = function (xml, owner) {
     if (board.setResizesEnabled) {
       board.setResizesEnabled(true)
     }
-    board.eyo.recover.whenRecovered(null) // clean
+    board.eyo$.recover.whenRecovered(null) // clean
   })
   return newBlockIds
 }
@@ -858,7 +858,7 @@ eYo.xml.domToBrick = (() => {
     var prototypeName
     //
     var board = owner.board || owner
-    return board.eyo.recover.resitWrap(
+    return board.eyo$.recover.resitWrap(
       dom,
       () => {
         var brick
@@ -907,15 +907,15 @@ eYo.xml.domToBrick = (() => {
           var solid = prototypeName + ''
           var controller = eYo.model.forType(solid)
           if (controller) {
-            if (controller.eyo && eYo.isF(controller.eyo.domToBrick)) {
-              return controller.eyo.domToBrick(dom, board, id)
+            if (controller.eyo$ && eYo.isF(controller.eyo$.domToBrick)) {
+              return controller.eyo$.domToBrick(dom, board, id)
             } else if (eYo.isF(controller.domToBrick)) {
               return controller.domToBrick(dom, board, id)
             }
             brick = eYo.brick.newReady(solid, id, board)
           } else if ((controller = eYo.model.forType(prototypeName))) {
-            if (controller.eyo && eYo.isF(controller.eyo.domToBrick)) {
-              return controller.eyo.domToBrick(dom, board, id)
+            if (controller.eyo$ && eYo.isF(controller.eyo$.domToBrick)) {
+              return controller.eyo$.domToBrick(dom, board, id)
             } else if (eYo.isF(controller.domToBrick)) {
               return controller.domToBrick(dom, board, id)
             }
@@ -1018,7 +1018,7 @@ eYo.xml.fromDom = function (brick, element) {
         if (m4t) {
           return eYo.do.SomeElementChild(element, child => {
             if ((child.getAttribute(eYo.xml.FLOW) === key)) {
-              this.board.eyo.recover.dontResit(child)
+              this.board.eyo$.recover.dontResit(child)
               var brick = eYo.xml.domToBrick(child, this)
               if (brick) { // still headless!
                 // we could create a brick from that child element

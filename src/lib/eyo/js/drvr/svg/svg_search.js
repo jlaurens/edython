@@ -28,7 +28,7 @@ eYo.svg.newDrvrC9r('Search', {
     if (search.dom) {
       return
     }
-    var dom = eYo.svg.eyo.C9r_s.SearchInit.call(this, search)
+    var dom = eYo.svg.eyo$.C9r_s.SearchInit.call(this, search)
     var svg = dom.svg = Object.create(null)
     /*
     <svg class="eyo-search">
@@ -75,7 +75,7 @@ eYo.svg.newDrvrC9r('Search', {
     eYo.dom.removeNode(dom.svg.root_)
     dom.svg.root_ = null
     dom.svg = null
-    eYo.svg.eyo.C9r_s.SearchDispose.call(this, search)
+    eYo.svg.eyo$.C9r_s.SearchDispose.call(this, search)
   }
 })
 

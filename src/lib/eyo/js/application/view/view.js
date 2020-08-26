@@ -34,7 +34,7 @@ eYo.o4t.newNS(eYo, 'view')
 eYo.dlgt.C9rBase_p.viewEnhanced = function () {
   //<<< mochai: viewEnhanced
 
-  this.p6y$ || eYo.throw(`${this.eyo.name}/viewEnhanced: Not a p6y aware delegate.`)
+  this.p6y$ || eYo.throw(`${this.eyo$.name}/viewEnhanced: Not a p6y aware delegate.`)
 
   //<<< mochai: Basic
   //... let Foo = eYo.view.newNS().newC9r('Foo')
@@ -120,7 +120,7 @@ eYo.dlgt.C9rBase_p.viewEnhanced = function () {
     //...   },
     //... })
     //... var o = ns.new('bar', onr)
-    //... o.eyo.viewPrepare(o)
+    //... o.eyo$.viewPrepare(o)
     //... chai.expect(o.viewMap.get('foo')).not.undefined
     //... chai.expect(o.viewMap.get('bar')).not.undefined
     //... chai.expect(o.foo_v).instanceOf(eYo.View)
@@ -533,13 +533,13 @@ eYo.View[eYo.$].methodsMerge({
   //... }
   //... let driver = {
   //...   prepareUI (instance, ...$) {
-  //...     flag.push(1, instance.eyo.model.bar, ...$)
+  //...     flag.push(1, instance.eyo$.model.bar, ...$)
   //...   },
   //...   do_initUI (instance, ...$) {
-  //...     flag.push(2, instance.eyo.model.bar, ...$)
+  //...     flag.push(2, instance.eyo$.model.bar, ...$)
   //...   },
   //...   do_disposeUI (instance, ...$) {
-  //...     flag.push(3, instance.eyo.model.bar, ...$)
+  //...     flag.push(3, instance.eyo$.model.bar, ...$)
   //...   },
   //... }
   /**

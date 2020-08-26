@@ -559,7 +559,7 @@ eYo.slot.makeC9rBase(true, {
      * @param {function} helper
      */
     fieldForEach ($this, helper) {
-      this.eyo.fieldForEach(this, $this, helper)
+      this.eyo$.fieldForEach(this, $this, helper)
     },
     /**
      * Connect the brick or magnet. When not given a magnet, the output magnet is used. It is natural for slots.

@@ -201,7 +201,7 @@ eYo.stmt.branch_p.getBaseType = function () {
  * @private
  */
 eYo.stmt.group.prototype.willRender_ = function (recorder) {
-  eYo.stmt.group.eyo.C9r_s.willRender_.call(this, recorder)
+  eYo.stmt.group.eyo$.C9r_s.willRender_.call(this, recorder)
   var field = this.async_f
   if (field) {
     field.visible = this.async_
@@ -232,7 +232,7 @@ eYo.stmt.group.prototype.populateContextMenuFirst_ = function (mngr) {
       mngr.shouldSeparateInsert()
     }
   }
-  return eYo.stmt.group.eyo.C9r_s.populateContextMenuFirst_.call(this, mngr)
+  return eYo.stmt.group.eyo$.C9r_s.populateContextMenuFirst_.call(this, mngr)
 }
 
 /**

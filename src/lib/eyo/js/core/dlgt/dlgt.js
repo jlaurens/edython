@@ -54,7 +54,7 @@ eYo.newNS('dlgt')
 //...     flag.push('/', ...$)
 //...   }
 //...   eYo.dlgt.declareDlgt(_p)
-//...   chai.expect(_p.eyo).equal(dlgt)
+//...   chai.expect(_p.eyo$).equal(dlgt)
 //...   chai.expect(C9r[eYo.$]).equal(dlgt)
 //...   _p.prepare = function (...$) {
 //...     this.flag('p', ...$)
@@ -94,7 +94,7 @@ eYo.mixinFR(eYo.dlgt, {
    * @param {Function} C9r - the associate constructor
    * @param {Object} model - the model used for extension
    * The problem of constructor delegation is the possibility of an infinite loop :
-    object->constructor->eyo->contructor->eyo->constructor->[eYo.$]...
+    object->constructor->eyo$->contructor->eyo$->constructor->[eYo.$]...
     The Base is its own delegate's constructor
   */
   C9rBase: function (ns, id, model) {
@@ -154,7 +154,7 @@ eYo.mixinFR(eYo.dlgt, {
       [eYo.$] () {
         return this.constructor[eYo.$]
       },
-      eyo () {
+      eyo$ () {
         return this.constructor[eYo.$]
       },
     })
@@ -205,7 +205,7 @@ eYo.mixinFR(eYo._p, {
 
   eYo.dlgt.declareDlgt(_p)
   //<<< mochai: delegate
-  //... chai.expect(eYo.dlgt.eyo).equal(eYo.dlgt.constructor[eYo.$])
+  //... chai.expect(eYo.dlgt.eyo$).equal(eYo.dlgt.constructor[eYo.$])
   //... let SuperC9r = function () {}
   //... let superDlgt = eYo.dlgt.new('chi', {})
   //... superDlgt.setC9r(SuperC9r)
@@ -224,7 +224,7 @@ eYo.mixinFR(eYo._p, {
   //... dlgt.setC9r(C9r)
   //... let _p = C9r.prototype
   //... eYo.dlgt.declareDlgt(_p)
-  //... chai.expect(_p.eyo).equal(dlgt)
+  //... chai.expect(_p.eyo$).equal(dlgt)
   //... chai.expect(C9r[eYo.$]).equal(dlgt)
   //... console.error('IGNORE next error')
   //... chai.expect(() => {
@@ -288,9 +288,9 @@ eYo.mixinFR(eYo._p, {
   //... let childDlgt = eYo.dlgt.new('mee', {})
   //... childDlgt.setC9r(ChildC9r)
   //... chai.expect(childDlgt.C9r__).equal(ChildC9r)
-  //... let eyo = new eYo.Dlgt(eYo.newNS(), 'foo', {})
-  //... eyo.setC9r(function () {})
-  //... eyo.finalizeC9r()
+  //... let eyo$ = new eYo.Dlgt(eYo.newNS(), 'foo', {})
+  //... eyo$.setC9r(function () {})
+  //... eyo$.finalizeC9r()
   eYo.mixinRO(_p, {
     C9r_p () {
       return this.C9r__.prototype
@@ -306,25 +306,25 @@ eYo.mixinFR(eYo._p, {
     },
     C9r_s () {
       return this.C9r__[eYo.$SuperC9r_p]
-      //... chai.expect(eyo.C9r_s).undefined
+      //... chai.expect(eyo$.C9r_s).undefined
       //... chai.expect(dlgt.C9r_s).equal(SuperC9r.prototype).equal(C9r[eYo.$SuperC9r_p])
       //... chai.expect(childDlgt.C9r_s).equal(C9r.prototype).equal(ChildC9r[eYo.$SuperC9r_p])
     },
     name () {
       return this.$id__.description
-      //... chai.expect(eyo.name).equal('(eYo).foo')
+      //... chai.expect(eyo$.name).equal('(eYo).foo')
       //... chai.expect(superDlgt.name).equal('(...).chi')
       //... chai.expect(dlgt.name).equal('(...).foo')
       //... chai.expect(childDlgt.name).equal('(...).mee')
     },
     super () {
       eYo.throw('`super` has moved to `$super`')
-      //... chai.expect(() => eyo.super).throw()
+      //... chai.expect(() => eyo$.super).throw()
     },
     $super () {
       var S = this.C9r__[eYo.$SuperC9r]
       return S && S[eYo.$]
-      //... chai.expect(eyo.$super).undefined
+      //... chai.expect(eyo$.$super).undefined
       //... chai.expect(superDlgt.$super).undefined
       //... chai.expect(dlgt.$super).eql(SuperC9r[eYo.$])
       //... chai.expect(childDlgt.$super).eql(C9r[eYo.$]).eql(dlgt)

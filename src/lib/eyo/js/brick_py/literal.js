@@ -44,7 +44,7 @@ eYo.expr.newC9r('literal', {
  * @param {Object} [opt]
  */
 eYo.expr.literal.prototype.saveData = function (element, opt) { // eslint-disable-line
-  eYo.expr.literal.eyo.C9r_s.saveData.apply(this, arguments)
+  eYo.expr.literal.eyo$.C9r_s.saveData.apply(this, arguments)
   if (this.Value_p == '') {
     element.setAttribute(eYo.key.PLACEHOLDER, this.value_d.model.placeholder)
   }
@@ -383,7 +383,7 @@ eYo.expr.literal.literalPopulateContextMenuFirst_ = function (mngr) {
  */
 eYo.expr.shortliteral.prototype.populateContextMenuFirst_ = function (mngr) {
   eYo.expr.literal.literalPopulateContextMenuFirst_.call(this, mngr)
-  eYo.expr.shortliteral.eyo.C9r_s.populateContextMenuFirst_.call(this, mngr)
+  eYo.expr.shortliteral.eyo$.C9r_s.populateContextMenuFirst_.call(this, mngr)
   return true
 }
 
