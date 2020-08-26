@@ -426,7 +426,7 @@ eYo.mixinFR(eYo._p, {
       if (!noShortCuts) {
         let ns = this.ns
         let id = this.id
-        if (ns && id && eYo.isStr(id)) {
+        if (ns && id && !this.anonymous) {
           eYo.mixinRO(ns._p, {
             [id + '$'] () {
               return C9r[eYo.$]
@@ -491,6 +491,8 @@ eYo.mixinFR(eYo._p, {
         this.constructor.prototype[K] = {[K] (...$) {
           f_m.call(...$)
         }}[K]
+      } else {
+        this.constructor.prototype[K] = eYo.doNothing
       }
       //>>>
     },
@@ -597,7 +599,7 @@ eYo.mixinFR(eYo._p, {
         //... new C9r(1, 2)
         //... flag.expect('/p12/i12/$I12')
       }
-      m && (this._p[K] = m[K])
+      this._p[K] = m ? m[K] : eYo.doNothing
       //>>>
     },
     /**
@@ -687,7 +689,7 @@ eYo.mixinFR(eYo._p, {
         //... new C9r().dispose(1, 2)
         //... flag.expect('/p/i/x12/$X12')
       }
-      m && (this._p[K] = m[K])
+      this._p[K] = m ? m[K] : eYo.doNothing
       //>>>
     },
     /**
@@ -812,7 +814,7 @@ eYo.mixinFR(eYo._p, {
      * Create and set the receiver's constructor.
      * @param {*} [SuperC9r] - Optional super class of the returned constructor
      */
-    newC9r(SuperC9r) {
+    newC9r (SuperC9r) {
       //<<< mochai: eYo.Dlgt_p.newC9r
       let ns = this.ns
       let id = this.id
@@ -831,7 +833,16 @@ eYo.mixinFR(eYo._p, {
         // create the constructor
         var C9r = function (...$) {
           SuperC9r.call(this, ...$) // top down call
-          eyo$.c9rPrepare(this, ...$)
+          if (this.dispose === eYo.doNothing) {
+            eyo$.c9rPrepare(this, ...$)
+          } else {
+            try {
+              this.dispose = eYo.doNothing
+              eyo$.c9rPrepare(this, ...$)
+            } finally {
+              delete this.dispose
+            }
+          }
         }
         eYo.inherits(C9r, SuperC9r)
         eYo.isSubclass(C9r, SuperC9r) || eYo.throw('MISSED inheritance)')
@@ -854,7 +865,16 @@ eYo.mixinFR(eYo._p, {
       } else {
         // create the constructor
         C9r = function (...$) {
-          eyo$.c9rPrepare(this, ...$)
+          if (this.dispose === eYo.doNothing) {
+            eyo$.c9rPrepare(this, ...$)
+          } else {
+            try {
+              this.dispose = eYo.doNothing
+              eyo$.c9rPrepare(this, ...$)
+            } finally {
+              delete this.dispose
+            }
+          }
         }
         // store the constructor
         var _p = C9r.prototype
@@ -941,7 +961,8 @@ eYo.mixinFR(eYo.dlgt._p, {
     // when defined, init must be a self contained function,
     // ie with no inherited reference...
     let dlgt_m = model[eYo.$]
-    if (eYo.isF(dlgt_m)) {
+    if (dlgt_m) {
+      eYo.isF(dlgt_m) || eYo.throw(`model[eYo.$] is not a function: ${model[eYo.$]}`)
       Dlgt.prototype.init = {init (...$) {
         this.init = eYo.doNothing
         SuperDlgt.prototype.init.call(this, ...$)
@@ -1023,6 +1044,11 @@ eYo.mixinFR(eYo.dlgt.C9rBase_p, {
    * @param{Object} model - the model
    */
   CONSTsMerge (model) {
+    eYo.isD(model) || eYo.throw(`Unexpected model argument: ${model}`)
+    for (let k of Object.keys(model)) {
+      k && eYo.isStr(k) || eYo.throw(`Unexpected model key: ${k}`)
+      k[0] === k[0].toUpperCase() || eYo.throw(`Bad model key: ${k}`)
+    }
     let _p = this.C9r_p
     eYo.mixinRO(_p, model)
     //<<< mochai: eYo.Dlgt_p.CONSTsMerge
@@ -1049,15 +1075,19 @@ eYo.mixinFR(eYo.dlgt.C9rBase_p, {
    * @param{Object} model - the model
    */
   methodsMerge (model) {
+    eYo.isD(model) || eYo.throw(`Unexpected model argument: ${model}`)
     let _p = this.C9r_p
     for (let [k, m] of Object.entries(model)) {
-      if (eYo.isF(m)) {
+      if (m) {
+        eYo.isF(m) || eYo.throw(`Unexpected model entry: ${k} -> ${m}`)
         if (m.length === 1 && _p[k] && XRegExp.exec(m.toString(), eYo.xre.function_overriden)) {
           _p[k] = eYo.asF(m.call(this, eYo.toF(_p[k]).bind(this)))
         } else {
           _p[k] = m
         }
-      } 
+      } else {
+        _p[k] = eYo.doNothing
+      }
     }
   },
   /**

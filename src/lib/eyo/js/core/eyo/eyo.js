@@ -1368,14 +1368,14 @@ eYo.mixinFR(eYo._p, {
     //... var ns = ns_super.newNS(eYo.NULL_NS, key)
     //... chai.assert(ns)
     //... chai.expect(ns_super[key]).undefined
-    Object.defineProperty(NS.prototype, 'super', {
+    Object.defineProperty(NS.prototype, '$super', {
       value: this,
       writable: false,
     })
     //... var ns_super = eYo.newNS()
     //... var ns = ns_super.newNS()
     //... chai.expect(ns).not.equal(ns_super)
-    //... chai.expect(ns.super).equal(ns_super)
+    //... chai.expect(ns.$super).equal(ns_super)
     if (ns) {
       Object.defineProperty(NS.prototype, 'parent', {
         get () {

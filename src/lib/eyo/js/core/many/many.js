@@ -45,8 +45,8 @@ eYo.newNS('many')
 //...     let eyo = C9r[eYo.$]
 //...     let _p = C9r.prototype
 //...     _p.flag = flagor(1)
-//...     _p.doPrepare = flagor(2)
-//...     _p.doInit = flagor(3)
+//...     _p.c9rPrepare = flagor(2)
+//...     _p.c9rInit = flagor(3)
 //...     f && f(_p)
 //...     eyo.finalizeC9r()
 //...   }

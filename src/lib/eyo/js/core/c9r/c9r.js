@@ -90,76 +90,13 @@ eYo.c9r._p.appendToMethod = (object, key, f) => {
 
 // ANCHOR Top level constructor utilities
 
-eYo.mixinFR(eYo.Dlgt_p, {
-  newC9r(SuperC9r) {
-    //<<< mochai: eYo.Dlgt_p.newC9r
-    //... var NS = eYo.newNS()
-    //... var key = 'foo'
-    //... var C9r = function () {}
-    //... model = {}
-    //... var dlgt = new eYo.dlgt.C9rBase(NS, key, C9r, model)
-
-    let ns = this.ns
-    let id = this.id
-    let eyo$ = this // catch this
-    if (SuperC9r) {
-      eYo.isC9r(SuperC9r) || eYo.throw(`${this.name}/newC9r: Bad SuperC9r: ${SuperC9r}`)
-      // create the constructor
-      var C9r = function (...$) {
-        SuperC9r.call(this, ...$) // top down call
-        eyo$.doPrepare(this, ...$)
-      }
-      eYo.inherits(C9r, SuperC9r)
-      eYo.isSubclass(C9r, SuperC9r) || eYo.throw('MISSED inheritance)')
-
-      SuperC9r[eYo.$].addSubC9r(C9r)
-      // syntactic sugar shortcuts
-      if (ns && id) {
-        (eYo.objectHasOwnProperty(ns, id) || eYo.objectHasOwnProperty(ns._p, id)) && eYo.throw(`${id.toString ? id.toString() : id} is already a property of ns: ${ns.name}`)
-        eYo.mixinFR(ns._p, { [id]: C9r })
-        if (id.length) {
-          if (id.startsWith('eyo:')) {
-            id = id.substring(4)
-          }
-          eYo.mixinFR(ns._p, {
-            [id + '_p']: C9r.prototype,
-            [id + '_s']: SuperC9r.prototype,
-            [id + '_S']: SuperC9r,            
-          })
-        }
-      }
-    } else {
-      // create the constructor
-      C9r = function (...$) {
-        eyo$.c9rPrepare(this, ...$)
-      }
-      // store the constructor
-      var _p = C9r.prototype
-      if (ns && id) {
-        (eYo.objectHasOwnProperty(ns, id) || eYo.objectHasOwnProperty(ns._p, id)) && eYo.throw(`${id.toString ? id.toString() : id} is already a property of ns: ${ns.name}`)
-        eYo.mixinFR(ns._p, { [id]: C9r })
-        if (id.length) {
-          if (id.startsWith('eyo:')) {
-            id = id.substring(4)
-          }
-          eYo.mixinRO(ns._p, { [id + '_p']: _p })
-        }
-      }
-      eYo.dlgt.declareDlgt(_p) // computed properties `eyo`
-    }
-    this.setC9r(C9r)
-    eyo$ === C9r[eYo.$] || eYo.throw('MISSED')
-    return C9r
-    //>>>
-  }
-})
 eYo.mixinFR(eYo.c9r._p, {
   /**
    * @name{eYo.c9r._p.doNewC9r}
    * Make a constructor with an `eYo.$` property.
    * Caveat, constructors must have the same arguments.
    * Use a key->value design if you do not want that.
-   * The `model` object has template: `{init: function, dispose: function}`.
+   * The `model` object has template: `{prepare: function, init: function, dispose: function}`.
    * Each namespace has its own `newC9r` method which creates classes in itself.
    * This is not used directly, only decorated.
    * 
@@ -185,11 +122,11 @@ eYo.mixinFR(eYo.c9r._p, {
     eYo.isD(model) || eYo.throw(`${this.name}/doNewC9r: Bad model: ${model}`)
 
     // process
-    let SuperDlgt = SuperC9r && SuperC9r[eYo.$] && SuperC9r[eYo.$].constructor || eYo.Dlgt
-    let eyo = eYo.dlgt.new(ns, id, SuperDlgt, model)
-    let C9r = eyo.newC9r(SuperC9r)
+    let SuperDlgt = SuperC9r && SuperC9r[eYo.$] && SuperC9r[eYo.$].constructor || ns.Dlgt
+    let eyo$ = eYo.dlgt.new(ns, id, SuperDlgt, model)
+    let C9r = eyo$.newC9r(SuperC9r)
     eYo.mixinFR(C9r, {
-      [eYo.$newSubC9r]: eYo.c9r.makeSubC9r.bind(eyo),
+      [eYo.$newSubC9r]: eYo.c9r.makeSubC9r.bind(eyo$),
     })
     return C9r
   },
@@ -250,6 +187,7 @@ eYo.mixinFR(eYo.c9r._p, {
         SuperC9r || (SuperC9r = model[eYo.$SuperC9r] || eYo.asF(this[id]) || this.C9rBase)
       } else if (SuperC9r || (SuperC9r = model[eYo.$SuperC9r])) {
         id = SuperC9r[eYo.$] && SuperC9r[eYo.$].id
+        // possible id conflict here if NS is SuperC9r's namespace
       } else {
         id = Symbol(`${this.name}.?`)
         //... var NS = eYo.c9r.newNS()
@@ -322,7 +260,7 @@ eYo.mixinFR(eYo.c9r._p, {
    * @param {Object|Function} [model] -  The dictionary of parameters. Or a function to create such a dictionary. This might be overcomplicated.
    * @return {Function} the created constructor.
    */
-  newC9r: eYo.c9r.makeC9rDecorate(function (ns, id, SuperC9r, model) {
+  newC9r: eYo.c9r.makeC9rDecorate({$ (ns, id, SuperC9r, model) {
   //<<< mochai: newC9r
     return this.doNewC9r(ns, id, SuperC9r, model)
   //... let NS = eYo.c9r.newNS()
@@ -333,7 +271,7 @@ eYo.mixinFR(eYo.c9r._p, {
   //... let o = new C9r()
   //... chai.expect(o).instanceOf(C9r)
   //>>>
-  })
+  }}.$)
 })
 //
 eYo.mixinFR(eYo, {
@@ -464,7 +402,7 @@ eYo.mixinFR(eYo.c9r._p, {
       //... NS.makeC9rBase()
       //... chai.expect(() => NS.makeC9rBase()).throw()
       if (!eYo.isBool(unfinalize)) {
-        eYo.isDef(model) && eYo.throw(`${this.name}/makeC9rBase Unexpected last argument: ${model}`)
+        eYo.isNA(model) || eYo.throw(`${this.name}/makeC9rBase Unexpected last argument: ${model}`)
         //... chai.expect(() => NS.makeC9rBase(eYo.doNothing, {}, 1)).throw()
         ;[unfinalize, SuperC9r, model] = [false, unfinalize, SuperC9r]
       }
@@ -477,7 +415,7 @@ eYo.mixinFR(eYo.c9r._p, {
         eYo.isNA(model) || eYo.throw(`${this.name}/makeC9rBase: Unexpected argument (${model})`)
         //... chai.expect(() => NS.makeC9rBase({}, 1)).throw()
         model = eYo.called(SuperC9r) || {}
-        SuperC9r = model && model[eYo.$$[eYo.$SuperC9r]] || this.super && this.super.C9rBase || eYo.NA
+        SuperC9r = model && model[eYo.$$[eYo.$SuperC9r]] || this.$super && this.$super.C9rBase || eYo.NA
       }
       let C9r = this.newC9r(this, 'C9rBase', SuperC9r, model)
       //... var ns = eYo.c9r.newNS()
@@ -647,15 +585,15 @@ eYo.mixinFR(eYo.c9r._p, {
     //... var C9r = eYo.c9r.modelMakeC9r(model)
     //... chai.expect(eYo.isSubclass(C9r, model[eYo.$SuperC9r]))
     model[eYo.$$.starters] = []
-    let eyo = C9r[eYo.$]
-    eyo.modelHandle()
-    Object.defineProperty(eyo, 'name',
+    let eyo$ = C9r[eYo.$]
+    eyo$.modelHandle()
+    Object.defineProperty(eyo$, 'name',
       eYo.descriptorR((()=> {
         return id
           ? {$ () {
-            return `${eyo.ns.name}.${eYo.do.toTitleCase(id.description || id)}`
+            return `${eyo$.ns.name}.${eYo.do.toTitleCase(id.description || id)}`
           }}.$ : {$ () {
-            return `${eyo.super.name}(${model.register || '...'})`
+            return `${eyo$.$super.name}(${model.register || '...'})`
           }}.$
       })())
     )
@@ -672,9 +610,9 @@ eYo.mixinFR(eYo.c9r._p, {
     //<<< mochai: prepare
     //... let NS = eYo.c9r.newNS()
     //... var model = {
-    //...   init (...$) {
-    //...     flag.push(1, ...$)
-    //...   }  
+    //...   prepare (...$) {
+    //...     flag.push('p', ...$)
+    //...   }
     //... }
     //... NS.makeC9rBase(model)
     //... var SuperC9r = eYo.c9r.newC9r(eYo.genUID(eYo.IDENT), model)
@@ -682,22 +620,22 @@ eYo.mixinFR(eYo.c9r._p, {
     if (!eYo.isD(model)) {
       var C9r = this.C9rBase
       return new C9r(...arguments)
-      //... var o = NS.prepare(2, 3)
+      //... var o = NS.prepare(1, 2)
       //... chai.expect(o).instanceOf(NS.C9rBase)
-      //... flag.expect(123)
+      //... flag.expect('p12')
     }
     C9r = model[eYo.$C9r]
     if (!C9r) {
       C9r = this.modelMakeC9r(model, ...$)
-      //... var o = NS.prepare({}, 2, 3)
+      //... var o = NS.prepare({}, 1, 2)
       //... chai.expect(o).instanceOf(eYo.c9r.C9rBase)
-      //... flag.expect(123)
+      //... flag.expect('p12')
     }
     //... var o = eYo.c9r.prepare({
     //...   [eYo.$C9r]: NS.C9rBase
-    //... }, 2, 3)
+    //... }, 1, 2)
     //... chai.expect(o).instanceOf(NS.C9rBase)
-    //... flag.expect(123)
+    //... flag.expect('p12')
     var ans = new C9r(...$)
     ans.preInit = function () {
       delete this.preInit
@@ -706,20 +644,20 @@ eYo.mixinFR(eYo.c9r._p, {
     return ans
     //... var o = eYo.c9r.prepare({
     //...   dispose (...$) {
-    //...     flag.push(1, ...$)
+    //...     flag.push('x', ...$)
     //...   }
     //... })
-    //... o.dispose(2, 3)
-    //... flag.expect(123)
+    //... o.dispose(1, 2)
+    //... flag.expect('x12')
     //... var o = eYo.c9r.prepare({
     //...   methods: {
     //...     flag (...$) {
-    //...       flag.push(1, ...$)
+    //...       flag.push('/', ...$)
     //...     },
     //...   },
     //... })
-    //... o.flag(2, 3)
-    //... flag.expect(123)
+    //... o.flag(1, 2)
+    //... flag.expect('/12')
     //>>>
   },
   /**
@@ -752,12 +690,12 @@ eYo.mixinFR(eYo.c9r._p, {
     //...   },
     //...   methods: {
     //...     flag(...$) {
-    //...       flag.push(1, ...$)
+    //...       flag.push('/', ...$)
     //...     }
     //...   }
     //... })
-    //... foo.flag(2, 3)
-    //... flag.expect(123)
+    //... foo.flag(1, 2)
+    //... flag.expect('/12')
     //... chai.expect(foo.FOO).equal(421)
     //>>>
   },
@@ -801,12 +739,12 @@ eYo.mixinFR(eYo.c9r._p, {
     //...   },
     //...   methods: {
     //...     flag(...$) {
-    //...       flag.push(1, ...$)
+    //...       flag.push('/', ...$)
     //...     }
     //...   }
     //... })
-    //... NS.id1.flag(2, 3)
-    //... flag.expect(123)
+    //... NS.id1.flag(1, 2)
+    //... flag.expect('/12')
     //... chai.expect(NS.id1.FOO).equal(421)
     //... var SuperC9r = eYo.c9r.newC9r('')
     //... SuperC9r[eYo.$].finalizeC9r()
@@ -834,14 +772,11 @@ Object.assign(eYo.C9r_p, {
    */
   init (...$) {
     //<<< mochai: eYo.C9r_p.init
-    var eyo = this.eyo$
     try {
       this.init = eYo.doNothing
-      do {
-        eyo.doInit(this, ...$)
-      } while ((eyo = eyo.super))
+      this.eyo$.c9rInit(this, ...$)
     } finally {
-      delete this.dispose
+      delete this.init
     }
     //... chai.expect(eYo.C9r_p.init).eyo_F
     //>>>
@@ -853,14 +788,11 @@ Object.assign(eYo.C9r_p, {
    */
   dispose (...$) {
     //<<< mochai: eYo.C9r_p.dispose
-    var eyo = this.eyo$
     try {
       this.dispose = eYo.doNothing
-      do {
-        eyo.doDispose(this, ...$)
-      } while ((eyo = eyo.super))
+      this.eyo$.c9rDispose(this, ...$)
     } finally {
-      delete this.init
+      delete this.dispose
     }
     //... chai.expect(eYo.C9r_p.dispose).eyo_F
     //>>>
@@ -871,7 +803,7 @@ eYo.C9r$.finalizeC9r(
   //<<< mochai: eYo.C9r$.finalizeC9r
   //... chai.expect(eYo.C9r[eYo.$].hasFinalizedC9r).true
   eYo.model.manyDescriptorF('dlgt', 'init'),
-  //... ;['dlgt', 'init'].forEach(K => {
+  //... ;['init', eYo.$,].forEach(K => {
   //...   eYo.c9r.new({
   //...     [K]: eYo.doNothing
   //...   })
