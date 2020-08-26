@@ -502,7 +502,7 @@ eYo.mixinFR(eYo._p, {
     },
     /**
      * Make the `c9rInit` method of the associate contructor.
-     * Any constructor must have a `doInit` method.
+     * Any constructor must have a `init` method.
      * This methods forwards to the delegate
      * @this {eYo.Dlgt}
      */
@@ -812,6 +812,91 @@ eYo.mixinFR(eYo._p, {
     Dlgt$: eYo.dlgt.C9rBase[eYo.$]
   })
   //>>>
+
+  eYo.mixinFR(_p, {
+    /**
+     * Create and set the receiver's constructor.
+     * @param {*} [SuperC9r] - Optional super class of the returned constructor
+     */
+    newC9r(SuperC9r) {
+      //<<< mochai: eYo.Dlgt_p.newC9r
+      let ns = this.ns
+      let id = this.id
+      let eyo$ = this // catch this
+      //... let NS = eYo.newNS()
+      //... let superDlgt = eYo.dlgt.new(NS, 'foo', {
+      //...   prepare (...$) {
+      //...     flag.push('P', ...$)
+      //...   }
+      //... })
+      if (SuperC9r) {
+        eYo.isC9r(SuperC9r) || eYo.throw(`${this.name}/newC9r: Bad SuperC9r: ${SuperC9r}`)
+        //... chai.expect(() => {
+        //...   superDlgt.newC9r(function() {})
+        //... }).throw()
+        // create the constructor
+        var C9r = function (...$) {
+          SuperC9r.call(this, ...$) // top down call
+          eyo$.c9rPrepare(this, ...$)
+        }
+        eYo.inherits(C9r, SuperC9r)
+        eYo.isSubclass(C9r, SuperC9r) || eYo.throw('MISSED inheritance)')
+        SuperC9r[eYo.$].addSubC9r(C9r)
+        // syntactic sugar shortcuts
+        if (ns && id) {
+          (eYo.objectHasOwnProperty(ns, id) || eYo.objectHasOwnProperty(ns._p, id)) && eYo.throw(`${id.toString ? id.toString() : id} is already a property of ns: ${ns.name}`)
+          eYo.mixinFR(ns._p, { [id]: C9r })
+          if (id.length) {
+            if (id.startsWith('eyo:')) {
+              id = id.substring(4)
+            }
+            eYo.mixinFR(ns._p, {
+              [id + '_p']: C9r.prototype,
+              [id + '_s']: SuperC9r.prototype,
+              [id + '_S']: SuperC9r,            
+            })
+          }
+        }
+      } else {
+        // create the constructor
+        C9r = function (...$) {
+          eyo$.c9rPrepare(this, ...$)
+        }
+        // store the constructor
+        var _p = C9r.prototype
+        if (ns && id) {
+          (eYo.objectHasOwnProperty(ns, id) || eYo.objectHasOwnProperty(ns._p, id)) && eYo.throw(`${id.toString ? id.toString() : id} is already a property of ns: ${ns.name}`)
+          eYo.mixinFR(ns._p, { [id]: C9r })
+          if (id.length) {
+            if (id.startsWith('eyo:')) {
+              id = id.substring(4)
+            }
+            eYo.mixinRO(ns._p, { [id + '_p']: _p })
+          }
+        }
+        eYo.dlgt.declareDlgt(_p) // computed properties `eyo`
+      }
+      this.setC9r(C9r)
+      eyo$ === C9r[eYo.$] || eYo.throw('MISSED')
+      return C9r
+      //... let SuperC9r = superDlgt.newC9r()
+      //... chai.expect(SuperC9r[eYo.$]).equal(superDlgt)
+      //... chai.expect(superDlgt.C9r).equal(SuperC9r)
+      //... new SuperC9r(1, 2)
+      //... flag.expect('P12')
+      //... let dlgt = eYo.dlgt.new(NS, 'bar', {
+      //...   prepare (...$) {
+      //...     flag.push('p', ...$)
+      //...   }
+      //... })
+      //... let C9r = dlgt.newC9r(SuperC9r)
+      //... chai.expect(C9r[eYo.$]).equal(dlgt)
+      //... chai.expect(dlgt.C9r).equal(C9r)
+      //... new C9r(1, 2)
+      //... flag.expect('P12p12')
+      //>>>
+    }
+  })  
 }
 
 
