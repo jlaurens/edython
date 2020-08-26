@@ -65,8 +65,8 @@ eYo.c9r.newNS(eYo, 'geom', true, {
   //>>>
 })
 
-eYo.geom.makeBaseC9r(true, {
-  //<<< mochai: eYo.geom.BaseC9r
+eYo.geom.makeC9rBase(true, {
+  //<<< mochai: eYo.geom.C9rBase
   properties: {
     snap: false,
   },
@@ -93,7 +93,7 @@ eYo.geom.makeBaseC9r(true, {
 
 eYo.Geom[eYo.$].o4tEnhanced()
 
-eYo.geom.BaseC9r[eYo.$].finalizeC9r(['aliases'], {
+eYo.geom.C9rBase[eYo.$].finalizeC9r(['aliases'], {
   properties: {
     [eYo.model.ANY]: eYo.P6y[eYo.$].modelFormat,
     [eYo.model.VALIDATE]: eYo.model.validateD,

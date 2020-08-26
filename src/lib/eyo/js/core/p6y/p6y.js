@@ -62,10 +62,10 @@ eYo.o3d.newNS(eYo, 'p6y')
  * of owner. Great care should be taken when editing this model.
  * @constructor
  */
-eYo.p6y.makeBaseC9r(true, {
+eYo.p6y.makeC9rBase(true, {
   //<<< mochai: eYo.P6y
   //<<< mochai: Basic
-  //... chai.expect(eYo.p6y.BaseC9r).equal(eYo.P6y)
+  //... chai.expect(eYo.p6y.C9rBase).equal(eYo.P6y)
   //>>>
   init () {
     this.stored__ = eYo.NA // this may be useless in some situations
@@ -901,8 +901,8 @@ eYo.p6y.Dlgt_p.modelHandleDispose = function (key, model) {
   let K = '_disposeStored'
   //... chai.assert(eYo.P6y_p._disposeStored)
   //... let ns = eYo.p6y.newNS()
-  //... ns.makeBaseC9r()
-  //... ns.BaseC9r_p._disposeStored = function(...$) {
+  //... ns.makeC9rBase()
+  //... ns.C9rBase_p._disposeStored = function(...$) {
   //...   this.owner.flag(2, ...$)
   //... }
   //... var p6y = ns.new('foo', onr)
@@ -948,8 +948,8 @@ eYo.p6y.Dlgt_p.modelHandleChange = function (key, model) {
             when_p.call(this, before, after)
           }}.$)
           //... var ns = eYo.p6y.newNS()
-          //... ns.makeBaseC9r()
-          //... ns.BaseC9r_p[when] = function (before, after) {
+          //... ns.makeC9rBase()
+          //... ns.C9rBase_p[when] = function (before, after) {
           //...   this.owner.flag(5, before, after)
           //... }
           //... let f_before_after = function (before, after) {
@@ -975,7 +975,7 @@ eYo.p6y.Dlgt_p.modelHandleChange = function (key, model) {
             when_m.call(this.owner, before, after)
           }}.$)
           //... var ns = eYo.p6y.newNS()
-          //... ns.makeBaseC9r()
+          //... ns.makeC9rBase()
           //... var p6y = ns.new({
           //...   [when]: f_before_after,
           //... }, 'foo', onr)
@@ -996,8 +996,8 @@ eYo.p6y.Dlgt_p.modelHandleChange = function (key, model) {
             when_p.call(this, before, after)
           }}.$)
           //... var ns = eYo.p6y.newNS()
-          //... ns.makeBaseC9r()
-          //... ns.BaseC9r_p[when] = function (before, after) {
+          //... ns.makeC9rBase()
+          //... ns.C9rBase_p[when] = function (before, after) {
           //...   this.owner.flag(5, before, after)
           //... }
           //... var p6y = ns.new({
@@ -1011,7 +1011,7 @@ eYo.p6y.Dlgt_p.modelHandleChange = function (key, model) {
             when_m.call(this.owner, after)
           }}.$)
           //... var ns = eYo.p6y.newNS()
-          //... ns.makeBaseC9r()
+          //... ns.makeC9rBase()
           //... var p6y = ns.new({
           //...   [when]: f_after,
           //... }, 'foo', onr)
@@ -1497,11 +1497,11 @@ eYo.o3d.newNS(eYo.p6y, 'handler')
  * Beware of loops.
  * 
  * The handlers covers the target either with its own keys or its internal `cover__` object.
- * @name {eYo.p6y.handler.BaseC9r}
+ * @name {eYo.p6y.handler.C9rBase}
  * @constructor
  */
-eYo.p6y.handler.makeBaseC9r({
-  //<<< mochai: eYo.p6y.handler.BaseC9r
+eYo.p6y.handler.makeC9rBase({
+  //<<< mochai: eYo.p6y.handler.C9rBase
   /**
    * Initialize a proxy's handler.
    * Debug note: if `foo.eyo.name` is `eYo.p6y.handler.Changer` then `foo` is an alias to a property named `changer` (more precisely the handler of the proxy).
@@ -1728,7 +1728,7 @@ eYo.p6y.handler.makeBaseC9r({
   //>>>
 })
 
-eYo.mixinRO(eYo.p6y.handler.BaseC9r_p, {
+eYo.mixinRO(eYo.p6y.handler.C9rBase_p, {
   keys_RO: [
     eYo.$$.target, // expose the proxy target
     eYo.$$.handler, // expose the proxy handler

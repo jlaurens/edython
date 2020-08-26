@@ -79,12 +79,6 @@ eYo.isF = (what) => {
   //... chai.assert(eYo.isF(eYo.toF()))
   //... chai.assert(eYo.isF(eYo.toF(421)))
   //... chai.expect(eYo.toF(421)()).equal(421)
-  //... let C9r = function () {}
-  //... chai.assert(!eYo.isC9r(C9r))
-  //... C9r[eYo.$] = true
-  //... chai.assert(eYo.isC9r(C9r))
-  //... chai.assert(!eYo.isC9r())
-  //... chai.assert(!eYo.isC9r(''))
   //>>>
 }
 
@@ -571,7 +565,7 @@ eYo._p.make$$ = function (...$) {
   //>>>
 }
 
-eYo.make$$('target', 'handler') // used by proxies
+eYo.make$$('target', 'handler', 'fired') // used by proxies
 
 /**
  * The props dictionary is a `key=>value` mapping where values
@@ -705,6 +699,34 @@ eYo.mixinFR = (object, props) => {
   //... c.bar()
   //... flag.expect(1)
   //>>>
+  //<<< mochai: mixinFR+inherits
+  //... let A = function () {}
+  //... var B = function () {}
+  //... eYo.inherits(B, A)
+  //... eYo.mixinFR(A.prototype, {
+  //...   foo: 421,
+  //...   bar (...$) {
+  //...     flag.push(1, ...$)
+  //...   },
+  //... })
+  //... eYo.mixinFR(B.prototype, {
+  //...   foo: 123,
+  //...   bar (...$) {
+  //...     flag.push(2, ...$)
+  //...   },
+  //... })
+  //... let a = new A()
+  //... chai.expect(a.foo).equal(421)
+  //... a.bar(2, 3)
+  //... flag.expect(123)
+  //... var b = new B()
+  //... chai.expect(b.foo).equal(123)
+  //... b.bar(4, 6)
+  //... flag.expect(246)
+  //... var B = function () {}
+  //... eYo.inherits(B, A)
+  //... chai.expect(() => {b.foo = 123}).throw()
+  //>>>
 }
 
 /**
@@ -822,6 +844,14 @@ eYo.mixinFR(eYo, {
    * Function to throw. Trick to throw in an expression.
    * @param {String} [what]
    */
+  error (what) {
+    console.error(what)
+    return what
+  },
+  /**
+   * Function to throw. Trick to throw in an expression.
+   * @param {String} [what]
+   */
   throw (what) {
     throw what
   },
@@ -869,17 +899,19 @@ eYo.mixinFR(eYo, {
    * Function used to disallow sending twice the same message.
    */
   oneShot (msg) {
-    return eYo.isStr(msg)
-      ? function () {
+    let ans = (eYo.isStr(msg)
+      ? {$ () {
         throw new Error(`Forbidden call: ${msg}`)
-      } : eYo.isF(msg)
-        ? function () {
-          throw new Error(`Forbidden call ${msg.call(this)}`)
+      }} : eYo.isF(msg)
+        ? {$ () {
+          throw new Error(`Forbidden call ${msg.call(this)}`)}
         } : eYo.isDef(msg)
           ? eYo.throw(`eYo.oneShot: Bad argument ${msg}`)
-          : function () {
+          : {$ () {
             throw new Error('Forbidden second shot')
-          }
+          }}).$
+    ans[eYo.$$.fired] = true
+    return ans
     //<<< mochai: eYo.oneShot
     //... chai.assert(eYo.oneShot)
     //... chai.expect(() => eYo.oneShot(421)).throw()
@@ -1196,11 +1228,15 @@ eYo.mixinFR(eYo._p, {
   isSubclass (Sub, Super) {
     return !!Super && !!Sub && eYo.isF(Super) && (Sub === Super || Sub.prototype instanceof Super)
   },
-  //<<< mochai: Symbol
+  //<<< mochai: symbols
   $SuperC9r: Symbol('SuperC9r'),
   $SuperC9r_p: Symbol('SuperC9r_p'),
   //... chai.expect(!eYo.$SuperC9r).false
   //... chai.expect(!eYo.$SuperC9r_p).false
+  $: Symbol('$'),
+  $_p: Symbol('$_p'),
+  //... chai.expect(!eYo.$).false
+  //... chai.expect(!eYo.$_p).false
   //>>>
 })
 
@@ -1346,11 +1382,11 @@ eYo.mixinFR(eYo._p, {
           console.error('BREAK HERE!!! parent')
           return ns
         },
-        // value: ns, // used in makeBaseC9r
+        // value: ns, // used in makeC9rBase
         // writable: false,
       })
       Object.defineProperty(NS.prototype, 'parentNS', {
-        value: ns, // used in makeBaseC9r
+        value: ns, // used in makeC9rBase
         writable: false,
       })
     }

@@ -20,19 +20,19 @@ eYo.fcls.newDrvrC9r('Brick', {
   methods: {
     /**
      * The default implementation does nothing.
-     * @param {eYo.brick.BaseC9r} brick to be connected.
-     * @param {eYo.brick.BaseC9r} newParent to be connected.
+     * @param {eYo.brick.C9rBase} brick to be connected.
+     * @param {eYo.brick.C9rBase} newParent to be connected.
      */
     do_parentWillChange: eYo.doNothing,
     /**
      * The default implementation does nothing.
-     * @param {eYo.brick.BaseC9r} oldParent replaced.
+     * @param {eYo.brick.C9rBase} oldParent replaced.
      */
     do_parentDidChange: eYo.doNothing,
     /**
      * Returns the bounding box of the node.
      * Defaults implementation returns `eYo.NA`.
-     * @param {eYo.brick.BaseC9r} brick - the node the driver acts on
+     * @param {eYo.brick.C9rBase} brick - the node the driver acts on
      * @private
      */
     getBBox (brick) { // eslint-disable-line
@@ -41,7 +41,7 @@ eYo.fcls.newDrvrC9r('Brick', {
     /**
      * Whether the node is visually selected.
      * The default implementation returns false.
-     * @param {eYo.brick.BaseC9r} brick - the node the driver acts on
+     * @param {eYo.brick.C9rBase} brick - the node the driver acts on
      * @private
      */
     hasFocus (brick) { // eslint-disable-line
@@ -49,21 +49,21 @@ eYo.fcls.newDrvrC9r('Brick', {
     },
     /**
      * Before node rendering.
-     * @param {eYo.brick.BaseC9r} brick - the node the driver acts on
+     * @param {eYo.brick.C9rBase} brick - the node the driver acts on
      * @param {*} recorder
      * @private
      */
     do_willRender_: eYo.doNothing,
     /**
      * After node rendering.
-     * @param {eYo.brick.BaseC9r} brick - the node the driver acts on
+     * @param {eYo.brick.C9rBase} brick - the node the driver acts on
      * @param {*} recorder
      * @private
      */
     do_didRender_: eYo.doNothing,
     /**
      * Draw the path of the brick.
-     * @param {eYo.brick.BaseC9r} brick - the node the driver acts on
+     * @param {eYo.brick.C9rBase} brick - the node the driver acts on
      * @param {Object} recorder
      * @private
      */
@@ -72,46 +72,46 @@ eYo.fcls.newDrvrC9r('Brick', {
     /**
      * Compute the paths of the brick depending on its size.
      * Default implementation does nothing.
-     * @param {eYo.brick.BaseC9r} brick - the node the driver acts on
+     * @param {eYo.brick.C9rBase} brick - the node the driver acts on
      */
     do_updateShape: eYo.doNothing,
     /**
      * Default implementation does nothing.
-     * @param {eYo.brick.BaseC9r} brick - the node the driver acts on
-     * @param {eYo.brick.BaseC9r} brick - the node the driver acts on
+     * @param {eYo.brick.C9rBase} brick - the node the driver acts on
+     * @param {eYo.brick.C9rBase} brick - the node the driver acts on
      * @param {Object} recorder
      * @private
      */
     /**
      * The default implementation does nothing.
-     * @param {eYo.brick.BaseC9r} brick - the node the driver acts on
+     * @param {eYo.brick.C9rBase} brick - the node the driver acts on
      */
     do_sendToFront: eYo.doNothing,
     /**
      * The default implementation does nothing.
-     * @param {eYo.brick.BaseC9r} brick - the node the driver acts on
+     * @param {eYo.brick.C9rBase} brick - the node the driver acts on
      */
     do_sendToBack: eYo.doNothing,
     do_displayedGet: eYo.doNothing,
     /**
      * Set the displayed status of the given node.
-     * @param {eYo.brick.BaseC9r} brick - the node the driver acts on
+     * @param {eYo.brick.C9rBase} brick - the node the driver acts on
      * @param {boolean} visible  the expected visibility status
      */
     do_displayedSet: eYo.doNothing,
     /**
      * The default implementation does nothing.
-     * @param {eYo.brick.BaseC9r} brick - the node the driver acts on
+     * @param {eYo.brick.C9rBase} brick - the node the driver acts on
      */
     do_makeWrapped: eYo.doNothing,
     /**
      * The default implementation does nothing.
-     * @param {eYo.brick.BaseC9r} brick - the node the driver acts on
+     * @param {eYo.brick.C9rBase} brick - the node the driver acts on
      */
     do_makeUnwrapped: eYo.doNothing,
     /**
      * The default implementation does nothing.
-     * @param {eYo.brick.BaseC9r} brick - the node the driver acts on
+     * @param {eYo.brick.C9rBase} brick - the node the driver acts on
      */
     do_magnetHilight: eYo.doNothing,
   },
@@ -125,14 +125,14 @@ eYo.fcls.Brick[eYo.$].methodsMerge({
   drawModelBegin_: eYo.doNothing,
   /**
    * Default implementation does nothing.
-   * @param {eYo.brick.BaseC9r} brick - the node the driver acts on
+   * @param {eYo.brick.C9rBase} brick - the node the driver acts on
    * @param {Object} recorder
    * @private
    */
   drawModelEnd_: eYo.doNothing,
   /**
    * Get the displayed status of the given node.
-   * @param {eYo.brick.BaseC9r} brick - the node the driver acts on
+   * @param {eYo.brick.C9rBase} brick - the node the driver acts on
    */
   /**
    * Translates the brick, forwards to the ui driver.
@@ -152,76 +152,76 @@ eYo.fcls.Brick[eYo.$].methodsMerge({
   whereInBoard: eYo.doNothing,
   /**
    * The default implementation does nothing.
-   * @param {eYo.brick.BaseC9r} brick - the node the driver acts on
+   * @param {eYo.brick.C9rBase} brick - the node the driver acts on
    */
   updateDisabled: eYo.doNothing,
   /**
    * The default implementation does nothing.
-   * @param {eYo.brick.BaseC9r} brick - the node the driver acts on
+   * @param {eYo.brick.C9rBase} brick - the node the driver acts on
    */
   connectEffect: eYo.doNothing,
   /**
    * The default implementation does nothing.
-   * @param {eYo.brick.BaseC9r} brick - the node the driver acts on
+   * @param {eYo.brick.C9rBase} brick - the node the driver acts on
    * @param {Object} menu
    */
   menuShow: eYo.doNothing,
   /**
    * Add the hilight path_.
    * Default implementation does nothing
-   * @param {eYo.brick.BaseC9r} brick - the node the driver acts on
+   * @param {eYo.brick.C9rBase} brick - the node the driver acts on
    */
   hilightAdd_: eYo.doNothing,
 
   /**
    * Remove the hilight path.
    * Default implementation does nothing.
-   * @param {eYo.brick.BaseC9r} brick - the node the driver acts on
+   * @param {eYo.brick.C9rBase} brick - the node the driver acts on
    */
   hilightRemove_: eYo.doNothing,
 
   /**
    * Add the select path.
    * Default implementation does nothing.
-   * @param {eYo.brick.BaseC9r} brick - the node the driver acts on
+   * @param {eYo.brick.C9rBase} brick - the node the driver acts on
    */
   selectAdd_: eYo.doNothing,
 
   /**
    * Remove the select path.
    * Default implementation does nothing.
-   * @param {eYo.brick.BaseC9r} brick - the node the driver acts on
+   * @param {eYo.brick.C9rBase} brick - the node the driver acts on
    */
   selectRemove_: eYo.doNothing,
 
   /**
    * The svg group has an `eyo-top` class.
-   * @param {eYo.brick.BaseC9r} brick - the node the driver acts on
+   * @param {eYo.brick.C9rBase} brick - the node the driver acts on
    */
   statusTopAdd_: eYo.doNothing,
 
   /**
    * The default implementation does nothing.
-   * @param {eYo.brick.BaseC9r} brick - the node the driver acts on
+   * @param {eYo.brick.C9rBase} brick - the node the driver acts on
    */
   statusTopRemove_: eYo.doNothing,
 
   /**
    * Default implementation does nothing.
-   * @param {eYo.brick.BaseC9r} brick - the node the driver acts on
+   * @param {eYo.brick.C9rBase} brick - the node the driver acts on
    */
   statusFocusAdd_: eYo.doNothing,
 
   /**
    * Reverse `nodestatusFocusAdd_`.
    * Default implementation does nothing.
-   * @param {eYo.brick.BaseC9r} brick - the node the driver acts on
+   * @param {eYo.brick.C9rBase} brick - the node the driver acts on
    */
   statusFocusRemove_: eYo.doNothing,
 
   /**
    * Whether the given brick can draw.
-   * @param {eYo.brick.BaseC9r} brick  the brick the driver acts on
+   * @param {eYo.brick.C9rBase} brick  the brick the driver acts on
    * @private
    */
   canDraw (brick) { // eslint-disable-line
@@ -231,25 +231,25 @@ eYo.fcls.Brick[eYo.$].methodsMerge({
   /**
    * Update the |disbled| status of the given brick.
    * The default implementation does nothing.
-   * @param {eYo.brick.BaseC9r} brick - the brick the driver acts on
+   * @param {eYo.brick.C9rBase} brick - the brick the driver acts on
    */
   updateDisabled_: eYo.doNothing,
 
   /**
    * Make the given brick wrapped.
    * The default implementation forwards to the driver.
-   * @param {eYo.brick.BaseC9r} brick - the brick the driver acts on
+   * @param {eYo.brick.C9rBase} brick - the brick the driver acts on
    */
   updateWrapped: eYo.doNothing,
 
   /**
    * Add the select path.
-   * @param {eYo.brick.BaseC9r} brick - the brick the driver acts on
+   * @param {eYo.brick.C9rBase} brick - the brick the driver acts on
    */
   focusAdd: eYo.doNothing,
   /**
    * Add the select path.
-   * @param {eYo.brick.BaseC9r} brick - the brick the driver acts on
+   * @param {eYo.brick.C9rBase} brick - the brick the driver acts on
    */
   focusRemove: eYo.doNothing,
 
@@ -259,7 +259,7 @@ eYo.fcls.Brick[eYo.$].methodsMerge({
  * The default implementation forwards to the driver.
  */
 eYo.drvr.makeForwarder(
-  eYo.brick.BaseC9r_p,
+  eYo.brick.C9rBase_p,
   'hilightAdd_', 'hilightRemove_',
   'selectAdd', 'selectRemove',
   'magnetAdd_', 'magnetRemove_',
@@ -298,12 +298,12 @@ eYo.Brick[eYo.$].methodsMerge({
  * Hilight the given connection.
  * The default implementation forwards to the driver.
  */
-eYo.drvr.makeForwarder(eYo.brick.BaseC9r_p, 'magnetHilight')
+eYo.drvr.makeForwarder(eYo.brick.C9rBase_p, 'magnetHilight')
 
 /**
  * Set the parent.
- * @param {eYo.brick.BaseC9r} brick - the brick the driver acts on
- * @param {eYo.brick.BaseC9r} parent - the brick's parent
+ * @param {eYo.brick.C9rBase} brick - the brick the driver acts on
+ * @param {eYo.brick.C9rBase} parent - the brick's parent
  */
 eYo.doNothing
 

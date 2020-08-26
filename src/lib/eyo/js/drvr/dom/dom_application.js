@@ -19,7 +19,7 @@ eYo.forward('app')
 eYo.dom.newDrvrC9r('App', {
   /**
    * Initialize the application's dom ressources.
-   * @param {eYo.app.BaseC9r} app
+   * @param {eYo.app.C9rBase} app
    * @param {Function} [f]
    * @return {!Element} The desk's dom repository.
    */
@@ -42,7 +42,7 @@ eYo.dom.newDrvrC9r('App', {
   },
   /**
    * Dispose of the application dom resources.
-   * @param {eYo.app.BaseC9r} app
+   * @param {eYo.app.C9rBase} app
    */
   disposeUI (app) {
     var dom = app.dom

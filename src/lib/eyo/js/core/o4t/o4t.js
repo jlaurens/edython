@@ -16,7 +16,7 @@ eYo.require('many')
 
 //<<< mochai: POC
 //... let ns = eYo.c9r.newNS()
-//... let C9r = ns.makeBaseC9r()
+//... let C9r = ns.makeC9rBase()
 //... Object.defineProperties(C9r[eYo.$].C9r_p, {
 //...   foo: {
 //...     get () {
@@ -45,17 +45,17 @@ eYo.require('many')
 eYo.o3d.newNS(eYo, 'o4t')
 //<<< mochai: Basic
 //... chai.assert(eYo.o4t)
-//... chai.expect(eYo.O4t).equal(eYo.o4t.BaseC9r)
+//... chai.expect(eYo.O4t).equal(eYo.o4t.C9rBase)
 //>>>
 /**
- * @name {eYo.o4t.BaseC9r}
+ * @name {eYo.o4t.C9rBase}
  * @constructor
  */
-eYo.o4t.makeBaseC9r(true)
+eYo.o4t.makeC9rBase(true)
 
 eYo.mixinFR(eYo._p, {
   isaO4t (what) {
-    return !!what && what instanceof eYo.o4t.BaseC9r
+    return !!what && what instanceof eYo.o4t.C9rBase
     //<<< mochai: eYo.isaO4t
     //... chai.expect(eYo.isaO4t()).false
     //... chai.expect(eYo.isaO4t(eYo.NA)).false
@@ -70,14 +70,14 @@ eYo.mixinFR(eYo._p, {
  * @param {String} [id] - defaults to 'p6y'
  * @return {Object} - The symbols
  */
-eYo.dlgt.BaseC9r_p.p6yEnhanced = function (id = 'p6y') {
+eYo.dlgt.C9rBase_p.p6yEnhanced = function (id = 'p6y') {
   //<<< mochai: p6yEnhanced
 
-  //<<< mochai: Basics
-  //... let Foo = eYo.o4t.newNS().newC9r('Foo')
-  //... let eyo = Foo[eYo.$]
-  //... chai.expect(eyo[eyo.p6y$.prepare]).eyo_F
-  //... chai.expect(eyo[eyo.p6y$.init]).eyo_F
+  //<<<   mochai: Basics
+  //...   let Foo = eYo.o4t.newNS().newC9r('Foo')
+  //...   let eyo = Foo[eYo.$]
+  //...   chai.expect(eyo[eyo.p6y$.prepare]).eyo_F
+  //...   chai.expect(eyo[eyo.p6y$.init]).eyo_F
   //>>>
 
   let manyModel = {
@@ -98,7 +98,7 @@ eYo.dlgt.BaseC9r_p.p6yEnhanced = function (id = 'p6y') {
       [eYo.model.ANY]: eYo.P6y[eYo.$].modelFormat,
       [eYo.model.VALIDATE]: eYo.model.validateD,
       //... let ns = eYo.c9r.newNS()
-      //... let C9r = ns.makeBaseC9r(true)
+      //... let C9r = ns.makeC9rBase(true)
       //... let eyo = C9r[eYo.$]
       //... eyo.p6yEnhanced()
       //... eyo.finalizeC9r()
@@ -126,7 +126,7 @@ eYo.dlgt.BaseC9r_p.p6yEnhanced = function (id = 'p6y') {
             return this[this.p6y$.map].get(k).value
             //<<< mochai: $foo
             //... let ns = eYo.c9r.newNS()
-            //... let C9r = ns.makeBaseC9r(true)
+            //... let C9r = ns.makeC9rBase(true)
             //... let eyo = C9r[eYo.$]
             //... eyo.p6yEnhanced()
             //... eyo.finalizeC9r()
@@ -151,7 +151,7 @@ eYo.dlgt.BaseC9r_p.p6yEnhanced = function (id = 'p6y') {
           return this[this.p6y$.map].get(k)
           //<<< mochai: foo_p
           //... let ns = eYo.c9r.newNS()
-          //... let C9r = ns.makeBaseC9r(true)
+          //... let C9r = ns.makeC9rBase(true)
           //... let eyo = C9r[eYo.$]
           //... eyo.p6yEnhanced()
           //... eyo.finalizeC9r()
@@ -180,7 +180,7 @@ eYo.dlgt.BaseC9r_p.p6yEnhanced = function (id = 'p6y') {
           },
           //<<< mochai: foo_t
           //... let ns = eYo.c9r.newNS()
-          //... let C9r = ns.makeBaseC9r(true)
+          //... let C9r = ns.makeC9rBase(true)
           //... let eyo = C9r[eYo.$]
           //... eyo.p6yEnhanced()
           //... eyo.finalizeC9r()
@@ -205,7 +205,7 @@ eYo.dlgt.BaseC9r_p.p6yEnhanced = function (id = 'p6y') {
         },
         //<<< mochai: foo, foo_, foo__
         //... let ns = eYo.c9r.newNS()
-        //... let C9r = ns.makeBaseC9r(true)
+        //... let C9r = ns.makeC9rBase(true)
         //... let eyo = C9r[eYo.$]
         //... eyo.p6yEnhanced()
         //... eyo.finalizeC9r()
@@ -299,7 +299,7 @@ eYo.dlgt.BaseC9r_p.p6yEnhanced = function (id = 'p6y') {
   }
   //<<< mochai: p6y$.merge
   //... let ns = eYo.c9r.newNS()
-  //... let C9r = ns.makeBaseC9r(true)
+  //... let C9r = ns.makeC9rBase(true)
   //... let eyo = C9r[eYo.$]
   //... eyo.p6yEnhanced()
   //... eyo.finalizeC9r()
@@ -316,7 +316,7 @@ eYo.dlgt.BaseC9r_p.p6yEnhanced = function (id = 'p6y') {
     this[this.p6y$.shortcuts]()
     //<<< mochai: p6y$.merge+shortcuts
     //... let ns = eYo.c9r.newNS()
-    //... let C9r = ns.makeBaseC9r(true)
+    //... let C9r = ns.makeC9rBase(true)
     //... let eyo = C9r[eYo.$]
     //... eyo.p6yEnhanced()
     //... eyo.finalizeC9r()
@@ -337,7 +337,7 @@ eYo.dlgt.BaseC9r_p.p6yEnhanced = function (id = 'p6y') {
    * Replace a property shortcut
    * 
    * @param {String} k 
-   * @param {eYo.p6y.BaseC9r} p 
+   * @param {eYo.p6y.C9rBase} p 
    */
   this.C9r_p[p6y$.replace] = function (k, source) {
     //<<< mochai: p6y$.replace
@@ -358,7 +358,7 @@ eYo.dlgt.BaseC9r_p.p6yEnhanced = function (id = 'p6y') {
       map.set(p6y.key, p6y)
     } while ((p6y = p6y[eYo.$next]))
     //... var ns = eYo.o4t.newNS()
-    //... let C9r = ns.makeBaseC9r({
+    //... let C9r = ns.makeC9rBase({
     //...   properties: {
     //...     foo: 1,
     //...     chi: {
@@ -447,7 +447,7 @@ eYo.mixinFR(eYo.O4t[eYo.$]._p, {
    * Raises if the `super` is not already finalized.
    * This must be done by hand because we do not know
    * what is the ancestor's model format.
-   * @name {eYo.dlgt.BaseC9r.modelAllow}
+   * @name {eYo.dlgt.C9rBase.modelAllow}
    */
   finalizeC9r (...$) {
     let ans = eYo.O4t[eYo.$].constructor[eYo.$SuperC9r_p].finalizeC9r.call(this,...$)
@@ -462,10 +462,10 @@ eYo.mixinFR(eYo.O4t[eYo.$]._p, {
  * @param {*} manyModel - The model
  * @return {Object} - p6y$
  */
-eYo.dlgt.BaseC9r_p.o4tEnhanced = function () {
+eYo.dlgt.C9rBase_p.o4tEnhanced = function () {
   //<<< mochai: o4tEnhanced
   //... let ns = eYo.c9r.newNS()
-  //... let C9r = ns.makeBaseC9r()
+  //... let C9r = ns.makeC9rBase()
   //... let eyo = C9r[eYo.$]
   //... let p6y$ = eyo.o4tEnhanced()
   //... var o = ns.new('o')
@@ -502,7 +502,7 @@ eYo.dlgt.BaseC9r_p.o4tEnhanced = function () {
     [p6y$.aliasesMerge] (aliases) {
       //<<< mochai: p6y$.aliasesMerge
       //... let ns = eYo.c9r.newNS()
-      //... let C9r = ns.makeBaseC9r(true)
+      //... let C9r = ns.makeC9rBase(true)
       //... let eyo = C9r[eYo.$]
       //... eyo.finalizeC9r()
       //... let p6y$ = eyo.o4tEnhanced()
@@ -585,9 +585,9 @@ eYo.dlgt.BaseC9r_p.o4tEnhanced = function () {
      * Dispose of the resources declared at that level.
      * @param {Object} instance -  instance is an instance of a subclass of the `C9r_` of the receiver
      */
-    disposeInstance (object, ...$) {
-      //<<< mochai: disposeInstance
-      //... chai.expect(eYo.o4t.Dlgt_p.disposeInstance).eyo_F
+    c9rDispose (object, ...$) {
+      //<<< mochai: c9rDispose
+      //... chai.expect(eYo.o4t.Dlgt_p.c9rDispose).eyo_F
       this[this.p6y$.dispose](object, ...$)
       //... eYo.c9r.new({
       //...   dispose (...$) {
@@ -617,7 +617,7 @@ eYo.dlgt.BaseC9r_p.o4tEnhanced = function () {
       //... o.foo_p.dispose(2, 3)
       //... flag.expect(1234)
       //... var o = eYo.o4t.new(model, 'foo', onr)
-      //... o = o.eyo.disposeInstance(o, 2, 3)
+      //... o = o.eyo.c9rDispose(o, 2, 3)
       //... flag.expect(1234)
       //>>>
     },
@@ -722,7 +722,7 @@ eYo.dlgt.BaseC9r_p.o4tEnhanced = function () {
   eYo.mixinFR(this.C9r_p, {
     //<<< mochai: iterators
     //... let ns = eYo.c9r.newNS()
-    //... let C9r = ns.makeBaseC9r()
+    //... let C9r = ns.makeC9rBase()
     //... let eyo = C9r[eYo.$]
     //... let p6y$ = eyo.o4tEnhanced()
     //... var o = ns.new('o')
@@ -789,8 +789,8 @@ eYo.mixinFR(eYo.o4t._p, {
     }
     //... let NS_super = eYo.o4t.newNS()
     //... let NS = NS_super.newNS('foo')
-    //... NS_super.makeBaseC9r()
-    //... let o = new NS_super.BaseC9r('o', onr)
+    //... NS_super.makeC9rBase()
+    //... let o = new NS_super.C9rBase('o', onr)
     //... chai.expect(() =>{
     //...   o.bar()
     //... }).to.throw()
@@ -810,11 +810,11 @@ eYo.mixinFR(eYo.o4t._p, {
     //...   }
     //... })
     //... chai.assert(NS_super.chiMerge)
-    //... chai.expect(() => NS_super.chiMerge(NS_super.BaseC9r_p)).throw()
-    //... NS.makeBaseC9r(true)
-    //... NS.chiMerge(NS.BaseC9r_p)
-    //... NS.BaseC9r[eYo.$].finalizeC9r()
-    //... o = new NS.BaseC9r('o', onr)
+    //... chai.expect(() => NS_super.chiMerge(NS_super.C9rBase_p)).throw()
+    //... NS.makeC9rBase(true)
+    //... NS.chiMerge(NS.C9rBase_p)
+    //... NS.C9rBase[eYo.$].finalizeC9r()
+    //... o = new NS.C9rBase('o', onr)
     //... o.bar(2, 3)
     //... flag.expect(123)
     //... chai.expect(o.mi).equal(o.foo).equal(421)

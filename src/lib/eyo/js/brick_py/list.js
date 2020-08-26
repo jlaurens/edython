@@ -138,7 +138,7 @@ eYo.expr.List.SlotsHandler = {
  * Fetches the named slot object, getSlot.
  * @param {String} name The name of the slot.
  * @param {Boolean} [dontCreate] Whether the receiver should create slots on the fly.
- * @return {eYo.slot.BaseC9r} The slot object, or null if slot does not exist or eYo.NA for the default brick implementation.
+ * @return {eYo.slot.C9rBase} The slot object, or null if slot does not exist or eYo.NA for the default brick implementation.
  */
 eYo.expr.List_p.getSlot = function (name, dontCreate) {
   var slot = eYo.expr.List[eYo.$].C9r_s.getSlot.call(this, name)
@@ -184,9 +184,9 @@ eYo.expr.List_p.createConsolidator = eYo.decorate.reentrant_method(
 
 /**
  * Hook point.
- * @param {eYo.magnet.BaseC9r} m4t.
- * @param {eYo.magnet.BaseC9r} oldTargetM4t.
- * @param {eYo.magnet.BaseC9r} targetOldM4t
+ * @param {eYo.magnet.C9rBase} m4t.
+ * @param {eYo.magnet.C9rBase} oldTargetM4t.
+ * @param {eYo.magnet.C9rBase} targetOldM4t
  */
 eYo.expr.List_p.didConnect = function (m4t, oldTargetM4t, targetOldM4t) {
   eYo.expr.List[eYo.$].C9r_s.didConnect.call(this, m4t, oldTargetM4t, targetOldM4t)

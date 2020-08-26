@@ -30,7 +30,7 @@ Object.defineProperties(eYo.view, {
  * Class for a pure SVG scrollbar.
  * This technique offers a scrollbar that is guaranteed to work, but may not
  * look or behave like the system's scrollbars.
- * @param {eYo.board.BaseC9r|eYo.view.Scroller} bs Board to bind the scrollbar to, or scroller. Owner of the receiver.
+ * @param {eYo.board.C9rBase|eYo.view.Scroller} bs Board to bind the scrollbar to, or scroller. Owner of the receiver.
  * @param {boolean} horizontal True if horizontal, false if vertical.
  * @param {string=} opt_css_class A class to be applied to this scrollbar.
  * @constructor

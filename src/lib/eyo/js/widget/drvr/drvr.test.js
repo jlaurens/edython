@@ -107,18 +107,18 @@ describe('drvr', function() {
     root._p.flag = (...$) => {
       flag.push(1, ...$)
     }
-    root.makeBaseC9r({
+    root.makeC9rBase({
       methods: {
-        fromBaseC9r (...$) {
+        fromC9rBase (...$) {
           this.owner.flag(2, ...$)
         },
       },
     })
-    chai.expect(root.BaseC9r_p.fromBaseC9r).eyo_F
+    chai.expect(root.C9rBase_p.fromC9rBase).eyo_F
     // base root driver
     var rootDrvr = root.new('root', onr)
-    chai.expect(rootDrvr).instanceOf(root.BaseC9r)
-    rootDrvr.fromBaseC9r(3, 4)
+    chai.expect(rootDrvr).instanceOf(root.C9rBase)
+    rootDrvr.fromC9rBase(3, 4)
     flag.expect(1234)
     // inherited Foo driver <- base
     root.newDrvrC9r('Foo', {
@@ -130,23 +130,23 @@ describe('drvr', function() {
     })
     var foo = root.getDrvr('Foo')
     chai.expect(foo).instanceOf(root.Foo)
-    foo.fromBaseC9r(3, 4)
+    foo.fromC9rBase(3, 4)
     flag.expect(1234)
     foo.fromFoo(5, 7)
     flag.expect(1357)
     // Inherited namespace
     root.newNS('chi')
-    root.chi.makeBaseC9r({
+    root.chi.makeC9rBase({
       methods: {
-        fromChiBaseC9r (...$) {
+        fromChiC9rBase (...$) {
           this.owner.flag(4, ...$)
         },
       },
     })
     var rootChiDrvr = root.chi.getDrvr('')
-    rootChiDrvr.fromBaseC9r(3)
+    rootChiDrvr.fromC9rBase(3)
     flag.expect(123)
-    rootChiDrvr.fromChiBaseC9r(7)
+    rootChiDrvr.fromChiC9rBase(7)
     flag.expect(147)
     root.chi.newDrvrC9r('Foo', {
       methods: {
@@ -156,16 +156,16 @@ describe('drvr', function() {
       },
     })
     let chi = root.chi.new({}, 'chi', onr)
-    chi.fromChiBaseC9r(7)
+    chi.fromChiC9rBase(7)
     flag.expect(147)
     var rootChiFoo = new root.chi.Foo('foo', onr)
     // Next is a driver
-    rootChiFoo.fromBaseC9r(3)
+    rootChiFoo.fromC9rBase(3)
     flag.expect(123)
     rootChiFoo.fromFoo(5)
     flag.expect(135)
     chai.expect(() => {
-      rootChiFoo.fromChiBaseC9r(7)
+      rootChiFoo.fromChiC9rBase(7)
       flag.expect(147)
     }).throw()
     rootChiFoo.fromChiFoo(9)
@@ -174,11 +174,11 @@ describe('drvr', function() {
     // This is a proxy to the preceding driver
     // This is a diamond because it implements messages
     // from different origins
-    diamond.fromBaseC9r(3)
+    diamond.fromC9rBase(3)
     flag.expect(123)
     diamond.fromFoo(5)
     flag.expect(135)
-    diamond.fromChiBaseC9r(7)
+    diamond.fromChiC9rBase(7)
     flag.expect(147)
     diamond.fromChiFoo(9)
     flag.expect(159)

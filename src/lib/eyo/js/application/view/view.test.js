@@ -14,6 +14,6 @@ describe ('Tests: View', function () {
   })
   it ('View: Basic', function () {
     chai.assert(eYo.view)
-    chai.assert(eYo.view.BaseC9r)
+    chai.assert(eYo.view.C9rBase)
   })
 })

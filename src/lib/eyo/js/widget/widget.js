@@ -33,7 +33,7 @@ eYo.o4t.newNS(eYo, 'driven', {
 
 //<<< mochai: Basics
 //... chai.assert(eYo.driven)
-//... chai.assert(eYo.driven.BaseC9r)
+//... chai.assert(eYo.driven.C9rBase)
 //... chai.assert(eYo.driven)
 //... chai.assert(eYo.driven_p)
 //... chai.assert(eYo.driven$)
@@ -42,26 +42,26 @@ eYo.o4t.newNS(eYo, 'driven', {
 /**
  * Class for a basic object indirectly owned by a brick.
  * 
- * @name {eYo.driven.BaseC9r}
+ * @name {eYo.driven.C9rBase}
  * @constructor
- * @param {eYo.brick|eYo.slot.BaseC9r|eYo.magnet.BaseC9r} owner - the immediate owner of this magnet. When not a brick, it is indirectly owned by a brick.
+ * @param {eYo.brick|eYo.slot.C9rBase|eYo.magnet.C9rBase} owner - the immediate owner of this magnet. When not a brick, it is indirectly owned by a brick.
  * @readonly
  * @property {eYo.brick.UI} ui - The ui object used for rendering.
  * @readonly
- * @property {eYo.brick.BaseC9r} brick - The brick.
+ * @property {eYo.brick.C9rBase} brick - The brick.
  * @readonly
- * @property {eYo.slot.BaseC9r} slot - The slot.
+ * @property {eYo.slot.C9rBase} slot - The slot.
  * @readonly
- * @property {eYo.magnet.BaseC9r} magnet - The magnet.
+ * @property {eYo.magnet.C9rBase} magnet - The magnet.
  */
-eYo.driven.makeBaseC9r({
+eYo.driven.makeC9rBase({
   init (key, owner) {
     this.resetBSM(owner)
   },
   aliases: {
     //<<< mochai: aliases
     //... let ns = eYo.driven.newNS()
-    //... ns.makeBaseC9r()
+    //... ns.makeC9rBase()
     //... setup({
     //...   properties: {
     //...     ui: 421,
@@ -92,7 +92,7 @@ eYo.driven.makeBaseC9r({
     resetBSM (owner) {
       //<<< mochai: resetBSM
       //... let ns = eYo.driven.newNS()
-      //... ns.makeBaseC9r()
+      //... ns.makeC9rBase()
       //... var driven = ns.new({}, 'driven', onr)
       //... chai.expect(driven.brick).equal(onr)
       //... chai.expect(driven.slot).undefined
@@ -144,15 +144,15 @@ eYo.driven.makeBaseC9r({
     ownerDidChange (before, after) {
       //<<< mochai: ownerDidChange
       //... let ns = eYo.driven.newNS()
-      //... ns.makeBaseC9r()
-      //... eYo.test.extend(ns.BaseC9r_p, 'ownerDidChange', function (before, after) {
+      //... ns.makeC9rBase()
+      //... eYo.test.extend(ns.C9rBase_p, 'ownerDidChange', function (before, after) {
       //...   flag.push(421)
       //... })
       //... var driven = ns.new({}, 'driven', onr)
       //... setup()
       //... driven.owner_ = onr
       //... flag.expect(421)
-      let inherited = eYo.driven.BaseC9r[eYo.$SuperC9r_p].ownerDidChange
+      let inherited = eYo.driven.C9rBase[eYo.$SuperC9r_p].ownerDidChange
       inherited && inherited.call(this, before, after)
       this.resetBSM()
       //>>>

@@ -22,7 +22,7 @@ eYo.brick.newNS(eYo, 'stmt')
  * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.stmt.makeBaseC9r(true, {
+eYo.stmt.makeC9rBase(true, {
   left /** @suppress {globalThis} */ (type) { // eslint-disable-line
     return this.brick.head || this.brick.foot
       ? [eYo.t3.stmt.comment_stmt]

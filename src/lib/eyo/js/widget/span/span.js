@@ -86,10 +86,10 @@ eYo.o4t.newNS(eYo, 'span', {
  * The state is always in a consistent state.
  * However, the span state may not be consistent with the brick state.
  * For edython.
- * @param {eYo.brick.BaseC9r} brick The brick owning the span.
+ * @param {eYo.brick.C9rBase} brick The brick owning the span.
  * @constructor
  */
-eYo.span.makeBaseC9r({
+eYo.span.makeC9rBase({
   //<<< mochai: Span
   init () {
     this.resetC()
@@ -172,7 +172,7 @@ eYo.span.makeBaseC9r({
     },
     /**
      * @readonly
-     * @property {eYo.brick.BaseC9r} brick - The owning brick
+     * @property {eYo.brick.C9rBase} brick - The owning brick
      */
     brick: {
       get () {

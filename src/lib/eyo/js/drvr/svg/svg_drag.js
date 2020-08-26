@@ -135,7 +135,7 @@ Object.defineProperties(eYo.svg.brickDragSurface.prototype, {
 /**
  * Set the SVG brick's group on the drag surface's group and show the surface.
  * Set the size of the svg drag surface equal to the one of the brick's board. Make both canvases transformed similarly.
- * @param {eYo.brick.BaseC9r} brick  A top block with no parent.
+ * @param {eYo.brick.C9rBase} brick  A top block with no parent.
  */
 eYo.svg.brickDragSurface.prototype.start = function(draggerBrick) {
   this.dragger_ = draggerBrick

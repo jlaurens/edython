@@ -706,9 +706,9 @@ eYo.geom.tPoint = function (snap, c, l) {
 eYo.c9r.Dlgt_p.makePointed = function (key) {
   //<<< mochai: eYo.o4t.Dlgt.makePointed
   //... let ns = eYo.o4t.newNS()
-  //... ns.makeBaseC9r(true)
-  //... ns.BaseC9r[eYo.$].makePointed('origin')
-  //... ns.BaseC9r[eYo.$].finalizeC9r()
+  //... ns.makeC9rBase(true)
+  //... ns.C9rBase[eYo.$].makePointed('origin')
+  //... ns.C9rBase[eYo.$].finalizeC9r()
   //... var R
   this.modelMerge({
     //<<< mochai: Text coordinates

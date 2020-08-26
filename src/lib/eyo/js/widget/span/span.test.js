@@ -2,7 +2,7 @@ describe('Span expression', function () {
   this.timeout(20000)
   let flag = new eYo.test.Flag()
   let ns_span = eYo.span.newNS()
-  ns_span.makeBaseC9r()
+  ns_span.makeC9rBase()
   let onr = eYo.c9r.new()
   var b
   var b_g

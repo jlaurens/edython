@@ -12,17 +12,17 @@ describe ('Tests: Owned', function () {
       },
     }, 'onr')
   })
-  it ('O3d: modelBaseC9r', function () {
+  it ('O3d: modelC9rBase', function () {
     let ns = eYo.o3d.newNS()
-    ns.makeBaseC9r()
-    chai.expect(ns.modelBaseC9r()).equal(ns.BaseC9r)
+    ns.makeC9rBase()
+    chai.expect(ns.modelC9rBase()).equal(ns.C9rBase)
   })
   it ('O3d: modelMakeC9r', function () {
     let ns = eYo.o3d.newNS()
-    ns.makeBaseC9r()
+    ns.makeC9rBase()
     var model = {}
     ns.modelMakeC9r(model, 'foo')
-    chai.expect(model[eYo.$C9r][eYo.$SuperC9r]).equal(ns.BaseC9r)
+    chai.expect(model[eYo.$C9r][eYo.$SuperC9r]).equal(ns.C9rBase)
   })
   it ('O3d: eYo.o3d.new', function () {
     let o3d = eYo.o3d.new('foo', onr)
@@ -35,7 +35,7 @@ describe ('Tests: Owned', function () {
   })
   it(`O3d: ns.new(model)`, function () {
     let ns = eYo.o3d.newNS()
-    ns.makeBaseC9r()
+    ns.makeC9rBase()
     let model = {}
     let f = ns.new(model, 'foo', onr)
     chai.expect(f.constructor).equal(model[eYo.$C9r])
@@ -44,7 +44,7 @@ describe ('Tests: Owned', function () {
     // In the init method, the properties are available and initialized
     // when not lazy!
     let ns = eYo.o3d.newNS()
-    ns.makeBaseC9r({
+    ns.makeC9rBase({
       init (key, owner) {
         chai.expect(this.owner).equal(owner)
       }
@@ -54,7 +54,7 @@ describe ('Tests: Owned', function () {
   })
   it ('O3d: ownerDidChange', function () {
     let ns_o3d = eYo.o3d.newNS()
-    ns_o3d.makeBaseC9r({
+    ns_o3d.makeC9rBase({
       init (key, owner) {
         chai.expect(this.owner).equal(owner)
       }

@@ -21,7 +21,7 @@ eYo.forward('slot')
 eYo.svg.newDrvrC9r('Slot', {
   /**
    * Prepare the given slot.
-   * @param {eYo.slot.BaseC9r} slot to be prepared.
+   * @param {eYo.slot.C9rBase} slot to be prepared.
    */
   initUI (slot) {
     var dom = this._initUI(slot)
@@ -40,7 +40,7 @@ eYo.svg.newDrvrC9r('Slot', {
   },
   /**
    * Dispose of the given slot's rendering resources.
-   * @param {eYo.slot.BaseC9r} slot
+   * @param {eYo.slot.C9rBase} slot
    */
   disposeMaker (slot) {
     eYo.dom.removeNode(slot.dom.svg.group_)
@@ -83,7 +83,7 @@ eYo.svg.Slot.prototype.displayedUpdate = function (slot) {
 
 /**
  * Dispose of the given slot's rendering resources.
- * @param {eYo.slot.BaseC9r} slot
+ * @param {eYo.slot.C9rBase} slot
  */
 eYo.svg.Slot.prototype.display = function (slot) {
   var g = slot.dom && slot.dom.svg.group_

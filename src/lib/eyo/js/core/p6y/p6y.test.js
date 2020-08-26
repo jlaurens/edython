@@ -377,7 +377,7 @@ describe ('Tests: Property', function () {
   })
   it ('P6y: Shortcuts', function () {
     var model = 421
-    let validated = eYo.p6y.BaseC9r[eYo.$].modelValidate(model)
+    let validated = eYo.p6y.C9rBase[eYo.$].modelValidate(model)
     chai.expect(eYo.isD(validated)).true
     chai.expect(validated.value()).equal(421)
   })

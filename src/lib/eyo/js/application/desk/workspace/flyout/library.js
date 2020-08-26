@@ -665,7 +665,7 @@ eYo.section.newNS(eYo, 'library', {
 })
 
 /**
- * @name {eYo.library.BaseC9r}
+ * @name {eYo.library.C9rBase}
  * @constructor
  */
-eYo.library.makeBaseC9r()
+eYo.library.makeC9rBase()

@@ -31,7 +31,7 @@ eYo.o4t.newNS(eYo, 'view')
  * Enhance the constructor with view facilities.
  * @param {*} manyModel - The model
  */
-eYo.dlgt.BaseC9r_p.viewEnhanced = function () {
+eYo.dlgt.C9rBase_p.viewEnhanced = function () {
   //<<< mochai: viewEnhanced
 
   this.p6y$ || eYo.throw(`${this.eyo.name}/viewEnhanced: Not a p6y aware delegate.`)
@@ -49,7 +49,7 @@ eYo.dlgt.BaseC9r_p.viewEnhanced = function () {
    * @param {*} object - The object receiving the new shortcuts,
    */
   eYo.mixinFR(this._p, {
-    //<<< mochai: eYo.dlgt.BaseC9r_p.viewShortcuts
+    //<<< mochai: eYo.dlgt.C9rBase_p.viewShortcuts
     viewShortcuts () {
       //<<< mochai: viewShortcuts (foo_v)
       let _p = this.C9r_p
@@ -59,7 +59,7 @@ eYo.dlgt.BaseC9r_p.viewEnhanced = function () {
           [k_v]: eYo.descriptorR({$ () {
             return this.viewMap.get(k)
             //... let NS = eYo.o4t.newNS()
-            //... let C9r = NS.makeBaseC9r(true)
+            //... let C9r = NS.makeC9rBase(true)
             //... C9r[eYo.$].viewEnhanced()
             //... C9r[eYo.$].finalizeC9r()
             //... C9r[eYo.$].viewMerge({
@@ -94,7 +94,7 @@ eYo.dlgt.BaseC9r_p.viewEnhanced = function () {
       [eYo.model.ANY]: eYo.View[eYo.$].modelFormat,
       [eYo.model.VALIDATE]: eYo.model.validateD,
       //... let ns = eYo.o4t.newNS()
-      //... let C9r = ns.makeBaseC9r(true)
+      //... let C9r = ns.makeC9rBase(true)
       //... C9r[eYo.$].viewEnhanced()
       //... C9r[eYo.$].finalizeC9r()
       //... chai.assert(C9r[eYo.$].modelFormat.get('views'))
@@ -106,7 +106,7 @@ eYo.dlgt.BaseC9r_p.viewEnhanced = function () {
     this.viewShortcuts()
     //<<< mochai: viewMerge+viewShortcuts
     //... let ns = eYo.o4t.newNS()
-    //... let C9r = ns.makeBaseC9r(true)
+    //... let C9r = ns.makeC9rBase(true)
     //... C9r[eYo.$].viewEnhanced()
     //... C9r[eYo.$].finalizeC9r()
     //... C9r[eYo.$].viewMerge({
@@ -130,7 +130,7 @@ eYo.dlgt.BaseC9r_p.viewEnhanced = function () {
   this.viewShortcuts()
 
   //... let ns = eYo.o4t.newNS()
-  //... let C9r = ns.makeBaseC9r()
+  //... let C9r = ns.makeC9rBase()
   //... C9r[eYo.$].viewEnhanced()
   //... var o = ns.new('o', onr)
   
@@ -159,7 +159,7 @@ eYo.dlgt.BaseC9r_p.viewEnhanced = function () {
         //... var key = 'x' + seed
         //... var Key = 'X' + seed
         //... var NS = eYo.view.newNS()
-        //... NS.makeBaseC9r({
+        //... NS.makeC9rBase({
         //...   ui: {
         //...     init (...$) {
         //...       flag.push(1, ...$)
@@ -198,7 +198,7 @@ eYo.dlgt.BaseC9r_p.viewEnhanced = function () {
         //... var key = 'x' + seed
         //... var Key = 'X' + seed
         //... var NS = eYo.view.newNS()
-        //... NS.makeBaseC9r({
+        //... NS.makeC9rBase({
         //...   ui: {
         //...     dispose (...$) {
         //...       flag.push(3, ...$)
@@ -300,9 +300,9 @@ eYo.dlgt.BaseC9r_p.viewEnhanced = function () {
      * Dispose of the resources declared at that level.
      * @param {Object} instance -  instance is an instance of a subclass of the `C9r_` of the receiver
      */
-    disposeInstance (instance, ...$) {
-      //<<< mochai: disposeInstance
-      //... chai.expect(C9r[eYo.$].disposeInstance).eyo_F
+    c9rDispose (instance, ...$) {
+      //<<< mochai: c9rDispose
+      //... chai.expect(C9r[eYo.$].c9rDispose).eyo_F
       this.viewDispose(instance, ...$)
       this[this.p6y$.dispose](instance, ...$)
       //>>>
@@ -316,10 +316,10 @@ eYo.dlgt.BaseC9r_p.viewEnhanced = function () {
 /**
  * Widgets with UI capabilities.
  * This is a pure abstract class that must be subclassed.
- * @name{eYo.view.BaseC9r}
+ * @name{eYo.view.C9rBase}
  * @constructor
  */
-eYo.view.makeBaseC9r(true, {
+eYo.view.makeC9rBase(true, {
   /**
    * Initializer.
    */
@@ -379,7 +379,7 @@ eYo.view.makeBaseC9r(true, {
     },
     /**
      * The driver.
-     * @type {eYo.drvr.BaseC9r}
+     * @type {eYo.drvr.C9rBase}
      */
     driver: {
       lazy () {
@@ -406,7 +406,7 @@ eYo.View[eYo.$].finalizeC9r({
       [eYo.model.VALIDATE] (before, p) {  // eslint-disable-line
         if (eYo.isStr(before)) {
           var v = eYo.valueForKeyPath(before)
-          if (eYo.isSubclass(v, eYo.view.BaseC9r)) {
+          if (eYo.isSubclass(v, eYo.view.C9rBase)) {
             return {
               C9r: v,
               shared: true,
@@ -420,7 +420,7 @@ eYo.View[eYo.$].finalizeC9r({
               }
             }
           }
-        } else if (eYo.isSubclass(before, eYo.view.BaseC9r)) {
+        } else if (eYo.isSubclass(before, eYo.view.C9rBase)) {
           return {
             C9r: before,
             shared: true,
@@ -436,7 +436,7 @@ eYo.View[eYo.$].finalizeC9r({
 
 {
   // recursive definition of views inside views
-  let mf = eYo.view.BaseC9r[eYo.$].modelFormat
+  let mf = eYo.view.C9rBase[eYo.$].modelFormat
   mf.get('views').get(eYo.model.ANY).fallback = mf
 }
 
@@ -449,7 +449,7 @@ eYo.mixinFR(eYo.view._p, {
    * @param {Object} model
    * @param {String} key
    */
-  modelBaseC9r (model, key) {
+  modelC9rBase (model, key) {
     if (eYo.isC9r(model.shared)) {
       return model.shared
     } else if (eYo.isStr(model.shared) && eYo.isC9r(eYo.view[model.shared])) {

@@ -37,7 +37,7 @@ eYo.dom.newDrvrC9r('Brick', {
   },
   /**
    * Dispose of the desk dom resources.
-   * @param {eYo.brick.BaseC9r} brick
+   * @param {eYo.brick.C9rBase} brick
    */
   disposeUI (brick) {
     if (brick.dom && brick.dom.div_) {

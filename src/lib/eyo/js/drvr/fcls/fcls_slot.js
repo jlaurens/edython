@@ -20,12 +20,12 @@ eYo.fcls.newDrvrC9r('Slot', {
   methods: {
     /**
      * Whether the slot is displayed.
-     * @param {eYo.slot.BaseC9r} slot  the slot to query about
+     * @param {eYo.slot.C9rBase} slot  the slot to query about
      */
     do_displayedGet: eYo.doNothing,
     /**
      * Display/hide the given slot.
-     * @param {eYo.slot.BaseC9r} slot  the slot the driver acts on
+     * @param {eYo.slot.C9rBase} slot  the slot the driver acts on
      * @param {boolean} yorn
      */
     do_displayedSet: eYo.doNothing,

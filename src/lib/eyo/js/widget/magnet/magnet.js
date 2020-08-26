@@ -75,9 +75,9 @@ Object.defineProperties(eYo.magnet._p, {
 /**
  * The set of magnets owned by a brick.
  * @name{eYo.magnet.S}
- * @param {eYo.brick.BaseC9r} brick  brick is the owner
+ * @param {eYo.brick.C9rBase} brick  brick is the owner
  */
-eYo.magnet.newC9r('S', { // eYo.magnet.BaseC9r is not yet defined!
+eYo.magnet.newC9r('S', { // eYo.magnet.C9rBase is not yet defined!
   // eslint-disable-next-line
   init (key, brick) {
     // configure the connections
@@ -116,7 +116,7 @@ eYo.magnet.newC9r('S', { // eYo.magnet.BaseC9r is not yet defined!
  * pure abstract base class for a magnet.
  * Use `eYo.magnet.new` to create a magnet.
  * 
- * @param {eYo.brick.BaseC9r|eYo.slot.BaseC9r} owner  the immediate owner of this magnet. When not a brick, it is directly owned by a brick.
+ * @param {eYo.brick.C9rBase|eYo.slot.C9rBase} owner  the immediate owner of this magnet. When not a brick, it is directly owned by a brick.
  * @param {String} type  the type of this magnet
  * @param {Object} model  the model of this magnet
  * @readonly
@@ -130,7 +130,7 @@ eYo.magnet.newC9r('S', { // eYo.magnet.BaseC9r is not yet defined!
  * @property {boolean} isSuperior  whether the connection is superior, true if connection faces down or right, false otherwise.
  * @constructor
  */
-eYo.magnet.makeBaseC9r(true, {
+eYo.magnet.makeC9rBase(true, {
   //<<< mochai: eYo.Magnet
   init (key, bs, type) { //eslint-disable-line
     //<<< mochai: init
@@ -229,7 +229,7 @@ eYo.magnet.makeBaseC9r(true, {
     target: {
       /**
        * Connect the receiver to the after magnet, if any, otherwise disconnects the receiver.
-       * @param {eYo.magnet.BaseC9r} [after] 
+       * @param {eYo.magnet.C9rBase} [after] 
        */
       validate (after) {
         return this.canConnectWithReason_(after) === eYo.magnet.CAN_CONNECT ? after : eYo.INVALID
@@ -604,7 +604,7 @@ eYo.Magnet$.p6yMerge({
   /**
    * Return the black target.
    * Traverses the white bricks
-   * @return {?eYo.magnet.BaseC9r}
+   * @return {?eYo.magnet.C9rBase}
    * @private
    */
   blackTarget: {
@@ -871,8 +871,8 @@ eYo.Magnet_p.connect_ = function (childM4t) {
         /*
         * Find the first free magnet in the given brick
         * that positively checks type with the given potential target magnet.
-        * @param {eYo.brick.BaseC9r} brick The brick.
-        * @param {eYo.magnet.BaseC9r} child The inferior brick.
+        * @param {eYo.brick.C9rBase} brick The brick.
+        * @param {eYo.magnet.C9rBase} child The inferior brick.
         * @private
         * @suppress {accessControls}
         */
@@ -1081,7 +1081,7 @@ eYo.Magnet_p.scrollToVisible = function (force) {
 /**
  * Move the brick(s) belonging to the connection to a point where they don't
  * visually interfere with the specified connection.
- * @param {eYo.magnet.BaseC9r} m4t The connection to move away
+ * @param {eYo.magnet.C9rBase} m4t The connection to move away
  *     from.
  * @private
  * @suppress {accessControls}
@@ -1272,7 +1272,7 @@ eYo.Magnet_p.moveBy = function(dxy) {
 /**
  * Returns the distance between this magnet and another magnet in
  * board units.
- * @param {eYo.magnet.BaseC9r} other The other connection to measure
+ * @param {eYo.magnet.C9rBase} other The other connection to measure
  *     the distance to.
  * @return {number} The distance between magnets, in board units.
  */
@@ -1413,14 +1413,14 @@ eYo.Magnet$.p6yMerge({
 /**
  * Establish a connection with a brick.
  *
- * @param {eYo.brick.BaseC9r} eyo
+ * @param {eYo.brick.C9rBase} eyo
  */
 eYo.Magnet_p.connectSmart = (() => {
   let connect = {
     /**
      * Establish a connection with a brick.
-     * @param {eYo.brick.BaseC9r} brick
-     * @return {!eYo.magnet.BaseC9r}
+     * @param {eYo.brick.C9rBase} brick
+     * @return {!eYo.magnet.C9rBase}
      */
     toHead (brick) {
       this.connect(brick.head_m)
@@ -1428,8 +1428,8 @@ eYo.Magnet_p.connectSmart = (() => {
     },
     /**
      * Establish a connection with a brick.
-     * @param {eYo.brick.BaseC9r} brick
-     * @return {!eYo.magnet.BaseC9r}
+     * @param {eYo.brick.C9rBase} brick
+     * @return {!eYo.magnet.C9rBase}
      */
     toLeft (brick) {
       this.connect(brick.left_m)
@@ -1437,8 +1437,8 @@ eYo.Magnet_p.connectSmart = (() => {
     },
     /**
      * Establish a connection with a brick.
-     * @param {eYo.brick.BaseC9r} brick
-     * @return {!eYo.magnet.BaseC9r}
+     * @param {eYo.brick.C9rBase} brick
+     * @return {!eYo.magnet.C9rBase}
      */
     toRight (brick) {
       this.connect(brick.right_m)
@@ -1446,8 +1446,8 @@ eYo.Magnet_p.connectSmart = (() => {
     },
     /**
      * Establish a connection with a brick.
-     * @param {eYo.brick.BaseC9r} brick
-     * @return {!eYo.magnet.BaseC9r}
+     * @param {eYo.brick.C9rBase} brick
+     * @return {!eYo.magnet.C9rBase}
      */
     toFoot (brick) {
       this.connect(brick.foot_m)
@@ -1455,7 +1455,7 @@ eYo.Magnet_p.connectSmart = (() => {
     },
     /**
      * Establish a connection with a brick.
-     * @param {eYo.brick.BaseC9r} brick
+     * @param {eYo.brick.C9rBase} brick
      */
     toOutput (brick) {
       this.connect(brick.out_m)
@@ -1613,7 +1613,7 @@ eYo.Magnet_p.updateCheck = function () {
 
 /**
  * Connect the receiver to another magnet.
- * @param {eYo.magnet.BaseC9r} other  The magnet to connect to.
+ * @param {eYo.magnet.C9rBase} other  The magnet to connect to.
  */
 eYo.Magnet_p.connect = function(other) {
   if (this.target === other) {
@@ -1646,7 +1646,7 @@ eYo.Magnet_p.connect = function(other) {
 /**
  * Checks whether the current connection can connect with the target
  * connection.
- * @param {eYo.magnet.BaseC9r} target Magnet to check compatibility with.
+ * @param {eYo.magnet.C9rBase} target Magnet to check compatibility with.
  * @return {number} eYo.magnet.CAN_CONNECT if the connection is legal,
  *    an error code otherwise.
  * @private
@@ -1677,7 +1677,7 @@ eYo.Magnet_p.canConnectWithReason_ = function(target) {
 /**
  * Check if the two connections can be dragged to connect to each other.
  * A sealed connection is never allowed.
- * @param {eYo.magnet.BaseC9r} candidate A nearby connection to check.
+ * @param {eYo.magnet.C9rBase} candidate A nearby connection to check.
  * @param {Boolean} [ignoreDistance]
  * @return {boolean} True if the connection is allowed, false otherwise.
  */
@@ -1725,7 +1725,7 @@ eYo.Magnet_p.isConnectionAllowed = function (candidate, maxRadius) {
 /**
  * Will connect.
  * Forwards to the model.
- * @param {eYo.magnet.BaseC9r} targetM4t
+ * @param {eYo.magnet.C9rBase} targetM4t
  */
 eYo.Magnet_p.willConnect = function (targetM4t) { // eslint-disable-line
   var m = this.model
@@ -1739,9 +1739,9 @@ eYo.Magnet_p.willConnect = function (targetM4t) { // eslint-disable-line
 /**
  * Did connect.
  * Increment the brick step.
- * @param {eYo.magnet.BaseC9r} oldTargetM4t
+ * @param {eYo.magnet.C9rBase} oldTargetM4t
  *     what was previously connected to the receiver
- * @param {eYo.magnet.BaseC9r} targetOldM4t
+ * @param {eYo.magnet.C9rBase} targetOldM4t
  *     what was previously connected to the actual receiver's target
  */
 eYo.Magnet_p.didConnect = function (oldTargetM4t, targetOldM4t) { // eslint-disable-line
@@ -1779,9 +1779,9 @@ eYo.Magnet_p.willDisconnect = function () {
 /**
  * Did disconnect.
  * Increment the brick step.
- * @param {eYo.magnet.BaseC9r} oldTargetM4t
+ * @param {eYo.magnet.C9rBase} oldTargetM4t
  *     what was previously connected to the receiver
- * @param {eYo.magnet.BaseC9r} targetOldM4t
+ * @param {eYo.magnet.C9rBase} targetOldM4t
  *     what was previously connected to the old receiver's target
  */
 eYo.Magnet_p.didDisconnect = function (oldTargetM4t, targetOldM4t) {
@@ -1803,7 +1803,7 @@ eYo.Magnet_p.didDisconnect = function (oldTargetM4t, targetOldM4t) {
  * The type checking mechanism is fine grained compared to blockly's.
  * The check_ is used more precisely.
  * For example, elif bricks cannot connect to the suite connection, only the next connection.
- * @param {eYo.magnet.BaseC9r} other Magnet to compare against.
+ * @param {eYo.magnet.C9rBase} other Magnet to compare against.
  * @param {Boolean} [force]  checks even if a connection is hidden or incog.
  * @return {boolean} True if the connections share a type.
  * @private

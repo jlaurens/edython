@@ -40,7 +40,7 @@ eYo.forward('brick')
 console.error('Manage reentrant_ more carefully')
 
 /**
- * @name{eYo.consolidator.BaseC9r}
+ * @name{eYo.consolidator.C9rBase}
  * @constructor
  * Consolidator. Fake abstract class, just here for the record and namespace.
  * Any dynamic brick must be consolidated.
@@ -50,11 +50,11 @@ console.error('Manage reentrant_ more carefully')
  * These are implemented as potential singletons but are not used as is.
  * Extra initialization may be performed by the init function.
  * TODO: use singletons...
- * @name {eYo.consolidator.BaseC9r}
+ * @name {eYo.consolidator.C9rBase}
  * @param {Object} model - all the model needed
  * @constructor
  */
-eYo.consolidator.makeBaseC9r({
+eYo.consolidator.makeC9rBase({
   properties: {
     model: {
       value () {
@@ -77,7 +77,7 @@ eYo.consolidator.makeBaseC9r({
     /**
      * Main and unique entry point.
      * Removes empty place holders
-     * @param {eYo.brick.BaseC9r} brick - to be consolidated....
+     * @param {eYo.brick.C9rBase} brick - to be consolidated....
      */
     consolidate: eYo.doNothing,
   }
@@ -188,7 +188,7 @@ eYo.consolidator.List_p.willBeConnected = function (io) {
  * io is properly set up at the end.
  * @param {Object} io parameter.
  * @param {number} i When eYo.NA, take io.i
- * @return {eYo.slot.BaseC9r}, the slot inserted.
+ * @return {eYo.slot.C9rBase}, the slot inserted.
  */
 eYo.consolidator.List_p.insertPlaceholder = function (io, i) {
   if (eYo.isNum(i)) {
@@ -202,7 +202,7 @@ eYo.consolidator.List_p.insertPlaceholder = function (io, i) {
       this.will_connect_ = this.brick.will_connect_ = false
     }
   }
-  var slot = new eYo.slot.BaseC9r(io.brick, '!', model)
+  var slot = new eYo.slot.C9rBase(io.brick, '!', model)
   io.list.splice(io.i, 0, slot)
   io.edited = true
   this.setupIO(io)
@@ -652,7 +652,7 @@ eYo.consolidator.List_p.getIO = function (brick) {
  * List consolidator.
  * Removes empty place holders, add some...
  * Problem of `when`: the brick should not consolidate when not in a wokspace.
- * @param {eYo.brick.BaseC9r} brick - to be consolidated.
+ * @param {eYo.brick.C9rBase} brick - to be consolidated.
  * @param {boolean} force - true if no shortcut is allowed.
  */
 eYo.consolidator.List_p.consolidate = eYo.decorate.reentrant('consolidate', function (brick, force) {
@@ -682,10 +682,10 @@ eYo.consolidator.List_p.consolidate = eYo.decorate.reentrant('consolidate', func
 
 /**
  * Fetches the named slot object
- * @param {eYo.brick.BaseC9r} brick
+ * @param {eYo.brick.C9rBase} brick
  * @param {String} name The name of the slot.
  * @param {Boolean} [dontCreate] Whether the receiver should create slots on the fly.
- * @return {eYo.slot.BaseC9r} The slot object, or null if slot does not exist or eYo.NA for the default brick implementation.
+ * @return {eYo.slot.C9rBase} The slot object, or null if slot does not exist or eYo.NA for the default brick implementation.
  */
 eYo.consolidator.List_p.getSlot = function (brick, name, dontCreate) {
   // name = eYo.do.Name.getNormalized(name) not here
@@ -782,7 +782,7 @@ eYo.consolidator.List_p.nextSlotForType = function (io, type) {
 /**
  * Whether the brick has an slot for the given type.
  * Used by the print brick.
- * @param {eYo.brick.BaseC9r} brick
+ * @param {eYo.brick.C9rBase} brick
  * @param {Object} type - string or array of strings
  * @return the next keyword item slot, eYo.NA when at end.
  */

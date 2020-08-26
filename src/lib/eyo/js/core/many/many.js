@@ -41,7 +41,7 @@ eYo.newNS('many')
 //... var C9r, foo$
 //... let preparator = f => {
 //...   return model => {
-//...     C9r = eYo.c9r.newNS().makeBaseC9r(true)
+//...     C9r = eYo.c9r.newNS().makeC9rBase(true)
 //...     let eyo = C9r[eYo.$]
 //...     let _p = C9r.prototype
 //...     _p.flag = flagor(1)
@@ -122,7 +122,7 @@ eYo.mixinFR(eYo.many, {
  * `dispose`
  * Both are optional.
  */
-eYo.dlgt.BaseC9r_p.manyEnhanced = function (id, type, path, manyModel) {
+eYo.Dlgt_p.manyEnhanced = function (id, type, path, manyModel) {
   //<<< mochai: manyEnhanced
   //<<< mochai: Basics
   if (!eYo.isStr(path)) {
@@ -140,7 +140,7 @@ eYo.dlgt.BaseC9r_p.manyEnhanced = function (id, type, path, manyModel) {
   //... chai.expect(() => C9r[eYo.$].manyEnhanced('foo', 'foo')).throw()
   //>>>
   // allow at least path in the model
-  this.modelFormat.allow(path, manyModel.allow) // at least
+  this.modelFormat.allow(path, manyModel.allow)
   let type$ = {
     modelByKey: Symbol('modelByKey'),
     merge: Symbol('merge'),
@@ -598,7 +598,7 @@ eYo.dlgt.BaseC9r_p.manyEnhanced = function (id, type, path, manyModel) {
     }
     //... preparator()()
     //... var ns = eYo.o3d.newNS()
-    //... ns.makeBaseC9r({
+    //... ns.makeC9rBase({
     //...   init (model, k, object) {
     //...     flag.push(123)
     //...   },
@@ -643,7 +643,7 @@ eYo.dlgt.BaseC9r_p.manyEnhanced = function (id, type, path, manyModel) {
     object.boundField = eYo.NA // not here
     //... preparator()()
     //... var ns = eYo.o3d.newNS()
-    //... ns.makeBaseC9r({
+    //... ns.makeC9rBase({
     //...   dispose (...$) {
     //...     flag.push(1, ...$)
     //...   },
@@ -692,7 +692,7 @@ eYo.dlgt.BaseC9r_p.manyEnhanced = function (id, type, path, manyModel) {
     }
     //... preparator()()
     //... var ns = eYo.o3d.newNS()
-    //... ns.makeBaseC9r()
+    //... ns.makeC9rBase()
     //... var foo$ = C9r[eYo.$].manyEnhanced('foo', 'foo', {
     //...   make (model, k, object) {
     //...     return ns.new(model, k, object)
@@ -739,7 +739,7 @@ eYo.dlgt.BaseC9r_p.manyEnhanced = function (id, type, path, manyModel) {
     return false
     //... preparator()()
     //... var ns = eYo.o3d.newNS()
-    //... ns.makeBaseC9r()
+    //... ns.makeC9rBase()
     //... var foo$ = C9r[eYo.$].manyEnhanced('foo', 'foo', {
     //...   make (model, k, object) {
     //...     return ns.new(model, k, object)

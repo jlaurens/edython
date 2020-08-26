@@ -27,13 +27,13 @@ eYo.require('t3.all')
 eYo.stmt.newNS(eYo, 'expr')
 
 /**
- * @name {eYo.expr.BaseC9r}
+ * @name {eYo.expr.C9rBase}
  * @constructor
  * Class for a Delegate, value brick.
  * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.expr.makeBaseC9r({
+eYo.expr.makeC9rBase({
   properties: {
     isExpr: true,
     depth: {
@@ -46,7 +46,7 @@ eYo.expr.makeBaseC9r({
 })
 
 // Default delegate for all expression bricks
-eYo.brick.registerAll(eYo.t3.expr, eYo.expr.BaseC9r, true)
+eYo.brick.registerAll(eYo.t3.expr, eYo.expr.C9rBase, true)
 
 /**
  * Increment the change count.
@@ -54,8 +54,8 @@ eYo.brick.registerAll(eYo.t3.expr, eYo.expr.BaseC9r, true)
  * For edython.
  * @param {*} deep  Whether to propagate the message to children.
  */
-eYo.expr.BaseC9r_p.changeDone = function (deep) {
-  eYo.expr.BaseC9r[eYo.$].C9r_s.ChangeDone.call(this, deep)
+eYo.expr.C9rBase_p.changeDone = function (deep) {
+  eYo.expr.C9rBase[eYo.$].C9r_s.ChangeDone.call(this, deep)
   var parent = this.parent
   parent && parent.changeDone()
 }
@@ -67,7 +67,7 @@ eYo.expr.BaseC9r_p.changeDone = function (deep) {
  * This should be used instead of direct brick querying.
  * @return {String} The type of the receiver's brick.
  */
-eYo.expr.BaseC9r_p.getType = eYo.changer.memoize(
+eYo.expr.C9rBase_p.getType = eYo.changer.memoize(
   'getType',
   function () {
     return {
@@ -83,7 +83,7 @@ eYo.expr.BaseC9r_p.getType = eYo.changer.memoize(
  * @param {String} type
  * @return {Boolean}
  */
-eYo.expr.BaseC9r_p.checkOutputType = function (type) {
+eYo.expr.C9rBase_p.checkOutputType = function (type) {
   var m4t = this.out_m
   if (m4t.check_) {
     if (type.indexOf) {
@@ -103,9 +103,9 @@ eYo.expr.BaseC9r_p.checkOutputType = function (type) {
  * If the parent's output connection is connected,
  * can connect the brick's output connection to it?
  * The connection cannot always establish.
- * @param {eYo.brick.BaseC9r} brick  the brick to be replaced
+ * @param {eYo.brick.C9rBase} brick  the brick to be replaced
  */
-eYo.expr.BaseC9r_p.canReplaceBrick = function (brick) {
+eYo.expr.C9rBase_p.canReplaceBrick = function (brick) {
   if (brick) {
     var m4t = brick.out_m
     if (!m4t) {
@@ -125,9 +125,9 @@ eYo.expr.BaseC9r_p.canReplaceBrick = function (brick) {
  * If the parent's output magnet is connected,
  * connects the brick's output magnet to it.
  * The connection cannot always establish.
- * @param {eYo.brick.BaseC9r} brick
+ * @param {eYo.brick.C9rBase} brick
  */
-eYo.expr.BaseC9r_p.replaceBrick = function (brick) {
+eYo.expr.C9rBase_p.replaceBrick = function (brick) {
   if (this.board && brick && brick.board) {
     eYo.event.groupWrap(() => {
       eYo.do.tryFinally(() => {
@@ -158,8 +158,8 @@ eYo.expr.BaseC9r_p.replaceBrick = function (brick) {
  * The print statement needs some preparation before drawing.
  * @private
  */
-eYo.expr.BaseC9r_p.willRender_ = function (recorder) {
-  eYo.expr.BaseC9r[eYo.$].C9r_s.willRender_.call(this, recorder)
+eYo.expr.C9rBase_p.willRender_ = function (recorder) {
+  eYo.expr.C9rBase[eYo.$].C9r_s.willRender_.call(this, recorder)
   var field = this.await_f
   if (field) {
     field.visible = this.await_
@@ -172,7 +172,7 @@ eYo.expr.BaseC9r_p.willRender_ = function (recorder) {
  * are awaitable
  * @return yes or no
  */
-eYo.expr.BaseC9r_p.awaitable = function () {
+eYo.expr.C9rBase_p.awaitable = function () {
   if (!this.await_f) {
     return false
   }
@@ -193,8 +193,8 @@ eYo.expr.BaseC9r_p.awaitable = function () {
  * @param {eYo.MenuManager} mngr mngr.menu is the menu to populate.
  * @private
  */
-eYo.expr.BaseC9r_p.populateContextMenuFirst_ = function (mngr) {
-  var yorn = eYo.expr.BaseC9r[eYo.$].C9r_s.populateContextMenuFirst_.call(this, mngr)
+eYo.expr.C9rBase_p.populateContextMenuFirst_ = function (mngr) {
+  var yorn = eYo.expr.C9rBase[eYo.$].C9r_s.populateContextMenuFirst_.call(this, mngr)
   if (this.await_ || (this.awaitable && this.awaitable())) {
     var content = eYo.dom.createDom(eYo.dom.TagName.SPAN, null,
       eYo.do.CreateSPAN('await', 'eyo-code-reserved'),
@@ -225,7 +225,7 @@ eYo.expr.BaseC9r_p.populateContextMenuFirst_ = function (mngr) {
  * @param {Object} model
  * @return the created brick
  */
-eYo.expr.BaseC9r_p.insertParentWithModel = function (model) {
+eYo.expr.C9rBase_p.insertParentWithModel = function (model) {
   var parentSlotName = model.slot || model.input
   var parent
   eYo.event.disableWrap(() => {
@@ -333,8 +333,8 @@ eYo.expr.BaseC9r_p.insertParentWithModel = function (model) {
  * @param {Boolean} force
  * @return {Boolean} true when consolidation occurred, false otherwise
  */
-eYo.expr.BaseC9r_p.doConsolidate = function (deep, force) {
-  if (eYo.expr.BaseC9r[eYo.$].C9r_s.doConsolidate.call(this, deep, force)) {
+eYo.expr.C9rBase_p.doConsolidate = function (deep, force) {
+  if (eYo.expr.C9rBase[eYo.$].C9r_s.doConsolidate.call(this, deep, force)) {
     var parent = this.parent
     return (parent && parent.consolidate()) || true
   }
@@ -502,7 +502,7 @@ eYo.expr.builtin__object_p.populateContextMenuFirst_ = function (mngr) {
 
 /**
  * Get the content for the menu item.
- * @param {eYo.brick.BaseC9r} brick The brick.
+ * @param {eYo.brick.C9rBase} brick The brick.
  * @param {string} op op is the operator
  * @private
  */

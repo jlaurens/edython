@@ -20,7 +20,7 @@ eYo.mixinFR(eYo._p, {
     return eYo.isaC9r(what) || eYo.isNS(what)
     //<<< mochai: isOwner (what)
     //... chai.expect(eYo.isOwner(true)).false
-    //... chai.expect(eYo.isOwner(new eYo.c9r.BaseC9r())).true
+    //... chai.expect(eYo.isOwner(new eYo.c9r.C9rBase())).true
     //... chai.expect(eYo.isOwner(eYo.newNS())).true
     //>>>
   }
@@ -40,17 +40,17 @@ eYo.c9r.newNS(eYo, 'o3d', {
   //>>>
 })
 /**
- * @name{eYo.o3d.BaseC9r}
+ * @name{eYo.o3d.C9rBase}
  * @constructor
- * @property {eYo.c9r.BaseC9r} owner - the owning object
+ * @property {eYo.c9r.C9rBase} owner - the owning object
  * @readonly
  * @property {String} key - the identifier within the owning object
  * @readonly
  */
-eYo.o3d.makeBaseC9r({
+eYo.o3d.makeC9rBase({
   /** 
    * @param {String} key - an identifier for the owner.
-   * @param {eYo.c9r.BaseC9r} owner - the immediate owner of this object.
+   * @param {eYo.c9r.C9rBase} owner - the immediate owner of this object.
    */
   init (key, owner) {
     this.eyo.o3dInitInstance(this, key, owner)
@@ -61,15 +61,15 @@ eYo.o3d.makeBaseC9r({
     this.owner__ = this.key_ = eYo.NA
   },  
 })
-//<<< mochai: BaseC9r
+//<<< mochai: C9rBase
 //... chai.assert(eYo.o3d)
-//... eYo.objectHasOwnProperty(chai.assert(eYo.o3d._p, 'BaseC9r'))
-//... chai.expect(eYo.o3d.BaseC9r).equal(eYo.O3d)
+//... eYo.objectHasOwnProperty(chai.assert(eYo.o3d._p, 'C9rBase'))
+//... chai.expect(eYo.o3d.C9rBase).equal(eYo.O3d)
 //>>>
 
 eYo.mixinFR(eYo._p, {
   isaO3d (what) {
-    return !!what && what instanceof eYo.o3d.BaseC9r
+    return !!what && what instanceof eYo.o3d.C9rBase
     //<<< mochai: eYo.isaO3d
     //... chai.expect(eYo.isaO3d()).false
     //... chai.expect(eYo.isaO3d(eYo.NA)).false
@@ -110,14 +110,14 @@ eYo.o3d.Dlgt_p.o3dInitInstance = function (instance, key, owner, configurable) {
  * @param{*} before - the owner before the change
  * @param{*} after - the owner after the change
  */
-eYo.o3d.BaseC9r_p.ownerWillChange = eYo.doNothing
+eYo.o3d.C9rBase_p.ownerWillChange = eYo.doNothing
 /**
  * The default implementation does nothing.
  * For subclassers.
  * @param{*} before - the owner before the change
  * @param{*} after - the owner after the change
  */
-eYo.o3d.BaseC9r.prototype.ownerDidChange = function (before, after) {
+eYo.o3d.C9rBase.prototype.ownerDidChange = function (before, after) {
   if (after) {
     after.hasUI ? this.initUI() : this.disposeUI()
   }
@@ -126,15 +126,15 @@ eYo.o3d.BaseC9r.prototype.ownerDidChange = function (before, after) {
  * The default implementation does nothing.
  * For subclassers.
  */
-eYo.o3d.BaseC9r.prototype.initUI = eYo.doNothing
+eYo.o3d.C9rBase.prototype.initUI = eYo.doNothing
 
 /**
  * The default implementation does nothing.
  * For subclassers.
  */
-eYo.o3d.BaseC9r.prototype.disposeUI = eYo.doNothing
+eYo.o3d.C9rBase.prototype.disposeUI = eYo.doNothing
 
-Object.defineProperties(eYo.o3d.BaseC9r.prototype, {
+Object.defineProperties(eYo.o3d.C9rBase.prototype, {
   owner_: {
     get () {
       return this.owner__
@@ -210,25 +210,25 @@ eYo.mixinFR(eYo.o3d._p, {
     }
     //<<< mochai: SuperC9r
     //... var NS = eYo.o3d.newNS()
-    //... NS.makeBaseC9r()
+    //... NS.makeC9rBase()
     if (model) {
       if (!model[eYo.$SuperC9r]) {
-        model[eYo.$SuperC9r] = this.BaseC9r
-        //... chai.expect(NS.newSingleton(Symbol(), {})).instanceOf(NS.BaseC9r)
+        model[eYo.$SuperC9r] = this.C9rBase
+        //... chai.expect(NS.newSingleton(Symbol(), {})).instanceOf(NS.C9rBase)
       }
       //... var SuperC9r = NS.newC9r()
       //... SuperC9r[eYo.$].finalizeC9r()
       //... chai.expect(NS.newSingleton(Symbol(), {
       //...   [eYo.$SuperC9r]: SuperC9r,
-      //... })).instanceOf(NS.BaseC9r)
+      //... })).instanceOf(NS.C9rBase)
       //... chai.expect(NS.newSingleton(Symbol(), {
       //...   [eYo.$SuperC9r]: eYo.NA,
       //... }).eyo.SuperC9r).undefined
     } else {
       model = {
-        [eYo.$SuperC9r]: this.BaseC9r,
+        [eYo.$SuperC9r]: this.C9rBase,
       }
-      //... chai.expect(NS.newSingleton(Symbol())).instanceOf(NS.BaseC9r)
+      //... chai.expect(NS.newSingleton(Symbol())).instanceOf(NS.C9rBase)
     }
     //>>>
     //<<< mochai: owner

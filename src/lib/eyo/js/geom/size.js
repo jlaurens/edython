@@ -47,7 +47,7 @@ eYo.geom.newC9r('Size', {
   //>>>
   /**
    * Initialize the point forwarding to `set`.
-   * @param {Boolean|eYo.geom.PointLike|eYo.p6y.BaseC9r} [snap] - Defaults to true
+   * @param {Boolean|eYo.geom.PointLike|eYo.p6y.C9rBase} [snap] - Defaults to true
    * @param {*} w 
    * @param {*} h 
    */
@@ -556,9 +556,9 @@ eYo.geom.Size[eYo.$].finalizeC9r()
 eYo.c9r.Dlgt_p.makeSized = function (key) {
   //<<< mochai: eYo.o4t.Dlgt.makeSized
   //... let ns = eYo.o4t.newNS()
-  //... ns.makeBaseC9r(true)
-  //... ns.BaseC9r[eYo.$].makeSized('size')
-  //... ns.BaseC9r[eYo.$].finalizeC9r()
+  //... ns.makeC9rBase(true)
+  //... ns.C9rBase[eYo.$].makeSized('size')
+  //... ns.C9rBase[eYo.$].finalizeC9r()
   //... var R
   this.modelMerge({
     //<<< mochai: Text coordinates

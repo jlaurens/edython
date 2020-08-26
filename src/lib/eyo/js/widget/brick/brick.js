@@ -82,7 +82,7 @@ eYo.o4t.newNS(eYo, 'brick')
  * @readonly
  * @property {object} wrapper - Get the surround parent which is not wrapped_.
  */
-eYo.brick.makeBaseC9r({
+eYo.brick.makeC9rBase({
   /**
    * Delegate initializator for bricks.
    * @param {Object} ns -  namespace.
@@ -90,7 +90,7 @@ eYo.brick.makeBaseC9r({
    * @param {Object} C9r -  the object to which this instance is attached.
    * @param {Object} model -  the model used to create the constructor.
    */
-  [eYo.$] (ns, key, C9r, model) { // eslint-disable-line
+  [eYo.$] () { // eslint-disable-line
     this.types = []
   },
   properties: {
@@ -153,7 +153,7 @@ eYo.brick.makeBaseC9r({
       },
     },
     /**
-     * @type{eYo.changer.BaseC9r}
+     * @type{eYo.changer.C9rBase}
      * @readonly
      */
     change: {
@@ -1299,7 +1299,7 @@ eYo.brick.makeBaseC9r({
             } else {
               continue
             }
-          } else if (eYo.isObject(m) && (slot = new eYo.slot.BaseC9r(this, k, m))) {
+          } else if (eYo.isObject(m) && (slot = new eYo.slot.C9rBase(this, k, m))) {
             eYo.assert(!eYo.isDef(slots[k]),
               `Duplicate slot key ${k}/${this.type}`)
             slots[k] = slot
@@ -1520,7 +1520,7 @@ eYo.brick.makeBaseC9r({
 
     /**
      * Adds a magnet to later wrapping.
-     * @param {eYo.magnet.BaseC9r} magnet  The magnet that should connect to a wrapped brick.
+     * @param {eYo.magnet.C9rBase} magnet  The magnet that should connect to a wrapped brick.
      */
     addWrapperMagnet (magnet) {
       magnet && (this.wrappedMagnets.push(magnet))
@@ -1528,7 +1528,7 @@ eYo.brick.makeBaseC9r({
 
     /**
      * Adds a magnet to later wrapping.
-     * @param {eYo.magnet.BaseC9r} magnet  The magnet that should connect to a wrapped brick.
+     * @param {eYo.magnet.C9rBase} magnet  The magnet that should connect to a wrapped brick.
      */
     removeWrapperMagnet (magnet) {
       var i = this.wrappedMagnets.indexOf(magnet)
@@ -1588,17 +1588,17 @@ eYo.brick.makeBaseC9r({
 
     /**
      * Will connect this brick's connection to another connection.
-     * @param {eYo.magnet.BaseC9r} m4t
-     * @param {eYo.magnet.BaseC9r} childM4t
+     * @param {eYo.magnet.C9rBase} m4t
+     * @param {eYo.magnet.C9rBase} childM4t
      */
     willConnect (m4t, childM4t) { // eslint-disable-line
     },
 
     /**
      * Did connect this brick's magnet to another magnet.
-     * @param {eYo.magnet.BaseC9r} m4t what has been connected in the brick
-     * @param {eYo.magnet.BaseC9r} oldTargetM4t what was previously connected in the brick
-     * @param {eYo.magnet.BaseC9r} targetOldM4t what was previously connected to the new magnet
+     * @param {eYo.magnet.C9rBase} m4t what has been connected in the brick
+     * @param {eYo.magnet.C9rBase} oldTargetM4t what was previously connected in the brick
+     * @param {eYo.magnet.C9rBase} targetOldM4t what was previously connected to the new magnet
      */
     didConnect (m4t, oldTargetM4t, targetOldM4t) { // eslint-disable-line
       // new connections change the span properties of the superior block.
@@ -1620,15 +1620,15 @@ eYo.brick.makeBaseC9r({
 
     /**
      * Will disconnect this brick's connection.
-     * @param {eYo.magnet.BaseC9r} m4t
+     * @param {eYo.magnet.C9rBase} m4t
      */
     willDisconnect (m4t) { // eslint-disable-line
     },
 
     /**
      * Did disconnect this receiver's magnet from another magnet.
-     * @param {eYo.magnet.BaseC9r} m4t  
-     * @param {eYo.magnet.BaseC9r} oldTargetM4t  that was connected to m4t
+     * @param {eYo.magnet.C9rBase} m4t  
+     * @param {eYo.magnet.C9rBase} oldTargetM4t  that was connected to m4t
      */
     didDisconnect (m4t, oldTargetM4t) {
       // how many bricks/line did I remove in the superior brick?
@@ -1886,7 +1886,7 @@ eYo.brick.makeBaseC9r({
     /**
      * Fetches the named slot object.
      * @param {String} name The name of the input.
-     * @return {eYo.slot.BaseC9r} The slot object, or null if input does not exist. Input that are disabled are skipped.
+     * @return {eYo.slot.C9rBase} The slot object, or null if input does not exist. Input that are disabled are skipped.
      */
     getSlot (name) {
       return this.slotSome(slot => slot.name === name)
@@ -2033,7 +2033,7 @@ eYo.brick.makeBaseC9r({
      * Insert a brick of the given type.
      * For edython.
      * @param {Object|string} model
-     * @param {eYo.magnet.BaseC9r} m4t
+     * @param {eYo.magnet.C9rBase} m4t
      * @return {?eYo.Brick} the brick that was inserted
      */
     insertBrickWithModel (model, m4t) {

@@ -45,7 +45,7 @@ eYo.consolidator.List[eYo.$newSubC9r]('Arguments', {
 /**
  * Prepare io, just before walking through the input list.
  * Subclassers may add their own stuff to io.
- * @param {eYo.brick.BaseC9r} brick - owner or the receiver.
+ * @param {eYo.brick.C9rBase} brick - owner or the receiver.
  */
 eYo.consolidator.Arguments.prototype.getIO = function (brick) {
   var io = eYo.consolidator.Arguments[eYo.$].C9r_s.getIO.call(this, brick)

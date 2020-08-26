@@ -66,7 +66,7 @@ eYo.dnd.newC9r('Mngr', {
   /**
    * Main drag and drop manager.
    * It maintains a list of draggers and droppers
-   * * @param{eYo.app.BaseC9r} [desktop] -  the owning desktop
+   * * @param{eYo.app.C9rBase} [desktop] -  the owning desktop
    */
   dispose (dispose) {
     this.cancel()
@@ -193,11 +193,11 @@ eYo.dnd.Mngr_p.addDropper = function (dropper) {
 /*******/
 
 /**
- * @name {eYo.dnd.dragger.BaseC9r}
+ * @name {eYo.dnd.dragger.C9rBase}
  * Main methods, `start`, `update`, `cancel`, `complete` and `reset`.
  * @param {eYo.dnd.Mngr} manager -  the owning drag and drop manager.
  */
-eYo.dnd.dragger.makeBaseC9r({
+eYo.dnd.dragger.makeC9rBase({
   /**
    * Sever all the links.
    */
@@ -226,7 +226,7 @@ eYo.dnd.dragger.makeBaseC9r({
  * Start a drag operation.
  * @return {Boolean} true is a drag operation did start
  */
-eYo.dnd.dragger.BaseC9r_p.start = function () {
+eYo.dnd.dragger.C9rBase_p.start = function () {
   return (this.started_ = true)
 }
 
@@ -234,7 +234,7 @@ eYo.dnd.dragger.BaseC9r_p.start = function () {
  * Update a drag operation.
  * @return {Boolean} true if a drag operation did update
  */
-eYo.dnd.dragger.BaseC9r_p.update = function () {
+eYo.dnd.dragger.C9rBase_p.update = function () {
   return this.started_
 }
 
@@ -242,13 +242,13 @@ eYo.dnd.dragger.BaseC9r_p.update = function () {
  * Cancel a drag operation.
  * @return {Boolean} true is a drag operation did cancel
  */
-eYo.dnd.dragger.BaseC9r_p.cancel = eYo.dnd.dragger.BaseC9r_p.update
+eYo.dnd.dragger.C9rBase_p.cancel = eYo.dnd.dragger.C9rBase_p.update
 
 /**
  * Reset a drag operation.
  * @return {Boolean} true is a drag operation did reset
  */
-eYo.dnd.dragger.BaseC9r_p.reset = function () {
+eYo.dnd.dragger.C9rBase_p.reset = function () {
   if (this.started_) {
     this.started_ = false
     return true
@@ -259,7 +259,7 @@ eYo.dnd.dragger.BaseC9r_p.reset = function () {
  * Complete a drag operation.
  * @return {Boolean} true is a drag operation did complete
  */
-eYo.dnd.dragger.BaseC9r_p.complete = eYo.dnd.dragger.BaseC9r_p.reset
+eYo.dnd.dragger.C9rBase_p.complete = eYo.dnd.dragger.C9rBase_p.reset
 
 /********/
 
@@ -559,12 +559,12 @@ eYo.dnd.dragger.DraftBrick_p.complete = function () {
 /*******/
 
 /**
- * @name {eYo.dnd.dropper.BaseC9r}
+ * @name {eYo.dnd.dropper.C9rBase}
  * @constructor
  * Main methods, `start`, `update`, `cancel`, `complete` and `reset`.
  * @param {eYo.dnd.Mngr} manager -  the owning drag and drop manager.
  */
-eYo.dnd.dropper.makeBaseC9r({
+eYo.dnd.dropper.makeC9rBase({
   /**
    * Sever all the links.
    */
@@ -588,7 +588,7 @@ eYo.dnd.dropper.makeBaseC9r({
  * Start a drop operation.
  * @return {Boolean} true is a drop operation did start
  */
-eYo.dnd.dropper.BaseC9r_p.start = function () {
+eYo.dnd.dropper.C9rBase_p.start = function () {
   return (this.started_ = true)
 }
 
@@ -596,7 +596,7 @@ eYo.dnd.dropper.BaseC9r_p.start = function () {
  * Update a drop operation.
  * @return {Boolean} true is a drop operation did update
  */
-eYo.dnd.dropper.BaseC9r_p.update = function () {
+eYo.dnd.dropper.C9rBase_p.update = function () {
   return this.started_
 }
 
@@ -604,13 +604,13 @@ eYo.dnd.dropper.BaseC9r_p.update = function () {
  * Cancel a drop operation.
  * @return {Boolean} true is a drop operation did cancel
  */
-eYo.dnd.dropper.BaseC9r_p.cancel = eYo.dnd.dropper.BaseC9r_p.update
+eYo.dnd.dropper.C9rBase_p.cancel = eYo.dnd.dropper.C9rBase_p.update
 
 /**
  * Reset a drop operation.
  * @return {Boolean} true is a drop operation did reset
  */
-eYo.dnd.dropper.BaseC9r_p.reset = function () {
+eYo.dnd.dropper.C9rBase_p.reset = function () {
   if (this.started_) {
     this.started_ = false
     return true
@@ -621,7 +621,7 @@ eYo.dnd.dropper.BaseC9r_p.reset = function () {
  * Complete a drop operation.
  * @return {Boolean} true is a drop operation did complete
  */
-eYo.dnd.dropper.BaseC9r_p.complete = eYo.dnd.dropper.BaseC9r_p.reset
+eYo.dnd.dropper.C9rBase_p.complete = eYo.dnd.dropper.C9rBase_p.reset
 
 /*******/
 

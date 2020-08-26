@@ -54,12 +54,12 @@ eYo.make$$('modelSetUp')
   // - wrap input
   // - insert input
   // It may contain label fields
- * @param {eYo.brick.BaseC9r} brick  The owner is a brick.
+ * @param {eYo.brick.C9rBase} brick  The owner is a brick.
  * @param {string} key  One of the keys in `slots` section of the brick model.
  * @param {Object} model  the model for the given key in the above mention section.
  * @constructor
  */
-eYo.slot.makeBaseC9r(true, {
+eYo.slot.makeC9rBase(true, {
   //<<< mochai: eYo.Slot
   init (key, brick) {
     key || eYo.throw('Missing slot key')
@@ -116,7 +116,7 @@ eYo.slot.makeBaseC9r(true, {
   properties: {
     magnet: eYo.NA,
     /**
-     * @property {eYo.data.BaseC9r} data  Bound data.
+     * @property {eYo.data.C9rBase} data  Bound data.
      */
     data: eYo.NA,
     visible: true,
@@ -158,7 +158,7 @@ eYo.slot.makeBaseC9r(true, {
     requiredFromModel: eYo.NA,
     /**
      * @readonly
-     * @property {eYo.brick.BaseC9r} brick  the immediate brick in which this is contained
+     * @property {eYo.brick.C9rBase} brick  the immediate brick in which this is contained
      */
     brick: {
       get () {
@@ -167,7 +167,7 @@ eYo.slot.makeBaseC9r(true, {
     },
     /**
      * @readonly
-     * @property {eYo.brick.BaseC9r} brick  the immediate brick in which this is contained
+     * @property {eYo.brick.C9rBase} brick  the immediate brick in which this is contained
      */
     targetBrick: {
       get () {
@@ -591,8 +591,8 @@ eYo.slot.makeBaseC9r(true, {
     /**
      * Connect to the target.
      * For edython.
-     * @param {eYo.brick | eYo.magnet.BaseC9r} bm  The target is either a brick or another magnet.
-     * @return {?eYo.magnet.BaseC9r} the eventual target magnet
+     * @param {eYo.brick | eYo.magnet.C9rBase} bm  The target is either a brick or another magnet.
+     * @return {?eYo.magnet.C9rBase} the eventual target magnet
      */
     connect (bm) {
       if (bm) {

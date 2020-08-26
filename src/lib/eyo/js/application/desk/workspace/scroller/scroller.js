@@ -40,7 +40,7 @@ eYo.view.newC9r('Scroller', {
   },
   properties: {
     /**
-     * @type {eYo.board.BaseC9r} The scrolled board...
+     * @type {eYo.board.C9rBase} The scrolled board...
      * @readonly
      */
     board: {

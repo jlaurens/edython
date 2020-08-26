@@ -41,7 +41,7 @@ eYo.register.add = function (object, key, filter) {
   if (eYo.isC9r(object)) {
     //<<< mochai: C9r
     //... let ns = eYo.c9r.newNS()
-    //... let C9r = ns.makeBaseC9r(true)
+    //... let C9r = ns.makeC9rBase(true)
     //... let eyo = C9r[eYo.$]
     //... let p6y$ = eyo.p6yEnhanced()
     //... let $k = eYo.register.add(C9r, 'foo')
@@ -58,7 +58,7 @@ eYo.register.add = function (object, key, filter) {
     let eyo = object[eYo.$]
     var p6y$ = eyo.p6y$
     p6y$ || eYo.throw(`Not a proper subclass (unknown p6y$/1).`)
-    //... chai.expect(() => eYo.register.add(ns.BaseC9r, 'foo')).throw()
+    //... chai.expect(() => eYo.register.add(ns.C9rBase, 'foo')).throw()
     eyo[p6y$.merge]({
       [$k]: {
         value () {
@@ -71,7 +71,7 @@ eYo.register.add = function (object, key, filter) {
   } else if (eYo.isaDlgt(object)) {
     //<<< mochai: Dlgt
     //... let ns = eYo.c9r.newNS()
-    //... let C9r = ns.makeBaseC9r(true)
+    //... let C9r = ns.makeC9rBase(true)
     //... let eyo = C9r[eYo.$]
     //... let p6y$ = eyo.p6yEnhanced()
     //... let $k = eYo.register.add(eyo, 'foo')
@@ -108,7 +108,7 @@ eYo.register.add = function (object, key, filter) {
   eYo.mixinFR(object, {
     //<<< mochai: methods
     //... let ns = eYo.c9r.newNS()
-    //... let C9r = ns.makeBaseC9r(true)
+    //... let C9r = ns.makeC9rBase(true)
     //... let eyo = C9r[eYo.$]
     //... let p6y$ = eyo.p6yEnhanced()
     //... let $k = eYo.register.add(eyo, 'foo')

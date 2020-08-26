@@ -75,8 +75,8 @@ eYo.mixinFR(eYo.field._p, {
    * @param {Object} model
    * @param {Object} key
    */
-  modelBaseC9r (model, key) { // eslint-disable-line
-    //<<< mochai: modelBaseC9r
+  modelC9rBase (model, key) { // eslint-disable-line
+    //<<< mochai: modelC9rBase
     //... ['edit', 'endEditing', 'startEditing'].forEach(K => {
     //...   let field = eYo.field.new({
     //...     [K]: true,
@@ -94,11 +94,11 @@ eYo.mixinFR(eYo.field._p, {
 
 /**
  * Abstract class for text fields.
- * @param {eYo.brick|eYo.slot.BaseC9r|eYo.magnet.BaseC9r} bsim The owner of the field.
+ * @param {eYo.brick|eYo.slot.C9rBase|eYo.magnet.C9rBase} bsim The owner of the field.
  * @param {string} text The initial content of the field.
  * @constructor
  */
-eYo.field.makeBaseC9r(true, {
+eYo.field.makeC9rBase(true, {
   //<<< mochai: eYo.Field
   //<<< mochai: Basics
   //... chai.expect(eYo.Field).not.undefined
@@ -326,9 +326,9 @@ eYo.mixinFR(eYo.field.Dlgt_p, {
     //... let new_ns = () => {
     //...   flag.reset()
     //...   ns = eYo.field.newNS()
-    //...   ns.makeBaseC9r()
-    //...   ns.BaseC9r[eYo.$newSubC9r]('Label')[eYo.$].finalizeC9r()
-    //...   ns.BaseC9r[eYo.$newSubC9r]('Input')[eYo.$].finalizeC9r()
+    //...   ns.makeC9rBase()
+    //...   ns.C9rBase[eYo.$newSubC9r]('Label')[eYo.$].finalizeC9r()
+    //...   ns.C9rBase[eYo.$newSubC9r]('Input')[eYo.$].finalizeC9r()
     //... }
     //... mngr.newDrvrC9r('Field', {
     //...   methods: {
@@ -365,7 +365,7 @@ eYo.mixinFR(eYo.field.Dlgt_p, {
           //...     builtin()
           //...   }
           //...   test(1234, f_m) 
-          //...   eYo.test.extend(ns.BaseC9r_p, K, function() {
+          //...   eYo.test.extend(ns.C9rBase_p, K, function() {
           //...     flag.push(5)
           //...   })
           //...   test(12345, f_m)
@@ -382,7 +382,7 @@ eYo.mixinFR(eYo.field.Dlgt_p, {
             //...     this[K]()
             //...   }
             //...   test(1234, f_m)
-            //...   eYo.test.extend(ns.BaseC9r_p, K, function() {
+            //...   eYo.test.extend(ns.C9rBase_p, K, function() {
             //...     flag.push(5)
             //...   })
             //...   test(12345, f_m)
@@ -425,9 +425,9 @@ eYo.mixinFR(eYo.field.Dlgt_p, {
     //... let new_ns = () => {
     //...   flag.reset()
     //...   ns = eYo.field.newNS()
-    //...   ns.makeBaseC9r()
-    //...   ns.BaseC9r[eYo.$newSubC9r]('Label')[eYo.$].finalizeC9r()
-    //...   ns.BaseC9r[eYo.$newSubC9r]('Input')[eYo.$].finalizeC9r()
+    //...   ns.makeC9rBase()
+    //...   ns.C9rBase[eYo.$newSubC9r]('Label')[eYo.$].finalizeC9r()
+    //...   ns.C9rBase[eYo.$newSubC9r]('Input')[eYo.$].finalizeC9r()
     //... }
     //... mngr.newDrvrC9r('Field', {})
     let _p = this.C9r_p
@@ -463,7 +463,7 @@ eYo.mixinFR(eYo.field.Dlgt_p, {
           //...     builtin()
           //...   }
           //...   test(12, f_m) 
-          //...   eYo.test.extend(ns.BaseC9r_p, K, function() {
+          //...   eYo.test.extend(ns.C9rBase_p, K, function() {
           //...     flag.push(3)
           //...   })
           //...   test(123, f_m)
@@ -480,7 +480,7 @@ eYo.mixinFR(eYo.field.Dlgt_p, {
             //...     this[K]()
             //...   }
             //...   test(12, f_m)
-            //...   eYo.test.extend(ns.BaseC9r_p, K, function() {
+            //...   eYo.test.extend(ns.C9rBase_p, K, function() {
             //...     flag.push(3)
             //...   })
             //...   test(123, f_m)
@@ -559,7 +559,7 @@ eYo.mixinFR(eYo.field.Dlgt_p, {
 /**
  * Class for a non-editable field.
  * The only purpose is to start with a different height.
- * @param {eYo.brick|eYo.slot.BaseC9r} bsi The owner of the field.
+ * @param {eYo.brick|eYo.slot.C9rBase} bsi The owner of the field.
  * @param {string} name The required name of the field
  * @param {string} text The initial content of the field.
  * @extends {eYo.field}
@@ -574,7 +574,7 @@ eYo.field.Label$.finalizeC9r()
 
 /**
  * Class for an editable code field.
- * @param {eYo.brick.BaseC9r|eYo.slot.BaseC9r} bs The owner of the field.
+ * @param {eYo.brick.C9rBase|eYo.slot.C9rBase} bs The owner of the field.
  * @param {string=} name
  * @param {string} text The initial content of the field.
  * @extends {eYo.field}

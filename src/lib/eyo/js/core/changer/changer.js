@@ -86,15 +86,15 @@ eYo.changer._p.memoize = function (key, do_it) {
 }
 
 /**
- * @name {eYo.changer.BaseC9r}
+ * @name {eYo.changer.C9rBase}
  * @constructor
  * @param{Object} owner
  */
-eYo.changer.makeBaseC9r({
-//<<< mochai: eYo.changer.BaseC9r
+eYo.changer.makeC9rBase({
+//<<< mochai: eYo.changer.C9rBase
   //<<< mochai: Basics
-  //... chai.assert(eYo.changer.BaseC9r)
-  //... chai.expect(eYo.changer.BaseC9r).equal(eYo.Changer)
+  //... chai.assert(eYo.changer.C9rBase)
+  //... chai.expect(eYo.changer.C9rBase).equal(eYo.Changer)
   //>>>
   init () {
     this.reset()
