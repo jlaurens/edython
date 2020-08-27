@@ -217,7 +217,7 @@ eYo.dlgt.C9rBase_p.p6yEnhanced = function (id = 'p6y') {
         //... let o = ns.new({
         //...   methods: {
         //...     flag (...$) {
-        //...       flag.push(1, ...$)
+        //...       eYo.test.push(1, ...$)
         //...     }
         //...   }
         //... }, 'o')
@@ -254,7 +254,7 @@ eYo.dlgt.C9rBase_p.p6yEnhanced = function (id = 'p6y') {
           }
           return p6y.getValueRO()
           //... o.foo
-          //... flag.expect(12)
+          //... eYo.test.expect(12)
         }}.$),
         [k + '_']: {
           //... eYo.objectHasOwnProperty(chai.expect(_p, 'foo_')).true
@@ -266,12 +266,12 @@ eYo.dlgt.C9rBase_p.p6yEnhanced = function (id = 'p6y') {
             }
             return p6y.getValue()
             //... o.foo_
-            //... flag.expect(13)
+            //... eYo.test.expect(13)
           },
           set (after) {
             //... o.foo_ = 7
             this[this.p6y$.map].get(k).setValue(after)
-            //... flag.expect(147)
+            //... eYo.test.expect(147)
           },
         },
         [k + '__']: {
@@ -284,12 +284,12 @@ eYo.dlgt.C9rBase_p.p6yEnhanced = function (id = 'p6y') {
             }
             return p6y.getStored()
             //... o.foo__
-            //... flag.expect(15)
+            //... eYo.test.expect(15)
           },
           set (after) {
             this[this.p6y$.map].get(k).setStored(after)
             //... o.foo__ = 11
-            //... flag.expect(1611)
+            //... eYo.test.expect(1611)
           },
         },
         //>>>
@@ -377,8 +377,8 @@ eYo.dlgt.C9rBase_p.p6yEnhanced = function (id = 'p6y') {
     //... eyo[eyo.p6y$.prepare](o)
     //... eyo[eyo.p6y$.links](o)
     //... eyo[eyo.p6y$.init](o)
-    //... o[eyo.p6y$.forEach](v => flag.push(v.value))
-    //... flag.expect(123)
+    //... o[eyo.p6y$.forEach](v => eYo.test.push(v.value))
+    //... eYo.test.expect(123)
     //... let foo_p = eYo.p6y.new({
     //...   value: 4,
     //... }, 'foo', onr)
@@ -393,12 +393,12 @@ eYo.dlgt.C9rBase_p.p6yEnhanced = function (id = 'p6y') {
     //... o[eyo.p6y$.replace]('foo', foo_p)
     //... chai.expect(o.foo_p[eYo.$$.target]).equal(o.foo_t).equal(foo_p)
     //... chai.expect(o.foo_p.value).equal(4)
-    //... o[eyo.p6y$.forEach](v => flag.push(v.value))
-    //... flag.expect(423)
+    //... o[eyo.p6y$.forEach](v => eYo.test.push(v.value))
+    //... eYo.test.expect(423)
     //... o.foo_ -= 3
     //... chai.expect(foo_p.value).equal(1)
-    //... o[eyo.p6y$.forEach](v => flag.push(v.value))
-    //... flag.expect(123)
+    //... o[eyo.p6y$.forEach](v => eYo.test.push(v.value))
+    //... eYo.test.expect(123)
     //... foo_p.value_ += 3
     //... chai.expect(o.foo_p.value).equal(4)
     //... o = ns.new('o', onr)
@@ -407,14 +407,14 @@ eYo.dlgt.C9rBase_p.p6yEnhanced = function (id = 'p6y') {
     //... eyo[eyo.p6y$.init](o)
     //... chai.expect(o.chi_p.value).equal(2)
     //... o[eyo.p6y$.replace]('chi', chi_p)
-    //... o[eyo.p6y$.forEach](v => flag.push(v.value))
-    //... flag.expect(153)
+    //... o[eyo.p6y$.forEach](v => eYo.test.push(v.value))
+    //... eYo.test.expect(153)
     //... chai.expect(o.chi_p[eYo.$$.target]).equal(chi_p)
     //... chai.expect(o.chi_p.value).equal(5)
     //... o.chi_ -= 3
     //... chai.expect(chi_p.value).equal(2)
-    //... o[eyo.p6y$.forEach](v => flag.push(v.value))
-    //... flag.expect(123)
+    //... o[eyo.p6y$.forEach](v => eYo.test.push(v.value))
+    //... eYo.test.expect(123)
     //... chi_p.value_ += 3
     //... chai.expect(o.chi_p.value).equal(5)
     //... o = ns.new('o', onr)
@@ -423,14 +423,14 @@ eYo.dlgt.C9rBase_p.p6yEnhanced = function (id = 'p6y') {
     //... eyo[eyo.p6y$.init](o)
     //... chai.expect(o.mi_p.value).equal(3)
     //... o[eyo.p6y$.replace]('mi', mi_p)
-    //... o[eyo.p6y$.forEach](v => flag.push(v.value))
-    //... flag.expect(126)
+    //... o[eyo.p6y$.forEach](v => eYo.test.push(v.value))
+    //... eYo.test.expect(126)
     //... chai.expect(o.mi_p[eYo.$$.target]).equal(mi_p)
     //... chai.expect(o.mi_p.value).equal(6)
     //... o.mi_ -= 3
     //... chai.expect(mi_p.value).equal(3)
-    //... o[eyo.p6y$.forEach](v => flag.push(v.value))
-    //... flag.expect(123)
+    //... o[eyo.p6y$.forEach](v => eYo.test.push(v.value))
+    //... eYo.test.expect(123)
     //... mi_p.value_ += 3
     //... chai.expect(o.mi_p.value).equal(6)
     //>>>
@@ -549,7 +549,7 @@ eYo.dlgt.C9rBase_p.o4tEnhanced = function () {
       //... chai.expect(eYo.o4t.Dlgt_p.prepareInstance).eyo_F
       var $prepare = this.p6y$.prepare
       this[$prepare](instance)
-      let $super = this.super
+      let $super = this.$super
       if ($super) {
         try {
           $super[$prepare] = eYo.doNothing // prevent to recreate the same properties
@@ -567,7 +567,7 @@ eYo.dlgt.C9rBase_p.o4tEnhanced = function () {
     initInstance (instance, ...$) {
       //<<< mochai: initInstance
       //... chai.expect(eYo.o4t.Dlgt_p.initInstance).eyo_F
-      let $super = this.super
+      let $super = this.$super
       let $init = this.p6y$.init
       if ($super) {
         try {
@@ -591,17 +591,17 @@ eYo.dlgt.C9rBase_p.o4tEnhanced = function () {
       this[this.p6y$.dispose](object, ...$)
       //... eYo.c9r.new({
       //...   dispose (...$) {
-      //...     flag.push(1, ...$, 4)
+      //...     eYo.test.push(1, ...$, 4)
       //...   }
       //... }).dispose(2, 3)
-      //... flag.expect(1234)
+      //... eYo.test.expect(1234)
       //... let model = {
       //...   properties: {
       //...     foo: {
       //...       value () {
       //...         return  eYo.c9r.new({
       //...           dispose (...$) {
-      //...             flag.push(1, ...$, 4)
+      //...             eYo.test.push(1, ...$, 4)
       //...           }
       //...         })
       //...       },
@@ -611,14 +611,14 @@ eYo.dlgt.C9rBase_p.o4tEnhanced = function () {
       //... var o = eYo.o4t.new(model, 'foo', onr)
       //... chai.expect(() => o.constructor[eYo.$].finalizeC9r()).throw()
       //... o.foo.dispose(2, 3)
-      //... flag.expect(1234)
+      //... eYo.test.expect(1234)
       //... var o = eYo.o4t.new(model, 'foo', onr)
       //... chai.expect(o.foo.dispose).not.equal(eYo.doNothing)
       //... o.foo_p.dispose(2, 3)
-      //... flag.expect(1234)
+      //... eYo.test.expect(1234)
       //... var o = eYo.o4t.new(model, 'foo', onr)
       //... o = o.eyo$.c9rDispose(o, 2, 3)
-      //... flag.expect(1234)
+      //... eYo.test.expect(1234)
       //>>>
     },
     /**
@@ -761,8 +761,8 @@ eYo.dlgt.C9rBase_p.o4tEnhanced = function () {
 }
 
 
-eYo.O4t[eYo.$].o4tEnhanced()
-eYo.O4t[eYo.$].finalizeC9r()
+eYo.O4t$.o4tEnhanced()
+eYo.O4t$.finalizeC9r()
 
 eYo.mixinFR(eYo.o4t._p, {
   //<<< mochai: eYo.o4t extension
@@ -805,7 +805,7 @@ eYo.mixinFR(eYo.o4t._p, {
     //...   },
     //...   methods: {
     //...     bar (...$) {
-    //...       flag.push(1, ...$)
+    //...       eYo.test.push(1, ...$)
     //...     }
     //...   }
     //... })
@@ -816,7 +816,7 @@ eYo.mixinFR(eYo.o4t._p, {
     //... NS.C9rBase[eYo.$].finalizeC9r()
     //... o = new NS.C9rBase('o', onr)
     //... o.bar(2, 3)
-    //... flag.expect(123)
+    //... eYo.test.expect(123)
     //... chai.expect(o.mi).equal(o.foo).equal(421)
     //>>>
   },

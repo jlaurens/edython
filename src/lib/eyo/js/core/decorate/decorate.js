@@ -1,7 +1,7 @@
 /**
  * edython
  *
- * Copyright 2018 Jérôme LAURENS.
+ * Copyright 2020 Jérôme LAURENS.
  *
  * @license EUPL-1.2
  */
@@ -76,30 +76,30 @@ eYo.decorate.reentrant = (key, f, alt_f = eYo.doNothing) => {
   //... chai.assert(eYo.decorate.reentrant)
   //... let _p = Object.getPrototypeOf(onr)
   //... _p.bar = eYo.decorate.reentrant('bar', function (what) {
-  //...   this.flag(2, what)
+  //...   this.flag('d', what)
   //...   return this.bar()
   //... })
-  //... chai.expect(onr.bar(3)).undefined
-  //... flag.expect(123)
+  //... chai.expect(onr.bar(1)).undefined
+  //... eYo.test.expect('/d1')
   //... _p.bar = eYo.decorate.reentrant('bar', function (what) {
-  //...   this.flag(2, what)
+  //...   this.flag('d', what)
   //...   return this.bar(what)
   //... }, function (what) {
-  //...   this.flag(3, what + 2)
+  //...   this.flag('D', what + 2)
   //...   return what + 1
   //... })
   //... chai.expect(onr.bar(3)).equal(4)
-  //... flag.expect(123135)
+  //... eYo.test.expect('/d3/D5')
   //... _p.bar = eYo.decorate.reentrant('bar', function (what) {
   //...   let ans = this.bar(what)
-  //...   this.flag(3, what + 2)
+  //...   this.flag('d', what + 2)
   //...   return ans
   //... }, function (what) {
-  //...   this.flag(2, what)
+  //...   this.flag('D', what)
   //...   return 3 * what
   //... })
   //... chai.expect(onr.bar(3)).equal(9)
-  //... flag.expect(123135)
+  //... eYo.test.expect('/D3/d5')
   //>>>
 }
 

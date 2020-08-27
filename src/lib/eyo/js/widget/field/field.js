@@ -304,7 +304,7 @@ eYo.mixinFR(eYo.field.Dlgt_p, {
    * @param{Object} model - the model
    */
   modelMerge (model) {
-    eYo.field.super.Dlgt_p.modelMerge.call(this, model)
+    eYo.field.$super.Dlgt_p.modelMerge.call(this, model)
     this.modelMergeRender (model)
     this.modelMergeOther (model)
   },
@@ -333,10 +333,10 @@ eYo.mixinFR(eYo.field.Dlgt_p, {
     //... mngr.newDrvrC9r('Field', {
     //...   methods: {
     //...     makePlaceholder (instance) {
-    //...       flag.push(3)  
+    //...       eYo.test.push(3)  
     //...     },
     //...     makeComment (instance) {
-    //...       flag.push(4)  
+    //...       eYo.test.push(4)  
     //...     },
     //...   }, 
     //... })
@@ -350,7 +350,7 @@ eYo.mixinFR(eYo.field.Dlgt_p, {
       //...     }, 'field', onr)
       //...     chai.expect(field.drvr).eqlDrvr(mngr.getDrvr('Field'))
       //...     chai.expect(field[K]()).undefined
-      //...     flag.expect(expect)
+      //...     eYo.test.expect(expect)
       //...   }
       let f_m = model[K]
       if (eYo.isF(f_m)) {
@@ -361,29 +361,29 @@ eYo.mixinFR(eYo.field.Dlgt_p, {
             f_m.call(this, f_p.bind(this))
           }}
           //...   var f_m = function (builtin) {
-          //...     flag.push(2)
+          //...     eYo.test.push(2)
           //...     builtin()
           //...   }
           //...   test(1234, f_m) 
           //...   eYo.test.extend(ns.C9rBase_p, K, function() {
-          //...     flag.push(5)
+          //...     eYo.test.push(5)
           //...   })
           //...   test(12345, f_m)
         } else {
           m = {$ () {
             //...   new_ns()
             //...   var f_m = function () {
-            //...     flag.push(2)
+            //...     eYo.test.push(2)
             //...   }
             //...   test(12, f_m)
             //...   new_ns()
             //...   var f_m = function () {
-            //...     flag.push(2)
+            //...     eYo.test.push(2)
             //...     this[K]()
             //...   }
             //...   test(1234, f_m)
             //...   eYo.test.extend(ns.C9rBase_p, K, function() {
-            //...     flag.push(5)
+            //...     eYo.test.push(5)
             //...   })
             //...   test(12345, f_m)
             let owned = eYo.objectHasOwnProperty(this, K) && this[K]
@@ -448,7 +448,7 @@ eYo.mixinFR(eYo.field.Dlgt_p, {
       //...     }, 'field', onr)
       //...     chai.expect(field.drvr).eqlDrvr(mngr.getDrvr('Field'))
       //...     chai.expect(field[K]()).undefined
-      //...     flag.expect(expect)
+      //...     eYo.test.expect(expect)
       //...   }
       let f_m = model[K]
       if (eYo.isF(f_m)) {
@@ -459,29 +459,29 @@ eYo.mixinFR(eYo.field.Dlgt_p, {
             f_m.call(this, f_p.bind(this))
           }}
           //...   var f_m = function (builtin) {
-          //...     flag.push(2)
+          //...     eYo.test.push(2)
           //...     builtin()
           //...   }
           //...   test(12, f_m) 
           //...   eYo.test.extend(ns.C9rBase_p, K, function() {
-          //...     flag.push(3)
+          //...     eYo.test.push(3)
           //...   })
           //...   test(123, f_m)
         } else {
           m = {$ () {
             //...   new_ns()
             //...   var f_m = function () {
-            //...     flag.push(2)
+            //...     eYo.test.push(2)
             //...   }
             //...   test(12, f_m)
             //...   new_ns()
             //...   var f_m = function () {
-            //...     flag.push(2)
+            //...     eYo.test.push(2)
             //...     this[K]()
             //...   }
             //...   test(12, f_m)
             //...   eYo.test.extend(ns.C9rBase_p, K, function() {
-            //...     flag.push(3)
+            //...     eYo.test.push(3)
             //...   })
             //...   test(123, f_m)
             let owned = eYo.objectHasOwnProperty(this, K) && this[K]

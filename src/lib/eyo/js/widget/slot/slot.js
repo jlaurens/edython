@@ -631,7 +631,7 @@ eYo.mixinFR(eYo.slot.Dlgt_p, {
    */
   initInstance (object, ...$) {
     //<<< mochai: initInstance
-    let $super = this.super
+    let $super = this.$super
     if ($super) {
       $super.initInstance(object, ...$)
     }

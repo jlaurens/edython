@@ -43,7 +43,7 @@ eYo.observe.makeC9rBase({
    * @param {Object} [$this | eYo.Observe] - Self explanatory
    * @param {Function} [f] - function ([before], after) => void. arguments must ont have another name.
    */
-  init (when, $this, callback) {
+  prepare (when, $this, callback) {
     this.when = when
     this.$this = $this
     this.callback_ = callback
@@ -104,7 +104,7 @@ eYo.dlgt.C9rBase_p.observeEnhanced = function () {
   //<<< mochai: Basics
   //... let ns = eYo.c9r.newNS()
   //... ns.makeC9rBase()
-  //... ns.C9rBase[eYo.$].observeEnhanced()
+  //... ns.C9rBase$.observeEnhanced()
   //... let o = ns.new()
   //... chai.expect(o.willChange).eyo_F
   //... chai.expect(o.atChange).eyo_F
@@ -175,14 +175,14 @@ eYo.dlgt.C9rBase_p.observeEnhanced = function () {
     //... })) {
     //...   let o = ns.new()
     //...   o.addObserver(k, function (before, after) {
-    //...     flag.push(1, before, after)
+    //...     eYo.test.push(1, before, after)
     //...   })
     //...   o.willChange(2, 3)
-    //...   flag.expect(v[0])
+    //...   eYo.test.expect(v[0])
     //...   o.atChange(2, 3)
-    //...   flag.expect(v[1])
+    //...   eYo.test.expect(v[1])
     //...   o.didChange(2, 3)
-    //...   flag.expect(v[2])
+    //...   eYo.test.expect(v[2])
     //... }
     //... for (let [k, v] of Object.entries({
     //...   [eYo.observe.BEFORE]: [123456, 123, 123],
@@ -191,17 +191,17 @@ eYo.dlgt.C9rBase_p.observeEnhanced = function () {
     //... })) {
     //...   let o = ns.new()
     //...   o.addObserver(eYo.observe.ANY, function (before, after) {
-    //...     flag.push(1, before, after)
+    //...     eYo.test.push(1, before, after)
     //...   })
     //...   o.addObserver(k, function (before, after) {
-    //...     flag.push(4, 3+before, 3+after)
+    //...     eYo.test.push(4, 3+before, 3+after)
     //...   })
     //...   o.willChange(2, 3)
-    //...   flag.expect(v[0])
+    //...   eYo.test.expect(v[0])
     //...   o.atChange(2, 3)
-    //...   flag.expect(v[1])
+    //...   eYo.test.expect(v[1])
     //...   o.didChange(2, 3)
-    //...   flag.expect(v[2])
+    //...   eYo.test.expect(v[2])
     //... }
     //>>>
   })
@@ -226,22 +226,22 @@ eYo.dlgt.C9rBase_p.observeEnhanced = function () {
     //... ns.C9rBase[eYo.$].observeEnhanced()
     //... let o = ns.new()
     //... let observer1 = o.addObserver(eYo.observe.BEFORE, function (before, after) {
-    //...   flag.push(1, before + 1, after + 1)
+    //...   eYo.test.push(1, before + 1, after + 1)
     //... })
     //... let observer2 = o.addObserver(eYo.observe.BEFORE, function (before, after) {
-    //...   flag.push(4, before+4, after+4)
+    //...   eYo.test.push(4, before+4, after+4)
     //... })
     //... o.willChange(1, 2)
-    //... flag.expect(123456)
+    //... eYo.test.expect(123456)
     //... o.removeObserver(observer1)
     //... o.willChange(1, 2)
-    //... flag.expect(456)
+    //... eYo.test.expect(456)
     //... o.addObserver(observer1)
     //... o.willChange(1, 2)
-    //... flag.expect(456123)
+    //... eYo.test.expect(456123)
     //... o.removeObservers()
     //... o.willChange(1, 2)
-    //... flag.expect()
+    //... eYo.test.expect()
     //>>>
   }
   /**
@@ -264,26 +264,26 @@ eYo.dlgt.C9rBase_p.observeEnhanced = function () {
     //... ns.C9rBase[eYo.$].observeEnhanced()
     //... let o = ns.new()
     //... let observer = o.addObserver(eYo.observe.BEFORE, function (before, after) {
-    //...   flag.push(1, before, after)
+    //...   eYo.test.push(1, before, after)
     //... })
     //... o.willChange(2, 3)
-    //... flag.expect(123)
+    //... eYo.test.expect(123)
     //... o.removeObserver(observer)
     //... o.willChange(2, 3)
-    //... flag.expect()
+    //... eYo.test.expect()
     //... o.addObserver(observer)
     //... o.willChange(2, 3)
-    //... flag.expect(123)
+    //... eYo.test.expect(123)
     //... let after = o.addObserver(eYo.observe.AFTER, observer)
     //... o.willChange(2, 3)
-    //... flag.expect(123)
+    //... eYo.test.expect(123)
     //... o.didChange(3, 5)
-    //... flag.expect(135)
+    //... eYo.test.expect(135)
     //... o.removeObserver(observer)
     //... o.willChange(2, 3)
-    //... flag.expect()
+    //... eYo.test.expect()
     //... o.didChange(3, 5)
-    //... flag.expect(135)
+    //... eYo.test.expect(135)
     //>>>
   }
   /**

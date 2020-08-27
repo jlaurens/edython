@@ -134,22 +134,22 @@ eYo.make$$('parent')
      */
     newNS (...$) {
       //<<< mochai: newNS
-      //... chai.expect(eYo.drvr.newNS).not.equal(eYo.drvr.super.newNS)
+      //... chai.expect(eYo.drvr.newNS).not.equal(eYo.drvr.$super.newNS)
       //... var mngr1 = eYo.drvr.newNS()
-      //... chai.expect(mngr1.newNS).not.equal(eYo.drvr.super.newNS)
+      //... chai.expect(mngr1.newNS).not.equal(eYo.drvr.$super.newNS)
       //... var mngr2 = mngr1.newNS()
-      //... chai.expect(mngr2.newNS).not.equal(eYo.drvr.super.newNS)
-      let NS = eYo.drvr.super.newNS.call(this, ...$)
+      //... chai.expect(mngr2.newNS).not.equal(eYo.drvr.$super.newNS)
+      let NS = eYo.drvr.$super.newNS.call(this, ...$)
       eYo.mixinFR(NS, {
         [$C9rMap]: new Map(),
         [$map]: new Map(),
       })
       // add a reference to the parent namespace
       // NS[eYo.$$.parent] = ...
-      var super$ = this
-      while (super$ !== eYo.drvr) {
-        super$ = super$.super
-        var parent = super$[NS.key]
+      var $super = this
+      while ($super !== eYo.drvr) {
+        $super = $super.$super
+        var parent = $super[NS.key]
         if (parent) {
           NS[eYo.$$.parent] = parent
           //... mngr1.newNS('foo')
@@ -239,7 +239,7 @@ eYo.make$$('parent')
       //... chai.expect(NS.Foo).eyo_C9r
       if (!eYo.isSubclass(SuperC9r, eYo.Drvr)) {
         eYo.isNA(drvrModel) || eYo.throw(`${this.name}/newDrvrC9r: Unexpected model.`)
-        ;[SuperC9r, drvrModel] = [this.super.getDrvrC9r && this.super.getDrvrC9r(id) || this.C9rBase, eYo.called(SuperC9r) || {}]
+        ;[SuperC9r, drvrModel] = [this.$super.getDrvrC9r && this.$super.getDrvrC9r(id) || this.C9rBase, eYo.called(SuperC9r) || {}]
       }
       let Drvr = eYo.c9r.doNewC9r(this, id, SuperC9r, drvrModel || {})
       Drvr[eYo.$].finalizeC9r()
@@ -275,7 +275,7 @@ eYo.make$$('parent')
       //... })
       //... var drvr = mngr.getDrvr(id)
       //... drvr.do_initUI(onr, 3, 4)
-      //... flag.expect(1234)
+      //... eYo.test.expect(1234)
       //... var id = eYo.genUID(eYo.IDENT)
       //... mngr.newDrvrC9r(id, {
       //...   do_disposeUI (onr, ...$) {
@@ -284,7 +284,7 @@ eYo.make$$('parent')
       //... })
       //... var drvr = mngr.getDrvr(id)
       //... drvr.do_disposeUI(onr, 3, 4)
-      //... flag.expect(1234)
+      //... eYo.test.expect(1234)
       //>>>
     },
     /**
@@ -361,7 +361,7 @@ eYo.make$$('parent')
           var drvr_t = new C9r(drvrId, this, ...$)
         } else {
           var super$ = this
-          while ((super$ = super$.super) && super$.getDrvr) {
+          while ((super$ = super$.$super) && super$.getDrvr) {
             if ((drvr = super$[$map].get(drvrId))) {
               drvr_t = drvr[eYo.$$.target]
               break
@@ -554,7 +554,7 @@ eYo.o3d.newC9r(eYo.drvr, eYo.$$.Handler, {
         if (!x) {
           console.error('NOT x')
         }
-        while ((x = x.super) && x.getDrvrC9r) {
+        while ((x = x.$super) && x.getDrvrC9r) {
           nss.unshift(x)
         }
         ra = [] // enclosed
@@ -571,13 +571,13 @@ eYo.o3d.newC9r(eYo.drvr, eYo.$$.Handler, {
               //... var d = newDrvr(mngr, drvrId, {
               //...   methods: {
               //...     foo (...$) {
-              //...       flag.push(1, ...$)
+              //...       eYo.test.push(1, ...$)
               //...     },
               //...   },
               //... })
               //... eYo.objectHasOwnProperty(chai.expect(d.eyo$.C9r_p, 'foo')).true
               //... d.foo(2, 3)
-              //... flag.expect(123)
+              //... eYo.test.expect(123)
             }
           })
         })
@@ -597,17 +597,17 @@ eYo.o3d.newC9r(eYo.drvr, eYo.$$.Handler, {
       //... var d = newDrvr(mngr, 'X' + seed, {
       //...   methods: {
       //...     do_it_1 (...$) {
-      //...       flag.push(1, ...$)  
+      //...       eYo.test.push(1, ...$)  
       //...     },
       //...     do_it_2 (...$) {
-      //...       flag.push(2, ...$)  
+      //...       eYo.test.push(2, ...$)  
       //...     },
       //...   },
       //... })
       //... d.do_it_1(2, 3)
-      //... flag.expect(123)
+      //... eYo.test.expect(123)
       //... d.do_it_2(3, 4)
-      //... flag.expect(234)
+      //... eYo.test.expect(234)
       //>>>
     },
     getOwnPropertyDescriptor(target, prop) {
@@ -655,7 +655,7 @@ eYo.mixinFR(eYo.drvr._p, {
   // Registers the constructor
   makeC9rBase (...$) {
     //<<< mochai: makeC9rBase
-    var C9r = eYo.drvr.super._p.makeC9rBase.call(this, ...$)
+    var C9r = eYo.drvr.$super._p.makeC9rBase.call(this, ...$)
     this.setDrvrC9r('', C9r)
     return C9r
     //... let mngr = eYo.drvr.newNS()
@@ -680,11 +680,11 @@ eYo.mixinFR(eYo.drvr._p, {
     //... o.tag = 1
     //... o.drvr = new eYo.Drvr('foo', onr)
     //... o.drvr.do_bar = function (object, ...$) {
-    //...   flag.push(object.tag, 2, ...$, 5)
+    //...   eYo.test.push(object.tag, 2, ...$, 5)
     //... }
     //... eYo.drvr.makeForwarder(o, 'bar')
     //... o.bar(3, 4)
-    //... flag.expect(12345)
+    //... eYo.test.expect(12345)
     //>>>
   },
   //>>>
@@ -778,11 +778,11 @@ eYo.mixinFR(eYo.Drvr$._p, {
     //...   },
     //... })
     //... var foo = new mngr.Foo('foo', onr, 2, 3)
-    //... flag.expect(1234)
+    //... eYo.test.expect(1234)
     //... chai.expect(foo.do_initUI(onr, 3, 4)).true
-    //... flag.expect(1234)
+    //... eYo.test.expect(1234)
     //... foo.do_disposeUI(onr, 2, 3)
-    //... flag.expect(1234)
+    //... eYo.test.expect(1234)
     //... var mngr = eYo.drvr.newNS()
     //... var d = newDrvr(mngr, 'X', {
     //...   do_initUI(onr, ...$) {
@@ -793,9 +793,9 @@ eYo.mixinFR(eYo.Drvr$._p, {
     //...   },
     //... })
     //... d.do_initUI(onr, 3, 4)
-    //... flag.expect(1234)
+    //... eYo.test.expect(1234)
     //... d.do_disposeUI(onr, 2, 3)
-    //... flag.expect(1234)
+    //... eYo.test.expect(1234)
     model || (model = this.model)
     let C9r_p = this.C9r_p
     ;['do_initUI', 'do_disposeUI'].forEach(doK => {
@@ -838,7 +838,7 @@ eYo.mixinFR(eYo.o4t.Dlgt_p, {
     //... mngr.makeC9rBase({
     //...   methods: {
     //...     do_push1 (instance, ...$) {
-    //...       flag.push(1, ...$)
+    //...       eYo.test.push(1, ...$)
     //...     },
     //...   },
     //... })
@@ -855,7 +855,7 @@ eYo.mixinFR(eYo.o4t.Dlgt_p, {
     //... mngr.newDrvrC9r('Foo', {
     //...   methods: {
     //...     do_push2 (instance, ...$) {
-    //...       flag.push(2, ...$)
+    //...       eYo.test.push(2, ...$)
     //...     },
     //...   },
     //... })
@@ -866,9 +866,9 @@ eYo.mixinFR(eYo.o4t.Dlgt_p, {
     //... mngr.makeForwarder(ns.Foo_p, 'push2')
     //... let driven = new ns.Foo('foo', onr)
     //... driven.push1(2, 3)
-    //... flag.expect(123)
+    //... eYo.test.expect(123)
     //... driven.push2(4, 6)
-    //... flag.expect(246)
+    //... eYo.test.expect(246)
     //>>>
     this.p6yMerge({
       /**
@@ -912,7 +912,7 @@ eYo.mixinFR(eYo.o4t.Dlgt_p, {
     //... mngr1.makeC9rBase({
     //...   methods: {
     //...     do_push (instance, ...$) {
-    //...       flag.push(1, ...$)
+    //...       eYo.test.push(1, ...$)
     //...     },
     //...   },
     //... })
@@ -929,12 +929,12 @@ eYo.mixinFR(eYo.o4t.Dlgt_p, {
     //... let foo = ns.new({}, 'foo', onr)
     //... chai.expect(foo.drvr.do_push).eyo_F
     //... foo.push(2, 3)
-    //... flag.expect(123)
+    //... eYo.test.expect(123)
     //... let mngr2 = eYo.drvr.newNS()
     //... mngr2.makeC9rBase({
     //...   methods: {
     //...     do_push (instance, ...$) {
-    //...       flag.push(2, ...$)
+    //...       eYo.test.push(2, ...$)
     //...     },
     //...   },
     //... })
@@ -946,7 +946,7 @@ eYo.mixinFR(eYo.o4t.Dlgt_p, {
     //... foo.owner_ = onr
     //... chai.expect(foo.drvr.do_push).eyo_F
     //... foo.push(3, 4)
-    //... flag.expect(234)
+    //... eYo.test.expect(234)
     //>>>
 
     //>>>

@@ -1,38 +1,13 @@
+/**
+ * edython
+ *
+ * Copyright 2020 Jérôme LAURENS.
+ *
+ * @license EUPL-1.2
+ */
 eYo.provide('test')
 
 eYo.TESTING = true
-
-eYo.test.randN = (N = 2, snap) => {
-  if (N === true || N === false) {
-    [N, snap] = [2, N]
-  }
-  return snap
-    ? Math.round(Math.random()*10**N)
-    : Math.round(Math.random()*10**(2*N))/10**(N)
-}
-
-if (eYo.geom) {
-  eYo.geom.randPoint = (N, snap) => {
-    if (N === true || N === false) {
-      [N, snap] = [2, N]
-    }
-    return new eYo.geom.Point(snap, eYo.test.randN(N, snap), eYo.test.randN(N, snap))
-  }
-
-  eYo.geom.randSize = (N, snap) => {
-    if (N === true || N === false) {
-      [N, snap] = [2, N]
-    }
-    return new eYo.geom.Size(snap, eYo.test.randN(N, snap), eYo.test.randN(N, snap))
-  }
-  
-  eYo.geom.randRect = (N, snap) => {
-    if (N === true || N === false) {
-      [N, snap] = [2, N]
-    }
-    return new eYo.geom.Rect(snap, eYo.test.randN(N, snap), eYo.test.randN(N, snap), eYo.test.randN(N, snap), eYo.test.randN(N, snap))  
-  }
-}
 
 eYo.test.Flag = function (what) {
   return {
@@ -71,12 +46,79 @@ eYo.test.Flag = function (what) {
     decorate (tag, f) {
       let flag = this
       return new Proxy(f, {
-        apply(target, this$, args) {
-          flag.push(tag)
-          return target.apply(this$, args)
+        apply(target, $this, args) {
+          eYo.test.push(tag)
+          return target.apply($this, args)
         }
       })
     }
+  }
+}
+
+eYo.test.makeOnr = function (model) {
+  let m = {}
+  this.onrModel && Object.assign(m, this.onrModel)
+  model && eYo.provideFR(m, model)
+  m.methods || (m.methods = {})
+  eYo.provideFR(m.methods, {
+    flag (what, ...$) {
+      eYo.test.push('/', what, ...$)
+      return what
+    },
+  })
+  return eYo.o4t && eYo.o4t.new(m, 'onr', eYo) || eYo.o3d && eYo.o3d.new(m, 'onr', eYo) || eYo.c9r && eYo.c9r.new(m, 'onr') || (() => {
+      let C9r = function () {}
+      C9r.prototype.flag = {
+        $ (what, ...$) { eYo.test.push('/', what, ...$); return what }
+      }.$
+      return new C9r()
+    })()
+}
+
+eYo.test.setup = function (model) {
+  this.flag = new eYo.test.Flag()
+  this.onr = this.makeOnr(model)
+}
+
+eYo.test.push = function (...$) {
+  this.eYo.test.push(...$)
+}
+eYo.test.expect = function (...$) {
+  this.eYo.test.expect(...$)
+}
+eYo.test.reset = function (...$) {
+  this.flag.reset(...$)
+}
+
+eYo.test.randN = (N = 2, snap) => {
+  if (N === true || N === false) {
+    [N, snap] = [2, N]
+  }
+  return snap
+    ? Math.round(Math.random()*10**N)
+    : Math.round(Math.random()*10**(2*N))/10**(N)
+}
+
+if (eYo.geom) {
+  eYo.geom.randPoint = (N, snap) => {
+    if (N === true || N === false) {
+      [N, snap] = [2, N]
+    }
+    return new eYo.geom.Point(snap, eYo.test.randN(N, snap), eYo.test.randN(N, snap))
+  }
+
+  eYo.geom.randSize = (N, snap) => {
+    if (N === true || N === false) {
+      [N, snap] = [2, N]
+    }
+    return new eYo.geom.Size(snap, eYo.test.randN(N, snap), eYo.test.randN(N, snap))
+  }
+  
+  eYo.geom.randRect = (N, snap) => {
+    if (N === true || N === false) {
+      [N, snap] = [2, N]
+    }
+    return new eYo.geom.Rect(snap, eYo.test.randN(N, snap), eYo.test.randN(N, snap), eYo.test.randN(N, snap), eYo.test.randN(N, snap))  
   }
 }
 

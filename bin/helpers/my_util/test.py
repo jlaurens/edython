@@ -12,6 +12,7 @@ def getInlineTest(path):
       self.describe = False
       self.n = self.cont = self.code = self.indent = self.end = self.begin = self.what = self.raw = None
       self.chai = False
+      self.header = False
       m = re_begin.match(l)
       if m:
         self.n = n
@@ -38,6 +39,29 @@ def getInlineTest(path):
   with path.open() as f:
     for l in f:
       lines.append(Line(len(lines)+1, l))
+  # We will replace the header line by some test related code
+  # In order to have the very same line number, we have
+  # to replace 7 header line.
+  # If there is less than 7 line, raise an exception.
+    header_count = 0
+    for l in lines:
+      if l.code.startswith('/**'):
+        header_count = 1
+        l.header = True
+      elif header_count and l.code.startswith(' */'):
+        header_count += 1
+        l.header = True
+        break
+      elif header_count and l.code.startswith(' *'):
+        header_count += 1
+        l.header = True
+      elif l.code.startswith('/*'):
+        break
+      elif l.code.startswith('//'):
+        break
+      else:
+        print('header_count: ', header_count)
+        raise Exception(f'{path}: File must start with `/*` or `//`, got: {l.code}')
   # filter out the lines that are not inline tests
   # those with no line number
   # lines = tuple(filter(lambda l: l.n is not None, lines))
@@ -86,31 +110,21 @@ def getInlineTest(path):
   if len(tuple(filter(lambda l: l.n is not None, lines))):
     ans.append(f'describe(`Inline tests at {path.relative_to(path_js)}`' ''', function () {
   this.timeout(20000)
-  var flag, onr, onrModel
-  let makeOnr = (model) => {
-    let m = {}
-    onrModel && Object.assign(m, onrModel)
-    model && eYo.provideFR(m, model)
-    m.methods || (m.methods = {})
-    eYo.provideFR(m.methods, {
-      flag (what, ...$) {
-        flag.push(1, what, ...$)
-        return what
-      },
-    })
-    return eYo.o4t && eYo.o4t.new(m, 'onr', eYo) || eYo.o3d && eYo.o3d.new(m, 'onr', eYo) || eYo.c9r && eYo.c9r.new(m, 'onr')
-  }
-  let setup = function (model) {
-    flag = new eYo.test.Flag()
-    onr = makeOnr(model)
-  }
-  beforeEach (function () {
-    setup()
-  })
-  setup()
-''')
+  beforeEach (function () { eYo.test.setup() })
+  eYo.test.onrModel = eYo.NA
+  eYo.test.setup()''')
     depth = 1
+    test_header_count = 7
     for l in lines:
+      if l.header:
+        if test_header_count:
+          test_header_count -= 1
+          continue
+        ans.append('//')
+      elif test_header_count:
+        for i in range(test_header_count):
+          ans.append('//')
+        test_header_count = 0
       if l.begin is not None:
         for x in l.what:
           if x == l.what[-1] and x == '../':
