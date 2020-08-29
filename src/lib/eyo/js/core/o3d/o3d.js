@@ -74,7 +74,7 @@ eYo.mixinFR(eYo._p, {
     //... chai.expect(eYo.isaO3d()).false
     //... chai.expect(eYo.isaO3d(eYo.NA)).false
     //... chai.expect(eYo.isaO3d(421)).false
-    //... chai.expect(eYo.isaO3d(eYo.o3d.new('foo', onr))).true
+    //... chai.expect(eYo.isaO3d(eYo.o3d.new('foo', eYo.test.onr))).true
     //>>>
   }
 })

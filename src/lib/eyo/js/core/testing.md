@@ -16,6 +16,8 @@ From the simplest:
 - observe/observe.test.html
 - shared/shared.test.html
 - many/many.test.html
+- o3d/o3d.test.html
+
 
 
 
@@ -24,7 +26,6 @@ From the simplest:
 
 - more/more.test.html
 
-- o3d/o3d.test.html
 - db/db.test.html
 - o4t/o4t.test.html
 - change_count/change_count.test.html

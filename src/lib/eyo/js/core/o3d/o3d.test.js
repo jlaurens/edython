@@ -1,17 +1,9 @@
 describe ('Tests: Owned', function () {
   this.timeout(20000)
-  var flag, onr
   beforeEach (function() {
-    flag = new eYo.test.Flag()
-    onr = eYo.c9r && eYo.c9r.new({
-      methods: {
-        flag (what, ...$) {
-          eYo.flag.push(1, what, ...$)
-          return what
-        },
-      },
-    }, 'onr')
+    eYo.test.setup()
   })
+  eYo.test.setup()
   it ('O3d: modelC9rBase', function () {
     let ns = eYo.o3d.newNS()
     ns.makeC9rBase()
@@ -25,8 +17,8 @@ describe ('Tests: Owned', function () {
     chai.expect(model[eYo.$C9r][eYo.$SuperC9r]).equal(ns.C9rBase)
   })
   it ('O3d: eYo.o3d.new', function () {
-    let o3d = eYo.o3d.new('foo', onr)
-    chai.expect(o3d.owner).equal(onr)
+    let o3d = eYo.o3d.new('foo', eYo.test.onr)
+    chai.expect(o3d.owner).equal(eYo.test.onr)
     chai.expect(() => {
       o3d.owner = eYo.NA
     }).throw()
@@ -37,7 +29,7 @@ describe ('Tests: Owned', function () {
     let ns = eYo.o3d.newNS()
     ns.makeC9rBase()
     let model = {}
-    let f = ns.new(model, 'foo', onr)
+    let f = ns.new(model, 'foo', eYo.test.onr)
     chai.expect(f.constructor).equal(model[eYo.$C9r])
   })
   it ('O3d: time is on my side', function () {
@@ -45,12 +37,15 @@ describe ('Tests: Owned', function () {
     // when not lazy!
     let ns = eYo.o3d.newNS()
     ns.makeC9rBase({
+      prepare (key, owner) {
+        chai.expect(this.owner).equal(owner)
+      },
       init (key, owner) {
         chai.expect(this.owner).equal(owner)
       }
     })
-    let o = ns.new('abc', onr)
-    chai.expect(o.owner).equal(onr)
+    let o = ns.new('abc', eYo.test.onr)
+    chai.expect(o.owner).equal(eYo.test.onr)
   })
   it ('O3d: ownerDidChange', function () {
     let ns_o3d = eYo.o3d.newNS()
@@ -67,11 +62,11 @@ describe ('Tests: Owned', function () {
       eYo.flag.push(2)
       o.eyo$.C9r_s.ownerDidChange.call(this, before, after)
     }
-    onr.hasUI = true
+    eYo.test.onr.hasUI = true
     o.eyo$.C9r_p.initUI = function () {
       eYo.flag.push(3)
     }
-    o.owner_ = onr
+    o.owner_ = eYo.test.onr
     eYo.flag.expect(123)
   })
 })

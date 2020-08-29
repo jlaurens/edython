@@ -667,7 +667,7 @@ eYo.mixinFR(eYo.c9r._p, {
     //<<< mochai: new
     let ans = this.prepare(...$)
     ans.preInit && ans.preInit()
-    ans.init()
+    ans.init(...$)
     return ans
     //... let foo = eYo.c9r.new('foo')
     //... chai.expect(foo).instanceOf(eYo.C9r)
