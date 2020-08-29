@@ -49,6 +49,7 @@ eYo.more.iterators = function (_p, type) {
     //... var o = {}
     //... o.fooMap = new Map([[1, 4], [2, 2], [3, 1]])
     //... eYo.more.iterators(o, 'foo')
+    //... chai.assert(o.fooForEach)
     //... o.fooForEach(v => eYo.flag.push(v))
     //... eYo.flag.expect(421)
   }
@@ -65,9 +66,34 @@ eYo.more.iterators = function (_p, type) {
         }
       }
     }
+    //... chai.assert(o.fooSome)
     //... chai.expect(o.fooSome(v => v === 2)).true
     //... chai.expect(!!o.fooSome(v => v === 3)).false
   }
+  //... o = {}
+  //... eYo.more.iterators(o, 'foo')
+  //... o.fooForEach(y => {
+  //...   eYo.flag.push(y)
+  //... })
+  //... eYo.flag.expect()
+  //... chai.expect(!!o.fooSome(y => {
+  //...   eYo.flag.push(y)
+  //...   return y === 2
+  //... })).false
+  //... eYo.flag.expect()
+  //... let m = o.fooMap = new Map()
+  //... m.set(1,4)
+  //... m.set(2,2)
+  //... m.set(3,1)
+  //... o.fooForEach(y => {
+  //...   eYo.flag.push(y)
+  //... })
+  //... eYo.flag.expect(421)
+  //... chai.expect(o.fooSome(y => {
+  //...   eYo.flag.push(y)
+  //...   return y === 2
+  //... })).true
+  //... eYo.flag.expect(42)
   //>>>
 }
 

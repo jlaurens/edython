@@ -1,53 +1,9 @@
 describe ('Tests: More', function () {
   this.timeout(20000)
-  var flag, onr
   beforeEach (function() {
-    flag = new eYo.test.Flag()
-    onr = eYo.c9r && eYo.c9r.new({
-      methods: {
-        flag (what, ...$) {
-          eYo.flag.push(1, what, ...$)
-          return what
-        },
-      },
-    }, 'onr')
+    eYo.test.setup()
   })
-  it ('eYo.more.iterators', function () {
-    let o = {}
-    eYo.more.iterators(o, 'foo')
-    chai.assert(o.fooForEach)
-    chai.assert(o.fooSome)
-    o.fooForEach(y => {
-      eYo.flag.push(y)
-    })
-    eYo.flag.expect()
-    chai.expect(!!o.fooSome(y => {
-      eYo.flag.push(y)
-      return y === 2
-    })).false
-    eYo.flag.expect()
-    let m = o.fooMap = new Map()
-    m.set(1,1)
-    m.set(2,2)
-    m.set(3,3)
-    o.fooForEach(y => {
-      eYo.flag.push(y)
-    })
-    eYo.flag.expect(123)
-    chai.expect(o.fooSome(y => {
-      eYo.flag.push(y)
-      return y === 2
-    })).true
-    eYo.flag.expect(12)
-  })
-  it ('eYo.more.enhanceO3dValidate(, , false)', function () {
-    let ns = eYo.o3d.newNS()
-    ns.makeC9rBase()
-    eYo.more.enhanceO3dValidate(ns.C9rBase[eYo.$], 'foo', false)
-    chai.assert(ns.C9rBase_p.validate)
-    chai.assert(ns.C9rBase[eYo.$].modelHandleValidate)
-    ns.C9rBase_p.validate(1, 2)
-  })
+  eYo.test.setup()
   it ('eYo.more.enhanceO3dValidate(, , false)', function () {
     var ns = eYo.c9r.newNS()
     ns.makeC9rBase()
@@ -59,20 +15,20 @@ describe ('Tests: More', function () {
     eYo.more.enhanceO3dValidate(ns.C9rBase[eYo.$], 'foo', false)
     chai.expect(ns.C9rBase_p.validate)
     chai.expect(ns.C9rBase[eYo.$].modelHandleValidate)
-    ns.C9rBase_p.validate(3, 4)
-    onr.fooValidate = function (key, before, after) {
-      this.flag(2, key, before, after)
+    ns.C9rBase_p.validate('<', '>')
+    eYo.test.onr.fooValidate = function (key, before, after) {
+      this.flag('v', key, before, after)
       return after
     }
-    var o = ns.new('bar', onr)
-    o.validate(3, 4)
-    eYo.flag.expect('12bar34')
-    onr.barFooValidate = function (before, after) {
-      this.flag(6, before + 4, after + 4)
+    var o = ns.new('bar', eYo.test.onr)
+    o.validate('<', '>')
+    eYo.flag.expect('/vbar<>')
+    eYo.test.onr.barFooValidate = function (before, after) {
+      this.flag('fv', before, after)
       return after
     }
-    o.validate(3, 4)
-    eYo.flag.expect('12bar341678')
+    o.validate('<', '>')
+    eYo.flag.expect('/vbar<>/fv<>')
   })
   it ('modelHandleValidate(..., false) + inheritance', function () {
     let ns_onr = eYo.c9r.newNS()
