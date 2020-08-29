@@ -272,7 +272,7 @@ eYo.data.makeC9rBase(true, {
     //... let changer = eYo.o4t.new({
     //...   methods: {
     //...     wrap (f, ...$) {
-    //...       flag.push(1, f(...$), 4)
+    //...       eYo.flag.push(1, f(...$), 4)
     //...     },
     //...   },
     //... }, 'changer')
@@ -287,7 +287,7 @@ eYo.data.makeC9rBase(true, {
     //... d.changer.wrap(() => {
     //...   return 23
     //... })
-    //... flag.expect(1234)
+    //... eYo.flag.expect(1234)
     //>>>
   },
   // ANCHOR: Methods
@@ -946,7 +946,7 @@ eYo.mixinFR(eYo.data.Dlgt_p, {
       //...       },
       //...     }, 'd', onr)
       //...     chai.expect(d[K](1, 2)).undefined
-      //...     flag.expect(expect)
+      //...     eYo.flag.expect(expect)
       //...   }
       let f_m = model[K]
       if (eYo.isF(f_m)) {
@@ -957,15 +957,15 @@ eYo.mixinFR(eYo.data.Dlgt_p, {
             f_m.call(this, f_p.bind(this), before, after)
           }}
           //...   test(123, function (builtin, before, after) {
-          //...     flag.push(before, after)
+          //...     eYo.flag.push(before, after)
           //...     builtin(before, after)
-          //...     flag.push(after + 1)
+          //...     eYo.flag.push(after + 1)
           //...   }) 
           //...   eYo.test.extend(ns.C9rBase_p, K, function(before, after) {
-          //...     flag.push(before + 2, after + 2)
+          //...     eYo.flag.push(before + 2, after + 2)
           //...   })
           //...   test(1234, function (builtin, before, after) {
-          //...     flag.push(before, after)
+          //...     eYo.flag.push(before, after)
           //...     builtin(before, after)
           //...   })
         } else if (XRegExp.exec(f_m.toString(), eYo.xre.function_builtin)) {
@@ -975,14 +975,14 @@ eYo.mixinFR(eYo.data.Dlgt_p, {
             }, after)
           }}
           //...   test(1234, function (builtin, after) {
-          //...     flag.push(1, after)
+          //...     eYo.flag.push(1, after)
           //...     builtin(after)
           //...   }) 
           //...   eYo.test.extend(ns.C9rBase_p, K, function(before, after) {
-          //...     flag.push(before + 4, after + 4)
+          //...     eYo.flag.push(before + 4, after + 4)
           //...   })
           //...   test(123456, function (builtin, after) {
-          //...     flag.push(1, after)
+          //...     eYo.flag.push(1, after)
           //...     builtin(after)
           //...   })
         } else {
@@ -990,15 +990,15 @@ eYo.mixinFR(eYo.data.Dlgt_p, {
             ? {$ (before, after) {
               //...   new_ns()
               //...   test(12, function(before, after) {
-              //...     flag.push(before, after)
+              //...     eYo.flag.push(before, after)
               //...   })
               //...   eYo.test.extend(ns.C9rBase_p, K, function(before, after) {
-              //...     flag.push(before + 2, after + 2)
+              //...     eYo.flag.push(before + 2, after + 2)
               //...   })
               //...   test(123456, function (before, after) {
-              //...     flag.push(before, after)
+              //...     eYo.flag.push(before, after)
               //...     this[K](before, after)
-              //...     flag.push(before + 4, after + 4)
+              //...     eYo.flag.push(before + 4, after + 4)
               //...   })
               let owned = eYo.objectHasOwnProperty(this, K) && this[K]
               try {
@@ -1014,16 +1014,16 @@ eYo.mixinFR(eYo.data.Dlgt_p, {
             }} : {$ (before, after) { // eslint-disable-line
               //...   new_ns()
               //...   test(12, function (after) {
-              //...     flag.push(1, after)
+              //...     eYo.flag.push(1, after)
               //...   })
               //...   new_ns()
               //...   eYo.test.extend(ns.C9rBase_p, K, function(before, after) {
-              //...     flag.push(before + 2, after + 2)
+              //...     eYo.flag.push(before + 2, after + 2)
               //...   })
               //...   test(123456, function (after) {
-              //...     flag.push(1, after)
+              //...     eYo.flag.push(1, after)
               //...     this[K](after)
-              //...     flag.push(5, after + 4)
+              //...     eYo.flag.push(5, after + 4)
               //...   })
               let owned = eYo.objectHasOwnProperty(this, K) && this[K]
               try {
@@ -1084,14 +1084,14 @@ eYo.mixinFR(eYo.data.Dlgt_p, {
             f_m.call(this, f_p.bind(this), before, after)
           }}
           //...   test(12, function (builtin, before, after) {
-          //...     flag.push(before, after)
+          //...     eYo.flag.push(before, after)
           //...     builtin(before, after)
           //...   }) 
           //...   eYo.test.extend(ns.C9rBase_p, K, function(before, after) {
-          //...     flag.push(before + 2, after + 2)
+          //...     eYo.flag.push(before + 2, after + 2)
           //...   })
           //...   test(1234, function (builtin, before, after) {
-          //...     flag.push(before, after)
+          //...     eYo.flag.push(before, after)
           //...     builtin(before, after)
           //...   })
         } else if (XRegExp.exec(f_m.toString(), eYo.xre.function_builtin)) {
@@ -1101,14 +1101,14 @@ eYo.mixinFR(eYo.data.Dlgt_p, {
             }, after)
           }}
           //...   test(1234, function (builtin, after) {
-          //...     flag.push(1, after)
+          //...     eYo.flag.push(1, after)
           //...     builtin(after)
           //...   }) 
           //...   eYo.test.extend(ns.C9rBase_p, K, function(before, after) {
-          //...     flag.push(before + 4, after + 4)
+          //...     eYo.flag.push(before + 4, after + 4)
           //...   })
           //...   test(123456, function (builtin, after) {
-          //...     flag.push(1, after)
+          //...     eYo.flag.push(1, after)
           //...     builtin(after)
           //...   })
         } else {
@@ -1116,15 +1116,15 @@ eYo.mixinFR(eYo.data.Dlgt_p, {
             ? {$ (before, after) {
               //...   new_ns()
               //...   test(12, function(before, after) {
-              //...     flag.push(before, after)
+              //...     eYo.flag.push(before, after)
               //...   })
               //...   eYo.test.extend(ns.C9rBase_p, K, function(before, after) {
-              //...     flag.push(before + 2, after + 2)
+              //...     eYo.flag.push(before + 2, after + 2)
               //...   })
               //...   test(123456, function (before, after) {
-              //...     flag.push(before, after)
+              //...     eYo.flag.push(before, after)
               //...     this[K](before, after)
-              //...     flag.push(before + 4, after + 4)
+              //...     eYo.flag.push(before + 4, after + 4)
               //...   })
               let owned = eYo.objectHasOwnProperty(this, K) && this[K]
               try {
@@ -1140,16 +1140,16 @@ eYo.mixinFR(eYo.data.Dlgt_p, {
             }} : {$ (before, after) { // eslint-disable-line
               //...   new_ns()
               //...   test(12, function (after) {
-              //...     flag.push(1, after)
+              //...     eYo.flag.push(1, after)
               //...   })
               //...   new_ns()
               //...   eYo.test.extend(ns.C9rBase_p, K, function(before, after) {
-              //...     flag.push(before + 2, after + 2)
+              //...     eYo.flag.push(before + 2, after + 2)
               //...   })
               //...   test(123456, function (after) {
-              //...     flag.push(1, after)
+              //...     eYo.flag.push(1, after)
               //...     this[K](after)
-              //...     flag.push(5, after + 4)
+              //...     eYo.flag.push(5, after + 4)
               //...   })
               let owned = eYo.objectHasOwnProperty(this, K) && this[K]
               try {
@@ -1194,7 +1194,7 @@ eYo.mixinFR(eYo.data.Dlgt_p, {
     //...       },
     //...     }, 'd', onr)
     //...     chai.expect(d[K](1, 2)).equal(3)
-    //...     flag.expect(expect)
+    //...     eYo.flag.expect(expect)
     //...   }
       let f_m = model[K]
       if (eYo.isF(f_m)) {
@@ -1205,24 +1205,24 @@ eYo.mixinFR(eYo.data.Dlgt_p, {
             return f_m.call(this, f_p.bind(this), before, after)
           }}
         //...   test(123, function (builtin, before, after) {
-        //...     flag.push(before, after)
+        //...     eYo.flag.push(before, after)
         //...     after = builtin(before, after + 1)
-        //...     flag.push(after)
+        //...     eYo.flag.push(after)
         //...     return after
         //...   }) 
         //...   eYo.test.extend(ns.C9rBase_p, K, function(before, after) {
-        //...     flag.push(before + 2, after + 1)
+        //...     eYo.flag.push(before + 2, after + 1)
         //...   })
         //...   test(12345, function (builtin, before, after) {
-        //...     flag.push(before, after)
+        //...     eYo.flag.push(before, after)
         //...     after = builtin(before, after + 1)
-        //...     flag.push(after + 2)
+        //...     eYo.flag.push(after + 2)
         //...     return after
         //...   })
         //...   test(123456, function (builtin, before, after) {
-        //...     flag.push(before, after)
+        //...     eYo.flag.push(before, after)
         //...     after = builtin(before, after + 1)
-        //...     flag.push(before + 4, after + 3)
+        //...     eYo.flag.push(before + 4, after + 3)
         //...     return after
         //...   })
         } else if (XRegExp.exec(f_m.toString(), eYo.xre.function_builtin)) {
@@ -1236,16 +1236,16 @@ eYo.mixinFR(eYo.data.Dlgt_p, {
             ? {$ (before, after) {
             //...   new_ns()
             //...   test(12, function(before, after) {
-            //...     flag.push(before, after)
+            //...     eYo.flag.push(before, after)
             //...     return after + 1
             //...   })
             //...   eYo.test.extend(ns.C9rBase_p, K, function(before, after) {
-            //...     flag.push(before + 2, after + 1)
+            //...     eYo.flag.push(before + 2, after + 1)
             //...   })
             //...   test(123456, function (before, after) {
-            //...     flag.push(before, after)
+            //...     eYo.flag.push(before, after)
             //...     after = this[K](before, after + 1)
-            //...     flag.push(before + 4, after + 3)
+            //...     eYo.flag.push(before + 4, after + 3)
             //...     return after
             //...   })
               let owned = eYo.objectHasOwnProperty(this, K) && this[K]
@@ -1262,17 +1262,17 @@ eYo.mixinFR(eYo.data.Dlgt_p, {
           }} : {$ (before, after) { // eslint-disable-line
             //...   new_ns()
             //...   test(2, function (after) {
-            //...     flag.push(after)
+            //...     eYo.flag.push(after)
             //...     return after + 1
             //...   })
             //...   new_ns()
             //...   eYo.test.extend(ns.C9rBase_p, K, function(before, after) {
-            //...     flag.push(before + 2, after + 1)
+            //...     eYo.flag.push(before + 2, after + 1)
             //...   })
             //...   test(123456, function (after) {
-            //...     flag.push(1, after)
+            //...     eYo.flag.push(1, after)
             //...     after = this[K](after + 1)
-            //...     flag.push(5, after + 3)
+            //...     eYo.flag.push(5, after + 3)
             //...     return after
             //...   })
               let owned = eYo.objectHasOwnProperty(this, K) && this[K]
@@ -1320,7 +1320,7 @@ eYo.mixinFR(eYo.data.Dlgt_p, {
       //...       },
       //...     }, 'd', onr)
       //...     chai.expect(d[K](1, 2)).undefined
-      //...     flag.expect(expect)
+      //...     eYo.flag.expect(expect)
       //...   }
       let f_m = model[K]
       if (eYo.isF(f_m)) {
@@ -1331,15 +1331,15 @@ eYo.mixinFR(eYo.data.Dlgt_p, {
             f_m.call(this, f_p.bind(this), before, after)
           }}
           //...   test(123, function (builtin, before, after) {
-          //...     flag.push(before, after)
+          //...     eYo.flag.push(before, after)
           //...     builtin(before, after)
-          //...     flag.push(after + 1)
+          //...     eYo.flag.push(after + 1)
           //...   }) 
           //...   eYo.test.extend(ns.C9rBase_p, K, function(before, after) {
-          //...     flag.push(before + 2, after + 2)
+          //...     eYo.flag.push(before + 2, after + 2)
           //...   })
           //...   test(1234, function (builtin, before, after) {
-          //...     flag.push(before, after)
+          //...     eYo.flag.push(before, after)
           //...     builtin(before, after)
           //...   })
         } else if (XRegExp.exec(f_m.toString(), eYo.xre.function_builtin)) {
@@ -1349,14 +1349,14 @@ eYo.mixinFR(eYo.data.Dlgt_p, {
             }, after)
           }}
           //...   test(1234, function (builtin, after) {
-          //...     flag.push(1, after)
+          //...     eYo.flag.push(1, after)
           //...     builtin(after)
           //...   }) 
           //...   eYo.test.extend(ns.C9rBase_p, K, function(before, after) {
-          //...     flag.push(before + 4, after + 4)
+          //...     eYo.flag.push(before + 4, after + 4)
           //...   })
           //...   test(123456, function (builtin, after) {
-          //...     flag.push(1, after)
+          //...     eYo.flag.push(1, after)
           //...     builtin(after)
           //...   })
         } else {
@@ -1364,15 +1364,15 @@ eYo.mixinFR(eYo.data.Dlgt_p, {
             ? {$ (before, after) {
               //...   new_ns()
               //...   test(12, function(before, after) {
-              //...     flag.push(before, after)
+              //...     eYo.flag.push(before, after)
               //...   })
               //...   eYo.test.extend(ns.C9rBase_p, K, function(before, after) {
-              //...     flag.push(before + 2, after + 2)
+              //...     eYo.flag.push(before + 2, after + 2)
               //...   })
               //...   test(123456, function (before, after) {
-              //...     flag.push(before, after)
+              //...     eYo.flag.push(before, after)
               //...     this[K](before, after)
-              //...     flag.push(before + 4, after + 4)
+              //...     eYo.flag.push(before + 4, after + 4)
               //...   })
               try {
                 this[K] = f_p
@@ -1383,16 +1383,16 @@ eYo.mixinFR(eYo.data.Dlgt_p, {
             }} : {$ (before, after) { // eslint-disable-line
               //...   new_ns()
               //...   test(12, function (after) {
-              //...     flag.push(1, after)
+              //...     eYo.flag.push(1, after)
               //...   })
               //...   new_ns()
               //...   eYo.test.extend(ns.C9rBase_p, K, function(before, after) {
-              //...     flag.push(before + 2, after + 2)
+              //...     eYo.flag.push(before + 2, after + 2)
               //...   })
               //...   test(123456, function (after) {
-              //...     flag.push(1, after)
+              //...     eYo.flag.push(1, after)
               //...     this[K](after)
-              //...     flag.push(5, after + 4)
+              //...     eYo.flag.push(5, after + 4)
               //...   })
               try {
                 this[K] = {$ ($after) {
@@ -1432,20 +1432,20 @@ eYo.mixinFR(eYo.data.Dlgt_p, {
       //...         [K]: f
       //...         ? f.length
       //...           ? {$ (x, ...$) {
-      //...             flag.push(1)
+      //...             eYo.flag.push(1)
       //...             f && f.call(this, x, ...$)
       //...           }}.$
       //...           : {$ () {
-      //...             flag.push(1)
+      //...             eYo.flag.push(1)
       //...             f && f.call(this)
       //...           }}.$
       //...         : {$ () {
-      //...           flag.push(1)
+      //...           eYo.flag.push(1)
       //...         }}.$,
       //...       },
       //...     }, 'd', onr)
       //...     chai.expect(d[K]()).undefined
-      //...     flag.expect(expect)
+      //...     eYo.flag.expect(expect)
       //...   }
       let f_m = model[K]
       if (eYo.isF(f_m)) {
@@ -1454,28 +1454,28 @@ eYo.mixinFR(eYo.data.Dlgt_p, {
           ? {$ () {
             //...   new_ns()
             //...   test(12, function(builtin) {
-            //...     flag.push(2)
+            //...     eYo.flag.push(2)
             //...     builtin()
             //...   })
             //...   eYo.test.extend(ns.C9rBase_p, K, function() {
-            //...     flag.push(3)
+            //...     eYo.flag.push(3)
             //...   })
             //...   test(123, function (builtin) {
-            //...     flag.push(2)
+            //...     eYo.flag.push(2)
             //...     builtin()
             //...   })
             f_m.call(this, f_p.bind(this))
           }} : {$ () { // eslint-disable-line
             //...   new_ns()
             //...   test(12, function () {
-            //...     flag.push(2)
+            //...     eYo.flag.push(2)
             //...   })
             //...   new_ns()
             //...   eYo.test.extend(ns.C9rBase_p, K, function() {
-            //...     flag.push(3)
+            //...     eYo.flag.push(3)
             //...   })
             //...   test(123, function () {
-            //...     flag.push(2)
+            //...     eYo.flag.push(2)
             //...     this[K]()
             //...   })
             let owned = eYo.objectHasOwnProperty(this, K) && this[K]
@@ -1518,21 +1518,21 @@ eYo.mixinFR(eYo.data.Dlgt_p, {
       //...         [K]: f
       //...         ? f.length > 1
       //...           ? {$ (builtin, after) {
-      //...             flag.push(1, after+1)
+      //...             eYo.flag.push(1, after+1)
       //...             return f ? f.call(this, builtin, after) : 9
       //...           }}.$
       //...           : {$ (after) {
-      //...             flag.push(1, after+1)
+      //...             eYo.flag.push(1, after+1)
       //...             return f ? f.call(this, after) : 9
       //...           }}.$
       //...         : {$ (after) {
-      //...           flag.push(1, after+1)
+      //...           eYo.flag.push(1, after+1)
       //...           return 9
       //...         }}.$,
       //...       },
       //...     }, 'd', onr)
       //...     chai.expect(d[K](1)).equal(1)
-      //...     flag.expect(expect)
+      //...     eYo.flag.expect(expect)
       //...   }
       let f_m = model[K]
       if (eYo.isF(f_m)) {
@@ -1541,30 +1541,30 @@ eYo.mixinFR(eYo.data.Dlgt_p, {
           ? {$ (after) {
             //...   new_ns()
             //...   test(1234, function(builtin, after) {
-            //...     flag.push(3, after+3)
+            //...     eYo.flag.push(3, after+3)
             //...     return builtin(after)
             //...   })
             //...   eYo.test.extend(ns.C9rBase_p, K, function(after) {
-            //...     flag.push(5, after+5)
+            //...     eYo.flag.push(5, after+5)
             //...   })
             //...   test(123456, function (builtin, after) {
-            //...     flag.push(3, after+3)
+            //...     eYo.flag.push(3, after+3)
             //...     return builtin(after)
             //...   })
             return f_m.call(this, f_p.bind(this), after)
           }} : {$ (after) {
             //...   new_ns()
             //...   test(1234, function (after) {
-            //...     flag.push(3, after+3)
+            //...     eYo.flag.push(3, after+3)
             //...     return after
             //...   })
             //...   new_ns()
             //...   eYo.test.extend(ns.C9rBase_p, K, function(after) {
-            //...     flag.push(5, after+5)
+            //...     eYo.flag.push(5, after+5)
             //...     return after
             //...   })
             //...   test(123456, function (after) {
-            //...     flag.push(3, after+3)
+            //...     eYo.flag.push(3, after+3)
             //...     this[K](after)
             //...     return after
             //...   })

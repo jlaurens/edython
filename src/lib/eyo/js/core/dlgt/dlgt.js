@@ -51,7 +51,7 @@ eYo.newNS('dlgt')
 //...   }
 //...   let _p = C9r.prototype
 //...   _p.flag = function (...$) {
-//...     flag.push('/', ...$)
+//...     eYo.flag.push('/', ...$)
 //...   }
 //...   eYo.dlgt.declareDlgt(_p)
 //...   chai.expect(_p.eyo$).equal(dlgt)
@@ -390,7 +390,7 @@ eYo.mixinFR(eYo._p, {
       //... var dlgt = new eYo.Dlgt(NS, 'Foo', model)
       //... var Foo = function() {}
       //... Foo.prototype.init = function (...$) {
-      //...   flag.push(1, ...$)
+      //...   eYo.flag.push(1, ...$)
       //... }
       //... dlgt.setC9r(Foo, true)
       //... dlgt.finalizeC9r()
@@ -419,7 +419,7 @@ eYo.mixinFR(eYo._p, {
       //... dlgt = new eYo.Dlgt(NS, 'Foo', model)
       //... Foo = function() {}
       //... Foo.prototype.init = function (...$) {
-      //...   flag.push(1, ...$)
+      //...   eYo.flag.push(1, ...$)
       //... }
       //... dlgt.setC9r(Foo)
       //... dlgt.finalizeC9r()
@@ -451,7 +451,7 @@ eYo.mixinFR(eYo._p, {
       this.init()
       //... var model = {
       //...   [eYo.$] () {
-      //...     flag.push(4, 2, 1)
+      //...     eYo.flag.push(4, 2, 1)
       //...   },
       //... }
       //... var id = 'bar'
@@ -461,7 +461,7 @@ eYo.mixinFR(eYo._p, {
       //... dlgt.finalizeC9r()
       //... chai.expect(C9r[eYo.$]).equal(dlgt)
       //... chai.expect(C9r[eYo.$_p]).equal(dlgt._p)  
-      //... flag.expect(1421)
+      //... eYo.flag.expect(1421)
       //>>>
     },
     /**
@@ -483,11 +483,11 @@ eYo.mixinFR(eYo._p, {
         }
         //... preparator({
         //...   prepare (...$) {
-        //...     flag.push('<', ...$, '>')
+        //...     eYo.flag.push('<', ...$, '>')
         //...   }
         //... })
         //... new C9r(1, 2)
-        //... flag.expect('/p12<12>/i12')
+        //... eYo.flag.expect('/p12<12>/i12')
         this.constructor.prototype[K] = {[K] (...$) {
           f_m.call(...$)
         }}[K]
@@ -527,12 +527,12 @@ eYo.mixinFR(eYo._p, {
             //...   }
             //... })
             //... new C9r(1, 2)
-            //... flag.expect('/p12/i12/I12')
+            //... eYo.flag.expect('/p12/i12/I12')
             //... preparator({
             //...   init (builtin, ...$) {
             //...     this.flag('I<')
             //...     builtin(...$)
-            //...     flag.push('>')
+            //...     eYo.flag.push('>')
             //...   },
             //...   $super: {
             //...     c9rInit ($this, ...$) {
@@ -541,7 +541,7 @@ eYo.mixinFR(eYo._p, {
             //...   }
             //... })
             //... new C9r(1, 2)
-            //... flag.expect('/p12/i12/I</$I12>')
+            //... eYo.flag.expect('/p12/i12/I</$I12>')
           } else {
             m = {[K] ($this, ...$) {
               f_m.call($this, eYo.doNothing, ...$)
@@ -554,7 +554,7 @@ eYo.mixinFR(eYo._p, {
             //...   }
             //... })
             //... new C9r(1, 2)
-            //... flag.expect('/p12/i12/I12')
+            //... eYo.flag.expect('/p12/i12/I12')
           }
         } else if (f_p) {
           m = {[K] (...$) {
@@ -572,7 +572,7 @@ eYo.mixinFR(eYo._p, {
           //...   },
           //... })
           //... new C9r(1, 2)
-          //... flag.expect('/p12/i12/I12/$I12')
+          //... eYo.flag.expect('/p12/i12/I12/$I12')
         } else {
           m = {[K] (...$) {
             f_m.call(...$)
@@ -583,7 +583,7 @@ eYo.mixinFR(eYo._p, {
           //...   }
           //... })
           //... new C9r(1, 2)
-          //... flag.expect('/p12/i12/I12')
+          //... eYo.flag.expect('/p12/i12/I12')
         }
       } else if (f_p) {
         m = {[K] (...$) {
@@ -597,7 +597,7 @@ eYo.mixinFR(eYo._p, {
         //...   },
         //... })
         //... new C9r(1, 2)
-        //... flag.expect('/p12/i12/$I12')
+        //... eYo.flag.expect('/p12/i12/$I12')
       }
       this._p[K] = m ? m[K] : eYo.doNothing
       //>>>
@@ -623,7 +623,7 @@ eYo.mixinFR(eYo._p, {
             //...   dispose (builtin, ...$) {
             //...     this.flag('X<')
             //...     builtin(...$)
-            //...     flag.push('>')
+            //...     eYo.flag.push('>')
             //...   },
             //...   $super: {
             //...     c9rDispose ($this, ...$) {
@@ -632,7 +632,7 @@ eYo.mixinFR(eYo._p, {
             //...   },
             //... })
             //... new C9r().dispose(1, 2)
-            //... flag.expect('/p/i/x12/X</$X12>')
+            //... eYo.flag.expect('/p/i/x12/X</$X12>')
           } else {
             m = {[K] ($this, ...$) {
               f_m.call($this, eYo.doNothing, ...$)
@@ -644,7 +644,7 @@ eYo.mixinFR(eYo._p, {
             //...   }
             //... })
             //... new C9r().dispose(1, 2)
-            //... flag.expect('/p/i/x12/X12')
+            //... eYo.flag.expect('/p/i/x12/X12')
           }
         } else if (f_p) {
           m = {[K] (...$) {
@@ -662,7 +662,7 @@ eYo.mixinFR(eYo._p, {
           //...   },
           //... })
           //... new C9r().dispose(1, 2)
-          //... flag.expect('/p/i/x12/X12/$X12')
+          //... eYo.flag.expect('/p/i/x12/X12/$X12')
         } else {
           m = {[K] (...$) {
             f_m.call(...$)
@@ -673,7 +673,7 @@ eYo.mixinFR(eYo._p, {
           //...   }
           //... })
           //... new C9r().dispose(1, 2)
-          //... flag.expect('/p/i/x12/X12')
+          //... eYo.flag.expect('/p/i/x12/X12')
         }
       } else if (f_p) {
         m = {[K] (...$) {
@@ -687,7 +687,7 @@ eYo.mixinFR(eYo._p, {
         //...   },
         //... })
         //... new C9r().dispose(1, 2)
-        //... flag.expect('/p/i/x12/$X12')
+        //... eYo.flag.expect('/p/i/x12/$X12')
       }
       this._p[K] = m ? m[K] : eYo.doNothing
       //>>>
@@ -713,14 +713,14 @@ eYo.mixinFR(eYo._p, {
       //... dlgt.setC9r(C9r)
       //... dlgt.finalizeC9r()
       //... superDlgt.addSubC9r(C9r)
-      //... flag.reset()
+      //... eYo.flag.reset()
       //... dlgt.do_it = (x) => {
-      //...   flag.push(x+1)
+      //...   eYo.flag.push(x+1)
       //... }
       //... superDlgt.forEachSubC9r(C9r => {
       //...   C9r[eYo.$].do_it && C9r[eYo.$].do_it(1)
       //... })
-      //... flag.expect(2)
+      //... eYo.flag.expect(2)
       //... C9r = function () {}
       //... eYo.inherits(C9r, SuperC9r)
       //... let other = eYo.dlgt.new('Bar', {})
@@ -731,24 +731,24 @@ eYo.mixinFR(eYo._p, {
       //... superDlgt.forEachSubC9r(C9r => {
       //...   C9r[eYo.$].do_it && C9r[eYo.$].do_it(2)
       //... })
-      //... flag.expect(33)
+      //... eYo.flag.expect(33)
       //... dlgt.do_it = (x) => {
-      //...   flag.push(x+2)
+      //...   eYo.flag.push(x+2)
       //...   return x+3
       //... }
       //... other.do_it = (x) => {
-      //...   flag.push(x+3)
+      //...   eYo.flag.push(x+3)
       //...   return x+3
       //... }
       //... superDlgt.forEachSubC9r(C9r => {
       //...   C9r[eYo.$].do_it && C9r[eYo.$].do_it(3)
       //... })
-      //... flag.expect([56,65])
-      //... flag.reset()
+      //... eYo.flag.expect([56,65])
+      //... eYo.flag.reset()
       //... chai.expect(superDlgt.someSubC9r(C9r => {
       //...   return C9r[eYo.$].do_it && C9r[eYo.$].do_it(3)
       //... })).equal(6)
-      //... flag.expect([5,6])
+      //... eYo.flag.expect([5,6])
       //>>>
     },
     /**
@@ -822,7 +822,7 @@ eYo.mixinFR(eYo._p, {
       //... let NS = eYo.newNS()
       //... let superDlgt = eYo.dlgt.new(NS, 'foo', {
       //...   prepare (...$) {
-      //...     flag.push('P', ...$)
+      //...     eYo.flag.push('P', ...$)
       //...   }
       //... })
       if (SuperC9r) {
@@ -897,17 +897,17 @@ eYo.mixinFR(eYo._p, {
       //... chai.expect(SuperC9r[eYo.$]).equal(superDlgt)
       //... chai.expect(superDlgt.C9r).equal(SuperC9r)
       //... new SuperC9r(1, 2)
-      //... flag.expect('P12')
+      //... eYo.flag.expect('P12')
       //... let dlgt = eYo.dlgt.new(NS, 'bar', {
       //...   prepare (...$) {
-      //...     flag.push('p', ...$)
+      //...     eYo.flag.push('p', ...$)
       //...   }
       //... })
       //... let C9r = dlgt.newC9r(SuperC9r)
       //... chai.expect(C9r[eYo.$]).equal(dlgt)
       //... chai.expect(dlgt.C9r).equal(C9r)
       //... new C9r(1, 2)
-      //... flag.expect('P12p12')
+      //... eYo.flag.expect('P12p12')
       //>>>
     }
   })  
@@ -1128,14 +1128,14 @@ eYo.mixinFR(eYo.dlgt.C9rBase_p, {
     //... var dlgt = eYo.dlgt.new({
     //...   methods: {
     //...     foo (...$) {
-    //...       flag.push(1, ...$)
+    //...       eYo.flag.push(1, ...$)
     //...     },
     //...   },
     //... })
     //... var f = dlgt.getModelMethod('foo')
     //... chai.expect(f).eyo_F
     //... f.call(dlgt, 2, 3)
-    //... flag.expect(123)
+    //... eYo.flag.expect(123)
     //>>>
   },
   //>>>

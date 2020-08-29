@@ -6,7 +6,7 @@ describe ('geometry/Point', function () {
     onr = eYo.c9r && eYo.c9r.new({
       methods: {
         flag (what, ...$) {
-          flag.push(1, what, ...$)
+          eYo.flag.push(1, what, ...$)
           return what
         },
       },
@@ -136,15 +136,15 @@ describe ('geometry/Point', function () {
       Q.c_ = 2
       chai.expect(P.c).equal(2)
       let o = Q.c_p.addObserver(eYo.observe.ANY, function (before, after) {
-        flag.push(before, after)
+        eYo.flag.push(before, after)
       })
       P.c_ = 1
-      flag.expect(212121)
+      eYo.flag.expect(212121)
       Q.c_p.value_ = 2
-      flag.expect(121212)
+      eYo.flag.expect(121212)
       Q.c_p.removeObserver(o)
       P.c_ = 1
-      flag.expect()      
+      eYo.flag.expect()      
     })
     it (`Shared properties(2)`, function () {
       let c_p = eYo.p6y.new('c', onr)
@@ -169,15 +169,15 @@ describe ('geometry/Point', function () {
       Q.c_p.value_ = 2
       chai.expect(P.c).equal(2)
       let o = Q.c_p.addObserver(eYo.observe.ANY, function (before, after) {
-        flag.push(before, after)
+        eYo.flag.push(before, after)
       })
       P.c_ = 1
-      flag.expect(212121)
+      eYo.flag.expect(212121)
       Q.c_p.value_ = 2
-      flag.expect(121212)
+      eYo.flag.expect(121212)
       Q.c_p.removeObserver(o)
       P.c_ = 1
-      flag.expect()
+      eYo.flag.expect()
     })
   })
 })

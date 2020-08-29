@@ -6,6 +6,7 @@
  * @license EUPL-1.2
  */
 eYo.provide('test')
+eYo.provide('flag')
 
 eYo.TESTING = true
 
@@ -17,13 +18,13 @@ eYo.test.Flag = function (what) {
     },
     push (...$) {
       $.forEach(what => {
-        what && (this.v += what.toString())
+        what && (eYo.isNum(what) || eYo.isStr(what)) && (this.v += what.toString())
       })
       return this.v
     },
     unshift (...$) {
       $.forEach(what => {
-        what && (this.v = what.toString() + this.v)
+        what && (eYo.isNum(what) || eYo.isStr(what)) && (this.v = what.toString() + this.v)
       })
       return this.v
     },
@@ -47,7 +48,7 @@ eYo.test.Flag = function (what) {
       let flag = this
       return new Proxy(f, {
         apply(target, $this, args) {
-          eYo.test.push(tag)
+          eYo.flag.push(tag)
           return target.apply($this, args)
         }
       })
@@ -62,14 +63,14 @@ eYo.test.makeOnr = function (model) {
   m.methods || (m.methods = {})
   eYo.provideFR(m.methods, {
     flag (what, ...$) {
-      eYo.test.push('/', what, ...$)
+      eYo.flag.push('/', what, ...$)
       return what
     },
   })
   return eYo.o4t && eYo.o4t.new(m, 'onr', eYo) || eYo.o3d && eYo.o3d.new(m, 'onr', eYo) || eYo.c9r && eYo.c9r.new(m, 'onr') || (() => {
       let C9r = function () {}
       C9r.prototype.flag = {
-        $ (what, ...$) { eYo.test.push('/', what, ...$); return what }
+        $ (what, ...$) { eYo.flag.push('/', what, ...$); return what }
       }.$
       return new C9r()
     })()
@@ -80,14 +81,14 @@ eYo.test.setup = function (model) {
   this.onr = this.makeOnr(model)
 }
 
-eYo.test.push = function (...$) {
-  this.eYo.test.push(...$)
+eYo.flag.push = function (...$) {
+  eYo.test.flag.push(...$)
 }
-eYo.test.expect = function (...$) {
-  this.eYo.test.expect(...$)
+eYo.flag.expect = function (...$) {
+  eYo.test.flag.expect(...$)
 }
-eYo.test.reset = function (...$) {
-  this.flag.reset(...$)
+eYo.flag.reset = function (...$) {
+  eYo.test.flag.reset(...$)
 }
 
 eYo.test.randN = (N = 2, snap) => {
@@ -398,7 +399,7 @@ chai.use(function (chai, utils) {
             `expected ${val && val.description || val} to almost equal ${this._obj && this._obj.description || this._obj}`,
             `expected ${val && val.description || val} to not almost equal ${this._obj &&this._obj.description || this._obj}`,
             val,
-            this._obj
+            this._obj,
           )
           return
         }

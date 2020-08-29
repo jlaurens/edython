@@ -6,7 +6,7 @@ describe ('Tests: register', function () {
     onr = eYo.c9r && eYo.c9r.new({
       methods: {
         flag (what, ...$) {
-          flag.push(1, what, ...$)
+          eYo.flag.push(1, what, ...$)
           return what
         },
       },
@@ -24,27 +24,27 @@ describe ('Tests: register', function () {
     chai.assert(o.fooSome)
     o.fooRegister(1)
     flag.reset()
-    o.fooForEach(foo => flag.push(foo))
-    flag.expect(1)
+    o.fooForEach(foo => eYo.flag.push(foo))
+    eYo.flag.expect(1)
     o.fooRegister(1)
-    flag.expect()
-    o.fooForEach(foo => flag.push(foo))
-    flag.expect(1)
+    eYo.flag.expect()
+    o.fooForEach(foo => eYo.flag.push(foo))
+    eYo.flag.expect(1)
     o.fooRegister(2)
-    flag.expect()
-    o.fooForEach(foo => flag.push(foo))
-    flag.expect(12)
+    eYo.flag.expect()
+    o.fooForEach(foo => eYo.flag.push(foo))
+    eYo.flag.expect(12)
     chai.expect(o.fooSome(foo => {
       if (foo === 2) {
-        flag.push(foo)
+        eYo.flag.push(foo)
         return foo
       }
     })).true
-    flag.expect(2)
+    eYo.flag.expect(2)
     chai.assert(o.fooUnregister(1))
     chai.assert(!o.fooUnregister(1))
-    flag.expect()
-    o.fooForEach(foo => flag.push(foo))
-    flag.expect(2)
+    eYo.flag.expect()
+    o.fooForEach(foo => eYo.flag.push(foo))
+    eYo.flag.expect(2)
   })
 })

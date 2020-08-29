@@ -147,7 +147,7 @@ eYo.magnet.makeC9rBase(true, {
     //...   },
     //...   methods: {
     //...     changeDone() {
-    //...       flag.push(1)
+    //...       eYo.flag.push(1)
     //...     },
     //...   },
     //... })

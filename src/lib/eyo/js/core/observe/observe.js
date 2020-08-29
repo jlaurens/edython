@@ -175,14 +175,14 @@ eYo.dlgt.C9rBase_p.observeEnhanced = function () {
     //... })) {
     //...   let o = ns.new()
     //...   o.addObserver(k, function (before, after) {
-    //...     eYo.test.push(1, before, after)
+    //...     eYo.flag.push(1, before, after)
     //...   })
     //...   o.willChange(2, 3)
-    //...   eYo.test.expect(v[0])
+    //...   eYo.flag.expect(v[0])
     //...   o.atChange(2, 3)
-    //...   eYo.test.expect(v[1])
+    //...   eYo.flag.expect(v[1])
     //...   o.didChange(2, 3)
-    //...   eYo.test.expect(v[2])
+    //...   eYo.flag.expect(v[2])
     //... }
     //... for (let [k, v] of Object.entries({
     //...   [eYo.observe.BEFORE]: [123456, 123, 123],
@@ -191,17 +191,17 @@ eYo.dlgt.C9rBase_p.observeEnhanced = function () {
     //... })) {
     //...   let o = ns.new()
     //...   o.addObserver(eYo.observe.ANY, function (before, after) {
-    //...     eYo.test.push(1, before, after)
+    //...     eYo.flag.push(1, before, after)
     //...   })
     //...   o.addObserver(k, function (before, after) {
-    //...     eYo.test.push(4, 3+before, 3+after)
+    //...     eYo.flag.push(4, 3+before, 3+after)
     //...   })
     //...   o.willChange(2, 3)
-    //...   eYo.test.expect(v[0])
+    //...   eYo.flag.expect(v[0])
     //...   o.atChange(2, 3)
-    //...   eYo.test.expect(v[1])
+    //...   eYo.flag.expect(v[1])
     //...   o.didChange(2, 3)
-    //...   eYo.test.expect(v[2])
+    //...   eYo.flag.expect(v[2])
     //... }
     //>>>
   })
@@ -226,22 +226,22 @@ eYo.dlgt.C9rBase_p.observeEnhanced = function () {
     //... ns.C9rBase[eYo.$].observeEnhanced()
     //... let o = ns.new()
     //... let observer1 = o.addObserver(eYo.observe.BEFORE, function (before, after) {
-    //...   eYo.test.push(1, before + 1, after + 1)
+    //...   eYo.flag.push(1, before + 1, after + 1)
     //... })
     //... let observer2 = o.addObserver(eYo.observe.BEFORE, function (before, after) {
-    //...   eYo.test.push(4, before+4, after+4)
+    //...   eYo.flag.push(4, before+4, after+4)
     //... })
     //... o.willChange(1, 2)
-    //... eYo.test.expect(123456)
+    //... eYo.flag.expect(123456)
     //... o.removeObserver(observer1)
     //... o.willChange(1, 2)
-    //... eYo.test.expect(456)
+    //... eYo.flag.expect(456)
     //... o.addObserver(observer1)
     //... o.willChange(1, 2)
-    //... eYo.test.expect(456123)
+    //... eYo.flag.expect(456123)
     //... o.removeObservers()
     //... o.willChange(1, 2)
-    //... eYo.test.expect()
+    //... eYo.flag.expect()
     //>>>
   }
   /**
@@ -264,26 +264,26 @@ eYo.dlgt.C9rBase_p.observeEnhanced = function () {
     //... ns.C9rBase[eYo.$].observeEnhanced()
     //... let o = ns.new()
     //... let observer = o.addObserver(eYo.observe.BEFORE, function (before, after) {
-    //...   eYo.test.push(1, before, after)
+    //...   eYo.flag.push(1, before, after)
     //... })
     //... o.willChange(2, 3)
-    //... eYo.test.expect(123)
+    //... eYo.flag.expect(123)
     //... o.removeObserver(observer)
     //... o.willChange(2, 3)
-    //... eYo.test.expect()
+    //... eYo.flag.expect()
     //... o.addObserver(observer)
     //... o.willChange(2, 3)
-    //... eYo.test.expect(123)
+    //... eYo.flag.expect(123)
     //... let after = o.addObserver(eYo.observe.AFTER, observer)
     //... o.willChange(2, 3)
-    //... eYo.test.expect(123)
+    //... eYo.flag.expect(123)
     //... o.didChange(3, 5)
-    //... eYo.test.expect(135)
+    //... eYo.flag.expect(135)
     //... o.removeObserver(observer)
     //... o.willChange(2, 3)
-    //... eYo.test.expect()
+    //... eYo.flag.expect()
     //... o.didChange(3, 5)
-    //... eYo.test.expect(135)
+    //... eYo.flag.expect(135)
     //>>>
   }
   /**

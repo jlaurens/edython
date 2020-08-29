@@ -494,23 +494,23 @@ eYo.mixinFR(eYo.model.Format_p, {
             keys.delete(eYo.model.VALIDATE)
             //... var mf = new eYo.model.Format()
             //... var f = () => {
-            //...   flag.push(421)
+            //...   eYo.flag.push(421)
             //... }
             //... mf.allow({[eYo.model.VALIDATE]: f})
             //... mf.validate_()
-            //... flag.expect(421)
+            //... eYo.flag.expect(421)
             //... mf.validate(0)
-            //... flag.expect(421)
+            //... eYo.flag.expect(421)
             //... var mf = new eYo.model.Format()
             //... var f = (path, model) => {
-            //...   flag.push(421)
+            //...   eYo.flag.push(421)
             //... }
             //... mf.allow({[eYo.model.VALIDATE]: f})
             //... chai.expect(mf.validate_).equal(f)
             //... mf.validate_()
-            //... flag.expect(421)
+            //... eYo.flag.expect(421)
             //... mf.validate(0)
-            //... flag.expect(421)
+            //... eYo.flag.expect(421)
           }
           keys.forEach(k => {
             c.allow(k, arg[k]) // avoid recursivity ?

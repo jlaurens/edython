@@ -9,7 +9,7 @@ describe('Field', function () {
       isBrick: true,
       changer: {
         wrap (f) {
-          flag.push(1)
+          eYo.flag.push(1)
           f()
         }
       },

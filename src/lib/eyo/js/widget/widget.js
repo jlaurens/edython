@@ -146,12 +146,12 @@ eYo.driven.makeC9rBase({
       //... let ns = eYo.driven.newNS()
       //... ns.makeC9rBase()
       //... eYo.test.extend(ns.C9rBase_p, 'ownerDidChange', function (before, after) {
-      //...   flag.push(421)
+      //...   eYo.flag.push(421)
       //... })
       //... var driven = ns.new({}, 'driven', onr)
       //... setup()
       //... driven.owner_ = onr
-      //... flag.expect(421)
+      //... eYo.flag.expect(421)
       let inherited = eYo.driven.C9rBase[eYo.$SuperC9r_p].ownerDidChange
       inherited && inherited.call(this, before, after)
       this.resetBSM()

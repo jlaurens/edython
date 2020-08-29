@@ -128,6 +128,7 @@ def getInlineTest(path):
       if l.begin is not None:
         for x in l.what:
           if x == l.what[-1] and x == '../':
+            ans.append('//')
             pass
           else:
             name = 'describe' if l.describe or x != l.what[-1] else 'it'
@@ -138,6 +139,7 @@ def getInlineTest(path):
       elif l.n is not None:
         for x in l.what:
           if x == l.what[-1] and x == '../':
+            ans.append('//')
             pass
           else:
             depth -= 1

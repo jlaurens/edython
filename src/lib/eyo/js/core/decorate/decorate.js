@@ -74,13 +74,13 @@ eYo.decorate.reentrant = (key, f, alt_f = eYo.doNothing) => {
     }
   }
   //... chai.assert(eYo.decorate.reentrant)
-  //... let _p = Object.getPrototypeOf(onr)
+  //... let _p = Object.getPrototypeOf(eYo.test.onr)
   //... _p.bar = eYo.decorate.reentrant('bar', function (what) {
   //...   this.flag('d', what)
   //...   return this.bar()
   //... })
-  //... chai.expect(onr.bar(1)).undefined
-  //... eYo.test.expect('/d1')
+  //... chai.expect(eYo.test.onr.bar(1)).undefined
+  //... eYo.flag.expect('/d1')
   //... _p.bar = eYo.decorate.reentrant('bar', function (what) {
   //...   this.flag('d', what)
   //...   return this.bar(what)
@@ -88,8 +88,8 @@ eYo.decorate.reentrant = (key, f, alt_f = eYo.doNothing) => {
   //...   this.flag('D', what + 2)
   //...   return what + 1
   //... })
-  //... chai.expect(onr.bar(3)).equal(4)
-  //... eYo.test.expect('/d3/D5')
+  //... chai.expect(eYo.test.onr.bar(3)).equal(4)
+  //... eYo.flag.expect('/d3/D5')
   //... _p.bar = eYo.decorate.reentrant('bar', function (what) {
   //...   let ans = this.bar(what)
   //...   this.flag('d', what + 2)
@@ -98,8 +98,8 @@ eYo.decorate.reentrant = (key, f, alt_f = eYo.doNothing) => {
   //...   this.flag('D', what)
   //...   return 3 * what
   //... })
-  //... chai.expect(onr.bar(3)).equal(9)
-  //... eYo.test.expect('/D3/d5')
+  //... chai.expect(eYo.test.onr.bar(3)).equal(9)
+  //... eYo.flag.expect('/D3/d5')
   //>>>
 }
 

@@ -6,7 +6,7 @@ describe ('Tests: More', function () {
     onr = eYo.c9r && eYo.c9r.new({
       methods: {
         flag (what, ...$) {
-          flag.push(1, what, ...$)
+          eYo.flag.push(1, what, ...$)
           return what
         },
       },
@@ -18,27 +18,27 @@ describe ('Tests: More', function () {
     chai.assert(o.fooForEach)
     chai.assert(o.fooSome)
     o.fooForEach(y => {
-      flag.push(y)
+      eYo.flag.push(y)
     })
-    flag.expect()
+    eYo.flag.expect()
     chai.expect(!!o.fooSome(y => {
-      flag.push(y)
+      eYo.flag.push(y)
       return y === 2
     })).false
-    flag.expect()
+    eYo.flag.expect()
     let m = o.fooMap = new Map()
     m.set(1,1)
     m.set(2,2)
     m.set(3,3)
     o.fooForEach(y => {
-      flag.push(y)
+      eYo.flag.push(y)
     })
-    flag.expect(123)
+    eYo.flag.expect(123)
     chai.expect(o.fooSome(y => {
-      flag.push(y)
+      eYo.flag.push(y)
       return y === 2
     })).true
-    flag.expect(12)
+    eYo.flag.expect(12)
   })
   it ('eYo.more.enhanceO3dValidate(, , false)', function () {
     let ns = eYo.o3d.newNS()
@@ -66,20 +66,20 @@ describe ('Tests: More', function () {
     }
     var o = ns.new('bar', onr)
     o.validate(3, 4)
-    flag.expect('12bar34')
+    eYo.flag.expect('12bar34')
     onr.barFooValidate = function (before, after) {
       this.flag(6, before + 4, after + 4)
       return after
     }
     o.validate(3, 4)
-    flag.expect('12bar341678')
+    eYo.flag.expect('12bar341678')
   })
   it ('modelHandleValidate(..., false) + inheritance', function () {
     let ns_onr = eYo.c9r.newNS()
     ns_onr.makeC9rBase({
       methods: {
         flag (...$) {
-          flag.push(1, ...$)
+          eYo.flag.push(1, ...$)
         },
         fooValidate(key, before, after) {
           this.flag(key, before, after)
@@ -99,7 +99,7 @@ describe ('Tests: More', function () {
     chai.assert(ns.C9rBase[eYo.$].modelHandleValidate)
     ns.C9rBase[eYo.$].modelHandleValidate('foo', {})
     o.validate(1, 2)
-    flag.expect('1foo12') // from the owner
+    eYo.flag.expect('1foo12') // from the owner
     ////
     ns = eYo.o3d.newNS()
     ns.makeC9rBase()
@@ -112,7 +112,7 @@ describe ('Tests: More', function () {
       },
     })
     o.validate(3, 4)
-    flag.expect(1234) // from the receiver only
+    eYo.flag.expect(1234) // from the receiver only
     ////
     ns = eYo.o3d.newNS()
     ns.makeC9rBase()
@@ -126,7 +126,7 @@ describe ('Tests: More', function () {
       },
     })
     o.validate(3, 4)
-    flag.expect('1foo341234')
+    eYo.flag.expect('1foo341234')
     ////
     ns = eYo.o3d.newNS()
     ns.makeC9rBase()
@@ -139,7 +139,7 @@ describe ('Tests: More', function () {
       },
     })
     o.validate(3, 4)
-    flag.expect(1234) // from the receiver only
+    eYo.flag.expect(1234) // from the receiver only
     ////
     ns = eYo.o3d.newNS()
     ns.makeC9rBase()
@@ -153,7 +153,7 @@ describe ('Tests: More', function () {
       },
     })
     o.validate(3, 4)
-    flag.expect('1foo341234') // from the receiver only
+    eYo.flag.expect('1foo341234') // from the receiver only
   })
   it ('eYo.more.enhanceO3dValidate(, , true)', function () {
     // `this` is the owner in validate.
@@ -161,7 +161,7 @@ describe ('Tests: More', function () {
     ns_onr.makeC9rBase({
       methods: {
         flag (...$) {
-          flag.push(1, ...$)
+          eYo.flag.push(1, ...$)
         },
         fooValidate(key, before, after) {
           this.flag(key, before, after)
@@ -180,7 +180,7 @@ describe ('Tests: More', function () {
     chai.expect(ns.C9rBase[eYo.$].modelHandleValidate)
     ns.C9rBase[eYo.$].modelHandleValidate('foo', {})
     o.validate(3, 4)
-    flag.expect('1foo34') // from the owner
+    eYo.flag.expect('1foo34') // from the owner
     ////
     ns = eYo.o3d.newNS()
     ns.makeC9rBase()
@@ -193,7 +193,7 @@ describe ('Tests: More', function () {
       },
     })
     o.validate(3, 4)
-    flag.expect(1234) // from the receiver only
+    eYo.flag.expect(1234) // from the receiver only
     ////
     ns = eYo.o3d.newNS()
     ns.makeC9rBase()
@@ -220,7 +220,7 @@ describe ('Tests: More', function () {
       },
     })
     o.validate(3, 4)
-    flag.expect(1234) // from the receiver only
+    eYo.flag.expect(1234) // from the receiver only
     ////
     ns = eYo.o3d.newNS()
     ns.makeC9rBase()
@@ -234,6 +234,6 @@ describe ('Tests: More', function () {
       },
     })
     o.validate(3, 4)
-    flag.expect('1foo341234')
+    eYo.flag.expect('1foo341234')
   })
 })

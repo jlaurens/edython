@@ -6,7 +6,7 @@ describe ('Tests: xre', function () {
     onr = eYo.c9r && eYo.c9r.new({
       methods: {
         flag (what, ...$) {
-          flag.push(1, what, ...$)
+          eYo.flag.push(1, what, ...$)
           return what
         },
       },

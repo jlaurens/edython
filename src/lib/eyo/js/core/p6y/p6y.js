@@ -116,7 +116,7 @@ eYo.p6y.makeC9rBase(true, {
     this.removeObservers()
     this._disposeStored(...$)
     //... chai.assert(eYo.isNA(p6y.value))
-    //... flag.expect(12)
+    //... eYo.flag.expect(12)
     //>>>
   },
   methods: {
@@ -132,13 +132,13 @@ eYo.p6y.makeC9rBase(true, {
         //... var p6y = new eYo.P6y('p6y', onr)
         //... what = eYo.c9r.new({
         //...   dispose (...$) {
-        //...     flag.push(1, ...$)
+        //...     eYo.flag.push(1, ...$)
         //...   }
         //... })
         //... flag.reset()
         //... what[eYo.$p6y] = p6y
         //... p6y.__disposeStored(what, 2, 3)
-        //... flag.expect(123)
+        //... eYo.flag.expect(123)
       } else if (eYo.isRA(what)) {
         try {
           what.forEach(x => this.__disposeStored(x, ...$))
@@ -147,31 +147,31 @@ eYo.p6y.makeC9rBase(true, {
         }
         //... what = []
         //... p6y.__disposeStored(what, 2, 3)
-        //... flag.expect()
+        //... eYo.flag.expect()
         //... var value_1 = eYo.c9r.new({
         //...   dispose (...$) {
-        //...     flag.push(1, ...$)
+        //...     eYo.flag.push(1, ...$)
         //...   }
         //... })
         //... value_1[eYo.$p6y] = p6y
         //... what = [value_1]
         //... p6y.__disposeStored(what, 2, 3)
-        //... flag.expect(123)
+        //... eYo.flag.expect(123)
         //... var value_1 = eYo.c9r.new({
         //...   dispose (...$) {
-        //...     flag.push(8, ...$)
+        //...     eYo.flag.push(8, ...$)
         //...   }
         //... })
         //... value_1[eYo.$p6y] = p6y
         //... var value_2 = eYo.c9r.new({
         //...   dispose (...$) {
-        //...     flag.push(9, ...$)
+        //...     eYo.flag.push(9, ...$)
         //...   }
         //... })
         //... value_2[eYo.$p6y] = p6y
         //... what = [value_1, value_2]
         //... p6y.__disposeStored(what, 2, 3)
-        //... flag.expect(823923)
+        //... eYo.flag.expect(823923)
       } else if (what) {
         if (what instanceof Map) {
           for (let v of what.values()) {
@@ -180,31 +180,31 @@ eYo.p6y.makeC9rBase(true, {
           what.clear()
           //... what = new Map([])
           //... p6y.__disposeStored(what, 1, 2, 3)
-          //... flag.expect()
+          //... eYo.flag.expect()
           //... var value_1 = eYo.c9r.new({
           //...   dispose (...$) {
-          //...     flag.push(1, ...$)
+          //...     eYo.flag.push(1, ...$)
           //...   }
           //... })
           //... value_1[eYo.$p6y] = p6y
           //... what = new Map([[1, value_1]])
           //... p6y.__disposeStored(what, 2, 3)
-          //... flag.expect(123)
+          //... eYo.flag.expect(123)
           //... var value_1 = eYo.c9r.new({
           //...   dispose (...$) {
-          //...     flag.push(8, ...$)
+          //...     eYo.flag.push(8, ...$)
           //...   }
           //... })
           //... value_1[eYo.$p6y] = p6y
           //... var value_2 = eYo.c9r.new({
           //...   dispose (...$) {
-          //...     flag.push(9, ...$)
+          //...     eYo.flag.push(9, ...$)
           //...   }
           //... })
           //... value_2[eYo.$p6y] = p6y
           //... what = new Map([[1, value_1], [2, value_2]])
           //... p6y.__disposeStored(what, 2, 3)
-          //... flag.expect(823923)
+          //... eYo.flag.expect(823923)
         } else {
           Object.keys(what).forEach(k => {
             if (eYo.objectHasOwnProperty(what, k)) {
@@ -213,31 +213,31 @@ eYo.p6y.makeC9rBase(true, {
           })
           //... what = {}
           //... p6y.__disposeStored(what, 3, 4, 5)
-          //... flag.expect()
+          //... eYo.flag.expect()
           //... var value_1 = eYo.c9r.new({
           //...   dispose (...$) {
-          //...     flag.push(1, ...$)
+          //...     eYo.flag.push(1, ...$)
           //...   }
           //... })
           //... value_1[eYo.$p6y] = p6y
           //... what = {'1': value_1}
           //... p6y.__disposeStored(what, 2, 3)
-          //... flag.expect(123)
+          //... eYo.flag.expect(123)
           //... var value_1 = eYo.c9r.new({
           //...   dispose (...$) {
-          //...     flag.push(8, ...$)
+          //...     eYo.flag.push(8, ...$)
           //...   }
           //... })
           //... value_1[eYo.$p6y] = p6y
           //... var value_2 = eYo.c9r.new({
           //...   dispose (...$) {
-          //...     flag.push(9, ...$)
+          //...     eYo.flag.push(9, ...$)
           //...   }
           //... })
           //... value_2[eYo.$p6y] = p6y
           //... what = {'1': value_1, '2': value_2}
           //... p6y.__disposeStored(what, 2, 3)
-          //... flag.expect(823923)
+          //... eYo.flag.expect(823923)
         }
       }
       //>>>
@@ -281,14 +281,14 @@ eYo.p6y.makeC9rBase(true, {
       //... var p6y = new eYo.P6y('p6y', onr)
       //... what = eYo.c9r.new({
       //...   dispose (...$) {
-      //...     flag.push(1, ...$)
+      //...     eYo.flag.push(1, ...$)
       //...   }
       //... })
       //... flag.reset()
       //... p6y.value_ = what
       //... chai.expect(p6y.value).equal(what)
       //... p6y.recycle(2, 3)
-      //... flag.expect(123)
+      //... eYo.flag.expect(123)
       //... chai.expect(what.dispose).equal(eYo.doNothing)
       //... chai.expect(p6y.value).equal(eYo.NA)
       //>>>
@@ -510,14 +510,14 @@ eYo.more.enhanceO3dValidate(eYo.P6y[eYo.$], 'p6y', true)
 //...   return after
 //... }
 //... chai.expect(p6y.validate(3, 4)).equal(4)
-//... flag.expect('12foo34')
+//... eYo.flag.expect('12foo34')
 //... delete onr.p6yValidate
 //... onr.fooP6yValidate = function (before, after) {
 //...   this.flag(2, before, after)
 //...   return after
 //... }
 //... chai.expect(p6y.validate(3, 4)).equal(4)
-//... flag.expect(1234)
+//... eYo.flag.expect(1234)
 //... delete onr.fooP6yValidate
 //... onr.p6yValidate = function (key, before, after) {
 //...   this.flag(2, before, after)
@@ -528,21 +528,21 @@ eYo.more.enhanceO3dValidate(eYo.P6y[eYo.$], 'p6y', true)
 //...   return after
 //... }
 //... chai.expect(p6y.validate(3, 4)).equal(4)
-//... flag.expect('12341678')
+//... eYo.flag.expect('12341678')
 //... p6y.value__ = 3
-//... flag.expect()
+//... eYo.flag.expect()
 //... p6y.value_ = 4
-//... flag.expect(12341678)
+//... eYo.flag.expect(12341678)
 //... onr.p6yValidate = function (key, before, after) {
 //...   this.flag(2, before, after)
 //...   return eYo.INVALID
 //... }
 //... chai.expect(p6y.validate(3, 4)).equal(eYo.INVALID)
-//... flag.expect(1234)
+//... eYo.flag.expect(1234)
 //... p6y.value__ = 3
-//... flag.expect()
+//... eYo.flag.expect()
 //... p6y.value_ = 4
-//... flag.expect(1234)
+//... eYo.flag.expect(1234)
 //... chai.expect(p6y.value).equal(3)
 //>>>
 
@@ -777,17 +777,17 @@ eYo.p6y.Dlgt_p.modelHandleStart = function (key, model, io) {
       //... p6y.value_ = 123
       //... chai.expect(p6y.value).equal(123)
       //... chai.expect(p6y[K](3, 4, 5).after).equal(x)
-      //... flag.expect(12345)
+      //... eYo.flag.expect(12345)
       //... x = 666
       //... chai.expect(p6y[K]().after).equal(x)
-      //... flag.expect(12)
+      //... eYo.flag.expect(12)
       //... chai.expect(p6y.value).equal(123)
       //... p6y[eYo.$].C9r_p[K]= function (...$) {
       //...   this.owner.flag(2, ...$)
       //... }
       //... p6y[eYo.$].modelHandleStart('foo', p6y.model)
       //... p6y[K](3, 4, 5)
-      //... flag.expect(12345)
+      //... eYo.flag.expect(12345)
     } else if (io[K]) {
       //... chai.assert(eYo.P6y_p.reset)
       _p[K] = (f_p => eYo.decorate.reentrant(K, {$ (...$) {
@@ -800,13 +800,13 @@ eYo.p6y.Dlgt_p.modelHandleStart = function (key, model, io) {
       //...   }
       //... }, 'foo', onr)
       //... chai.expect(p6y.reset(3, 4, 5).after).equal(3)
-      //... flag.expect(12345)
+      //... eYo.flag.expect(12345)
       //... p6y[eYo.$].C9r_p.reset = function (...$) {
       //...   this.owner.flag(9, ...$)
       //... }
       //... p6y[eYo.$].modelHandleStart('foo', p6y.model)
       //... p6y.reset(3, 4, 5)
-      //... flag.expect(1234519345)
+      //... eYo.flag.expect(1234519345)
     }
     //... }
   }
@@ -869,13 +869,13 @@ eYo.p6y.Dlgt_p.modelHandleStart = function (key, model, io) {
     //... chai.expect(p6y.getValueStart()).equal(3)
     //... chai.expect(p6y.stored__).undefined
     //... chai.expect(p6y.value__).equal(3)
-    //... flag.expect() // change events not fired
+    //... eYo.flag.expect() // change events not fired
     //... p6y.value_ = 4
-    //... flag.expect(1234) // change events fired
+    //... eYo.flag.expect(1234) // change events fired
     //... p6y.value_ = 4
     //... chai.expect(p6y.value).equal(4)
     //... chai.expect(p6y.reset().after).equal(3)
-    //... flag.expect(1243) // change events fired
+    //... eYo.flag.expect(1243) // change events fired
   } else if (eYo.isDef(value_m)) {
     model[eYo.$$.starters].push(object => {
       object.setStored(object.getValueStart())
@@ -907,14 +907,14 @@ eYo.p6y.Dlgt_p.modelHandleDispose = function (key, model) {
   //... }
   //... var p6y = ns.new('foo', onr)
   //... p6y.dispose(3)
-  //... flag.expect(123)
+  //... eYo.flag.expect(123)
   if (model.dispose === eYo.doNothing) {
     _p[K] = eYo.doNothing
     //... var p6y = ns.new({
     //...   dispose: false
     //... }, 'foo', onr)
     //... p6y.dispose(2)
-    //... flag.expect()
+    //... eYo.flag.expect()
   }
   //>>>
 }
@@ -963,13 +963,13 @@ eYo.p6y.Dlgt_p.modelHandleChange = function (key, model) {
           //... }, 'foo', onr)
           //... p6y.value__ = 3
           //... p6y.value_ = 4
-          //... flag.expect(12341534)
+          //... eYo.flag.expect(12341534)
           //... var p6y = ns.new({
           //...   [when]: f_after,
           //... }, 'foo', onr)
           //... p6y.value__ = 2
           //... p6y.value_ = 3
-          //... flag.expect(1231523)
+          //... eYo.flag.expect(1231523)
         } else {
           _p[when] = eYo.decorate.reentrant(when, {$ (before, after) {
             when_m.call(this.owner, before, after)
@@ -981,13 +981,13 @@ eYo.p6y.Dlgt_p.modelHandleChange = function (key, model) {
           //... }, 'foo', onr)
           //... p6y.value__ = 3
           //... p6y.value_ = 4
-          //... flag.expect(1234)
+          //... eYo.flag.expect(1234)
           //... var p6y = ns.new({
           //...   [when]: f_after,
           //... }, 'foo', onr)
           //... p6y.value__ = 2
           //... p6y.value_ = 3
-          //... flag.expect(123)
+          //... eYo.flag.expect(123)
         }
       } else {
         if (when_p) {
@@ -1005,7 +1005,7 @@ eYo.p6y.Dlgt_p.modelHandleChange = function (key, model) {
           //... }, 'foo', onr)
           //... p6y.value__ = 4
           //... p6y.value_ = 3
-          //... flag.expect(1231543)
+          //... eYo.flag.expect(1231543)
         } else {
           _p[when] = eYo.decorate.reentrant(when, {$ (before, after) { // eslint-disable-line
             when_m.call(this.owner, after)
@@ -1017,7 +1017,7 @@ eYo.p6y.Dlgt_p.modelHandleChange = function (key, model) {
           //... }, 'foo', onr)
           //... p6y.value__ = 4
           //... p6y.value_ = 3
-          //... flag.expect(123)
+          //... eYo.flag.expect(123)
         }
       }
     }
@@ -1059,11 +1059,11 @@ eYo.p6y.Dlgt_p.modelHandleGetSet = function (key, model, io) {
     //...   }
     //... })
     //... chai.expect(p6y.value).equal(v)
-    //... flag.expect(13)
+    //... eYo.flag.expect(13)
     //... chai.expect(p6y.value_).equal(v)
-    //... flag.expect()
+    //... eYo.flag.expect()
     //... chai.expect(p6y.value__).equal(v)
-    //... flag.expect()
+    //... eYo.flag.expect()
     //... var p6y = eYo.p6y.new({
     //...   copy: true,
     //...   get (builtin) {
@@ -1080,11 +1080,11 @@ eYo.p6y.Dlgt_p.modelHandleGetSet = function (key, model, io) {
     //...   }
     //... })
     //... chai.expect(p6y.value).equal(v)
-    //... flag.expect(1213)
+    //... eYo.flag.expect(1213)
     //... chai.expect(p6y.value_).equal(v)
-    //... flag.expect(12)
+    //... eYo.flag.expect(12)
     //... chai.expect(p6y.value__).equal(v)
-    //... flag.expect()
+    //... eYo.flag.expect()
     //... chai.expect(() => eYo.p6y.new({
     //...   copy: true,
     //...   get () {}  
@@ -1121,15 +1121,15 @@ eYo.p6y.Dlgt_p.modelHandleGetSet = function (key, model, io) {
     //... }, 'foo', onr)
     //... flag.reset()
     //... chai.expect(p6y.getValue()).equal(3)
-    //... flag.expect(123)
+    //... eYo.flag.expect(123)
     //... chai.expect(p6y.getStored()).equal(3)
-    //... flag.expect(123)
+    //... eYo.flag.expect(123)
     //... chai.expect(p6y.value).equal(3)
-    //... flag.expect(123)
+    //... eYo.flag.expect(123)
     //... chai.expect(p6y.value_).equal(3)
-    //... flag.expect(123)
+    //... eYo.flag.expect(123)
     //... chai.expect(p6y.value__).equal(3)
-    //... flag.expect(123)
+    //... eYo.flag.expect(123)
   } else if (io.get) {
     _p[getK] = eYo.decorate.reentrant(getK, {$ () {
       return get_m.call(this.owner, get_p.bind(this))
@@ -1143,15 +1143,15 @@ eYo.p6y.Dlgt_p.modelHandleGetSet = function (key, model, io) {
     //... }, 'foo', onr)
     //... p6y.value_ = 3
     //... chai.expect(p6y.getValue()).equal(3)
-    //... flag.expect(123)
+    //... eYo.flag.expect(123)
     //... chai.expect(p6y.getStored()).equal(3)
-    //... flag.expect()
+    //... eYo.flag.expect()
     //... chai.expect(p6y.value).equal(3)
-    //... flag.expect(123)
+    //... eYo.flag.expect(123)
     //... chai.expect(p6y.value_).equal(3)
-    //... flag.expect(123)
+    //... eYo.flag.expect(123)
     //... chai.expect(p6y.value__).equal(3)
-    //... flag.expect()
+    //... eYo.flag.expect()
   }
   let setK = 'setValue'
   let set_m = model.set
@@ -1179,7 +1179,7 @@ eYo.p6y.Dlgt_p.modelHandleGetSet = function (key, model, io) {
     //...   },
     //... }, 'foo', onr)
     //... p6y.value_ = 57
-    //... flag.expect(1357)
+    //... eYo.flag.expect(1357)
     //... var p6y = eYo.p6y.new({
     //...   set (after) {
     //...     this.flag(3, x = after)
@@ -1187,7 +1187,7 @@ eYo.p6y.Dlgt_p.modelHandleGetSet = function (key, model, io) {
     //...   }
     //... }, 'foo', onr)
     //... chai.expect(p6y.setValue(579)).equal(5791)
-    //... flag.expect(13579)
+    //... eYo.flag.expect(13579)
   } else if (io.set) {
     let set_p = _p[setK]
     if (set_m.length > 1) {
@@ -1205,7 +1205,7 @@ eYo.p6y.Dlgt_p.modelHandleGetSet = function (key, model, io) {
         //... }, 'foo', onr)
         //... p6y.stored__ = 421
         //... chai.expect(p6y.setValue(3)).equal(421)
-        //... flag.expect(123)
+        //... eYo.flag.expect(123)
       } else {
         _p[setK] = eYo.decorate.reentrant(setK, {$ (after) {
           let before = this.stored__
@@ -1220,7 +1220,7 @@ eYo.p6y.Dlgt_p.modelHandleGetSet = function (key, model, io) {
         //...   },
         //... }, 'foo', onr)
         //... p6y.value_ = 5
-        //... flag.expect(135)
+        //... eYo.flag.expect(135)
         //... var test = (what) => {
         //...   chai.expect(p6y.value).equal(what)
         //...   chai.expect(p6y.value_).equal(what)
@@ -1229,13 +1229,13 @@ eYo.p6y.Dlgt_p.modelHandleGetSet = function (key, model, io) {
         //... }
         //... test(5)
         //... p6y.value_ = 7
-        //... flag.expect(1357)
+        //... eYo.flag.expect(1357)
         //... test(7)
         //... p6y.value__ = 5
-        //... flag.expect()
+        //... eYo.flag.expect()
         //... test(5)
         //... chai.expect(p6y.setValue(7)).equal(5)
-        //... flag.expect(1357)
+        //... eYo.flag.expect(1357)
         //... test(7)
         //... var p6y = eYo.p6y.new({
         //...   get (builtin) {
@@ -1249,23 +1249,23 @@ eYo.p6y.Dlgt_p.modelHandleGetSet = function (key, model, io) {
         //... }, 'foo', onr)
         //... p6y.value__ = 5
         //... p6y.value_ = 7
-        //... flag.expect(1357)
+        //... eYo.flag.expect(1357)
         //... var test = (what) => {
         //...   chai.expect(p6y.value).equal(what)
-        //...   flag.expect(`12${what}`)
+        //...   eYo.flag.expect(`12${what}`)
         //...   chai.expect(p6y.value_).equal(what)
-        //...   flag.expect(`12${what}`)
+        //...   eYo.flag.expect(`12${what}`)
         //...   chai.expect(p6y.value__).equal(what)
-        //...   flag.expect()
+        //...   eYo.flag.expect()
         //...   chai.expect(p6y.stored__).equal(what)
-        //...   flag.expect()
+        //...   eYo.flag.expect()
         //... }
         //... test(7)
         //... p6y.value__ = 5
-        //... flag.expect()
+        //... eYo.flag.expect()
         //... test(5)
         //... chai.expect(p6y.setValue(7)).equal(5)
-        //... flag.expect(1357)
+        //... eYo.flag.expect(1357)
         //... test(7)
       }
     } else {
@@ -1284,7 +1284,7 @@ eYo.p6y.Dlgt_p.modelHandleGetSet = function (key, model, io) {
       //... }, 'foo', onr)
       //... p6y.stored__ = 421
       //... chai.expect(p6y.setValue(3)).equal(3)
-      //... flag.expect(123)
+      //... eYo.flag.expect(123)
     }
   } else if (io.pure_get) {
     _p[setK] = eYo.noSetter(function () {
@@ -1338,15 +1338,15 @@ eYo.p6y.Dlgt_p.modelHandleStored = function (key, model, io) {
     //...   },
     //... }, 'p6y', onr)
     //... chai.expect(p6y.getValue()).equal(3)
-    //... flag.expect(123)
+    //... eYo.flag.expect(123)
     //... chai.expect(p6y.getStored()).equal(3)
-    //... flag.expect(123)
+    //... eYo.flag.expect(123)
     //... chai.expect(p6y.value).equal(3)
-    //... flag.expect(123)
+    //... eYo.flag.expect(123)
     //... chai.expect(p6y.value_).equal(3)
-    //... flag.expect(123)
+    //... eYo.flag.expect(123)
     //... chai.expect(p6y.value__).equal(3)
-    //... flag.expect(123)
+    //... eYo.flag.expect(123)
   } else if (get__m === eYo.doNothing) {
     _p[getK] = eYo.noGetter(function () {
       return `Write only (${this.owner.eyo$.name}/${key})`
@@ -1364,7 +1364,7 @@ eYo.p6y.Dlgt_p.modelHandleStored = function (key, model, io) {
     //... }, 'p6y', onr)
     //... p6y.stored__ = 3
     //... chai.expect(p6y.getStored()).equal(3)
-    //... flag.expect(123)
+    //... eYo.flag.expect(123)
   }
   let setK = 'setStored'
   let set__m = model.set_
@@ -1378,9 +1378,9 @@ eYo.p6y.Dlgt_p.modelHandleStored = function (key, model, io) {
     //...   },
     //... }, 'foo', onr)
     //... p6y.value_ = 57
-    //... flag.expect(1357)
+    //... eYo.flag.expect(1357)
     //... p6y.value__ = 579
-    //... flag.expect(13579)
+    //... eYo.flag.expect(13579)
     //... var p6y = eYo.p6y.new({
     //...   set_ (after) {
     //...     this.flag(3, x = after)
@@ -1388,7 +1388,7 @@ eYo.p6y.Dlgt_p.modelHandleStored = function (key, model, io) {
     //...   },
     //... }, 'p6y', onr)
     //... chai.expect(p6y.setStored(579)).equal(5791)
-    //... flag.expect(13579)
+    //... eYo.flag.expect(13579)
     //... var x = 0
     //... var p6y = eYo.p6y.new({
     //...   get_ () {
@@ -1401,13 +1401,13 @@ eYo.p6y.Dlgt_p.modelHandleStored = function (key, model, io) {
     //...   },
     //... }, 'foo', onr)
     //... p6y.value_ = 5
-    //... flag.expect(12135)
+    //... eYo.flag.expect(12135)
     //... chai.expect(p6y.value).equal(x).equal(5)
-    //... flag.expect(125)
+    //... eYo.flag.expect(125)
     //... p6y.value__ = 57
-    //... flag.expect(1357)
+    //... eYo.flag.expect(1357)
     //... chai.expect(p6y.value).equal(x).equal(57)
-    //... flag.expect(1257)
+    //... eYo.flag.expect(1257)
   } else if (io.set_) {
     _p[setK] = eYo.decorate.reentrant(setK, {$ (after) {
       return set__m.call(this.owner, $after => this.__setStored($after), after)
@@ -1419,13 +1419,13 @@ eYo.p6y.Dlgt_p.modelHandleStored = function (key, model, io) {
     //...   },
     //... }, 'p6y', onr)
     //... p6y.setStored(5)
-    //... flag.expect(135)
+    //... eYo.flag.expect(135)
     //... chai.expect(p6y.getStored()).equal(5)
     //... p6y.value_ = 57
-    //... flag.expect(1357)
+    //... eYo.flag.expect(1357)
     //... chai.expect(p6y.getStored()).equal(57)
     //... p6y.value__ = 579
-    //... flag.expect(13579)
+    //... eYo.flag.expect(13579)
     //... chai.expect(p6y.getStored()).equal(579)
   } else if (io.pure_get) {
     _p[setK] = _p.setValue
@@ -1448,26 +1448,26 @@ eYo.p6y.Dlgt_p.modelHandleStored = function (key, model, io) {
     //... }, 'foo', onr)
     //... chai.expect(p6y.setValue).equal(p6y.setStored)  
     //... p6y.value__ = 57
-    //... flag.expect(1357)
+    //... eYo.flag.expect(1357)
     //... chai.expect(p6y.value).equal(57)
-    //... flag.expect(1257)
+    //... eYo.flag.expect(1257)
     //... chai.expect(p6y.value_).equal(57)
-    //... flag.expect(1257)
+    //... eYo.flag.expect(1257)
     //... chai.expect(p6y.value__).equal(57)
-    //... flag.expect(1257)
+    //... eYo.flag.expect(1257)
     //... chai.expect(p6y.stored__).equal(eYo.NA)
-    //... flag.expect()
+    //... eYo.flag.expect()
     //... p6y.value__ = 3
-    //... flag.expect(133)
+    //... eYo.flag.expect(133)
     //... chai.expect(p6y.value).equal(3)
-    //... flag.expect(123)
+    //... eYo.flag.expect(123)
     //... chai.expect(p6y.value_).equal(3)
-    //... flag.expect(123)
+    //... eYo.flag.expect(123)
     //... chai.expect(p6y.value__).equal(3)
-    //... flag.expect(123)
+    //... eYo.flag.expect(123)
     //... chai.expect(p6y.stored__).equal(eYo.NA)
     //... p6y.stored__ = 123
-    //... flag.expect()
+    //... eYo.flag.expect()
     //... chai.expect(p6y.value).equal(3)
     //... chai.expect(p6y.value_).equal(3)
     //... chai.expect(p6y.value__).equal(3)
@@ -1523,7 +1523,7 @@ eYo.p6y.handler.makeC9rBase({
     //... let restart = () => {
     //...   target = eYo.p6y.new('bar', onr)
     //...   handler = eYo.p6y.handler.new('foo', onr)
-    //...   handler.flag = (...$) => flag.push(1, ...$)
+    //...   handler.flag = (...$) => eYo.flag.push(1, ...$)
     //...   p = new Proxy(target, handler)
     //... }
     getProxy(target) {
@@ -1573,7 +1573,7 @@ eYo.p6y.handler.makeC9rBase({
         //...   this.flag(2, prop)
         //... }
         //... chai.expect(p.foo).undefined
-        //... flag.expect('12foo')
+        //... eYo.flag.expect('12foo')
       }
       //>>>
     },
@@ -1593,7 +1593,7 @@ eYo.p6y.handler.makeC9rBase({
         //...   this.flag(2, prop, value)
         //... }
         //... p.stored__ = 421
-        //... flag.expect('12stored__421')
+        //... eYo.flag.expect('12stored__421')
       } else if (this.isOwnedKey(prop)) {
         this[prop] = value
         return true
@@ -1619,7 +1619,7 @@ eYo.p6y.handler.makeC9rBase({
         //...   this.flag(2, prop, value)
         //... }
         //... p.foo = 421
-        //... flag.expect('12foo421')
+        //... eYo.flag.expect('12foo421')
       }
       //>>>
     },

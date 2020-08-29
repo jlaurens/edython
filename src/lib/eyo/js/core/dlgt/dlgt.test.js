@@ -73,12 +73,12 @@ describe ('Tests: Dlgt', function () {
     flag.reset()
     dlgt.methodsMerge({
       bar () {
-        flag.push(1)
+        eYo.flag.push(1)
       },
     })
     chai.expect(dlgt.C9r_p).property('bar')
     dlgt.C9r_p.bar()
-    flag.expect(1)
+    eYo.flag.expect(1)
   })
   it ('Dlgt modelMerge', function () {
     let C9r = function () {}
@@ -90,13 +90,13 @@ describe ('Tests: Dlgt', function () {
     dlgt.modelMerge({
       methods: {
         bar () {
-          flag.push(1)
+          eYo.flag.push(1)
         },
       },
     })
     chai.expect(dlgt.C9r_p).property('bar')
     dlgt.C9r_p.bar()
-    flag.expect(1)
+    eYo.flag.expect(1)
   })
   it ('Dlgt methodsMerge - overriden', function () {
     let dlgt = eYo.dlgt.new('Foo', {})
@@ -106,18 +106,18 @@ describe ('Tests: Dlgt', function () {
     flag.reset()
     dlgt.methodsMerge({
       foo () {
-        flag.push(1)
+        eYo.flag.push(1)
       },
     })
     dlgt.methodsMerge({
       foo (overriden) {
         return function () {
           overriden()
-          flag.push(2)
+          eYo.flag.push(2)
         }
       },
     })
     dlgt.C9r_p.foo()
-    flag.expect(12)
+    eYo.flag.expect(12)
   })
 })

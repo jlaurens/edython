@@ -123,17 +123,17 @@ eYo.register.add = function (object, key, filter) {
     //... // Objects to register:
     //... let a = {
     //...   flag (...$) {
-    //...     flag.push(1, ...$)
+    //...     eYo.flag.push(1, ...$)
     //...   }
     //... }
     //... let b = {
     //...   flag (...$) {
-    //...     flag.push(2, ...$)
+    //...     eYo.flag.push(2, ...$)
     //...   }
     //... }
     //... let $this = {
     //...   flag (...$) {
-    //...     flag.push(9, ...$)
+    //...     eYo.flag.push(9, ...$)
     //...   },
     //... }
     /**
@@ -148,17 +148,17 @@ eYo.register.add = function (object, key, filter) {
       //... let test = (o) => {
       //...   o.fooRegister(a)
       //...   o.fooForEach(x => x.flag(2, 3))
-      //...   flag.expect(123)
+      //...   eYo.flag.expect(123)
       //...   o.fooRegister(b)
       //...   o.fooForEach(x => x.flag(3, 4))
-      //...   flag.expect(134234)
+      //...   eYo.flag.expect(134234)
       //...   // registering twice has no effect
       //...   o.fooRegister(a)
       //...   o.fooForEach(x => x.flag(3, 4))
-      //...   flag.expect(134234)
+      //...   eYo.flag.expect(134234)
       //...   o.fooRegister(b)
       //...   o.fooForEach(x => x.flag(3, 4))
-      //...   flag.expect(134234)
+      //...   eYo.flag.expect(134234)
       //... }
       //... o = {}
       //... let $k = eYo.register.add(o, 'foo')
@@ -181,19 +181,19 @@ eYo.register.add = function (object, key, filter) {
       //...   o.fooRegister(a)
       //...   o.fooRegister(b)
       //...   o.fooForEach(x => x.flag(3, 4))
-      //...   flag.expect(134234)
+      //...   eYo.flag.expect(134234)
       //...   o.fooUnregister(a)
       //...   o.fooForEach(x => x.flag(3, 4))
-      //...   flag.expect(234)
+      //...   eYo.flag.expect(234)
       //...   o.fooRegister(a)
       //...   o.fooForEach(x => x.flag(3, 4))
-      //...   flag.expect(234134)
+      //...   eYo.flag.expect(234134)
       //...   o.fooUnregister(a)
       //...   o.fooForEach(x => x.flag(3, 4))
-      //...   flag.expect(234)
+      //...   eYo.flag.expect(234)
       //...   o.fooUnregister(b)
       //...   o.fooForEach(x => x.flag(3, 4))
-      //...   flag.expect()
+      //...   eYo.flag.expect()
       //... }
       //... prepare()
       //... test(o)
@@ -217,7 +217,7 @@ eYo.register.add = function (object, key, filter) {
       //... o.fooRegister(a)
       //... o.fooRegister(b)
       //... o.fooForEach(x => x.flag(3, 4))
-      //... flag.expect(134234)
+      //... eYo.flag.expect(134234)
       //>>>
       //<<< mochai: $this
       //... o = {}
@@ -228,7 +228,7 @@ eYo.register.add = function (object, key, filter) {
       //...    this.flag(3, 4)
       //...    x.flag(3, 4)
       //... })
-      //... flag.expect(934134934234)
+      //... eYo.flag.expect(934134934234)
       //>>>
       //>>>
     },
@@ -256,17 +256,17 @@ eYo.register.add = function (object, key, filter) {
       //...   x.flag()
       //...   return x === a
       //... })).true
-      //... flag.expect(1)
+      //... eYo.flag.expect(1)
       //... chai.expect(o.fooSome(x => {
       //...   x.flag()
       //...   return x === b
       //... })).true
-      //... flag.expect(12)
+      //... eYo.flag.expect(12)
       //... chai.expect(o.fooSome(x => {
       //...   x.flag()
       //...   return x === 0
       //... })).false
-      //... flag.expect(12)
+      //... eYo.flag.expect(12)
       //>>>
       //<<< mochai: $this
       //... o = {}
@@ -278,19 +278,19 @@ eYo.register.add = function (object, key, filter) {
       //...   x.flag()
       //...   return x === a
       //... })).true
-      //... flag.expect(91)
+      //... eYo.flag.expect(91)
       //... chai.expect(o.fooSome($this, function(x) {
       //...   this.flag()
       //...   x.flag()
       //...   return x === b
       //... })).true
-      //... flag.expect(9192)
+      //... eYo.flag.expect(9192)
       //... chai.expect(o.fooSome($this, function(x) {
       //...   this.flag()
       //...   x.flag()
       //...   return x === 0
       //... })).false
-      //... flag.expect(9192)
+      //... eYo.flag.expect(9192)
       //>>>
       //>>>
     },

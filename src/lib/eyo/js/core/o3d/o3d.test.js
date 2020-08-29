@@ -6,7 +6,7 @@ describe ('Tests: Owned', function () {
     onr = eYo.c9r && eYo.c9r.new({
       methods: {
         flag (what, ...$) {
-          flag.push(1, what, ...$)
+          eYo.flag.push(1, what, ...$)
           return what
         },
       },
@@ -61,17 +61,17 @@ describe ('Tests: Owned', function () {
     })
     let o = ns_o3d.new('abc', eYo.c9r.new())
     o.eyo$.C9r_p.ownerWillChange = function (before, after) {
-      flag.push(1)
+      eYo.flag.push(1)
     }
     o.eyo$.C9r_p.ownerDidChange = function (before, after) {
-      flag.push(2)
+      eYo.flag.push(2)
       o.eyo$.C9r_s.ownerDidChange.call(this, before, after)
     }
     onr.hasUI = true
     o.eyo$.C9r_p.initUI = function () {
-      flag.push(3)
+      eYo.flag.push(3)
     }
     o.owner_ = onr
-    flag.expect(123)
+    eYo.flag.expect(123)
   })
 })

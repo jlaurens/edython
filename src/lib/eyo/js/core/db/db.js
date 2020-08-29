@@ -139,8 +139,8 @@ eYo.o3d.newC9r('DB', {
         for (let value of this.map__.values()) {
           f(value)
         }
-        //... db.forEach(v => flag.push(1, v.key))
-        //... flag.expect(1213)
+        //... db.forEach(v => eYo.flag.push(1, v.key))
+        //... eYo.flag.expect(1213)
         //>>>
       } else {
         //<<< mochai: $this
@@ -150,7 +150,7 @@ eYo.o3d.newC9r('DB', {
         //... db.forEach(onr, function (v) {
         //...   this.flag(v.key)
         //... })
-        //... flag.expect(1213)
+        //... eYo.flag.expect(1213)
         //>>>
       }
       //>>>
@@ -193,17 +193,17 @@ eYo.o3d.newC9r('DB', {
         //...   this.flag(v.key)
         //...   return v.key === '2'
         //... })).true
-        //... flag.expect(12)
+        //... eYo.flag.expect(12)
         //... chai.expect(db.some(onr, function (v) {
         //...   this.flag(v.key)
         //...   return v.key === '3'
         //... })).true
-        //... flag.expect(1213)
+        //... eYo.flag.expect(1213)
         //... chai.expect(db.some(onr, function (v) {
         //...   this.flag(v.key)
         //...   return v.key === '4'
         //... })).false
-        //... flag.expect(1213)
+        //... eYo.flag.expect(1213)
         //>>>
       }
       return false
@@ -221,14 +221,14 @@ eYo.o3d.newC9r('DB', {
         //... var a = eYo.o3d.new('1', onr)
         //... var b = eYo.o3d.new('2', onr)
         //... a.dispose = b.dispose = function (...$) {
-        //...   flag.push(...$, this.key)
+        //...   eYo.flag.push(...$, this.key)
         //... }
         //... db.add(a, b)
         //... chai.expect(db.size).equal(2)
         $.forEach(object => {
           //... db.remove(a, b)
           //... chai.expect(db.size).equal(0)
-          //... flag.expect(12)
+          //... eYo.flag.expect(12)
           this.map__.delete(object[this.id_key__])
           object.dispose()
         })
@@ -260,10 +260,10 @@ eYo.o3d.newC9r('DB', {
       //... var b = eYo.o3d.new('2', onr)
       //... db.add(a, b)
       //... a.dispose = b.dispose = function (...$) {
-      //...   flag.push(this.key, ...$)
+      //...   eYo.flag.push(this.key, ...$)
       //... }
       //... db.dispose(3, 4)
-      //... flag.expect(134234)
+      //... eYo.flag.expect(134234)
       //>>>
     }
     //<<< mochai: not owner

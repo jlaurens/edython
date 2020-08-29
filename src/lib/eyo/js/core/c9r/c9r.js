@@ -57,18 +57,18 @@ eYo.c9r._p.appendToMethod = (object, key, f) => {
   }
   //... var o = {}
   //... eYo.c9r.appendToMethod(o, 'foo1', function (x) {
-  //...   flag.push(x)
+  //...   eYo.flag.push(x)
   //... })
   //... o.foo1(1)
-  //... flag.expect(1)
+  //... eYo.flag.expect(1)
   //... o = {
   //...   foo1: eYo.doNothing,
   //... }
   //... eYo.c9r.appendToMethod(o, 'foo1', function (x) {
-  //...   flag.push(x)
+  //...   eYo.flag.push(x)
   //... })
   //... o.foo1(1)
-  //... flag.expect(1)
+  //... eYo.flag.expect(1)
   //... o = {
   //...   foo1: 421,
   //... }
@@ -77,14 +77,14 @@ eYo.c9r._p.appendToMethod = (object, key, f) => {
   //... }).throw()
   //... o = {
   //...   foo1 (x) {
-  //...     flag.push(x)
+  //...     eYo.flag.push(x)
   //...   },
   //... }
   //... eYo.c9r.appendToMethod(o, 'foo1', function (x) {
-  //...   flag.push(x+1)
+  //...   eYo.flag.push(x+1)
   //... })
   //... o.foo1(1)
-  //... flag.expect(12)
+  //... eYo.flag.expect(12)
   //>>>
 }
 
@@ -611,7 +611,7 @@ eYo.mixinFR(eYo.c9r._p, {
     //... let NS = eYo.c9r.newNS()
     //... var model = {
     //...   prepare (...$) {
-    //...     flag.push('p', ...$)
+    //...     eYo.flag.push('p', ...$)
     //...   }
     //... }
     //... NS.makeC9rBase(model)
@@ -622,20 +622,20 @@ eYo.mixinFR(eYo.c9r._p, {
       return new C9r(...arguments)
       //... var o = NS.prepare(1, 2)
       //... chai.expect(o).instanceOf(NS.C9rBase)
-      //... flag.expect('p12')
+      //... eYo.flag.expect('p12')
     }
     C9r = model[eYo.$C9r]
     if (!C9r) {
       C9r = this.modelMakeC9r(model, ...$)
       //... var o = NS.prepare({}, 1, 2)
       //... chai.expect(o).instanceOf(eYo.c9r.C9rBase)
-      //... flag.expect('p12')
+      //... eYo.flag.expect('p12')
     }
     //... var o = eYo.c9r.prepare({
     //...   [eYo.$C9r]: NS.C9rBase
     //... }, 1, 2)
     //... chai.expect(o).instanceOf(NS.C9rBase)
-    //... flag.expect('p12')
+    //... eYo.flag.expect('p12')
     var ans = new C9r(...$)
     ans.preInit = function () {
       delete this.preInit
@@ -644,20 +644,20 @@ eYo.mixinFR(eYo.c9r._p, {
     return ans
     //... var o = eYo.c9r.prepare({
     //...   dispose (...$) {
-    //...     flag.push('x', ...$)
+    //...     eYo.flag.push('x', ...$)
     //...   }
     //... })
     //... o.dispose(1, 2)
-    //... flag.expect('x12')
+    //... eYo.flag.expect('x12')
     //... var o = eYo.c9r.prepare({
     //...   methods: {
     //...     flag (...$) {
-    //...       flag.push('/', ...$)
+    //...       eYo.flag.push('/', ...$)
     //...     },
     //...   },
     //... })
     //... o.flag(1, 2)
-    //... flag.expect('/12')
+    //... eYo.flag.expect('/12')
     //>>>
   },
   /**
@@ -690,12 +690,12 @@ eYo.mixinFR(eYo.c9r._p, {
     //...   },
     //...   methods: {
     //...     flag(...$) {
-    //...       flag.push('/', ...$)
+    //...       eYo.flag.push('/', ...$)
     //...     }
     //...   }
     //... })
     //... foo.flag(1, 2)
-    //... flag.expect('/12')
+    //... eYo.flag.expect('/12')
     //... chai.expect(foo.FOO).equal(421)
     //>>>
   },
@@ -739,12 +739,12 @@ eYo.mixinFR(eYo.c9r._p, {
     //...   },
     //...   methods: {
     //...     flag(...$) {
-    //...       flag.push('/', ...$)
+    //...       eYo.flag.push('/', ...$)
     //...     }
     //...   }
     //... })
     //... NS.id1.flag(1, 2)
-    //... flag.expect('/12')
+    //... eYo.flag.expect('/12')
     //... chai.expect(NS.id1.FOO).equal(421)
     //... var SuperC9r = eYo.c9r.newC9r('')
     //... SuperC9r[eYo.$].finalizeC9r()

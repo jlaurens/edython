@@ -562,68 +562,68 @@ eYo.do._p.makeWrapper_ = (
   }
   //... var $flag
   //... let $this = {
-  //...   flag (...$) {$flag.push(...$, 8)}
+  //...   flag (...$) {eYo.flag.push(...$, 8)}
   //... }
   //... var $$flag
   //... let $$this = {
-  //...   flag (...$) {$$flag.push(...$, 9)}
+  //...   flag (...$) {eYo.flag.push(...$, 9)}
   //... }
   //... beforeEach (function () {
-  //...    $flag = $$flag = flag
+  //...    $flag = $$flag = eYo.test.flag
   //... })
   //<<< mochai: no $this
-  //... var start_f = () => { flag.push(1); return 6}
-  //... var begin_finally_f = (...$) => flag.push(3, ...$)
-  //... var end_finally_f = (...$) => flag.push(5, ...$)
+  //... var start_f = () => { eYo.flag.push(1); return 6}
+  //... var begin_finally_f = (...$) => eYo.flag.push(3, ...$)
+  //... var end_finally_f = (...$) => eYo.flag.push(5, ...$)
   //<<< mochai: no $$this
-  //... var try_f = () => flag.push(2)
-  //... var finally_f = () => flag.push(4)
+  //... var try_f = () => eYo.flag.push(2)
+  //... var finally_f = () => eYo.flag.push(4)
   //... var wrapper = eYo.do.makeWrapper_()
   //... wrapper(try_f, finally_f)
-  //... flag.expect(24)
+  //... eYo.flag.expect(24)
   //... wrapper(try_f)
-  //... flag.expect(2)
+  //... eYo.flag.expect(2)
   //... wrapper(eYo.NA, finally_f)
-  //... flag.expect(4)
+  //... eYo.flag.expect(4)
   //... var wrapper = eYo.do.makeWrapper_(eYo.NA, start_f)
   //... wrapper(try_f)
-  //... flag.expect(12)
+  //... eYo.flag.expect(12)
   //... wrapper(try_f, finally_f)
-  //... flag.expect(124)
+  //... eYo.flag.expect(124)
   //... var wrapper = eYo.do.makeWrapper_(eYo.NA, start_f, eYo.NA, end_finally_f)
   //... wrapper(try_f)
-  //... flag.expect(1256)
+  //... eYo.flag.expect(1256)
   //... wrapper(try_f, finally_f)
-  //... flag.expect(12456)
+  //... eYo.flag.expect(12456)
   //... var wrapper = eYo.do.makeWrapper_(eYo.NA, start_f, begin_finally_f, end_finally_f)
   //... wrapper(try_f)
-  //... flag.expect(123656)
+  //... eYo.flag.expect(123656)
   //... wrapper(try_f, finally_f)
-  //... flag.expect(1236456)
+  //... eYo.flag.expect(1236456)
   //>>>
   //<<< mochai: $$this
   //... var try_f = function() {this.flag(2)}
   //... var finally_f = function() {this.flag(4)}
   //... var wrapper = eYo.do.makeWrapper_()
   //... wrapper($$this, try_f)
-  //... flag.expect(29)
+  //... eYo.flag.expect(29)
   //... wrapper($$this, try_f, finally_f)
-  //... flag.expect(2949)
+  //... eYo.flag.expect(2949)
   //... var wrapper = eYo.do.makeWrapper_(eYo.NA, start_f)
   //... wrapper($$this, try_f)
-  //... flag.expect(129)
+  //... eYo.flag.expect(129)
   //... wrapper($$this, try_f, finally_f)
-  //... flag.expect(12949)
+  //... eYo.flag.expect(12949)
   //... var wrapper = eYo.do.makeWrapper_(eYo.NA, start_f, eYo.NA, end_finally_f)
   //... wrapper($$this, try_f)
-  //... flag.expect(12956)
+  //... eYo.flag.expect(12956)
   //... wrapper($$this, try_f, finally_f)
-  //... flag.expect(1294956)
+  //... eYo.flag.expect(1294956)
   //... var wrapper = eYo.do.makeWrapper_(eYo.NA, start_f, begin_finally_f, end_finally_f)
   //... wrapper($$this, try_f)
-  //... flag.expect(1293656)
+  //... eYo.flag.expect(1293656)
   //... wrapper($$this, try_f, finally_f)
-  //... flag.expect(129364956)
+  //... eYo.flag.expect(129364956)
   //>>>
   //>>>
   //<<< mochai: $this
@@ -631,76 +631,76 @@ eYo.do._p.makeWrapper_ = (
   //... var begin_finally_f = function (...$) { this.flag(3, ...$) }
   //... var end_finally_f = function (...$) { this.flag(5, ...$) }
   //<<< mochai: no $$this
-  //... var try_f = () => flag.push(2)
-  //... var finally_f = () => flag.push(4)
+  //... var try_f = () => eYo.flag.push(2)
+  //... var finally_f = () => eYo.flag.push(4)
   //... var wrapper = eYo.do.makeWrapper_($this)
   //... wrapper(try_f)
-  //... flag.expect(2)
+  //... eYo.flag.expect(2)
   //... wrapper(try_f, finally_f)
-  //... flag.expect(24)
+  //... eYo.flag.expect(24)
   //... var wrapper = eYo.do.makeWrapper_($this, start_f)
   //... wrapper(try_f)
-  //... flag.expect(182)
+  //... eYo.flag.expect(182)
   //... wrapper(try_f, finally_f)
-  //... flag.expect(1824)
+  //... eYo.flag.expect(1824)
   //... var wrapper = eYo.do.makeWrapper_($this, start_f, eYo.NA, end_finally_f)
   //... wrapper(try_f)
-  //... flag.expect(182568)
+  //... eYo.flag.expect(182568)
   //... wrapper(try_f, finally_f)
-  //... flag.expect(1824568)
+  //... eYo.flag.expect(1824568)
   //... var wrapper = eYo.do.makeWrapper_($this, start_f, begin_finally_f, end_finally_f)
   //... wrapper(try_f)
-  //... flag.expect(182368568)
+  //... eYo.flag.expect(182368568)
   //... wrapper(try_f, finally_f)
-  //... flag.expect(1823684568)
+  //... eYo.flag.expect(1823684568)
   //>>>
   //<<< mochai: $$this <- $this
   //... var try_f = function () {this.flag(2)}
   //... var finally_f = function () {this.flag(4)}
   //... var wrapper = eYo.do.makeWrapper_($this)
   //... wrapper(try_f)
-  //... flag.expect(28)
+  //... eYo.flag.expect(28)
   //... wrapper(try_f, finally_f)
-  //... flag.expect(2848)
+  //... eYo.flag.expect(2848)
   //... var wrapper = eYo.do.makeWrapper_($this, start_f)
   //... wrapper(try_f)
-  //... flag.expect(1828)
+  //... eYo.flag.expect(1828)
   //... wrapper(try_f, finally_f)
-  //... flag.expect(182848)
+  //... eYo.flag.expect(182848)
   //... var wrapper = eYo.do.makeWrapper_($this, start_f, eYo.NA, end_finally_f)
   //... wrapper(try_f)
-  //... flag.expect(1828568)
+  //... eYo.flag.expect(1828568)
   //... wrapper(try_f, finally_f)
-  //... flag.expect(182848568)
+  //... eYo.flag.expect(182848568)
   //... var wrapper = eYo.do.makeWrapper_($this, start_f, begin_finally_f, end_finally_f)
   //... wrapper(try_f)
-  //... flag.expect(1828368568)
+  //... eYo.flag.expect(1828368568)
   //... wrapper(try_f, finally_f)
-  //... flag.expect(182836848568)
+  //... eYo.flag.expect(182836848568)
   //>>>
   //<<< mochai: $$this
   //... var try_f = function() {this.flag(2)}
   //... var finally_f = function() {this.flag(4)}
   //... var wrapper = eYo.do.makeWrapper_($this)
   //... wrapper($$this, try_f)
-  //... flag.expect(29)
+  //... eYo.flag.expect(29)
   //... wrapper($$this, try_f, finally_f)
-  //... flag.expect(2949)
+  //... eYo.flag.expect(2949)
   //... var wrapper = eYo.do.makeWrapper_($this, start_f)
   //... wrapper($$this, try_f)
-  //... flag.expect(1829)
+  //... eYo.flag.expect(1829)
   //... wrapper($$this, try_f, finally_f)
-  //... flag.expect(182949)
+  //... eYo.flag.expect(182949)
   //... var wrapper = eYo.do.makeWrapper_($this, start_f, eYo.NA, end_finally_f)
   //... wrapper($$this, try_f)
-  //... flag.expect(1829568)
+  //... eYo.flag.expect(1829568)
   //... wrapper($$this, try_f, finally_f)
-  //... flag.expect(182949568)
+  //... eYo.flag.expect(182949568)
   //... var wrapper = eYo.do.makeWrapper_($this, start_f, begin_finally_f, end_finally_f)
   //... wrapper($$this, try_f)
-  //... flag.expect(1829368568)
+  //... eYo.flag.expect(1829368568)
   //... wrapper($$this, try_f, finally_f)
-  //... flag.expect(182936849568)
+  //... eYo.flag.expect(182936849568)
   //>>>
   //>>>
   
@@ -725,22 +725,22 @@ eYo.do._p.makeWrapper = (
 ) => {
   //<<< mochai: makeWrapper
   //... let $this = {
-  //...   flag (...$) {flag.push(...$, 8)}
+  //...   flag (...$) {eYo.flag.push(...$, 8)}
   //... }
   //... let $$this = {
-  //...   flag (...$) {flag.push(...$, 9)}
+  //...   flag (...$) {eYo.flag.push(...$, 9)}
   //... }
-  //... var start_f = () => { flag.push(1); return 6}
-  //... var begin_finally_f = (...$) => flag.push(3, ...$)
-  //... var end_finally_f = (...$) => flag.push(5, ...$)
-  //... var try_f = () => flag.push(2)
-  //... var finally_f = () => flag.push(4)
+  //... var start_f = () => { eYo.flag.push(1); return 6}
+  //... var begin_finally_f = (...$) => eYo.flag.push(3, ...$)
+  //... var end_finally_f = (...$) => eYo.flag.push(5, ...$)
+  //... var try_f = () => eYo.flag.push(2)
+  //... var finally_f = () => eYo.flag.push(4)
   //... let test = (f, g) => {
   //...   f(try_f, finally_f)
-  //...   let x = flag.v
-  //...   flag.reset()
+  //...   let x = eYo.test.flag.v
+  //...   eYo.flag.reset()
   //...   g(try_f, finally_f)
-  //...   flag.expect(x)
+  //...   eYo.flag.expect(x)
   //... }
   //<<< mochai: end_finally_f / 4 arguments
   // $this|NA, start_f|NA, begin_finally_f|NA, end_finally_f
@@ -785,7 +785,6 @@ eYo.do._p.makeWrapper = (
     eYo.isDef(end_finally_f) && eYo.throw(`${this.name}/makeWrapper: bad last argument (${end_finally_f}/1)`)
     if (eYo.isF($this)) {
       [$this, start_f, begin_finally_f, end_finally_f] = [this, $this, start_f, begin_finally_f]
-
     }
   }
   if (!end_finally_f) {

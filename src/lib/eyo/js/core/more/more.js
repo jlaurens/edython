@@ -49,8 +49,8 @@ eYo.more.iterators = function (_p, type) {
     //... var o = {}
     //... o.fooMap = new Map([[1, 4], [2, 2], [3, 1]])
     //... eYo.more.iterators(o, 'foo')
-    //... o.fooForEach(v => flag.push(v))
-    //... flag.expect(421)
+    //... o.fooForEach(v => eYo.flag.push(v))
+    //... eYo.flag.expect(421)
   }
   _p[tSome] = function ($this, f) {
     if (!eYo.isF(f)) {
@@ -202,7 +202,7 @@ eYo.more.override = function (_p, K, f) {
   //<<< mochai: eYo.more.override
   //... var o = {
   //...   flag (...$) {
-  //...     flag.push(...$)
+  //...     eYo.flag.push(...$)
   //...   }
   //... }
   //... var f = function (overriden, ...$) {
@@ -215,7 +215,7 @@ eYo.more.override = function (_p, K, f) {
   //...   eYo.more.override(o, 'foo', f)
   //... }).throw()
   //... o.foo = function (...$) {
-  //...   flag.push(1)
+  //...   eYo.flag.push(1)
   //...   this.flag(...$)
   //... }
   eYo.isF(f) && (f === eYo.doNothing || f.length && XRegExp.exec(f.toString(), eYo.xre.function_overriden)) || eYo.throw(`eYo.more.override: Bad overrider`)
@@ -232,12 +232,12 @@ eYo.more.override = function (_p, K, f) {
     f.call(this, f_p.bind(this), ...$)
   }
   //... o.foo(2)
-  //... flag.expect(12)
+  //... eYo.flag.expect(12)
   //... eYo.more.override(o, 'foo', f)
   //... o.foo(2)
-  //... flag.expect(123)
+  //... eYo.flag.expect(123)
   //... eYo.more.override(o, 'foo', f)
   //... o.foo(2)
-  //... flag.expect(1233)
+  //... eYo.flag.expect(1233)
   //>>>
 }

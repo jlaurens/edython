@@ -241,8 +241,8 @@ eYo.noGetter = function (msg) {
   //... chai.expect(() => eYo.noGetter(421)).throw()
   //... chai.expect(() => eYo.noGetter()()).throw()
   //... chai.expect(() => eYo.noGetter('abc')()).throw()
-  //... chai.expect(() => eYo.noGetter(() => eYo.test.push(421))()).throw()
-  //... eYo.test.expect(421)
+  //... chai.expect(() => eYo.noGetter(() => eYo.flag.push(421))()).throw()
+  //... eYo.flag.expect(421)
   //>>>
 }
 /**
@@ -266,8 +266,8 @@ eYo.noSetter = function (msg) {
   //... chai.expect(() => eYo.noSetter(421)).throw()
   //... chai.expect(() => eYo.noSetter()()).throw()
   //... chai.expect(() => eYo.noSetter('abc')()).throw()
-  //... chai.expect(() => eYo.noSetter(() => eYo.test.push(421))()).throw()
-  //... eYo.test.expect(421)
+  //... chai.expect(() => eYo.noSetter(() => eYo.flag.push(421))()).throw()
+  //... eYo.flag.expect(421)
   //>>>
 }
 /**
@@ -306,14 +306,14 @@ eYo.descriptorR = (msg, getter, configurable) => {
   //<<< mochai: eYo.descriptorR
   //... chai.assert(eYo.descriptorR)
   //... let msg_1 = 'foo'
-  //... let msg_2 = () => eYo.test.push(421)
-  //... let getter = () => eYo.test.push(666)
+  //... let msg_2 = () => eYo.flag.push(421)
+  //... let getter = () => eYo.flag.push(666)
   //... var o, d
   //... o = {}
   //... d = eYo.descriptorR(getter)
   //... Object.defineProperty(o, 'bar', d)
   //... o.bar
-  //... eYo.test.expect(666)
+  //... eYo.flag.expect(666)
   //... chai.expect(() => o.bar = 123).throw()
   //... d = eYo.descriptorR(getter)
   //... chai.expect(() => Object.defineProperty(o, 'bar', d)).throw()
@@ -321,7 +321,7 @@ eYo.descriptorR = (msg, getter, configurable) => {
   //... d = eYo.descriptorR(getter, true)
   //... Object.defineProperty(o, 'bar', d)
   //... o.bar
-  //... eYo.test.expect(666)
+  //... eYo.flag.expect(666)
   //... chai.expect(() => o.bar = 123).throw()
   //... d = eYo.descriptorR(getter)
   //... Object.defineProperty(o, 'bar', d) // now it is configurable
@@ -329,7 +329,7 @@ eYo.descriptorR = (msg, getter, configurable) => {
   //... d = eYo.descriptorR(msg_1, getter)
   //... Object.defineProperty(o, 'bar', d)
   //... o.bar
-  //... eYo.test.expect(666)
+  //... eYo.flag.expect(666)
   //... chai.expect(() => o.bar = 123).throw()
   //... d = eYo.descriptorR(getter)
   //... chai.expect(() => Object.defineProperty(o, 'bar', d)).throw()
@@ -337,27 +337,27 @@ eYo.descriptorR = (msg, getter, configurable) => {
   //... d = eYo.descriptorR(msg_1, getter, true)
   //... Object.defineProperty(o, 'bar', d)
   //... o.bar
-  //... eYo.test.expect(666)
+  //... eYo.flag.expect(666)
   //... chai.expect(() => o.bar = 123).throw()
-  //... eYo.test.expect()
+  //... eYo.flag.expect()
   //... d = eYo.descriptorR(getter)
   //... Object.defineProperty(o, 'bar', d) // now it is configurable
   //... o = {}
   //... d = eYo.descriptorR({lazy: msg_2}, getter)
   //... Object.defineProperty(o, 'bar', d)
   //... o.bar
-  //... eYo.test.expect(666)
+  //... eYo.flag.expect(666)
   //... chai.expect(() => o.bar = 123).throw()
-  //... eYo.test.expect(421)
+  //... eYo.flag.expect(421)
   //... d = eYo.descriptorR(getter)
   //... chai.expect(() => Object.defineProperty(o, 'bar', d)).throw()
   //... o = {}
   //... d = eYo.descriptorR({lazy: msg_2}, getter, true)
   //... Object.defineProperty(o, 'bar', d)
   //... o.bar
-  //... eYo.test.expect(666)
+  //... eYo.flag.expect(666)
   //... chai.expect(() => o.bar = 123).throw()
-  //... eYo.test.expect(421)
+  //... eYo.flag.expect(421)
   //... d = eYo.descriptorR(getter)
   //... Object.defineProperty(o, 'bar', d) // now it is configurable
   //>>>
@@ -391,14 +391,14 @@ eYo.descriptorW = (msg, setter, configurable) => {
   //<<< mochai: eYo.descriptorW
   //... chai.assert(eYo.descriptorW)
   //... let msg_1 = 'foo'
-  //... let msg_2 = () => eYo.test.push(421)
-  //... let setter = () => eYo.test.push(666)
+  //... let msg_2 = () => eYo.flag.push(421)
+  //... let setter = () => eYo.flag.push(666)
   //... var o, d
   //... o = {}
   //... d = eYo.descriptorW(setter)
   //... Object.defineProperty(o, 'bar', d)
   //... o.bar = 123
-  //... eYo.test.expect(666)
+  //... eYo.flag.expect(666)
   //... chai.expect(() => o.bar).throw()
   //... d = eYo.descriptorW(setter)
   //... chai.expect(() => Object.defineProperty(o, 'bar', d)).throw()
@@ -406,7 +406,7 @@ eYo.descriptorW = (msg, setter, configurable) => {
   //... d = eYo.descriptorW(setter, true)
   //... Object.defineProperty(o, 'bar', d)
   //... o.bar = 123
-  //... eYo.test.expect(666)
+  //... eYo.flag.expect(666)
   //... chai.expect(() => o.bar).throw()
   //... d = eYo.descriptorW(setter)
   //... Object.defineProperty(o, 'bar', d) // now it is configurable
@@ -414,27 +414,27 @@ eYo.descriptorW = (msg, setter, configurable) => {
   //... d = eYo.descriptorW(msg_1, setter, true)
   //... Object.defineProperty(o, 'bar', d)
   //... o.bar = 123
-  //... eYo.test.expect(666)
+  //... eYo.flag.expect(666)
   //... chai.expect(() => o.bar).throw()
-  //... eYo.test.expect()
+  //... eYo.flag.expect()
   //... d = eYo.descriptorW(setter)
   //... Object.defineProperty(o, 'bar', d) // now it is configurable
   //... o = {}
   //... d = eYo.descriptorW({lazy: msg_2}, setter)
   //... Object.defineProperty(o, 'bar', d)
   //... o.bar = 123
-  //... eYo.test.expect(666)
+  //... eYo.flag.expect(666)
   //... chai.expect(() => o.bar).throw()
-  //... eYo.test.expect(421)
+  //... eYo.flag.expect(421)
   //... d = eYo.descriptorW(setter)
   //... chai.expect(() => Object.defineProperty(o, 'bar', d)).throw()
   //... o = {}
   //... d = eYo.descriptorW({lazy: msg_2}, setter, true)
   //... Object.defineProperty(o, 'bar', d)
   //... o.bar = 123
-  //... eYo.test.expect(666)
+  //... eYo.flag.expect(666)
   //... chai.expect(() => o.bar).throw()
-  //... eYo.test.expect(421)
+  //... eYo.flag.expect(421)
   //... d = eYo.descriptorW(setter)
   //... Object.defineProperty(o, 'bar', d) // now it is configurable
   //>>>
@@ -461,60 +461,60 @@ eYo.descriptorNORW = (msg, configurable) => {
   //<<< mochai: eYo.descriptorNORW
   //... chai.assert(eYo.descriptorNORW)
   //... let msg_1 = 'foo'
-  //... let msg_2 = () => eYo.test.push(421)
+  //... let msg_2 = () => eYo.flag.push(421)
   //... var o, d
   //... o = {}
   //... d = eYo.descriptorNORW()
   //... Object.defineProperty(o, 'bar', d)
   //... chai.expect(() => o.bar).throw()
-  //... eYo.test.expect()
+  //... eYo.flag.expect()
   //... chai.expect(() => o.bar = 123).throw()
-  //... eYo.test.expect()
+  //... eYo.flag.expect()
   //... d = eYo.descriptorNORW()
   //... chai.expect(() => Object.defineProperty(o, 'bar', d)).throw()
   //... o = {}
   //... d = eYo.descriptorNORW(true)
   //... Object.defineProperty(o, 'bar', d)
   //... chai.expect(() => o.bar).throw()
-  //... eYo.test.expect()
+  //... eYo.flag.expect()
   //... chai.expect(() => o.bar = 123).throw()
-  //... eYo.test.expect()
+  //... eYo.flag.expect()
   //... d = eYo.descriptorNORW()
   //... Object.defineProperty(o, 'bar', d) // now it is configurable
   //... o = {}
   //... d = eYo.descriptorNORW(msg_1)
   //... Object.defineProperty(o, 'bar', d)
   //... chai.expect(() => o.bar).throw()
-  //... eYo.test.expect()
+  //... eYo.flag.expect()
   //... chai.expect(() => o.bar = 123).throw()
-  //... eYo.test.expect()
+  //... eYo.flag.expect()
   //... d = eYo.descriptorNORW()
   //... chai.expect(() => Object.defineProperty(o, 'bar', d)).throw()
   //... o = {}
   //... d = eYo.descriptorNORW(msg_1, true)
   //... Object.defineProperty(o, 'bar', d)
   //... chai.expect(() => o.bar).throw()
-  //... eYo.test.expect()
+  //... eYo.flag.expect()
   //... chai.expect(() => o.bar = 123).throw()
-  //... eYo.test.expect()
+  //... eYo.flag.expect()
   //... d = eYo.descriptorNORW()
   //... Object.defineProperty(o, 'bar', d) // now it is configurable
   //... o = {}
   //... d = eYo.descriptorNORW({lazy: msg_2})
   //... Object.defineProperty(o, 'bar', d)
   //... chai.expect(() => o.bar).throw()
-  //... eYo.test.expect(421)
+  //... eYo.flag.expect(421)
   //... chai.expect(() => o.bar = 123).throw()
-  //... eYo.test.expect(421)
+  //... eYo.flag.expect(421)
   //... d = eYo.descriptorNORW()
   //... chai.expect(() => Object.defineProperty(o, 'bar', d)).throw()
   //... o = {}
   //... d = eYo.descriptorNORW({lazy: msg_2}, true)
   //... Object.defineProperty(o, 'bar', d)
   //... chai.expect(() => o.bar).throw()
-  //... eYo.test.expect(421)
+  //... eYo.flag.expect(421)
   //... chai.expect(() => o.bar = 123).throw()
-  //... eYo.test.expect(421)
+  //... eYo.flag.expect(421)
   //... d = eYo.descriptorNORW()
   //... Object.defineProperty(o, 'bar', d) // now it is configurable
   //>>>
@@ -623,10 +623,10 @@ eYo.mixinRO = (object, props) => {
   //... let c = {}
   //... eYo.mixinRO(c, {
   //...   foo () {
-  //...     eYo.test.push(1)
+  //...     eYo.flag.push(1)
   //...   }
   //... })
-  //... eYo.test.expect()
+  //... eYo.flag.expect()
   //>>>
 }
 
@@ -686,18 +686,18 @@ eYo.mixinFR = (object, props) => {
   //... let c = {}
   //... eYo.mixinFR(c, {
   //...   foo () {
-  //...     eYo.test.push(1)
+  //...     eYo.flag.push(1)
   //...   }
   //... })
-  //... eYo.test.expect()
+  //... eYo.flag.expect()
   //... eYo.mixinFR(c, {
   //...   bar () {
-  //...     eYo.test.push(1)
+  //...     eYo.flag.push(1)
   //...   }
   //... })
-  //... eYo.test.expect()
+  //... eYo.flag.expect()
   //... c.bar()
-  //... eYo.test.expect(1)
+  //... eYo.flag.expect(1)
   //>>>
   //<<< mochai: mixinFR+inherits
   //... let A = function () {}
@@ -706,23 +706,23 @@ eYo.mixinFR = (object, props) => {
   //... eYo.mixinFR(A.prototype, {
   //...   foo: 421,
   //...   bar (...$) {
-  //...     eYo.test.push(1, ...$)
+  //...     eYo.flag.push(1, ...$)
   //...   },
   //... })
   //... eYo.mixinFR(B.prototype, {
   //...   foo: 123,
   //...   bar (...$) {
-  //...     eYo.test.push(2, ...$)
+  //...     eYo.flag.push(2, ...$)
   //...   },
   //... })
   //... let a = new A()
   //... chai.expect(a.foo).equal(421)
   //... a.bar(2, 3)
-  //... eYo.test.expect(123)
+  //... eYo.flag.expect(123)
   //... var b = new B()
   //... chai.expect(b.foo).equal(123)
   //... b.bar(4, 6)
-  //... eYo.test.expect(246)
+  //... eYo.flag.expect(246)
   //... var B = function () {}
   //... eYo.inherits(B, A)
   //... chai.expect(() => {b.foo = 123}).throw()
@@ -891,8 +891,8 @@ eYo.mixinFR(eYo, {
     //... chai.expect(() => eYo.neverShot(421)).throw()
     //... chai.expect(() => eYo.neverShot()()).throw()
     //... chai.expect(() => eYo.neverShot('abc')()).throw()
-    //... chai.expect(() => eYo.neverShot(() => eYo.test.push(421))()).throw()
-    //... eYo.test.expect(421)
+    //... chai.expect(() => eYo.neverShot(() => eYo.flag.push(421))()).throw()
+    //... eYo.flag.expect(421)
     //>>>
   },
   /**
@@ -917,8 +917,8 @@ eYo.mixinFR(eYo, {
     //... chai.expect(() => eYo.oneShot(421)).throw()
     //... chai.expect(() => eYo.oneShot()()).throw()
     //... chai.expect(() => eYo.oneShot('abc')()).throw()
-    //... chai.expect(() => eYo.oneShot(() => eYo.test.push(421))()).throw()
-    //... eYo.test.expect(421)
+    //... chai.expect(() => eYo.oneShot(() => eYo.flag.push(421))()).throw()
+    //... eYo.flag.expect(421)
     //>>>
   }
 })
@@ -1009,13 +1009,13 @@ eYo.mixinFR(eYo, {
     return eYo.isF(f) ? eYo.NA : f
     //<<< mochai: eYo.INVALID
     //... eYo.whenVALID({}, () => {
-    //...   eYo.test.push(421)
+    //...   eYo.flag.push(421)
     //... })
-    //... eYo.test.expect(421)
+    //... eYo.flag.expect(421)
     //... eYo.whenVALID(eYo.INVALID, () => {
-    //...   eYo.test.push(421)
+    //...   eYo.flag.push(421)
     //... })
-    //... eYo.test.expect()
+    //... eYo.flag.expect()
     //>>>
   },
   /**

@@ -162,22 +162,22 @@ eYo.dlgt.C9rBase_p.viewEnhanced = function () {
         //... NS.makeC9rBase({
         //...   ui: {
         //...     init (...$) {
-        //...       eYo.test.push(1, ...$)
+        //...       eYo.flag.push(1, ...$)
         //...     },
         //...   },
         //... })
         //... var V = NS.new({}, 'foo', onr)
         //... // V.do_initUI(5, 6)
-        //... eYo.test.expect(156)
+        //... eYo.flag.expect(156)
         //... var V = NS.new({
         //...   ui: {
         //...     init (...$) {
-        //...       eYo.test.push(2, ...$)
+        //...       eYo.flag.push(2, ...$)
         //...     },
         //...   },
         //... }, 'foo', onr)
         //... // V.do_initUI(5, 6)
-        //... eYo.test.expect(156256)
+        //... eYo.flag.expect(156256)
         //>>>
       }
       // now the dispose ui
@@ -201,22 +201,22 @@ eYo.dlgt.C9rBase_p.viewEnhanced = function () {
         //... NS.makeC9rBase({
         //...   ui: {
         //...     dispose (...$) {
-        //...       eYo.test.push(3, ...$)
+        //...       eYo.flag.push(3, ...$)
         //...     },
         //...   },
         //... })
         //... var V = NS.new({}, 'foo', onr)
         //... // V.do_disposeUI(5, 6)
-        //... eYo.test.expect(356)
+        //... eYo.flag.expect(356)
         //... var V = NS.new({
         //...   ui: {
         //...     init (...$) {
-        //...       eYo.test.push(4, ...$)
+        //...       eYo.flag.push(4, ...$)
         //...     },
         //...   },
         //... }, 'foo', onr)
         //... // V.do_disposeUI(5, 6)
-        //... eYo.test.expect(356456)
+        //... eYo.flag.expect(356456)
         //>>>
       }
       //>>>
@@ -287,13 +287,13 @@ eYo.dlgt.C9rBase_p.viewEnhanced = function () {
       //...   },
       //...   methods: {
       //...     flag (...$) {
-      //...       eYo.test.push(1, ...$)
+      //...       eYo.flag.push(1, ...$)
       //...     },
       //...   },
       //... }, 'foo', onr)
       //... chai.expect(V.CONST_421).equal(421)
       //... V.flag(2, 3)
-      //... eYo.test.expect(123)
+      //... eYo.flag.expect(123)
       //>>>
     },
     /**
@@ -533,13 +533,13 @@ eYo.View[eYo.$].methodsMerge({
   //... }
   //... let driver = {
   //...   prepareUI (instance, ...$) {
-  //...     eYo.test.push(1, instance.eyo$.model.bar, ...$)
+  //...     eYo.flag.push(1, instance.eyo$.model.bar, ...$)
   //...   },
   //...   do_initUI (instance, ...$) {
-  //...     eYo.test.push(2, instance.eyo$.model.bar, ...$)
+  //...     eYo.flag.push(2, instance.eyo$.model.bar, ...$)
   //...   },
   //...   do_disposeUI (instance, ...$) {
-  //...     eYo.test.push(3, instance.eyo$.model.bar, ...$)
+  //...     eYo.flag.push(3, instance.eyo$.model.bar, ...$)
   //...   },
   //... }
   /**
@@ -560,14 +560,14 @@ eYo.View[eYo.$].methodsMerge({
     //... chai.expect(V.chi_v).instanceOf(eYo.View)
     //... chai.expect(V.foo_v).instanceOf(eYo.View)
     //... chai.expect(V.mee_v).instanceOf(eYo.View)
-    //... V.viewForEach(V => eYo.test.push(V[eYo.$].model.bar))
-    //... eYo.test.expect(567)
+    //... V.viewForEach(V => eYo.flag.push(V[eYo.$].model.bar))
+    //... eYo.flag.expect(567)
     //... V.drvr = driver
     //... V.viewForEach(V => {
     //...   V.drvr = driver
     //... })
     //... V.prepareUI(8, 9)
-    //... eYo.test.expect(1489158916891789)
+    //... eYo.flag.expect(1489158916891789)
     //>>>
   },
   /**
@@ -586,7 +586,7 @@ eYo.View[eYo.$].methodsMerge({
     //...   V.drvr = driver
     //... })
     //... V.do_initUI(8, 9)
-    //... eYo.test.expect(2489258926892789)
+    //... eYo.flag.expect(2489258926892789)
     //>>>
   },
   /**
@@ -618,7 +618,7 @@ eYo.View[eYo.$].methodsMerge({
     //...   V.drvr = driver
     //... })
     //... V.do_disposeUI(8, 9)
-    //... eYo.test.expect(3489358936893789)
+    //... eYo.flag.expect(3489358936893789)
     //>>>
   },
   /**

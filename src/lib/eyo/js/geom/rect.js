@@ -236,30 +236,30 @@ eYo.geom.Rect[eYo.$].modelMerge({
       //... R.snap_ = !R.snap_
       //... chai.expect(R.snap).equal(R.origin.snap).equal(R.size.snap)
       //... let o = R.snap_p.addObserver(eYo.observe.ANY, () => {
-      //...   flag.push(R.snap ? 1 : 2)
+      //...   eYo.flag.push(R.snap ? 1 : 2)
       //... })
       //... R.snap_ = true
       //... flag.reset()
       //... R.snap_ = false
-      //... flag.expect(122)
+      //... eYo.flag.expect(122)
       //... R.origin_.snap_ = true
-      //... flag.expect(211)
+      //... eYo.flag.expect(211)
       //... R.size_.snap_ = false
-      //... flag.expect(122)
+      //... eYo.flag.expect(122)
       //... R.origin_.snap_p.removeObserver(o)
       //... R.snap_ = true
-      //... flag.expect()
+      //... eYo.flag.expect()
       //... R.origin_.snap_ = false
-      //... flag.expect()
+      //... eYo.flag.expect()
       //... R.size_.snap_ = true
-      //... flag.expect()
+      //... eYo.flag.expect()
       //... R.size_.snap_p.addObserver(o)
       //... R.snap_ = false
-      //... flag.expect(122)
+      //... eYo.flag.expect(122)
       //... R.origin_.snap_ = true
-      //... flag.expect(211)
+      //... eYo.flag.expect(211)
       //... R.size_.snap_ = false
-      //... flag.expect(122)
+      //... eYo.flag.expect(122)
       //>>>
     },
     //<<< mochai: forward/backward

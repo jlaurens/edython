@@ -6,7 +6,7 @@ describe ('Tests: Property', function () {
     onr = eYo.c9r && eYo.c9r.new({
       methods: {
         flag (what, ...$) {
-          flag.push(1, what, ...$)
+          eYo.flag.push(1, what, ...$)
           return what
         },
       },
@@ -31,9 +31,9 @@ describe ('Tests: Property', function () {
     }, 'foo', onr)
     onr.foo__ = 8
     chai.expect(p.value).equal(8)
-    flag.expect(12)
+    eYo.flag.expect(12)
     p.value_ = 9
-    flag.expect(121384915916879)
+    eYo.flag.expect(121384915916879)
   })
   it('P6y: lazy/didChange', function () {
     let p = eYo.p6y.new({
@@ -47,27 +47,27 @@ describe ('Tests: Property', function () {
     }, 'foo', onr)
     onr.foo__ = 7
     chai.expect(p.value).equal(7)
-    flag.expect(12)
+    eYo.flag.expect(12)
     p.value_ = 3
-    flag.expect(123)
+    eYo.flag.expect(123)
   })
   it('P6y: observe', function () {
     let p = eYo.p6y.new({}, 'foo', onr)
     let callback = () => {
-      flag.push(666)
+      eYo.flag.push(666)
     }
     eYo.observe.HOOKS.forEach(when => {
       flag.reset()
       p.value_ = 123
-      flag.expect()
+      eYo.flag.expect()
       let o = p.addObserver(when, callback)
       p.value_ = 123
-      flag.expect()
+      eYo.flag.expect()
       p.value_ = 421
-      flag.expect(when === eYo.observe.ANY ? 666666666 : 666)
+      eYo.flag.expect(when === eYo.observe.ANY ? 666666666 : 666)
       p.removeObserver(o)
       p.value_ = 123
-      flag.expect()
+      eYo.flag.expect()
     })
   })
   it('P6y: shared constructor/prototype', function () {
@@ -136,22 +136,22 @@ describe ('Tests: Property', function () {
     var p = eYo.p6y.new({
       value: 421,
       didChange(after) {
-        flag.push(after)
+        eYo.flag.push(after)
       }
     }, 'foo', onr)
     chai.expect(p.value).equal(421)
-    flag.expect()
+    eYo.flag.expect()
     p = eYo.p6y.new({
       value () {
         return 421
       },
       didChange(after) {
-        flag.push(after)
+        eYo.flag.push(after)
       }
     }, 'foo', onr)
     flag.reset(123)
     chai.expect(p.value).equal(421)
-    flag.expect(123)
+    eYo.flag.expect(123)
   })
   it('P6y: value + set', function () {
     var p = eYo.p6y.new({
@@ -160,25 +160,25 @@ describe ('Tests: Property', function () {
         builtin(after)
       },
       didChange(after) {
-        flag.push(after)
+        eYo.flag.push(after)
       }
     }, 'foo', onr)
     flag.reset(123)
     chai.expect(p.value).equal(421)
-    flag.expect(123)
+    eYo.flag.expect(123)
     p.value_ = 666
-    flag.expect(666)
+    eYo.flag.expect(666)
   })
   it('P6y: lazy', function () {
     var p = eYo.p6y.new({
       lazy () {
-        flag.push(421)
+        eYo.flag.push(421)
         return 123
       }
     }, 'foo', onr)
-    flag.expect()
+    eYo.flag.expect()
     chai.expect(p.value).equal(123)
-    flag.expect(421)
+    eYo.flag.expect(421)
   })
   it('P6y: lazy2', function () {
     var p = eYo.p6y.new({
@@ -189,7 +189,7 @@ describe ('Tests: Property', function () {
     }, 'foo', onr)
     flag.reset()
     chai.expect(p.value).equal(3)
-    flag.expect(12)
+    eYo.flag.expect(12)
     var p = eYo.p6y.new({
       lazy: 3,
       didChange(after) {
@@ -197,11 +197,11 @@ describe ('Tests: Property', function () {
       }
     }, 'foo', onr)
     chai.expect(p.value).equal(3)
-    flag.expect()
+    eYo.flag.expect()
     p.value_ = 3
-    flag.expect()
+    eYo.flag.expect()
     p.value_ = 34
-    flag.expect(1234)
+    eYo.flag.expect(1234)
     var p = eYo.p6y.new({
       lazy () {
         this.flag(2)
@@ -211,13 +211,13 @@ describe ('Tests: Property', function () {
         this.flag(2, after)
       }
     }, 'foo', onr)
-    flag.expect()
+    eYo.flag.expect()
     chai.expect(p.value).equal(34)
-    flag.expect(12)
+    eYo.flag.expect(12)
     p.value_ = 34
-    flag.expect()
+    eYo.flag.expect()
     p.value_ = 3
-    flag.expect(123)
+    eYo.flag.expect(123)
   })
   it ('P6y: lazy reset', function () {
     var x = 3
@@ -233,10 +233,10 @@ describe ('Tests: Property', function () {
       },
     }, 'foo', onr)
     chai.expect(p.value).equal(3)
-    flag.expect(123)
+    eYo.flag.expect(123)
     x = 34
     chai.expect(p.getValueStart()).equal(x)
-    flag.expect(1234)
+    eYo.flag.expect(1234)
     p.setValue(p.getValueStart())
     chai.expect(p.value).equal(x)
     x = 421
@@ -248,15 +248,15 @@ describe ('Tests: Property', function () {
     p.value_ = 421
     flag.reset(123)
     p = p.dispose()
-    flag.expect(123)
+    eYo.flag.expect(123)
     p = eYo.p6y.new({}, 'foo', onr)
     p.value_ = eYo.c9r.new({
       dispose (what) {
-        flag.push(what)
+        eYo.flag.push(what)
       },
     })
     p.dispose(666)
-    flag.expect(666)
+    eYo.flag.expect(666)
     p = eYo.p6y.new({
       dispose: false
     }, 'foo', onr)
@@ -276,13 +276,13 @@ describe ('Tests: Property', function () {
     let v = {}
     Object.defineProperty(v, 'copy', {
       get () {
-        flag.push(456)
+        eYo.flag.push(456)
         return self        
       }
     })
     p.value_ = v
     p.value
-    flag.expect(456)
+    eYo.flag.expect(456)
   })
   it ('P6y: computed', function () {
     var flag = 0
@@ -351,7 +351,7 @@ describe ('Tests: Property', function () {
     }, 'foo', onr)
     let value = eYo.c9r.new({
       dispose (what, how) {
-        flag.push(what, how)
+        eYo.flag.push(what, how)
       }
     })
     value[eYo.$p6y] = 421
@@ -368,12 +368,12 @@ describe ('Tests: Property', function () {
     value[eYo.$p6y] = 421
     chai.assert((p.value__ = value) === value)
     p.dispose(123,456)
-    flag.expect()
+    eYo.flag.expect()
     p = eYo.p6y.new({}, 'foo', onr)
     value[eYo.$p6y] = eYo.NA
     chai.assert((p.value__ = value) === value)
     p.dispose(123,456)
-    flag.expect(123456)
+    eYo.flag.expect(123456)
   })
   it ('P6y: Shortcuts', function () {
     var model = 421

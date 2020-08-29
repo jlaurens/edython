@@ -142,7 +142,7 @@ describe ('Tests: Model', function () {
     mf.allow('foo', {
       [eYo.model.VALIDATE]: (before) => {
         if (!eYo.isD(before)) {
-          flag.push(before)
+          eYo.flag.push(before)
           return {
             value: before,
           }
@@ -155,14 +155,14 @@ describe ('Tests: Model', function () {
     }
     flag.reset()
     mf.validate(model)
-    flag.expect('1')
+    eYo.flag.expect('1')
     chai.expect(model.foo.value).equal(1)
 
     flag.reset()
     mf.allow('foo', eYo.model.ANY, {
       [eYo.model.VALIDATE]: (before) => {
         if (!eYo.isD(before)) {
-          flag.push(before)
+          eYo.flag.push(before)
           return {
             value: before,
           }
@@ -174,7 +174,7 @@ describe ('Tests: Model', function () {
     }
     flag.reset()
     mf.validate(model)
-    flag.expect(2)
+    eYo.flag.expect(2)
     chai.expect(model.foo.bar.value).equal(2)
   })
   it ('modelValidate (validate)', function () {
@@ -182,7 +182,7 @@ describe ('Tests: Model', function () {
     let mf = new eYo.model.Format()
     mf.allow('a', {
       [eYo.model.VALIDATE]: (model) => {
-        flag.push(model)
+        eYo.flag.push(model)
         return eYo.INVALID
       }
     })
@@ -191,15 +191,15 @@ describe ('Tests: Model', function () {
       mf.validate({a: 1})
       eYo.TESTING = true
     }).throw()
-    flag.expect(1)
+    eYo.flag.expect(1)
     flag.reset()
     mf.allow('b', {
       [eYo.model.VALIDATE]: (model) => {
-        flag.push(model)
+        eYo.flag.push(model)
       }
     })
     mf.validate({b: 2})
-    flag.expect(2)
+    eYo.flag.expect(2)
   })
   it (`eYo.model.Format(...)`, function () {
     var mf_a = new eYo.model.Format()
@@ -427,7 +427,7 @@ describe ('Tests: Model', function () {
   it (`eYo.model.descriptor with fallback`, function () {
     expectAll((yorn, K, what) => {
       let fallback = () => {
-        flag.push(421)
+        eYo.flag.push(421)
         return eYo.INVALID
       }
       var expect = chai.expect(() => {
@@ -436,7 +436,7 @@ describe ('Tests: Model', function () {
         mf.validate({
           foo: what
         })
-        yorn || flag.expect(421)
+        yorn || eYo.flag.expect(421)
       })
       if (yorn) {
         expect = expect.not
@@ -445,7 +445,7 @@ describe ('Tests: Model', function () {
     })
     expectAll((yorn, K, what) => {
       let fallback = () => {
-        flag.push(421)
+        eYo.flag.push(421)
         return eYo.INVALID
       }
       var expect = chai.expect(() => {
@@ -454,7 +454,7 @@ describe ('Tests: Model', function () {
         mf.validate({
           foo: what
         })
-        yorn || flag.expect(421)
+        yorn || eYo.flag.expect(421)
       })
       if (yorn) {
         expect = expect.not

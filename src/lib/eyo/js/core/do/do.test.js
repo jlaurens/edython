@@ -6,7 +6,7 @@ describe ('Tests: do', function () {
     onr = eYo.c9r && eYo.c9r.new({
       methods: {
         flag (what, ...$) {
-          flag.push(1, what, ...$)
+          eYo.flag.push(1, what, ...$)
           return what
         },
       },
@@ -24,21 +24,21 @@ describe ('Tests: do', function () {
   })
   it ('eYo.do.makeWrapper', function () {
     let start_f = () => {
-      flag.push(1)
+      eYo.flag.push(1)
     }
     let try_f = () => {
-      flag.push(2)
+      eYo.flag.push(2)
       return 6
     }
     let begin_finally_f = () => {
-      flag.push(3)
+      eYo.flag.push(3)
     }
     let finally_f = (ans) => {
-      flag.push(4)
+      eYo.flag.push(4)
       return ans * 11
     }
     let end_finally_f = () => {
-      flag.push(5)
+      eYo.flag.push(5)
     }
     let expected = new eYo.test.Flag()
     ;[eYo.NA, start_f].forEach(start_f => {
@@ -58,7 +58,7 @@ describe ('Tests: do', function () {
             begin_finally_f && expected.push(3)
             finally_f && expected.push(4)
             end_finally_f && expected.push(5)
-            flag.expect(expected)
+            eYo.flag.expect(expected)
           })
         })
       })
@@ -67,7 +67,7 @@ describe ('Tests: do', function () {
   it ('eYo.do.makeWrapper(this)', function () {
     let $$this = {
       flag (...$) {
-        flag.push(...$)
+        eYo.flag.push(...$)
       },
     }
     let start_f = () => {
@@ -102,7 +102,7 @@ describe ('Tests: do', function () {
             begin_finally_f && expected.push(3)
             finally_f && expected.push(4)
             end_finally_f && expected.push(5)
-            flag.expect(expected)
+            eYo.flag.expect(expected)
           })
         })
       })
@@ -111,12 +111,12 @@ describe ('Tests: do', function () {
   it ('eYo.do.makeWrapper($this)', function () {
     let $this = {
       flag (...$) {
-        flag.push(...$)
+        eYo.flag.push(...$)
       },
     }
     let $$this = {
       flag (...$) {
-        flag.push(...$)
+        eYo.flag.push(...$)
       },
     }
     let start_f = function () {
@@ -151,7 +151,7 @@ describe ('Tests: do', function () {
             begin_finally_f && expected.push(3)
             finally_f && expected.push(4)
             end_finally_f && expected.push(5)
-            flag.expect(expected)
+            eYo.flag.expect(expected)
           })
         })
       })
@@ -160,12 +160,12 @@ describe ('Tests: do', function () {
   it ('eYo.do.makeWrapper($$this)', function () {
     let $this = {
       flag (...$) {
-        flag.push(...$)
+        eYo.flag.push(...$)
       },
     }
     let $$this = {
       flag (...$) {
-        flag.push(...$)
+        eYo.flag.push(...$)
       },
     }
     let start_f = function () {
@@ -200,7 +200,7 @@ describe ('Tests: do', function () {
             begin_finally_f && expected.push(3)
             finally_f && expected.push(4)
             end_finally_f && expected.push(5)
-            flag.expect(expected)
+            eYo.flag.expect(expected)
           })
         })
       })

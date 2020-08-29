@@ -6,7 +6,7 @@ describe ('Tests: db', function () {
     onr = eYo.c9r && eYo.c9r.new({
       methods: {
         flag (what, ...$) {
-          flag.push(1, what, ...$)
+          eYo.flag.push(1, what, ...$)
           return what
         },
       },
@@ -21,31 +21,31 @@ describe ('Tests: db', function () {
       },
       methods: {
         flag (...$) {
-          flag.push(this.id, ...$)
+          eYo.flag.push(this.id, ...$)
         }
       }
     })
     let a = NS.new(1)
     chai.expect(a.id).equal(1)
     a.flag(3, 4)
-    flag.expect(134)
+    eYo.flag.expect(134)
     let b = NS.new(2)
     chai.expect(b.id).equal(2)
     b.flag(3, 4)
-    flag.expect(234)
+    eYo.flag.expect(234)
     db.forEach(o => o.flag(3, 4))
-    flag.expect()
+    eYo.flag.expect()
     db.add(a)
     db.forEach(o => o.flag(3, 4))
-    flag.expect(134)
+    eYo.flag.expect(134)
     db.add(b)
     db.forEach(o => o.flag(3, 4))
-    flag.expect(134234)
+    eYo.flag.expect(134234)
     db.remove(a)
     db.forEach(o => o.flag(3, 4))
-    flag.expect(234)
+    eYo.flag.expect(234)
     db.remove(b)
     db.forEach(o => o.flag(3, 4))
-    flag.expect()
+    eYo.flag.expect()
   })
 })

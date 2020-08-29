@@ -6,7 +6,7 @@ describe ('Tests: event', function () {
     onr = eYo.c9r && eYo.c9r.new({
       methods: {
         flag (what, ...$) {
-          flag.push(1, what, ...$)
+          eYo.flag.push(1, what, ...$)
           return what
         },
       },
@@ -15,17 +15,17 @@ describe ('Tests: event', function () {
   it ('eYo.event.Mngr: wrap', function () {
     let mngr = new eYo.event.Mngr('mngr', onr)
     var try_f = () => {
-      flag.push(1)
+      eYo.flag.push(1)
     }
     var finally_f = () => {
-      flag.push(2)
+      eYo.flag.push(2)
     }
     mngr.enableWrap(try_f, finally_f)
-    flag.expect(12)
+    eYo.flag.expect(12)
     mngr.disableWrap(try_f, finally_f)
-    flag.expect(12)
+    eYo.flag.expect(12)
     mngr.groupWrap(try_f, finally_f)
-    flag.expect(12)
+    eYo.flag.expect(12)
   })
   it ('eYo.event.Mngr: enableWrap(0|1)', function () {
     let mngr = new eYo.event.Mngr('mngr', onr)

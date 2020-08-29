@@ -149,12 +149,12 @@ eYo.fsm.makeC9rBase(true, {
       //... let ns = eYo.fsm.newNS()
       //... ns.makeC9rBase()
       //... eYo.test.extend(ns.C9rBase_p, 'ownerDidChange', function (before, after) {
-      //...   flag.push(421)
+      //...   eYo.flag.push(421)
       //... })
       //... var fsm = ns.new({}, 'fsm', onr)
       //... setup()
       //... fsm.owner_ = onr
-      //... flag.expect(421)
+      //... eYo.flag.expect(421)
       let inherited = eYo.fsm.C9rBase[eYo.$SuperC9r_p].ownerDidChange
       inherited && inherited.call(this, before, after)
       this.resetBSM()
@@ -181,7 +181,7 @@ eYo.Fsm$.drvrEnhanced()
 //... mngr.newDrvrC9r('Foo', {
 //...   methods: {
 //...     do_push (instance, ...$) {
-//...       flag.push(1, ...$)
+//...       eYo.flag.push(1, ...$)
 //...     },
 //...   },
 //... })
@@ -192,6 +192,6 @@ eYo.Fsm$.drvrEnhanced()
 //... ns.Foo$.finalizeC9r()
 //... let foo = new ns.Foo('foo', onr)
 //... foo.push(2, 3)
-//... flag.expect(123)
+//... eYo.flag.expect(123)
 //>>>
 eYo.Fsm$.finalizeC9r()

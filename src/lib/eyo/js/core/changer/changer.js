@@ -52,36 +52,36 @@ eYo.changer._p.memoize = function (key, do_it) {
   }
   //... onr.changer = eYo.changer.new('c', onr)
   //... onr.foo = eYo.changer.memoize('foo', (what) => {
-  //...   flag.push(what)
+  //...   eYo.flag.push(what)
   //...   return what
   //... })
   //... onr.bar = eYo.changer.memoize('bar', (what) => {
-  //...   flag.push(what)
+  //...   eYo.flag.push(what)
   //...   return 2 * what
   //... })
   //... chai.expect(onr.foo(421)).equal(421)
-  //... flag.expect(421)
+  //... eYo.flag.expect(421)
   //... chai.expect(onr.bar(421)).equal(842)
-  //... flag.expect(421)
+  //... eYo.flag.expect(421)
   //... // Values are cached
   //... chai.expect(onr.foo(421)).equal(421)
-  //... flag.expect()
+  //... eYo.flag.expect()
   //... chai.expect(onr.bar(421)).equal(842)
-  //... flag.expect()
+  //... eYo.flag.expect()
   //... // Cached values are no longer
   //... onr.changer.wrap(() => {
-  //...   flag.push(123)
+  //...   eYo.flag.push(123)
   //... })
-  //... flag.expect(123)
+  //... eYo.flag.expect(123)
   //... chai.expect(onr.foo(421)).equal(421)
-  //... flag.expect(421)
+  //... eYo.flag.expect(421)
   //... chai.expect(onr.bar(421)).equal(842)
-  //... flag.expect(421)
+  //... eYo.flag.expect(421)
   //... // Values are cached
   //... chai.expect(onr.foo(421)).equal(421)
-  //... flag.expect()
+  //... eYo.flag.expect()
   //... chai.expect(onr.bar(421)).equal(842)
-  //... flag.expect()
+  //... eYo.flag.expect()
   //>>>
 }
 
@@ -133,15 +133,15 @@ eYo.changer.makeC9rBase({
       this.listeners.push(do_it)
       return do_it
       //... let listener = changer.addChangeDoneListener(() => {
-      //...   flag.push(1)
+      //...   eYo.flag.push(1)
       //... })
       //... changer.done()
-      //... flag.expect(1)
+      //... eYo.flag.expect(1)
     },
     removeChangeDoneListener (listener) {
       //... changer.removeChangeDoneListener(listener)
       //... changer.done()
-      //... flag.expect()
+      //... eYo.flag.expect()
       return eYo.do.arrayRemove(this.listeners, listener)
     },
     //>>>
@@ -170,13 +170,13 @@ eYo.changer.makeC9rBase({
       //... let onr = eYo.c9r.new({
       //...   methods: {
       //...     onChangeBegin () {
-      //...       flag.push(1)
+      //...       eYo.flag.push(1)
       //...     },
       //...   },
       //... })
       //... let changer = eYo.changer.new('foo', onr)
       //... changer.begin()
-      //... flag.expect(1)
+      //... eYo.flag.expect(1)
       //>>>
     },
     /**
@@ -192,13 +192,13 @@ eYo.changer.makeC9rBase({
       //... let onr = eYo.c9r.new({
       //...   methods: {
       //...     onChangeEnd () {
-      //...       flag.push(2)
+      //...       eYo.flag.push(2)
       //...     },
       //...   },
       //... })
       //... let changer = eYo.changer.new('foo', onr)
       //... changer.end()
-      //... flag.expect(2)
+      //... eYo.flag.expect(2)
       --this.level_
       let o = this.owner_
       o.onChangeEnd && o.onChangeEnd()
@@ -224,13 +224,13 @@ eYo.changer.makeC9rBase({
       //... let onr = eYo.c9r.new({
       //...   methods: {
       //...     onChangeDone () {
-      //...       flag.push(3)
+      //...       eYo.flag.push(3)
       //...     },
       //...   },
       //... })
       //... let changer = eYo.changer.new('foo', onr)
       //... changer.done()
-      //... flag.expect(3)
+      //... eYo.flag.expect(3)
       ++ this.count_
       let o = this.owner_
       if (!o.changeStepFreeze) {
@@ -253,38 +253,38 @@ eYo.changer.makeC9rBase({
       //... let onr = eYo.c9r.new({
       //...   methods: {
       //...     onChangeBegin () {
-      //...       flag.push(1)
+      //...       eYo.flag.push(1)
       //...     },
       //...     onChangeEnd () {
-      //...       flag.push(2)
+      //...       eYo.flag.push(2)
       //...     },
       //...     onChangeDone () {
-      //...       flag.push(3)
+      //...       eYo.flag.push(3)
       //...     },
       //...   },
       //... })
       //... let changer = eYo.changer.new('foo', onr)
       //... changer.begin()
-      //... flag.expect(1)
+      //... eYo.flag.expect(1)
       //... changer.end()
-      //... flag.expect(23)
+      //... eYo.flag.expect(23)
       //... changer.begin()
       //... changer.begin()
-      //... flag.expect(11)
+      //... eYo.flag.expect(11)
       //... changer.end()
-      //... flag.expect(2)
+      //... eYo.flag.expect(2)
       //... changer.end()
-      //... flag.expect(23)
+      //... eYo.flag.expect(23)
       //... changer.wrap(() => {
-      //...   flag.push(9)
+      //...   eYo.flag.push(9)
       //... })
-      //... flag.expect(1923)
+      //... eYo.flag.expect(1923)
       //... changer.wrap(() => {
       //...   changer.wrap(() => {
-      //...     flag.push(9)
+      //...     eYo.flag.push(9)
       //...   })
       //... })
-      //... flag.expect(119223)
+      //... eYo.flag.expect(119223)
       if (eYo.isF($this)) {
         try {
           this.begin()
