@@ -50,41 +50,40 @@ let mainConfig = {
     libraryTarget: 'commonjs2',
     path: path.join(__dirname, '../dist/electron')
   },
-  plugins: [
-    new webpack.NoEmitOnErrorsPlugin()
-  ],
   resolve: {
     extensions: ['.js', '.json', '.node']
   },
   target: 'electron-main'
 }
 
+module.exports = (env, argv) => {
 /**
  * Adjust mainConfig for development settings
  */
-if (process.env.NODE_ENV !== 'production') {
-  mainConfig.plugins.push(
-    new webpack.DefinePlugin({
-      '__static': `"${path.join(__dirname, '../static').replace(/\\/g, '\\\\')}"`
-    })
-  )
-  mainConfig.plugins.push(
-    new webpack.DefinePlugin({
-      '__lib': `"${path.join(__dirname, '../lib').replace(/\\/g, '\\\\')}"`
-    })
-  )
-}
+  if (process.env.NODE_ENV !== 'production') {
+    mainConfig.plugins.push(
+      new webpack.DefinePlugin({
+        '__static': `"${path.join(__dirname, '../static').replace(/\\/g, '\\\\')}"`
+      })
+    )
+    mainConfig.plugins.push(
+      new webpack.DefinePlugin({
+        '__lib': `"${path.join(__dirname, '../lib').replace(/\\/g, '\\\\')}"`
+      })
+    )
+  }
 
 /**
  * Adjust mainConfig for production settings
  */
-if (process.env.NODE_ENV === 'production') {
-  mainConfig.plugins.push(
-    new BabiliWebpackPlugin(),
-    new webpack.DefinePlugin({
-      'process.env.NODE_ENV': '"production"'
-    })
-  )
-}
 
-module.exports = mainConfig
+  if (env.NODE_ENV === 'production') {
+    mainConfig.plugins.push(
+      new BabiliWebpackPlugin(),
+      new webpack.DefinePlugin({
+        'process.env.NODE_ENV': '"production"'
+      })
+    )
+  }
+  return mainConfig
+}

@@ -29,6 +29,24 @@ function clean () {
   process.exit()
 }
 
+function web () {
+  console.log('>')
+  console.log('> web config')
+  console.log('> ----------')
+
+  del.sync(['dist/web/*', '!.gitkeep'])
+
+  webpack(webConfig, (err, stats) => {
+    if (err || stats.hasErrors())
+      console.log(err)
+    console.log(stats.toString({
+      chunks: false,
+      colors: true
+    }))
+    process.exit()
+  })
+}
+
 function build () {
   console.log('>')
   console.log('> Start building')
@@ -103,20 +121,4 @@ function pack (config) {
   })
 }
 
-function web () {
-  console.log('>')
-  console.log('> web config')
-  console.log('> ----------')
-  del.sync(['dist/web/*', '!.gitkeep'])
-  webpack(webConfig, (err, stats) => {
-    if (err || stats.hasErrors())
-      console.log(err)
-    console.log(stats.toString({
-      chunks: false,
-      colors: true
-    }))
-    process.exit()
-  })
-}
-
-console.log('build.js... READ\n\n')
+console.log('build.js... DONE\n\n')

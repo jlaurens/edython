@@ -5,7 +5,7 @@ const CopyWebpackPlugin = require('copy-webpack-plugin')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 
-var ConfigEyo = function (target, dist, env) {
+var eYoConfig = function (target, dist, env) {
   this.options = {
     web: {
       no_tippy: false,
@@ -68,7 +68,7 @@ var ConfigEyo = function (target, dist, env) {
   console.log('this.iconPath :', this.iconPath)
 }
 
-ConfigEyo.prototype.getConfig = function () {
+eYoConfig.prototype.getConfig = function () {
   var config = {}
   config.target = this.target
   config.output = {
@@ -277,7 +277,7 @@ ConfigEyo.prototype.getConfig = function () {
 }
 
 
-ConfigEyo.prototype.enablePolyFills = function (config) {
+eYoConfig.prototype.enablePolyFills = function (config) {
   if (this.options.no_polyfills) {
     return
   }
@@ -291,7 +291,7 @@ ConfigEyo.prototype.enablePolyFills = function (config) {
   )
 }
 
-ConfigEyo.prototype.enableXRegExp = function (config) {
+eYoConfig.prototype.enableXRegExp = function (config) {
   if (this.options.no_xregexp) {
     return
   }
@@ -305,7 +305,7 @@ ConfigEyo.prototype.enableXRegExp = function (config) {
   )
 }
 
-ConfigEyo.prototype.enableBrython = function (config) {
+eYoConfig.prototype.enableBrython = function (config) {
   if (this.options.no_brython) {
     return
   }
@@ -331,7 +331,7 @@ ConfigEyo.prototype.enableBrython = function (config) {
   )
 }
 
-ConfigEyo.prototype.enableBrythonSources = function (config) {
+eYoConfig.prototype.enableBrythonSources = function (config) {
   if (this.options.no_brython_sources) {
     return
   }
@@ -351,7 +351,7 @@ ConfigEyo.prototype.enableBrythonSources = function (config) {
   )
 }
 
-ConfigEyo.prototype.enableEdython = function (config) {
+eYoConfig.prototype.enableEdython = function (config) {
   if (this.options.no_edython) {
     return
   }
@@ -372,7 +372,7 @@ ConfigEyo.prototype.enableEdython = function (config) {
   )
 }
 
-ConfigEyo.prototype.enableTippy = function (config) {
+eYoConfig.prototype.enableTippy = function (config) {
   if (this.options.no_tippy) {
     return
   }
@@ -393,7 +393,7 @@ ConfigEyo.prototype.enableTippy = function (config) {
   )
 }
 
-ConfigEyo.prototype.enableResources = function (config) {
+eYoConfig.prototype.enableResources = function (config) {
   if (this.options.no_resources) {
     return
   }
@@ -429,9 +429,9 @@ ConfigEyo.prototype.enableResources = function (config) {
   )
 }
 
-ConfigEyo.get = function(target, dist, env) {
-  var eyo = new ConfigEyo(target, dist, env)
+eYoConfig.get = function(target, dist, env) {
+  var eyo = new eYoConfig(target, dist, env)
   return eyo.getConfig()
 }
 
-module.exports = ConfigEyo
+module.exports = eYoConfig

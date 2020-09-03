@@ -17,34 +17,42 @@ let webConfig = eYoConfig.get('web', 'web', process.env.BABEL_ENV)
  * Adjust webConfig for production settings
  */
 if (process.env.NODE_ENV === 'production') {
-  webConfig.devtool = ''
-
-  webConfig.plugins.push(
-    new BabiliWebpackPlugin(),
-    new CopyWebpackPlugin(
-      [
-        {
-          from: path.join(__dirname, '../static'),
-          to: path.join(__dirname, '../dist/web/static'),
-          ignore: ['.*']
-        }
-      ]
-    ),
-    new webpack.DefinePlugin({
-      'process.env.NODE_ENV': '"production"'
-    }),
-    new webpack.LoaderOptionsPlugin(
-      {
-        minimize: false
-      }
-    // ),
-    // new webpack.optimize.UglifyJsPlugin(
-    //   { // JL true
-    //     compress: false,
-    //     mangle: false,
-    //   }
-    )
-  )
 }
 
-module.exports = webConfig
+webConfig.mode = process.env.NODE_ENV
+
+module.exports = (env, argv) => {
+
+  if (argv.mode === 'production') {
+    webConfig.devtool = ''
+
+    webConfig.plugins.push(
+      new BabiliWebpackPlugin(),
+      new CopyWebpackPlugin(
+        [
+          {
+            from: path.join(__dirname, '../static'),
+            to: path.join(__dirname, '../dist/web/static'),
+            ignore: ['.*']
+          }
+        ]
+      ),
+      new webpack.DefinePlugin({
+        'process.env.NODE_ENV': '"production"'
+      }),
+      new webpack.LoaderOptionsPlugin(
+        {
+          minimize: false
+        }
+      // ),
+      // new webpack.optimize.UglifyJsPlugin(
+      //   { // JL true
+      //     compress: false,
+      //     mangle: false,
+      //   }
+      )
+    )
+   }
+
+  return webConfig;
+};

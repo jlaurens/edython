@@ -53,4 +53,6 @@ if (process.env.NODE_ENV === 'production') {
   )
 }
 
+rendererConfig.mode = process.env.NODE_ENV
+
 module.exports = rendererConfig
