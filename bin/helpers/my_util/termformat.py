@@ -1,4 +1,6 @@
-from sty import fg, bg, ef, rs, Style, RgbFg, Sgr
+#  sudo -H pip install sty
+
+from sty import fg, bg, ef, rs
 
 class format:
 

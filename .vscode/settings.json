@@ -1,7 +1,7 @@
 {
   "git.ignoreLimitWarning": true,
   "python.linting.pylintEnabled": false,
-  "python.pythonPath": "/usr/local/bin/python3.6",
+  "python.pythonPath": "/Users/jlaurens/opt/anaconda3/bin/python",
   "eslint.validate": [
     "javascript",
     "vue"

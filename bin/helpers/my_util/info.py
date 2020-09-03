@@ -92,9 +92,9 @@ class Info:
   (?:'|")(?P<Key>[^'"]+)(?:'|")
   .*""", re.X)
 
-  # eYo.widget.makeBaseC9r()
-  re_makeBaseC9r = re.compile(r"""^\s*
-  (?P<ns>eYo(?:\.[a-z]\w*)*)(?:\.(?P<key>[a-z]\w*))\.makeBaseC9r\s*\(.*""", re.X)
+  # eYo.widget.makeC9rBase()
+  re_makeC9rBase = re.compile(r"""^\s*
+  (?P<ns>eYo(?:\.[a-z]\w*)*)(?:\.(?P<key>[a-z]\w*))\.makeC9rBase\s*\(.*""", re.X)
 
   # eYo.drvr.makeMngr(model)
   re_makeMngr = re.compile(r"""^\s*
@@ -157,6 +157,7 @@ class Info:
     self.path = path
     with path.open('r', encoding='utf-8') as f:
       prompt = f'======= {path}\n'
+      print(prompt)
       relative = path.relative_to(path_root)
       provided = []
       def addProvided(what):
@@ -182,22 +183,24 @@ class Info:
             required.add('eYo.c9r')
       for l in f.readlines():
         base_require(l)
-        m = self.re_makeBaseC9r.match(l)
+        m = self.re_makeC9rBase.match(l)
         if m:
           ns = m.group('ns')
           k = m.group('key')
           required.add(f'{ns}')
-          addProvided(f'{ns}.{k}.BaseC9r')
+          addProvided(f'{ns}.{k}.C9rBase')
+          print(f'addProvided({ns}.{k}.C9rBase)')
           K = k.title()
           if k != K:
             addProvided(f'{ns}.{K}')
+            print(f'addProvided({ns}.{K})')
           continue
         m = self.re_makeMngr.match(l)
         if m:
           ns = m.group('ns')
           required.add(f'{ns}')
           addProvided(f'{ns}.Mngr')
-          addProvided(f'{ns}.BaseC9r')
+          addProvided(f'{ns}.C9rBase')
           continue
         m = self.re_makeForwarder.match(l)
         if m:
