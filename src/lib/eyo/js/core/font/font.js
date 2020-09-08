@@ -55,7 +55,7 @@ eYo.o4t.newSingleton(eYo, 'font', {
       //... chai.expect(eYo.font.descent).eyo_Num
       //... chai.expect(() => {
       //...   eYo.font.descent_ = 234
-      //... }).throw()
+      //... }).xthrow()
     },
     xHeight: {
       reset_ (builtin, ascent) {
@@ -66,7 +66,7 @@ eYo.o4t.newSingleton(eYo, 'font', {
       //... chai.expect(eYo.font.xHeight).eyo_Num
       //... chai.expect(() => {
       //...   eYo.font.xHeight_ = 234
-      //... }).throw()
+      //... }).xthrow()
     },
     space: {
       reset_ (builtin, ascent) {
@@ -77,7 +77,7 @@ eYo.o4t.newSingleton(eYo, 'font', {
       //... chai.expect(eYo.font.space).eyo_Num
       //... chai.expect(() => {
       //...   eYo.font.space_ = 234
-      //... }).throw()
+      //... }).xthrow()
     },
     totalAscent: {
       reset_ (builtin, ascent) {
@@ -88,7 +88,7 @@ eYo.o4t.newSingleton(eYo, 'font', {
       //... chai.expect(eYo.font.totalAscent).eyo_Num
       //... chai.expect(() => {
       //...   eYo.font.totalAscent_ = 234
-      //... }).throw()
+      //... }).xthrow()
     },
     size: {
       get () {
@@ -98,7 +98,7 @@ eYo.o4t.newSingleton(eYo, 'font', {
       //... chai.expect(eYo.font.size).eyo_Num
       //... chai.expect(() => {
       //...   eYo.font.size_ = 234
-      //... }).throw()
+      //... }).xthrow()
     },
     height: {
       get () {
@@ -108,7 +108,7 @@ eYo.o4t.newSingleton(eYo, 'font', {
       //... chai.expect(eYo.font.height).eyo_Num
       //... chai.expect(() => {
       //...   eYo.font.height_ = 234
-      //... }).throw()
+      //... }).xthrow()
     },
     lineHeight: {
       get () {
@@ -118,7 +118,7 @@ eYo.o4t.newSingleton(eYo, 'font', {
       //... chai.expect(eYo.font.lineHeight).eyo_Num
       //... chai.expect(() => {
       //...   eYo.font.lineHeight_ = 234
-      //... }).throw()
+      //... }).xthrow()
     },
     familyMono: {
       get () {
@@ -141,7 +141,7 @@ eYo.o4t.newSingleton(eYo, 'font', {
       //... chai.expect(eYo.font).property('style')
       //... chai.expect(() => {
       //...   eYo.font.style_ = 234
-      //... }).throw()
+      //... }).xthrow()
     },
     menuStyle: {
       after: ['familySans', 'ascent'],
@@ -152,7 +152,7 @@ eYo.o4t.newSingleton(eYo, 'font', {
       //... chai.expect(eYo.font).property('menuStyle')
       //... chai.expect(() => {
       //...   eYo.font.menuStyle_ = 234
-      //... }).throw()
+      //... }).xthrow()
     },
     //>>>
   },

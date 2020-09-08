@@ -981,7 +981,7 @@ eYo.py.node.C9rBase_p.toBrick = function (board) {
     if (this.type === eYo.py.file_input) {
       root = eYo.brick.newReady(board, eYo.t3.stmt.blank_stmt)
     } else {
-      console.error('BREAK HERE', this.toBrick_(board))
+      eYo.test && eYo.test.IN_THROW || console.error('BREAK HERE', this.toBrick_(board))
     }
   }
   return root
@@ -1644,7 +1644,7 @@ factor: ('+'|'-'|'~') factor | power
       return this.n0.toBrick(board)
     } else {
       // eYo.py.gmr.Showtree(eYo.py.gmr._pyParser_Grammar, this)
-      console.error('BREAK HERE TO DEBUG', this.name, this.n_child)
+      eYo.test && eYo.test.IN_THROW || console.error('BREAK HERE TO DEBUG', this.name, this.n_child)
       throw `3) NOTHING TO DO WITH ${this.name}`
     }
   }

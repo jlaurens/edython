@@ -14,6 +14,6 @@ describe('Fcls driver', function() {
     chai.assert(mngr.drivers)
     chai.expect(() => {
       mngr.initDrivers()
-    }).not.to.throw()
+    }).not.to.xthrow()
   })
 })

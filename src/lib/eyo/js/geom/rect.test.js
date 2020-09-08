@@ -19,7 +19,7 @@ describe ('geometry', function () {
     it (`Shared properties`, function () {
       chai.expect(() => {
         new eYo.geom.Point()
-      }).not.throw()
+      }).not.xthrow()
       let P = new eYo.geom.Point()
       let ns = eYo.geom.newNS()
       ns.makeC9rBase(eYo.geom.Point, {

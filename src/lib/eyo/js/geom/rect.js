@@ -94,7 +94,7 @@ eYo.geom.newC9r('Rect', {
           //... chai.expect(R.snap).true
         }
         eYo.isDef(h) && eYo.throw(`${this.eyo$.name}/init: Unexpected last argument ${h}`)
-        //... chai.expect(() => {new eYo.geom.Rect(1, 2, 3, 4, 5)}).throw()
+        //... chai.expect(() => {new eYo.geom.Rect(1, 2, 3, 4, 5)}).xthrow()
         ;[snap, c, l, w, h] = [false, snap, c, l, w]
       } else {
         snap = false
@@ -604,8 +604,8 @@ eYo.geom.Rect[eYo.$].modelMerge({
       } else if (eYo.isDef(c.left) && eYo.isDef(c.right) && eYo.isDef(c.top) && eYo.isDef(c.bottom)) {
         eYo.isDef(l) && eYo.throw(`${this.eyo$.name}.set: Unexpected argument ${l}`)
         //... R = new eYo.geom.Rect()
-        //... chai.expect(() => R.set({left: 0, right: 0, top: 0, bottom: 0,}, null)).not.throw()
-        //... chai.expect(() => R.set({left: 0, right: 0, top: 0, bottom: 0,}, 1)).throw()
+        //... chai.expect(() => R.set({left: 0, right: 0, top: 0, bottom: 0,}, null)).not.xthrow()
+        //... chai.expect(() => R.set({left: 0, right: 0, top: 0, bottom: 0,}, 1)).xthrow()
         // properties are evaluated twice
         this.left_ = c.left
         this.right_ = c.right
@@ -623,8 +623,8 @@ eYo.geom.Rect[eYo.$].modelMerge({
       } else if (eYo.isDef(c.x) && eYo.isDef(c.y) && eYo.isDef(c.width) && eYo.isDef(c.height)) {
         eYo.isDef(l) && eYo.throw(`${this.eyo$.name}.set: Unexpected argument ${l}`)
         //... R = new eYo.geom.Rect()
-        //... chai.expect(() => R.set(mm, null)).not.throw()
-        //... chai.expect(() => R.set(mm, 1)).throw()
+        //... chai.expect(() => R.set(mm, null)).not.xthrow()
+        //... chai.expect(() => R.set(mm, 1)).xthrow()
         // properties are evaluated twice
         this.x_ = c.x
         this.y_ = c.y
@@ -638,8 +638,8 @@ eYo.geom.Rect[eYo.$].modelMerge({
         if (eYo.isDef(c.w) && eYo.isDef(c.h)) { // Rect like object
           eYo.isDef(l) && eYo.throw(`${this.eyo$.name}.set: Unexpected argument ${l}`)
           //... R = new eYo.geom.Rect()
-          //... chai.expect(() => R.set(m, null)).not.throw()
-          //... chai.expect(() => R.set(m, 1)).throw()
+          //... chai.expect(() => R.set(m, null)).not.xthrow()
+          //... chai.expect(() => R.set(m, 1)).xthrow()
           this.c_ = c.c
           this.l_ = c.l
           this.w_ = c.w
@@ -652,7 +652,7 @@ eYo.geom.Rect[eYo.$].modelMerge({
         // Not a rect
         eYo.isDef(h) && eYo.throw(`${this.eyo$.name}.set: Unexpected last argument ${h}`)
         //... R = new eYo.geom.Rect()
-        //... chai.expect(() => {R.set({c: 0, l: 0}, 2, 3, 4)}).throw()
+        //... chai.expect(() => {R.set({c: 0, l: 0}, 2, 3, 4)}).xthrow()
         this.origin_ = c
         ;[w, h] = [l, w]
         //... R = new eYo.geom.Rect()
@@ -713,7 +713,7 @@ eYo.geom.Rect[eYo.$].modelMerge({
         } else if (eYo.isDef(w.w) && eYo.isDef(w.h)) {
           eYo.isDef(h) && eYo.throw(`${this.eyo$.name}.set: Unexpected (last?) argument ${h}`)
           //... R = new eYo.geom.Rect()
-          //... chai.expect(() => {R.set(m.c, m.l, {w: m.w, h: m.h}, 1)}).throw()
+          //... chai.expect(() => {R.set(m.c, m.l, {w: m.w, h: m.h}, 1)}).xthrow()
           this.size_ = w
           //... R = new eYo.geom.Rect()
           //... R.set(m.c, m.l, {w: m.w, h: m.h})
@@ -726,7 +726,7 @@ eYo.geom.Rect[eYo.$].modelMerge({
         } else if (eYo.isDef(w.width) && eYo.isDef(w.height)) {
           eYo.isDef(h) && eYo.throw(`${this.eyo$.name}.set: Unexpected (last?) argument ${h}`)
           //... R = new eYo.geom.Rect()
-          //... chai.expect(() => {R.set(m.c, m.l, {width: mm.width, height: mm.height}, 1)}).throw()
+          //... chai.expect(() => {R.set(m.c, m.l, {width: mm.width, height: mm.height}, 1)}).xthrow()
           this.size_ = w
           //... R = new eYo.geom.Rect()
           //... R.set(m.c, m.l, {width: mm.width, height: mm.height})
@@ -749,7 +749,7 @@ eYo.geom.Rect[eYo.$].modelMerge({
       } else {
         eYo.isDef(h) && eYo.throw(`${this.eyo$.name}.set: Unexpected last argument ${h}`)
         //... R = new eYo.geom.Rect()
-        //... chai.expect(() => {R.set(m.c, m.l, eYo.NA, 1)}).throw()
+        //... chai.expect(() => {R.set(m.c, m.l, eYo.NA, 1)}).xthrow()
         this.w_ = this.h_ = 0
         //... R = new eYo.geom.Rect()
         //... R.set(m.c, m.l)
@@ -899,7 +899,7 @@ eYo.geom.Rect[eYo.$].modelMerge({
   //>>>
 })
 
-eYo.geom.Rect[eYo.$].finalizeC9r()
+eYo.geom.Rect$.finalizeC9r()
 
 // eYo.geom.AbstractRect[eYo.$].modelMerge({
 //   aliases: {

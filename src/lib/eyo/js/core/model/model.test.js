@@ -190,7 +190,7 @@ describe ('Tests: Model', function () {
       eYo.TESTING = false
       mf.validate({a: 1})
       eYo.TESTING = true
-    }).throw()
+    }).xthrow()
     eYo.flag.expect(1)
     flag.reset()
     mf.allow('b', {
@@ -396,7 +396,7 @@ describe ('Tests: Model', function () {
       mf.validate({
         foo: 'false'
       })
-    }).not.throw()
+    }).not.xthrow()
     expectAll((yorn, K, what) => {
       var expect = chai.expect(() => {
         let mf = new eYo.model.Format()
@@ -408,7 +408,7 @@ describe ('Tests: Model', function () {
       if (yorn) {
         expect = expect.not
       }
-      expect.throw()
+      expect.xthrow()
     })
     expectAll((yorn, K, what) => {
       var expect = chai.expect(() => {
@@ -421,7 +421,7 @@ describe ('Tests: Model', function () {
       if (yorn) {
         expect = expect.not
       }
-      expect.throw()
+      expect.xthrow()
     })
   })
   it (`eYo.model.descriptor with fallback`, function () {
@@ -441,7 +441,7 @@ describe ('Tests: Model', function () {
       if (yorn) {
         expect = expect.not
       }
-      expect.throw()
+      expect.xthrow()
     })
     expectAll((yorn, K, what) => {
       let fallback = () => {
@@ -459,7 +459,7 @@ describe ('Tests: Model', function () {
       if (yorn) {
         expect = expect.not
       }
-      expect.throw()
+      expect.xthrow()
     })
   })
   it (`eYo.model.manyDescriptor...`, function () {
@@ -475,7 +475,7 @@ describe ('Tests: Model', function () {
       if (yorn) {
         expect = expect.not
       }
-      expect.throw()
+      expect.xthrow()
     })
   })
 })

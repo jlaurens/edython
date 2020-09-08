@@ -44,7 +44,6 @@ eYo.newNS('model', {
   //... chai.assert(eYo.model)
   //... chai.assert(eYo.model.Format)
   //>>>
-  ROOT: '^$',
   DOT: '.',
   DOTDOT: '..',
   ANY: '*',
@@ -431,7 +430,7 @@ eYo.mixinFR(eYo.model.Format_p, {
     //... ;['/a', '//a', './a', 'a/.', '/a/.', '//a/.', './a/.', ].forEach(k => chai.expect(mf.get(k)).equal(mf.get('a')))
     //... ;['/a//b//c', '/a/./b/./c', './a/b/./c/.', ].forEach(k => chai.expect(mf.get(k)).equal(mf.get('a/b/c')))
     //... chai.expect(mf.get('a/b/c/../../..')).equal(mf)
-    //... chai.expect(() => mf.get('a/../../..')).throw()
+    //... chai.expect(() => mf.get('a/../../..')).xthrow()
     //>>>
   },
   /**
@@ -489,7 +488,7 @@ eYo.mixinFR(eYo.model.Format_p, {
           if (eYo.isDef(v = arg[eYo.model.VALIDATE])) {
             eYo.isF(v) || eYo.throw(`Forbidden ${eYo.model.VALIDATE} -> ${v}`)
             //... var mf = new eYo.model.Format()
-            //... chai.expect(() => mf.allow({[eYo.model.VALIDATE]: 421})).throw()
+            //... chai.expect(() => mf.allow({[eYo.model.VALIDATE]: 421})).xthrow()
             c.validate_ = v
             keys.delete(eYo.model.VALIDATE)
             //... var mf = new eYo.model.Format()
@@ -602,10 +601,10 @@ eYo.mixinFR(eYo.model.Format_p, {
           cc || eYo.throw(`validate: unreachable path: ${c.path}/${k}`)
           c = cc
           //... var mf = new eYo.model.Format()
-          //... chai.expect(() => mf.validate('a', 1)).throw()
+          //... chai.expect(() => mf.validate('a', 1)).xthrow()
           //... mf.allow('a')
           //... mf.validate('a', 1)
-          //... chai.expect(() => mf.validate('a/b', 1)).throw()
+          //... chai.expect(() => mf.validate('a/b', 1)).xthrow()
           //... mf.allow('a', 'b')
           //... mf.validate('a/b', 1)
           //... mf.validate('/a/b', 1)
@@ -623,10 +622,10 @@ eYo.mixinFR(eYo.model.Format_p, {
       if (eYo.isINVALID(v)) {
         if (eYo.TESTING) {
           if (c.validate_) {
-            console.error('DEBUG BREAK:', model, key, c.path)
+            eYo.test && eYo.test.IN_THROW || console.error('DEBUG BREAK HERE (INVALID model value):', model, key, c.path)
             c.validate_(model, key)
           } else if (c.fallback){
-            console.error('DEBUG BREAK FALLBACK:', model, key, c.path)
+            console.error('DEBUG BREAK FALLBACK (INVALID model value):', model, key, c.path)
             c.fallback.validate(eYo.NA, model, key)
           }
         }

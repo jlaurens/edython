@@ -223,7 +223,7 @@ describe ('Tests: Object', function () {
     chai.expect(o.chi).equal(666)
     chai.expect(() => {
       o.chi_ = 421
-    }).throw()
+    }).xthrow()
   })
   it ('O4t: dispose inherited', function () {
     let ns = eYo.o4t.newNS()
@@ -320,7 +320,7 @@ describe ('Tests: Object', function () {
     eYo.flag.expect(2)
     chai.expect(() => {
       bar.foo_ = 421
-    }).to.throw()
+    }).to.xthrow()
   })
   it ('O4t: override add set', function () {
     var x = 421
@@ -340,7 +340,7 @@ describe ('Tests: Object', function () {
     eYo.flag.expect(1)
     chai.expect(() => {
       foo.foo_ = 421
-    }).to.throw()
+    }).to.xthrow()
     var Bar = eYo.o4t.newC9r(Foo, {
       properties: {
         foo: {
@@ -477,7 +477,7 @@ describe ('Tests: Object', function () {
     ns.AA[eYo.$].finalizeC9r()
     chai.expect(() => {
       new ns.AA('aa', onr)
-    }).not.to.throw()
+    }).not.to.xthrow()
     chai.expect((new ns.A('a', onr)).foo).equal(123)
     chai.expect((new ns.AA('aa', onr)).foo).equal(456)
   })

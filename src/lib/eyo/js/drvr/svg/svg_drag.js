@@ -170,7 +170,7 @@ eYo.temp.i = 0
  */
 eYo.svg.brickDragSurface.prototype.move = function() {
   if (++eYo.temp.i > 100) {
-    console.error('BREAK HERE')
+    eYo.test && eYo.test.IN_THROW || console.error('BREAK HERE')
   }
   this.where = this.dragger.xyDelta.scale(this.scale_)
 }

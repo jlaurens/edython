@@ -9,7 +9,7 @@ describe ('Tests: More', function () {
     ns.makeC9rBase()
     chai.expect(() => {
       eYo.more.enhanceO3dValidate(ns.C9rBase[eYo.$], 'foo', false)
-    }).throw()
+    }).xthrow()
     ns = eYo.o3d.newNS()
     ns.makeC9rBase()
     eYo.more.enhanceO3dValidate(ns.C9rBase[eYo.$], 'foo', false)
@@ -162,7 +162,7 @@ describe ('Tests: More', function () {
     })
     chai.expect(() => {
       o.validate(1, 2)
-    }).throw()
+    }).xthrow()
     ////
     ns = eYo.o3d.newNS()
     ns.makeC9rBase()

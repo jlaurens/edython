@@ -400,6 +400,7 @@ Miscellaneous:
 --js "eyo/js/core/errcode/errcode.js" \
 --js "eyo/js/core/more/more.js" \
 --js "eyo/js/core/setup/setup.js" \
+--js "eyo/js/core/sub/sub.js" \
 --js "eyo/js/core/t3/t3.js" \
 --js "eyo/js/core/xre/xre.js" \
 --js "eyo/js/msg/base.js" \

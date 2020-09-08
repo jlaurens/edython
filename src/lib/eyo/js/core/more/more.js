@@ -239,7 +239,7 @@ eYo.more.override = function (_p, K, f) {
   eYo.isF(f_p) || eYo.throw(`eYo.more.override: Nothing to override`)
   //... chai.expect(() => {
   //...   eYo.more.override(o, 'foo', f)
-  //... }).throw()
+  //... }).xthrow()
   //... o.foo = function (...$) {
   //...   eYo.flag.push(1)
   //...   this.flag(...$)
@@ -247,13 +247,13 @@ eYo.more.override = function (_p, K, f) {
   eYo.isF(f) && (f === eYo.doNothing || f.length && XRegExp.exec(f.toString(), eYo.xre.function_overriden)) || eYo.throw(`eYo.more.override: Bad overrider`)
   //... chai.expect(() => {
   //...   eYo.more.override(o, 'foo', 421)
-  //... }).throw()
+  //... }).xthrow()
   //... chai.expect(() => {
   //...   eYo.more.override(o, 'foo', () => {})
-  //... }).throw()
+  //... }).xthrow()
   //... chai.expect(() => {
   //...   eYo.more.override(o, 'foo', eYo.doReturn2nd)
-  //... }).throw()
+  //... }).xthrow()
   _p[K] = function (...$) {
     f.call(this, f_p.bind(this), ...$)
   }

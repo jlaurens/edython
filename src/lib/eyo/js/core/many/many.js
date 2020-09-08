@@ -20,7 +20,7 @@ eYo.O3d[eYo.$].modelFormat.allow({
   //... var model = {
   //...   initMany: 421,
   //... }
-  //... chai.expect(() => mf.validate(model)).throw()
+  //... chai.expect(() => mf.validate(model)).xthrow()
   //... var model = {
   //...   initMany (...$) { eYo.flag.push(1, ...$) },
   //... }
@@ -130,7 +130,7 @@ eYo.Dlgt_p.manyEnhanced = function (id, type, path, manyModel) {
   //<<< mochai: Basics
   if (!eYo.isStr(path)) {
     eYo.isNA(manyModel) || eYo.throw(`${this.eyo$.name}/manyEnhanced: Unexpected last argument`)
-    //... chai.expect(() => eYo.C9r[eYo.$].manyEnhanced(1, 2, 3, 4)).throw()
+    //... chai.expect(() => eYo.C9r[eYo.$].manyEnhanced(1, 2, 3, 4)).xthrow()
     ;[type, path, manyModel] = [id, type, path || {}]
   } else if (!manyModel) {
     manyModel = {}
@@ -140,7 +140,7 @@ eYo.Dlgt_p.manyEnhanced = function (id, type, path, manyModel) {
   eYo.objectHasOwnProperty(_p, id$) && eYo.throw(`${this.eyo$.name}/manyEnhanced: Already used (${id$})`)
   //... preparator()()
   //... var foo$ = C9r[eYo.$].manyEnhanced('foo', 'foo')
-  //... chai.expect(() => C9r[eYo.$].manyEnhanced('foo', 'foo')).throw()
+  //... chai.expect(() => C9r[eYo.$].manyEnhanced('foo', 'foo')).xthrow()
   //... C9r = eYo.c9r.newNS().makeC9rBase(true)
   //... let dlgt = C9r[eYo.$]
   //... var foo$ = dlgt.manyEnhanced('foo', 'bar', {})
@@ -424,7 +424,7 @@ eYo.Dlgt_p.manyEnhanced = function (id, type, path, manyModel) {
       //... var foo$ = C9r[eYo.$].manyEnhanced('foo', 'foo')
       //... var o = {}
       //... C9r[eYo.$][foo$.prepare](o)
-      //... chai.expect(() => C9r[eYo.$][foo$.merge]()).throw()
+      //... chai.expect(() => C9r[eYo.$][foo$.merge]()).xthrow()
       //... // Not tested for $super
       }
       //... preparator()()
@@ -591,7 +591,7 @@ eYo.Dlgt_p.manyEnhanced = function (id, type, path, manyModel) {
       }
       let k_p = k + suffix
       if (eYo.objectHasOwnProperty(object, k_p)) {
-        console.error(`BREAK HERE!!! ALREADY object ${object.eyo$ ? object.eyo$.name : '?'}/${k_p}`)
+        eYo.test && eYo.test.IN_THROW || console.error(`BREAK HERE!!! ALREADY object ${object.eyo$ ? object.eyo$.name : '?'}/${k_p}`)
       }
       eYo.objectHasOwnProperty(object, k_p) && eYo.throw(`${this.eyo$.name}/${id}$.shortcuts: Already property ${object.eyo$.name}/${k_p}`)
       eYo.mixinRO(object, {

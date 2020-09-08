@@ -221,7 +221,7 @@ eYo.o3d.newC9r(eYo.geom, 'Metrics', {
     toString: {
       get () {
         if (!this.drag) {
-          console.error('BREAK HERE!')
+          eYo.test && eYo.test.IN_THROW || console.error('BREAK HERE!')
         }
         return `drag: ${this.drag.description}, view: ${this.view.description}, port: ${this.port.description}`
       },

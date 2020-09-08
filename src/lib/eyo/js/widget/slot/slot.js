@@ -653,7 +653,7 @@ eYo.Slot$.manyEnhanced('field', 'fields')
 //<<< mochai: fields
 //>>>
 
-eYo.Slot[eYo.$].finalizeC9r([
+eYo.Slot$.finalizeC9r([
   'order', // INTEGER,
   'promise', // : eYo.t3.expr.value_list,
   'plugged', // : eYo.t3.expr.primary,

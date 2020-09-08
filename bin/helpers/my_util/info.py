@@ -23,6 +23,7 @@ class Info:
   (?P<suite>.*)""", re.X)
 
   assert re.match(re_new, "eYo.newNS('Brick')"), 'BAD re_new 2'
+  assert re.match(re_new, "eYo.newNS('_')"), 'BAD re_new 2'
   assert re.match(re_new, "eYo.dnd.newC9r('Mngr', {"), 'BAD re_new 3'
   assert re.match(re_new, "eYo.o4t.newSingleton(eYo, 'font', {"), 'BAD re_new 3a'
 
@@ -33,14 +34,14 @@ class Info:
   assert suite == "eYo.pane, 'WorkspaceControl', {", 'BAD re_new 6'
 
   re_arg_ns = re.compile(r"""^
-  (?P<ns>eYo(?:\.[a-z][\w0-9_]*)*)
+  (?P<ns>eYo(?:\.[a-z_][\w0-9_]*)*)
   (?:\s*,\s* (?P<suite>.*))?$""", re.X)
 
   m = re.match(re_arg_ns, suite)
-  assert m, 'BAD re_arg_ns 1'
+  assert m, 'BAD re_arg_ns 41'
   assert m.group('ns') == "eYo.pane", 'BAD re_arg_ns 2'
 
-  # eYo.pane.WorkspaceControl[eYo.$makeSubC9r]('TrashCan', {
+   # eYo.pane.WorkspaceControl[eYo.$makeSubC9r]('TrashCan', {
   re_newSubC9r = re.compile(r"""^\s*
   (?P<NS>eYo(?:\.[a-z][\w0-9_]*)*)
   \.(?P<Super>[A-Z][\w0-9_]*)
@@ -60,9 +61,24 @@ class Info:
   (?:'|")(?P<key>[^'"]+?)(?:'|")
   .*$""", re.X)
 
-  m = re.match(re_arg_key, suite)
+  m = re.match(re_arg_key, "'_')")
   assert m, 'BAD re_arg_key 1'
+  assert m.group('key') == '_'
+  
+  m = re.match(re_arg_key, suite)
+  assert m, 'BAD re_arg_key 1b'
   assert m.group('key') == "TrashCan", 'BAD re_arg_ns 2'
+
+  m = re.match(re_new, "eYo.newNS('_')")
+  assert m, 'BAD re_new 51'
+  assert m.group('NS') == "eYo", 'BAD re_new 52'
+  suite = m.group('suite')
+  assert suite == "'_')", 'BAD re_new 53'
+  m = re.match(re_arg_ns, suite)
+  assert not m, 'BAD re_arg_ns 54'
+  m = re_arg_key.match(suite)
+  assert m, 'BAD re_arg_key 55'
+  assert m.group('key') == '_'
 
   re_arg_t3 = re.compile(r"""^
   eYo\.t3\.(?:stmt|expr)\.(?P<type>[a-z][\w0-9_]*)
@@ -156,17 +172,19 @@ class Info:
     """
     self.path = path
     with path.open('r', encoding='utf-8') as f:
-      prompt = f'======= {path}\n'
+      prompt = f'======= {path}'
       print(prompt)
       relative = path.relative_to(path_root)
       provided = []
       def addProvided(what):
         last = what.split('.')[-1]
-        if last in ['DB'] or re.search('[a-z]', last):
+        if last == '_': print('OKAY')
+        if last in ['DB'] or re.search('[a-z]', last) or last == '_':
           if not what in provided:
-            provided.append(what) 
+            provided.append(what)
         else:
           Info.ignored.append(what)
+          # print(f'IGNORED: {what}')
       required = set()
       forwarded = set()
       classed = set()

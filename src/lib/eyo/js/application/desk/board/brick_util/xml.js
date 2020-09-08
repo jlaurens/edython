@@ -86,9 +86,6 @@ eYo.provide('xml.compatibility')
 eYo.provide('xml.call')
 
 eYo.model.allowModelPaths({
-  [eYo.model.ROOT]: [
-    'xml',
-  ],
   xml: [
     'attr', 'types', 'attribute',
   ],

@@ -266,7 +266,7 @@ describe ('Tests: C9r', function () {
     })
     it ('NS.newNS(...)', function () {
       var NS = eYo.c9r.newNS()
-      chai.expect(() => { NS.newNS() }).not.to.throw()
+      chai.expect(() => { NS.newNS() }).not.to.xthrow()
       NS.newNS('foo')
       chai.assert(NS.foo)
       chai.assert(NS.foo.newNS)
@@ -276,16 +276,16 @@ describe ('Tests: C9r', function () {
       chai.assert(!NS.bar)
       NS.bar = 123
       chai.assert(NS.bar)
-      chai.expect(() => { NS.newNS('bar') }).to.throw()
-      chai.expect(() => { eYo.newNS(NS, 'bar') }).to.throw()
+      chai.expect(() => { NS.newNS('bar') }).to.xthrow()
+      chai.expect(() => { eYo.newNS(NS, 'bar') }).to.xthrow()
       delete NS.bar
-      chai.expect(() => { eYo.newNS(NS, 'bar') }).not.to.throw()
+      chai.expect(() => { eYo.newNS(NS, 'bar') }).not.to.xthrow()
       var nsbis = eYo.newNS()
       nsbis.bar = 123
-      chai.expect(() => { nsbis.newNS('bar') }).to.throw()
-      chai.expect(() => { eYo.newNS(nsbis, 'bar') }).to.throw()
+      chai.expect(() => { nsbis.newNS('bar') }).to.xthrow()
+      chai.expect(() => { eYo.newNS(nsbis, 'bar') }).to.xthrow()
       delete nsbis.bar
-      chai.expect(() => { nsbis.newNS('bar') }).not.to.throw()
+      chai.expect(() => { nsbis.newNS('bar') }).not.to.xthrow()
     })
   })
   describe ('C9r: makeSubC9r', function () {
@@ -357,11 +357,11 @@ describe ('Tests: C9r', function () {
       Object.defineProperty(NS, 'C9rBase', {
         value: 421
       })
-      chai.expect(() => NS.makeC9rBase()).to.throw()
+      chai.expect(() => NS.makeC9rBase()).to.xthrow()
       chai.expect(eYo.c9r.newC9r(NS)[eYo.$].id).equal('eYo.c9r.?')
       chai.expect(NS).property('C9rBase')
-      chai.expect(() => eYo.c9r.newC9r(NS, 'C9rBase')).to.throw()
-      chai.expect(() => NS.newC9r('C9rBase')).to.throw()
+      chai.expect(() => eYo.c9r.newC9r(NS, 'C9rBase')).to.xthrow()
+      chai.expect(() => NS.newC9r('C9rBase')).to.xthrow()
     })
     it(`NS.makeC9rBase({...})`, function () {
       var NS = eYo.c9r.newNS()
@@ -384,7 +384,7 @@ describe ('Tests: C9r', function () {
       NS.makeC9rBase()
       let C9r = eYo.c9r.newC9r(NS, 'A')
       chai.expect(NS.A_s).equal(eYo.c9r.C9rBase_p)
-      chai.expect(()=>{ eYo.c9r.newC9r(NS, 'A') }).to.throw() // Already existing attribute
+      chai.expect(()=>{ eYo.c9r.newC9r(NS, 'A') }).to.xthrow() // Already existing attribute
       chai.expect(eYo.isSubclass(C9r, eYo.c9r.C9rBase)).true
       chai.expect(eYo.isSubclass(C9r, NS.C9rBase)).false
     })
@@ -414,7 +414,7 @@ describe ('Tests: C9r', function () {
     })
     it (`NO eYo.c9r.newC9r('_A')`, function () {
       if (eYo._A) {
-        chai.expect(() => {eYo.c9r.newC9r('_A')}).to.throw()
+        chai.expect(() => {eYo.c9r.newC9r('_A')}).to.xthrow()
       }
     })
     it (`NS.newC9r('A')`, function () {
@@ -558,7 +558,7 @@ describe ('Tests: C9r', function () {
       chai.assert(!Dlgt_p || eYo.isSubclass(X[eYo.$].constructor, Dlgt_p.constructor))
       chai.expect(() => {
         new X()
-      }).not.to.throw()
+      }).not.to.xthrow()
     }
     it (`eYo.c9r.newC9r('...')`, function () {
       var NS = eYo.c9r.newNS()
@@ -711,10 +711,10 @@ describe ('Tests: C9r', function () {
     chai.assert(eYo.isSubclass(NS.A[eYo.$].constructor, eYo.dlgt.C9rBase))
     chai.expect(() => {
       NS.A[eYo.$] = null
-    }).to.throw()
+    }).to.xthrow()
     chai.expect(() => {
       NS.A[eYo.$] = null
-    }).to.throw()
+    }).to.xthrow()
   })
   it ('C9r: dlgt key', function () {
     var NS = eYo.c9r.newNS()

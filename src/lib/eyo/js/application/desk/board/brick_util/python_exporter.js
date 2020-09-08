@@ -327,7 +327,7 @@ eYo.py.Exporter_p.exportSlot_ = function (slot, opt) { // eslint-disable-line
       if (t9k) {
         this.exportAsExpression_(t9k)
       } else if (!m4t.optional_ && !m4t.disabled_ && !m4t.s7r_ && !slot.boundField) {
-        console.error('BREAK HERE')
+        eYo.test && eYo.test.IN_THROW || console.error('BREAK HERE')
         this.shouldSeparateField && (this.addBoard())
         this.linePush('<MISSING INPUT>')
         this.shouldSeparateField = true

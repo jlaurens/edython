@@ -167,7 +167,7 @@ describe('drvr', function() {
     chai.expect(() => {
       rootChiFoo.fromChiC9rBase(7)
       eYo.flag.expect(147)
-    }).throw()
+    }).xthrow()
     rootChiFoo.fromChiFoo(9)
     eYo.flag.expect(159)
     var diamond = root.chi.getDrvr('Foo')

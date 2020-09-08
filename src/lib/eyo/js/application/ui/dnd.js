@@ -86,7 +86,7 @@ eYo.dnd.newC9r('Mngr', {
     driver_mngr: {
       get () {
         if (!this.motion) {
-          console.error('BREAK HERE!')
+          eYo.test && eYo.test.IN_THROW || console.error('BREAK HERE!')
         }
         return this.motion.driver_mngr
       },
@@ -102,7 +102,7 @@ eYo.dnd.newC9r('Mngr', {
 eYo.dnd.Mngr_p.ownedForEach = function (f) {
   eYo.dnd.Mngr_s.ownedForEach.call(this, f)
   if (!this.draggers_) {
-    console.error('BREAK HERE!!!')
+    eYo.test && eYo.test.IN_THROW || console.error('BREAK HERE!!!')
   }
   this.draggers_.foreach(d => d.dispose())
   this.droppers_.foreach(d => d.dispose())

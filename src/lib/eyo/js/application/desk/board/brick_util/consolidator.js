@@ -14,7 +14,6 @@
 eYo.require('decorate')
 
 eYo.model.allowModelPaths({
-  [eYo.model.ROOT]: 'list',
   list: [
     'check',
     'presep',

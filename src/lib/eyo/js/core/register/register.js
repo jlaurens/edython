@@ -58,7 +58,7 @@ eYo.register.add = function (object, key, filter) {
     let eyo = object[eYo.$]
     var p6y$ = eyo.p6y$
     p6y$ || eYo.throw(`Not a proper subclass (unknown p6y$/1).`)
-    //... chai.expect(() => eYo.register.add(ns.C9rBase, 'foo')).throw()
+    //... chai.expect(() => eYo.register.add(ns.C9rBase, 'foo')).xthrow()
     eyo[p6y$.merge]({
       [$k]: {
         value () {

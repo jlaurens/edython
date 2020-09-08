@@ -102,7 +102,7 @@ eYo.mixinFR(eYo.dlgt, {
     //... chai.expect(eYo.dlgt).property('C9rBase')
     if (ns && !eYo.isNS(ns)) {
       model && eYo.throw(`eYo.dlgt.C9rBase: unexpected model (${model})`)
-      //... chai.expect(() => {new eYo.delegate.C9rBase(1, 2, 3, 4)}).throw()
+      //... chai.expect(() => {new eYo.delegate.C9rBase(1, 2, 3, 4)}).xthrow()
       ;[ns, id, model] = [eYo.NA, ns, id]
     }
     var anonymous = false
@@ -220,10 +220,9 @@ eYo.mixinFR(eYo._p, {
   //... eYo.dlgt.declareDlgt(_p)
   //... chai.expect(_p.eyo$).equal(dlgt)
   //... chai.expect(C9r[eYo.$]).equal(dlgt)
-  //... console.error('IGNORE next error')
   //... chai.expect(() => {
   //...   dlgt.finalizeC9r()
-  //... }).throw()
+  //... }).xthrow()
   //... superDlgt.finalizeC9r()
   //... chai.expect(superDlgt.hasFinalizedC9r).true
   //... dlgt.finalizeC9r()
@@ -272,8 +271,8 @@ eYo.mixinFR(eYo._p, {
     })
   })
   //... ;['name', '$super', 'genealogy'].forEach(k => {
-  //...   chai.expect(() => dlgt[k+'_']).throw()
-  //...   chai.expect(() => dlgt[k+'__']).throw()
+  //...   chai.expect(() => dlgt[k+'_']).xthrow()
+  //...   chai.expect(() => dlgt[k+'__']).xthrow()
   //... })
   // Convenient shortcuts
   //... eYo.inherits(C9r, SuperC9r)
@@ -313,7 +312,7 @@ eYo.mixinFR(eYo._p, {
     },
     super () {
       eYo.throw('`super` has moved to `$super`')
-      //... chai.expect(() => eyo$.super).throw()
+      //... chai.expect(() => eyo$.super).xthrow()
     },
     $super () {
       var S = this.C9r__[eYo.$SuperC9r]
@@ -410,7 +409,7 @@ eYo.mixinFR(eYo._p, {
         //...   dlgt.finalizeC9r()
         //...   eYo.dlgt.new(eYo.newNS(), 'Foo', {})
         //...   dlgt.setC9r(C9r) // raises here
-        //... }).throw()
+        //... }).xthrow()
       })
       //... chai.expect(Foo[eYo.$]).equal(dlgt)
       //... chai.expect(Foo[eYo.$_p]).equal(dlgt._p)
@@ -479,7 +478,7 @@ eYo.mixinFR(eYo._p, {
       let f_m = this.model.prepare
       if (f_m) {
         if (!eYo.isF(f_m)) {
-          console.error('BREAK HERE! BUG')
+          eYo.test && eYo.test.IN_THROW || console.error('BREAK HERE! BUG')
         }
         //... preparator({
         //...   prepare (...$) {
@@ -512,7 +511,7 @@ eYo.mixinFR(eYo._p, {
       let f_p = this.$super && this.$super[K]
       if (f_m) {
         if (!eYo.isF(f_m)) {
-          console.error('BREAK HERE! BUG')
+          eYo.test && eYo.test.IN_THROW || console.error('BREAK HERE! BUG')
         }
         if (XRegExp.exec(f_m.toString(), eYo.xre.function_builtin)) {
           if (f_p) {
@@ -700,7 +699,7 @@ eYo.mixinFR(eYo._p, {
       //<<< mochai: addSubC9r + forEachSubC9r + someSubC9r
       eYo.isSubclass(C9r, this.C9r) || eYo.throw(`${C9r[eYo.$].name} is not a subclass of ${this.name}`)
       if (!this.subC9rs__) {
-        console.error('BREAK!!! !this.subC9rs__')
+        eYo.test && eYo.test.IN_THROW || console.error('BREAK!!! !this.subC9rs__')
       }
       this.subC9rs__.add(C9r)
       //... let SuperC9r = function () {}
@@ -829,15 +828,16 @@ eYo.mixinFR(eYo._p, {
         eYo.isC9r(SuperC9r) || eYo.throw(`${this.name}/newC9r: Bad SuperC9r: ${SuperC9r}`)
         //... chai.expect(() => {
         //...   superDlgt.newC9r(function() {})
-        //... }).throw()
+        //... }).xthrow()
         // create the constructor
         var C9r = function (...$) {
-          SuperC9r.call(this, ...$) // top down call
           if (this.dispose === eYo.doNothing) {
+            SuperC9r.call(this, ...$) // top down call
             eyo$.c9rPrepare(this, ...$)
           } else {
             try {
               this.dispose = eYo.doNothing
+              SuperC9r.call(this, ...$) // top down call
               eyo$.c9rPrepare(this, ...$)
             } finally {
               delete this.dispose
@@ -995,11 +995,15 @@ eYo.mixinFR(eYo.dlgt.C9rBase_p, {
   finalizeC9r (...$) {
     //<<< mochai: finalizeC9r
     let $super = this.$super
-    if ($super && !$super.hasFinalizedC9r) {
-      console.error('BREAK HERE!')
+    let mf = this.modelFormat
+    if ($super) {
+      if (!$super.hasFinalizedC9r) {
+        eYo.test && eYo.test.IN_THROW || console.error('BREAK HERE!')
+      }
+      !$super.hasFinalizedC9r && eYo.throw(`Parent is not finalized: ${$super.name}`)
+      mf.fallback = $super.modelFormat
     }
-    $super && !$super.hasFinalizedC9r && eYo.throw(`Parent is not finalized: ${$super.name}`)
-    let ans = this.modelFormat.allow(...$)
+    let ans = mf.allow(...$)
     this.modelPrepare()
     this.makeC9rInit()
     this.makeC9rDispose()
@@ -1014,7 +1018,7 @@ eYo.mixinFR(eYo.dlgt.C9rBase_p, {
     //... chai.expect(dlgt.c9rDispose).eyo_F
     //... chai.expect(() => {
     //...   dlgt.finalizeC9r()
-    //... }).throw()
+    //... }).xthrow()
     eYo.mixinFR(this, {
       finalizeC9r: eYo.oneShot('finalizeC9r cannot be sent twice to the same delegate.')
     })
@@ -1142,3 +1146,6 @@ eYo.mixinFR(eYo.dlgt.C9rBase_p, {
 })
 
 eYo.Dlgt$.finalizeC9r()
+
+eYo.provide('dlgt.C9rBase')
+eYo.provide('Dlgt')

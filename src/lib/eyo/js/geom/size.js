@@ -124,7 +124,7 @@ eYo.geom.newC9r('Size', {
       value: 0,
       validate (after) {
         if (!eYo.isDef(this)) {
-          console.error('BREAK HERE!!!')
+          eYo.test && eYo.test.IN_THROW || console.error('BREAK HERE!!!')
         }
         return this.snap_ ? Math.round(after * eYo.geom.C) / eYo.geom.C : after
       },
@@ -279,16 +279,16 @@ eYo.geom.newC9r('Size', {
         //... S = new eYo.geom.Size()
         //... S.set(m)
         //... chai.expect(S).eql(m)
-        //... chai.expect(() => S.set(m, null)).not.throw()
-        //... chai.expect(() => S.set(m, 1)).throw()
+        //... chai.expect(() => S.set(m, null)).not.xthrow()
+        //... chai.expect(() => S.set(m, 1)).xthrow()
       } else if (eYo.isDef(w.width) && eYo.isDef(w.height)) {
         this.width_ = w.width
         this.height_ = w.height
         //... S = new eYo.geom.Size()
         //... S.set(mm)
         //... chai.expect(S).almost.eql(m)
-        //... chai.expect(() => S.set(mm, null)).not.throw()
-        //... chai.expect(() => S.set(mm, 1)).throw()
+        //... chai.expect(() => S.set(mm, null)).not.xthrow()
+        //... chai.expect(() => S.set(mm, 1)).xthrow()
       } else if (eYo.isDef(w.x) && eYo.isDef(w.y)) {
         this.width_ = w.x
         this.height_ = w.y
@@ -296,8 +296,8 @@ eYo.geom.newC9r('Size', {
         //... let mmxy = {x: mm.width, y: mm.height}
         //... S.set(mmxy)
         //... chai.expect(S).almost.eql(m)
-        //... chai.expect(() => S.set(mmxy, null)).not.throw()
-        //... chai.expect(() => S.set(mmxy, 1)).throw()
+        //... chai.expect(() => S.set(mmxy, null)).not.xthrow()
+        //... chai.expect(() => S.set(mmxy, 1)).xthrow()
       } else if (eYo.isDef(w.clientX) && eYo.isDef(w.clientY)) {
         this.width_ = w.clientX
         this.height_ = w.clientY
@@ -305,8 +305,8 @@ eYo.geom.newC9r('Size', {
         //... let mmClient = {clientX: mm.width, clientY: mm.height}
         //... S.set(mmClient)
         //... chai.expect(S).almost.eql(m)
-        //... chai.expect(() => S.set(mmClient, null)).not.throw()
-        //... chai.expect(() => S.set(mmClient, 1)).throw()
+        //... chai.expect(() => S.set(mmClient, null)).not.xthrow()
+        //... chai.expect(() => S.set(mmClient, 1)).xthrow()
       } else {
         eYo.isaP6y(w)
           ? this[this.p6y$.replace]('w', w)
@@ -360,7 +360,7 @@ eYo.geom.newC9r('Size', {
       } else if (eYo.isDef(width.w) && eYo.isDef(width.h)) {
         eYo.isDef(height) && eYo.throw(`${this.eyo$.name}/pSet: Unexpected last argument ${height}`)
         //... S = new eYo.geom.Size()
-        //... chai.expect(() => {S.pSet(m, 1)}).throw()
+        //... chai.expect(() => {S.pSet(m, 1)}).xthrow()
         this.w_ = width.w
         this.h_ = width.h
         return this
@@ -390,7 +390,7 @@ eYo.geom.newC9r('Size', {
       if (scaleX.x) {
         eYo.isDef(scaleY) && eYo.throw(`${this.eyo$.name}/scale: Unexpected last argument ${scaleY} (scaleY)`)
         //... S = new eYo.geom.Size(m)
-        //... chai.expect(() => S.scale({x: 1}, 2)).throw()
+        //... chai.expect(() => S.scale({x: 1}, 2)).xthrow()
         this.w_ *= scaleX.x
         this.h_ *= (scaleX.y || scaleX.x)
         //... chai.expect(S).almost.eql(m)
@@ -405,7 +405,7 @@ eYo.geom.newC9r('Size', {
       } else if (scaleX.y) {
         eYo.isDef(scaleY) && eYo.throw(`${this.eyo$.name}/scale: Unexpected last argument ${scaleY} (scaleY)`)
         //... S = new eYo.geom.Size(m)
-        //... chai.expect(() => S.scale({y: 1}, 2)).throw()
+        //... chai.expect(() => S.scale({y: 1}, 2)).xthrow()
         this.w_ *= scaleX.y
         this.h_ *= scaleX.y
         //... chai.expect(S).almost.eql(m)
@@ -444,7 +444,7 @@ eYo.geom.newC9r('Size', {
       if (scaleX.x) {
         eYo.isDef(scaleY) && eYo.throw(`${this.eyo$.name}/scale: Unexpected last argument ${scaleY} (scaleY)`)
         //... S = new eYo.geom.Size(m)
-        //... chai.expect(() => S.unscale({x: 1}, 2)).throw()
+        //... chai.expect(() => S.unscale({x: 1}, 2)).xthrow()
         this.w_ /= scaleX.x
         this.h_ /= (scaleX.y || scaleX.x)
         //... chai.expect(S).almost.eql(m)
@@ -459,7 +459,7 @@ eYo.geom.newC9r('Size', {
       } else if (scaleX.y) {
         eYo.isDef(scaleY) && eYo.throw(`${this.eyo$.name}/scale: Unexpected last argument ${scaleY} (scaleY)`)
         //... S = new eYo.geom.Size(m)
-        //... chai.expect(() => S.scale({y: 1}, 2)).throw()
+        //... chai.expect(() => S.scale({y: 1}, 2)).xthrow()
         this.w_ /= scaleX.y
         this.h_ /= scaleX.y
         //... chai.expect(S).almost.eql(m)
@@ -492,7 +492,7 @@ eYo.geom.newC9r('Size', {
     setFromText (txt) {
       //<<< mochai: setFromText
       if (!eYo.isDef(txt)) {
-        console.error('BREAK HERE!')
+        eYo.test && eYo.test.IN_THROW || console.error('BREAK HERE!')
       }
       var lines = txt.split(/\r\n|[\n\v\f\r\x85\u2028\u2029]/)
       var c = 0
@@ -551,7 +551,7 @@ eYo.geom.newC9r('Size', {
   //>>>
 })
 
-eYo.geom.Size[eYo.$].finalizeC9r()
+eYo.geom.Size$.finalizeC9r()
 
 eYo.c9r.Dlgt_p.makeSized = function (key) {
   //<<< mochai: eYo.o4t.Dlgt.makeSized

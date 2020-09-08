@@ -79,12 +79,12 @@ print('''    var f = (NS_, Super_, Dlgt_, ff, compatible) => {
         var ans
         chai.expect(() => {
           ans = ff()
-        }).not.to.throw()
+        }).not.to.xthrow()
         return ans
       }
       : () => {
         NS = NS_; Super = Super_; Dlgt = Dlgt_
-        chai.expect(ff).to.throw()
+        chai.expect(ff).to.xthrow()
       }
     }
     ;[''')

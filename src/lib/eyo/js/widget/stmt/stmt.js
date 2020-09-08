@@ -144,7 +144,7 @@ eYo.stmt.makeC9rBase(true, {
 
 eYo.brick.registerAll(eYo.t3.stmt, eYo.Stmt, true)
 
-eYo.Stmt[eYo.$].finalizeC9r({
+eYo.Stmt$.finalizeC9r({
   left: ['check'],
 }, {
   right: ['check', 'fields'], 

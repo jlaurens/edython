@@ -79,6 +79,7 @@ eYo.test.makeOnr = function (model) {
 eYo.test.setup = function (model) {
   this.flag = new eYo.test.Flag()
   this.onr = this.makeOnr(model)
+  this.IN_THROW = false
 }
 
 eYo.flag.push = function (...$) {
@@ -134,6 +135,14 @@ chai.Assertion.addProperty('eyo_Num', function () {
 chai.Assertion.addProperty('eyo_Str', function () {
   this.assert(
     eYo.isStr(this._obj)
+    , 'expected #{this} to be a string'
+    , 'expected #{this} to not be a string'
+  )
+})
+
+chai.Assertion.addProperty('eyo_Sym', function () {
+  this.assert(
+    eYo.isSym(this._obj)
     , 'expected #{this} to be a string'
     , 'expected #{this} to not be a string'
   )
@@ -473,4 +482,10 @@ chai.use(function (chai, utils) {
 
   Assertion.overwriteMethod('eql', overrideAssertEql)
   Assertion.overwriteMethod('eqls', overrideAssertEql)
+})
+
+chai.Assertion.addMethod('xthrow', function (expected) {
+  eYo.test.IN_THROW = true
+  this.throw()
+  eYo.test.IN_THROW = false
 })

@@ -39,6 +39,58 @@ eYo.c9r.newNS(eYo, 'o3d', {
   //... chai.expect(eYo.isaC9r(eYo.o3d.OWNER)).true
   //>>>
 })
+
+eYo.mixinFR(eYo.o3d, {
+  /**
+   * Prepares the given instance as owned.
+   * For subclassers.
+   * @param{eYo.O3d} $this - the instance to initialize
+   * @param{String | Symbol} key - The key in the owner
+   * @param{eYo.C9r | namespace} [owner] - Defaults to the name space
+   * @param{Boolean} [configurable] - Whether descriptors should be configurable, necessary for proxy.
+   */
+  c9rPrepare ($this, key, owner, configurable) {
+    eYo.isId(key) || eYo.throw('eYo.o3d.c9rPrepare: Bad key')
+    if (!eYo.isOwner(owner)) {
+      eYo.isNA(configurable) || eYo.throw(`eYo.o3d.c9rPrepare: Unexpected argument (${configurable})`)
+      ;[owner, configurable] = [$this.eyo.ns, owner]
+    }
+    $this.owner__ = owner
+    $this.key_ = key
+    Object.defineProperties($this, {
+      owner: eYo.descriptorR({$ () {
+        return this.owner__
+      }}.$, !!configurable),
+      key: eYo.descriptorR({$ () {
+        return this.key_
+      }}.$, !!configurable),
+    })
+    $this.disposeUI = eYo.doNothing
+  },
+  /**
+   * The default implementation does nothing.
+   * For subclassers.
+   * @param{eYo.O3d} _$this - the instance to initialize
+   * @param{String | Symbol} key - The key in the owner
+   * @param{eYo.C9r | namespace} [owner] - Defaults to the name space
+   * @param{Boolean} [configurable] - Whether descriptors should be configurable, necessary for proxy.
+   */
+  c9rInit (_$this, key, owner, configurable) {
+  },
+  /**
+   * The default implementation does nothing.
+   * For subclassers.
+   * @param{eYo.O3d} $this - the instance to initialize
+   * @param{String | Symbol} key - The key in the owner
+   * @param{eYo.C9r | namespace} [owner] - Defaults to the name space
+   * @param{Boolean} [configurable] - Whether descriptors should be configurable, necessary for proxy.
+   */
+  c9rDispose ($this) {
+    $this.disposeUI()
+    $this.owner__ = $this.key_ = eYo.NA
+  },
+})
+
 /**
  * @name{eYo.o3d.C9rBase}
  * @constructor
@@ -53,12 +105,20 @@ eYo.o3d.makeC9rBase({
    * @param {eYo.c9r.C9rBase} owner - the immediate owner of this object.
    */
   prepare (key, owner) {
-    this.eyo$.o3dC9rPrepare(this, key, owner)
-    this.disposeUI = eYo.doNothing
+    eYo.c9r.c9rPrepare(this)
+    eYo.o3d.c9rPrepare(this, key, owner)
+  },
+  /** 
+   * @param {String} key - an identifier for the owner.
+   * @param {eYo.c9r.C9rBase} owner - the immediate owner of this object.
+   */
+  init (key, owner) {
+    eYo.o3d.c9rInit(this, key, owner)
+    eYo.c9r.c9rInit(this)
   },
   dispose () {
-    this.disposeUI()
-    this.owner__ = this.key_ = eYo.NA
+    eYo.o3d.c9rDispose(this)
+    eYo.c9r.c9rDispose(this)
   },  
 })
 //<<< mochai: C9rBase
@@ -69,7 +129,7 @@ eYo.o3d.makeC9rBase({
 
 eYo.mixinFR(eYo._p, {
   isaO3d (what) {
-    return !!what && what instanceof eYo.o3d.C9rBase
+    return !!what && what instanceof eYo.O3d
     //<<< mochai: eYo.isaO3d
     //... chai.expect(eYo.isaO3d()).false
     //... chai.expect(eYo.isaO3d(eYo.NA)).false
@@ -78,63 +138,40 @@ eYo.mixinFR(eYo._p, {
     //>>>
   }
 })
-/**
- * The default implementation does nothing.
- * For subclassers.
- * @param{Object} instance - the instance to initialize
- * @param{String | Symbol} key - The key in the owner
- * @param{Object} [owner] - Defaults to the name space
- * @param{Boolean} [configurable] - Whether descriptors should be configurable, necessary for proxy.
- */
-eYo.o3d.Dlgt_p.o3dC9rPrepare = function (instance, key, owner, configurable) {
-  eYo.isId(key) || eYo.throw(`${this.eyo$.name}: Bad key in init`)
-  if (!eYo.isOwner(owner)) {
-    eYo.isNA(configurable) || eYo.throw(`${this.name}.o3dC9rPrepare: Unexpected argument (${configurable})`)
-    ;[owner, configurable] = [this.ns, owner]
-  }
-  instance.owner__ = owner
-  instance.key_ = key
-  Object.defineProperties(instance, {
-    owner: eYo.descriptorR({$ () {
-      return this.owner__
-    }}.$, !!configurable),
-    key: eYo.descriptorR({$ () {
-      return this.key_
-    }}.$, !!configurable),
-  })
-}
 
-/**
- * The default implementation does nothing.
- * For subclassers.
- * @param{*} before - the owner before the change
- * @param{*} after - the owner after the change
- */
-eYo.o3d.C9rBase_p.ownerWillChange = eYo.doNothing
-/**
- * The default implementation does nothing.
- * For subclassers.
- * @param{*} before - the owner before the change
- * @param{*} after - the owner after the change
- */
-eYo.o3d.C9rBase.prototype.ownerDidChange = function (before, after) {
-  if (after) {
-    after.hasUI ? this.initUI() : this.disposeUI()
-  }
-}
-/**
- * The default implementation does nothing.
- * For subclassers.
- */
-eYo.o3d.C9rBase.prototype.initUI = eYo.doNothing
+Object.assign(eYo.O3d_p, {
+  /**
+   * The default implementation does nothing.
+   * For subclassers.
+   * @param{*} before - the owner before the change
+   * @param{*} after - the owner after the change
+   */
+  ownerWillChange: eYo.doNothing,
+  /**
+   * The default implementation does nothing.
+   * For subclassers.
+   * @param{*} before - the owner before the change
+   * @param{*} after - the owner after the change
+   */
+  ownerDidChange (before, after) {
+    if (after) {
+      after.hasUI ? this.initUI() : this.disposeUI()
+    }
+  },
+  /**
+   * The default implementation does nothing.
+   * For subclassers.
+   */
+  initUI: eYo.doNothing,
+  /**
+   * The default implementation does nothing.
+   * For subclassers.
+   */
+  disposeUI: eYo.doNothing,
+})
 
-/**
- * The default implementation does nothing.
- * For subclassers.
- */
-eYo.o3d.C9rBase.prototype.disposeUI = eYo.doNothing
 
-Object.defineProperties(eYo.o3d.C9rBase.prototype, {
+Object.defineProperties(eYo.O3d_p, {
   owner_: {
     get () {
       return this.owner__
@@ -190,7 +227,7 @@ eYo.mixinFR(eYo.o3d._p, {
     if (!eYo.isNS(NS)) {
       !model || eYo.throw(`${this.name}/newSingleton: Unexpected last parameter (${model})`)
       //<<< mochai: NS
-      //... chai.expect(() => eYo.o3d.newSingleton(id, {}, 1)).throw()
+      //... chai.expect(() => eYo.o3d.newSingleton(id, {}, 1)).xthrow()
       //>>>
       ;[NS, id, model] = [this, NS, id]
     }
@@ -205,7 +242,7 @@ eYo.mixinFR(eYo.o3d._p, {
     } else {
       //<<< mochai: id
       eYo.throw(`${this.name}/newSingleton: Unexpected parameter ${id}`)
-      //... chai.expect(() => eYo.o3d.newSingleton(1)).throw()
+      //... chai.expect(() => eYo.o3d.newSingleton(1)).xthrow()
       //>>>
     }
     //<<< mochai: SuperC9r

@@ -64,9 +64,9 @@ eYo.data.makeC9rBase(true, {
   init (key, brick) {
     //<<< mochai: init
     eYo.isStr(key) || eYo.throw(`${this.eyo$.name}: Missing key in makeC9rBase`)
-    //... chai.expect(() => new eYo.Data(1)).throw()
+    //... chai.expect(() => new eYo.Data(1)).xthrow()
     eYo.isaC9r(brick) || eYo.throw(`${this.eyo$.name}: Missing brick`)
-    //... chai.expect(() => new eYo.Data('foo', 'bar')).throw()
+    //... chai.expect(() => new eYo.Data('foo', 'bar')).xthrow()
     //... let d = new eYo.Data('foo', onr)
     //>>>
   },
@@ -80,7 +80,7 @@ eYo.data.makeC9rBase(true, {
       }
       //... var d = new eYo.Data('foo', onr)
       //... chai.expect(d.brick).equal(onr)
-      //... chai.expect(() => { d.brick_ = 1 }).throw()
+      //... chai.expect(() => { d.brick_ = 1 }).xthrow()
       //>>>
     },
     name: {
@@ -874,7 +874,7 @@ eYo.data.makeC9rBase(true, {
   //>>>
 })
 
-eYo.Data[eYo.$].finalizeC9r(
+eYo.Data$.finalizeC9r(
   eYo.model.manyDescriptorRA('all', 'after'),
   eYo.model.manyDescriptorF(
     'consolidate', 'fromType',

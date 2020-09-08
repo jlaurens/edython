@@ -59,7 +59,7 @@ eYo.c9r.newNS(eYo, 'geom', true, {
   //... chai.expect(eYo.geom.C).eyo_Num
   //... chai.expect(eYo.geom.L).eyo_Num
   //... chai.expect(eYo.geom.REM).eyo_Num
-  //... chai.expect(() => { eYo.geom.C = 10 }).throw()
+  //... chai.expect(() => { eYo.geom.C = 10 }).xthrow()
   //... chai.expect(eYo.geom.C === Math.round(eYo.geom.C)).true
   //... chai.expect(eYo.geom.L === Math.round(eYo.geom.L)).true
   //>>>

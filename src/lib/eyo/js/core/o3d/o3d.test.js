@@ -21,7 +21,7 @@ describe ('Tests: Owned', function () {
     chai.expect(o3d.owner).equal(eYo.test.onr)
     chai.expect(() => {
       o3d.owner = eYo.NA
-    }).throw()
+    }).xthrow()
     o3d.owner_ = eYo.NA
     chai.expect(o3d.owner).equal(eYo.NA)
   })

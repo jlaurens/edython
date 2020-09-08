@@ -17,10 +17,10 @@ describe ('Tests: many', function () {
     var foo1$ = dlgt.manyEnhanced('foo1', 'bar', {})
     chai.expect(() => {
       dlgt[foo1$.prepare](o)
-    }).throw() // eYo.foo1 is not a kown type
+    }).xthrow() // eYo.foo1 is not a kown type
     chai.expect(() => {
       dlgt.manyEnhanced('foo1', 'bar', {})
-    }).throw() // manyEnhanced already run with that key
+    }).xthrow() // manyEnhanced already run with that key
     var foo2$ = dlgt.manyEnhanced('foo2', 'bar', {
       make (model, k, object) {
         eYo.flag.push('m', k, model)
@@ -74,9 +74,8 @@ describe ('Tests: many', function () {
     dlgt[foo5$.prepare](o)
     o.a_f5 = 421 // will cause  next `shortcuts` call to throw
     chai.expect(() => {
-      console.error('IGNORE NEXT ERROR|BREAKE HERE')
       dlgt[foo5$.shortcuts](o)
-    }).throw()
+    }).xthrow()
   })
   it ('manyEnhanced, many', function () {
     var C9r = function () {}

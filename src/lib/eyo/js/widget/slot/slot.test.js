@@ -97,21 +97,21 @@ describe('Proxy between lists and linked lists (Proof of concept)', function() {
       })
     }
     test('a0','b1','c2')
-    chai.expect(() => {p[3].name}).to.throw()
+    chai.expect(() => {p[3].name}).to.xthrow()
     p[0] = {name: 'new a0'}
     test('new a0','b1','c2')
     p[1] = {name: 'new b1'}
     test('new a0','new b1','c2')
     p[2] = {name: 'new c2'}
     test('new a0','new b1','new c2')
-    chai.expect(() => {p[3] = {name: 'new d'}}).to.throw()
+    chai.expect(() => {p[3] = {name: 'new d'}}).to.xthrow()
     delete p[1]
     test('new a0','new c2')
     delete p[0]
     test('new c2')
-    chai.expect(() => {delete p[1]}).to.throw()
+    chai.expect(() => {delete p[1]}).to.xthrow()
     delete p[0]
-    chai.expect(() => {p[0].name}).to.throw()
+    chai.expect(() => {p[0].name}).to.xthrow()
     chai.assert(!aa.head)
     p.push(a)
     test('a0')

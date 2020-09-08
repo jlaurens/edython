@@ -108,7 +108,6 @@ describe ('Tests: data', function () {
   //     })
   //     /*
   //     eYo.model.allowModelPaths({
-  //   [eYo.model.ROOT]: 'data',
   //   'data': '\\w+',
   //   'data\\.\\w+': [
   //     'after', // key || [keys]

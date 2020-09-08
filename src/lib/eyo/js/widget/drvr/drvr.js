@@ -241,7 +241,7 @@ eYo.make$$('parent')
         eYo.isNA(drvrModel) || eYo.throw(`${this.name}/newDrvrC9r: Unexpected model.`)
         ;[SuperC9r, drvrModel] = [this.$super.getDrvrC9r && this.$super.getDrvrC9r(id) || this.C9rBase, eYo.called(SuperC9r) || {}]
       }
-      let Drvr = eYo.c9r.doNewC9r(this, id, SuperC9r, drvrModel || {})
+      let Drvr = eYo.c9r.newC9r(this, id, SuperC9r, drvrModel || {})
       Drvr[eYo.$].finalizeC9r()
       return this.setDrvrC9r(id, Drvr)
       //... NAMES.forEach(ra => {
@@ -498,10 +498,10 @@ eYo.o3d.newC9r(eYo.drvr, eYo.$$.Handler, {
     //<<< mochai: frozen or forbidden
     //... let mngr = eYo.drvr.newNS()
     //... let d = newDrvr(mngr, 'drvr')
-    //... chai.expect(() => d()).throw()
-    //... chai.expect(() => new d()).throw()
-    //... chai.expect(() => d.defineProperty()).throw()
-    //... chai.expect(() => d.deleteProperty()).throw()
+    //... chai.expect(() => d()).xthrow()
+    //... chai.expect(() => new d()).xthrow()
+    //... chai.expect(() => d.defineProperty()).xthrow()
+    //... chai.expect(() => d.deleteProperty()).xthrow()
     //>>>
     get (target, prop, receiver) { // eslint-disable-line
       //<<< mochai: get
@@ -638,7 +638,7 @@ eYo.o3d.newC9r(eYo.drvr, eYo.$$.Handler, {
         return true
         //... chai.expect(p[eYo.$p6y] = 421).equal(p[eYo.$p6y])
       }
-      //... chai.expect(() => p.foo = 'bar').throw()
+      //... chai.expect(() => p.foo = 'bar').xthrow()
       eYo.throw(`Frozen proxy to driver ${target.driverId}: forbidden key is ${prop}`)
       //>>>
     },
@@ -703,15 +703,15 @@ eYo.drvr.makeC9rBase(true, {
       //... var drvr = new eYo.Drvr('foo', onr)
       //... chai.expect(drvr.owner).equal(onr)
       //... chai.expect(drvr.mngr).equal(onr)
-      //... chai.expect(() => drvr.mngr_ = 'bar').throw()
-      //... chai.expect(() => drvr.mngr = 'bar').throw()
+      //... chai.expect(() => drvr.mngr_ = 'bar').xthrow()
+      //... chai.expect(() => drvr.mngr = 'bar').xthrow()
       //... let mngr = eYo.drvr.newNS()
       //... mngr.makeC9rBase()
       //... driver = mngr.new({}, 'foo', onr)
       //... chai.expect(drvr.owner).equal(onr)
       //... chai.expect(drvr.mngr).equal(onr)
-      //... chai.expect(() => drvr.mngr_ = 'bar').throw()
-      //... chai.expect(() => drvr.mngr = 'bar').throw()
+      //... chai.expect(() => drvr.mngr_ = 'bar').xthrow()
+      //... chai.expect(() => drvr.mngr = 'bar').xthrow()
       get () {
         return this.owner
       },

@@ -25,7 +25,7 @@ describe('app', function() {
   //       UI: UI
   //     }
   //     let APP = new eYo.app.C9rBase(options)
-  //     console.error('BREAK HERE!')
+  //     eYo.test && eYo.test.IN_THROW || console.error('BREAK HERE!')
   //     console.error(APP.options)
   //     chai.expect(APP.options.UI).equal(UI)
   //     chai.expect(APP.driver_mngr.constructor).equal(eYo[UI].Mngr)
