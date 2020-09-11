@@ -143,7 +143,7 @@ eYo.stmt.newC9r(eYo.t3.stmt.global_stmt, {
   'return'
 ].forEach((k) => {
   k = k + '_stmt'
-  eYo.c9r.register(k, (eYo.stmt[k] = eYo.stmt.global_stmt))
+  eYo.c3s.register(k, (eYo.stmt[k] = eYo.stmt.global_stmt))
 })
 
 /**

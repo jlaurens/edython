@@ -416,7 +416,7 @@ eYo.expr.newC9r('lambda', true, {
   'lambda_expr',
   'lambda_expr_nocond'
 ].forEach(k => {
-  eYo.c9r.register(k, (eYo.expr[k] = eYo.expr.lambda))
+  eYo.c3s.register(k, (eYo.expr[k] = eYo.expr.lambda))
 })
 
 /**

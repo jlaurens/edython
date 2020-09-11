@@ -154,7 +154,7 @@ try {
 
 }
 
-eYo.test.c9r = (brick, k) => {
+eYo.test.c3s = (brick, k) => {
   chai.assert(brick.constructor[eYo.$].key === k, `MISSED CTOR KEY ${brick.constructor[eYo.$].key} === ${k}`)
 }
 
@@ -192,9 +192,9 @@ eYo.test.Basic = (ra, str) => {
       var t = args[0]
       var tt = args[1] || ((args[1] === null) && args[0])
       var k = args[2] || ((args[2] === null) && args[0])
-      it (`${t}${tt ? `/${tt}` : ''}${k ? `/C9r: ${k}` : ''}`, function () {
+      it (`${t}${tt ? `/${tt}` : ''}${k ? `/C3s: ${k}` : ''}`, function () {
         var d = eYo.test.new_brick(args[0], args[1] || args[0])
-        args[2] && (eYo.test.c9r(d, args[2]))
+        args[2] && (eYo.test.c3s(d, args[2]))
         d.dispose()
       })
     })

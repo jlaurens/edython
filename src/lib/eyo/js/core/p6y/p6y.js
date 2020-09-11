@@ -55,7 +55,7 @@ eYo.mixinFR(eYo.p6y, {
    * For subclassers.
    * @param{eYo.O3d} $this - the instance to initialize
    * @param{String | Symbol} key - The key in the owner
-   * @param{eYo.C9r | namespace} [owner] - Defaults to the name space
+   * @param{eYo.C3s | namespace} [owner] - Defaults to the name space
    * @param{Boolean} [configurable] - Whether descriptors should be configurable, necessary for proxy.
    */
   c9rPrepare ($this, key, owner, configurable) {
@@ -81,7 +81,7 @@ eYo.mixinFR(eYo.p6y, {
    * For subclassers.
    * @param{eYo.O3d} _$this - the instance to initialize
    * @param{String | Symbol} key - The key in the owner
-   * @param{eYo.C9r | namespace} [owner] - Defaults to the name space
+   * @param{eYo.C3s | namespace} [owner] - Defaults to the name space
    * @param{Boolean} [configurable] - Whether descriptors should be configurable, necessary for proxy.
    */
   c9rInit (_$this, key, owner, configurable) {
@@ -91,7 +91,7 @@ eYo.mixinFR(eYo.p6y, {
    * For subclassers.
    * @param{eYo.O3d} $this - the instance to initialize
    * @param{String | Symbol} key - The key in the owner
-   * @param{eYo.C9r | namespace} [owner] - Defaults to the name space
+   * @param{eYo.C3s | namespace} [owner] - Defaults to the name space
    * @param{Boolean} [configurable] - Whether descriptors should be configurable, necessary for proxy.
    */
   c9rDispose ($this) {
@@ -138,7 +138,7 @@ eYo.p6y.makeC9rBase(true, {
     //...   chai.expect(p6y.value__).equal(421)
     //...   chai.expect(p6y.stored__).equal(421)
     //...   var p6y = eYo.p6y.new({}, 'foo', eYo.test.onr)
-    //...   let value = eYo.c9r.new('bar')
+    //...   let value = eYo.c3s.new('bar')
     //...   p6y.value_ = value
     //...   chai.expect(p6y.value).equal(value)
     //...   chai.expect(value[eYo.$p6y]).equal(p6y)
@@ -172,7 +172,7 @@ eYo.p6y.makeC9rBase(true, {
       if (eYo.isaC9r(what)) {
         what[eYo.$p6y] === this && what.dispose(...$)
         //... var p6y = new eYo.P6y('p6y', eYo.test.onr)
-        //... what = eYo.c9r.new({
+        //... what = eYo.c3s.new({
         //...   dispose (...$) {
         //...     eYo.flag.push('/d', ...$)
         //...   }
@@ -189,7 +189,7 @@ eYo.p6y.makeC9rBase(true, {
         //... what = []
         //... p6y.__disposeStored(what, 1, 2)
         //... eYo.flag.expect()
-        //... var value_a = eYo.c9r.new({
+        //... var value_a = eYo.c3s.new({
         //...   dispose (...$) {
         //...     eYo.flag.push('/da', ...$)
         //...   }
@@ -198,7 +198,7 @@ eYo.p6y.makeC9rBase(true, {
         //... what = [value_a]
         //... p6y.__disposeStored(what, 1, 2)
         //... eYo.flag.expect('/da12')
-        //... var value_b = eYo.c9r.new({
+        //... var value_b = eYo.c3s.new({
         //...   dispose (...$) {
         //...     eYo.flag.push('/db', ...$)
         //...   }
@@ -216,7 +216,7 @@ eYo.p6y.makeC9rBase(true, {
           //... what = new Map([])
           //... p6y.__disposeStored(what, 1, 1, 2)
           //... eYo.flag.expect()
-          //... var value_a = eYo.c9r.new({
+          //... var value_a = eYo.c3s.new({
           //...   dispose (...$) {
           //...     eYo.flag.push('/da', ...$)
           //...   }
@@ -225,7 +225,7 @@ eYo.p6y.makeC9rBase(true, {
           //... what = new Map([[1, value_a]])
           //... p6y.__disposeStored(what, 1, 2)
           //... eYo.flag.expect('/da12')
-          //... var value_b = eYo.c9r.new({
+          //... var value_b = eYo.c3s.new({
           //...   dispose (...$) {
           //...     eYo.flag.push('/db', ...$)
           //...   }
@@ -243,7 +243,7 @@ eYo.p6y.makeC9rBase(true, {
           //... what = {}
           //... p6y.__disposeStored(what, 3, 4, 5)
           //... eYo.flag.expect()
-          //... var value_a = eYo.c9r.new({
+          //... var value_a = eYo.c3s.new({
           //...   dispose (...$) {
           //...     eYo.flag.push('/da', ...$)
           //...   }
@@ -252,7 +252,7 @@ eYo.p6y.makeC9rBase(true, {
           //... what = {'a': value_a}
           //... p6y.__disposeStored(what, 1, 2)
           //... eYo.flag.expect('/da12')
-          //... var value_b = eYo.c9r.new({
+          //... var value_b = eYo.c3s.new({
           //...   dispose (...$) {
           //...     eYo.flag.push('/db', ...$)
           //...   }
@@ -302,7 +302,7 @@ eYo.p6y.makeC9rBase(true, {
         }
       }
       //... var p6y = new eYo.P6y('p6y', eYo.test.onr)
-      //... what = eYo.c9r.new({
+      //... what = eYo.c3s.new({
       //...   dispose (...$) {
       //...     eYo.flag.push('/d', ...$)
       //...   }
@@ -1525,7 +1525,7 @@ eYo.p6y.handler.makeC9rBase({
    * Initialize a proxy's handler.
    * Debug note: if `foo.eyo$.name` is `eYo.p6y.handler.Changer` then `foo` is an alias to a property named `changer` (more precisely the handler of the proxy).
    * @param {String|Symbol} key 
-   * @param {eYo.C9r} owner 
+   * @param {eYo.C3s} owner 
    * @param {eYo.P6y|Proxy} target 
    */
   init (key, owner) { // eslint-disable-line
@@ -2003,7 +2003,7 @@ eYo.mixinFR(eYo.p6y._p, {
         //... alias.owner__ = 0
         //... chai.expect(alias.owner).equal(0)
         //... chai.expect(source.owner).equal(eYo.test.onr)
-        //... source.owner__ = eYo.c9r.new('onr')
+        //... source.owner__ = eYo.c3s.new('onr')
         //... chai.expect(alias.owner).equal(0)
         //... alias = eYo.p6y.aliasNew('p', eYo.test.onr, source)
         //... eYo.objectHasOwnProperty(chai.expect(alias, eYo.$next)).false

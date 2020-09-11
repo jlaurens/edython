@@ -23,7 +23,7 @@ goog.require('goog.style')
  * @namespace
  */
 eYo.dom.newNS(eYo, 'svg', {
-  OWNER: new eYo.C9r(),
+  OWNER: new eYo.C3s(),
 })
 
 eYo.forward('t3.profile')

@@ -316,7 +316,7 @@ eYo.stmt.newC9r('assignment_stmt', true, {
   'annotated_assignment_stmt',
   'augmented_assignment_stmt'
 ].forEach(k => {
-  eYo.c9r.register(k, (eYo.stmt[k] = eYo.stmt.assignment_stmt))
+  eYo.c3s.register(k, (eYo.stmt[k] = eYo.stmt.assignment_stmt))
 })
 
 /**

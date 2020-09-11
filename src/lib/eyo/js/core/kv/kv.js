@@ -18,15 +18,20 @@
  * @name {eYo.kv}
  * @namespace
  */
-eYo.newNS('kv')
+eYo.newNS('kv', {
+  $target: Symbol('target')
+})
 
 eYo.kv.handler = {
   //<<< mochai: eYo.kv.handler
+  //... let C3s = class {}
+  //... let traget = new C3s ()
+  //... let p3y = new Proxy()
   getPrototypeOf (target) {
     return target.prototype
   },
   setPrototypeOf (target, prototype) { // Reflect.setPrototypeOf
-    throw new Error('No prototype change pliz')
+    eYo.throw('No prototype change pliz')
   },
   isExtensible (target) {
     return Reflect.isExtensible(target)
@@ -44,9 +49,15 @@ eYo.kv.handler = {
     return key in target
   },
   get (target, prop, receiver) {
+    if (prop === eYo.$$.target) {
+      return target
+    }
     return Reflect.get(target, prop, receiver)
   },
   set (target, prop, value) {
+    if (prop === eYo.$$.target) {
+      eYo.throw(`Forbidden set key: prop`)
+    }
     return Reflect.set(target, prop, value)
   },
   deleteProperty (target, prop) {
@@ -58,11 +69,11 @@ eYo.kv.handler = {
     return Reflect.ownKeys(target) // no symbols listed
   },
   apply (target, $this, $) {
-    throw new Error('Not a callable pliz')
+    eYo.throw('Not a callable pliz')
     // return target.apply($this, $)
   },
   construct(target, args) {
-    throw new Error('Not a constructor pliz')
+    eYo.throw('Not a constructor pliz')
     // return new target(...args);
   },
   //>>>
@@ -71,16 +82,16 @@ eYo.kv.handler = {
  * Named arguments constructor.
  * @param {Object} kvargs - an object with named arguments
  */
-eYo.kv.C9r = class {
+eYo.kv.C3s = class {
   constructor (kvargs) {
     //<<< mochai: constructor
-    //... chai.expect(eYo.kv.C9r).eyo_F
+    //... chai.expect(eYo.kv.C3s).eyo_F
     kvargs && Object.assign(this, kvargs)
-    //... var $ = new eYo.kv.C9r()
+    //... var $ = new eYo.kv.C3s()
     //... chai.expect($.foo).undefined
-    //... $ = new eYo.kv.C9r({})
+    //... $ = new eYo.kv.C3s({})
     //... chai.expect($.foo).undefined
-    //... $ = new eYo.kv.C9r({foo: 421})
+    //... $ = new eYo.kv.C3s({foo: 421})
     //... chai.expect($.foo).equal(421)
     //>>>
   }
@@ -103,8 +114,8 @@ eYo.kv.C9r = class {
 
 eYo.mixinRO(eYo.kv, {
   //<<< mochai: eYo.kv.C9r_p
-  C9r_p: eYo.kv.C9r.prototype,
-  //... chai.expect(eYo.kv.C9r_p).equal(eYo.kv.C9r.prototype)
+  C9r_p: eYo.kv.C3s.prototype,
+  //... chai.expect(eYo.kv.C9r_p).equal(eYo.kv.C3s.prototype)
   //>>>
 })
 
@@ -115,17 +126,17 @@ eYo.mixinFR(eYo, {
    */
   isa$ (what) {
     //<<< mochai: eYo.isa$
-    return !!what && what instanceof eYo.kv.C9r
+    return !!what && what instanceof eYo.kv.C3s
     //... chai.expect(eYo.isa$()).false
     //... chai.expect(eYo.isa$({})).false
-    //... chai.expect(eYo.isa$(new eYo.kv.C9r())).true
+    //... chai.expect(eYo.isa$(new eYo.kv.C3s())).true
     //... chai.expect(eYo.isa$(eYo.kv.new())).true
     //>>>
   },
-  KV: eYo.kv.C9r,
+  KV: eYo.kv.C3s,
   KV_p: eYo.kv.C9r_p,
   //<<< mochai: KV/KV_p
-  //... chai.expect(eYo.KV).equal(eYo.kv.C9r)
+  //... chai.expect(eYo.KV).equal(eYo.kv.C3s)
   //... chai.expect(eYo.KV_p).equal(eYo.kv.C9r_p)
   //>>>
 })

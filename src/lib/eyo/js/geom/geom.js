@@ -36,7 +36,7 @@ eYo.forward('geom.Rect')
  * @name{eYo.geom}
  * @namespace
  */
-eYo.c9r.newNS(eYo, 'geom', true, {
+eYo.c3s.newNS(eYo, 'geom', true, {
   //<<< mochai: CONST
   X () {
     return eYo.font.space

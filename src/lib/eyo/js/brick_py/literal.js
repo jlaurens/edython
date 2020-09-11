@@ -107,7 +107,7 @@ eYo.expr.literal[eYo.$newSubC9r]('numberliteral', {
   'floatnumber',
   'imagnumber'
 ].forEach(k => {
-  eYo.c9r.register(k, (eYo.expr[k] = eYo.expr.numberliteral))
+  eYo.c3s.register(k, (eYo.expr[k] = eYo.expr.numberliteral))
 })
 
 /**
@@ -278,7 +278,7 @@ eYo.expr.literal[eYo.$newSubC9r]('shortliteral', {
   'shortformattedliteral',
   'shortbytesliteral',
 ].forEach(k => {
-  eYo.c9r.register(k, (eYo.expr[k] = eYo.expr.shortliteral))
+  eYo.c3s.register(k, (eYo.expr[k] = eYo.expr.shortliteral))
 })
 
 /**
@@ -472,5 +472,5 @@ eYo.expr.longliteral.prototype.validateComponents = function(kvargs) {
   'longformattedliteral',
   'longbytesliteral',
 ].forEach(k => {
-  eYo.c9r.register(k, (eYo.expr[k] = eYo.expr.longliteral))
+  eYo.c3s.register(k, (eYo.expr[k] = eYo.expr.longliteral))
 })

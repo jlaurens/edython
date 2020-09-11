@@ -491,9 +491,9 @@ eYo.board.Main_p.clear = function() {
  * @return {!eYo.brick.C9rBase} The created brick.
  */
 eYo.board.C9rBase_p.newBrick = function (type, opt_id) {
-  var C9r = eYo.c9r.forType(type)
-  eYo.assert(C9r, 'No class for ' + type)
-  var b3k = new C9r(this, type, opt_id)
+  var C3s = eYo.c3s.forType(type)
+  eYo.assert(C3s, 'No class for ' + type)
+  var b3k = new C3s(this, type, opt_id)
   return b3k
 }
 

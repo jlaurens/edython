@@ -14,7 +14,7 @@ describe ('Tests: Owned', function () {
     ns.makeC9rBase()
     var model = {}
     ns.modelMakeC9r(model, 'foo')
-    chai.expect(model[eYo.$C9r][eYo.$SuperC9r]).equal(ns.C9rBase)
+    chai.expect(model[eYo.$C3s][eYo.$SuperC9r]).equal(ns.C9rBase)
   })
   it ('O3d: eYo.o3d.new', function () {
     let o3d = eYo.o3d.new('foo', eYo.test.onr)
@@ -30,7 +30,7 @@ describe ('Tests: Owned', function () {
     ns.makeC9rBase()
     let model = {}
     let f = ns.new(model, 'foo', eYo.test.onr)
-    chai.expect(f.constructor).equal(model[eYo.$C9r])
+    chai.expect(f.constructor).equal(model[eYo.$C3s])
   })
   it ('O3d: time is on my side', function () {
     // In the init method, the properties are available and initialized
@@ -54,7 +54,7 @@ describe ('Tests: Owned', function () {
         chai.expect(this.owner).equal(owner)
       }
     })
-    let o = ns_o3d.new('abc', eYo.c9r.new())
+    let o = ns_o3d.new('abc', eYo.c3s.new())
     o.eyo$.C9r_p.ownerWillChange = function (before, after) {
       eYo.flag.push(1)
     }

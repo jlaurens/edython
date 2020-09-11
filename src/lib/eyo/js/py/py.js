@@ -15,4 +15,4 @@
  * @name {eYo.py}
  * @namespace
  */
-eYo.c9r.newNS(eYo, 'py')
+eYo.c3s.newNS(eYo, 'py')

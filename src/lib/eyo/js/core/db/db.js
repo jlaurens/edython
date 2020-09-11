@@ -56,7 +56,7 @@ eYo.o3d.newC9r('DB', {
   methods: {
     /**
      * Add objects to the database.
-     * @param {eYo.c9r.C9rBase} ...$
+     * @param {eYo.c3s.C9rBase} ...$
      */
     add (...$) {
       //<<< mochai: add
@@ -105,7 +105,7 @@ eYo.o3d.newC9r('DB', {
     /**
      * Find the object with the specified ID.
      * @param {string} id ID of object to find.
-     * @return {eYo.c9r.C9rBase} The sought after object or eYo.NA if not found.
+     * @return {eYo.c3s.C9rBase} The sought after object or eYo.NA if not found.
      */
     get (id) {
       //<<< mochai: get

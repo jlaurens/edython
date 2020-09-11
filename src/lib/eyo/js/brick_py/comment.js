@@ -97,5 +97,5 @@ eYo.stmt.newC9r(eYo.t3.stmt.comment_stmt, {
 })
 
 ;['blank_stmt'].forEach(k => {
-  eYo.c9r.register(k, (eYo.stmt[k] = eYo.stmt.comment_stmt))
+  eYo.c3s.register(k, (eYo.stmt[k] = eYo.stmt.comment_stmt))
 })

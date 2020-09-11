@@ -134,7 +134,7 @@ eYo.magnet.makeC9rBase(true, {
   //<<< mochai: eYo.Magnet
   init (key, bs, type) { //eslint-disable-line
     //<<< mochai: init
-    //... let magnetDBList = eYo.c9r.new('magnetDBList', onr)
+    //... let magnetDBList = eYo.c3s.new('magnetDBList', onr)
     //... let board = eYo.o4t.new({
     //...   properties: {
     //...     magnetDBList

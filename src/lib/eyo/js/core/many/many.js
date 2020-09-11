@@ -38,12 +38,12 @@ eYo.provide('many')
 
 //<<< mochai: ../
 //... let flagor = (what) => (...$) => eYo.flag.push('/', what, ...$)
-//... var C9r, foo$
+//... var C3s, foo$
 //... let preparator = f => {
 //...   return model => {
-//...     C9r = eYo.c9r.newNS().makeC9rBase(true)
-//...     C9r.prototype.flag = (...$) => eYo.flag.push('/', ...$)
-//...     let eyo$ = C9r[eYo.$]
+//...     C3s = eYo.c3s.newNS().makeC9rBase(true)
+//...     C3s.prototype.flag = (...$) => eYo.flag.push('/', ...$)
+//...     let eyo$ = C3s[eYo.$]
 //...     eyo$._p.c9rPrepare = (object, ...$) => {
 //...       object.flag('p', ...$)
 //...     }
@@ -130,7 +130,7 @@ eYo.Dlgt_p.manyEnhanced = function (id, type, path, manyModel) {
   //<<< mochai: Basics
   if (!eYo.isStr(path)) {
     eYo.isNA(manyModel) || eYo.throw(`${this.eyo$.name}/manyEnhanced: Unexpected last argument`)
-    //... chai.expect(() => eYo.C9r[eYo.$].manyEnhanced(1, 2, 3, 4)).xthrow()
+    //... chai.expect(() => eYo.C3s[eYo.$].manyEnhanced(1, 2, 3, 4)).xthrow()
     ;[type, path, manyModel] = [id, type, path || {}]
   } else if (!manyModel) {
     manyModel = {}
@@ -139,10 +139,10 @@ eYo.Dlgt_p.manyEnhanced = function (id, type, path, manyModel) {
   let id$ = id + '$'
   eYo.objectHasOwnProperty(_p, id$) && eYo.throw(`${this.eyo$.name}/manyEnhanced: Already used (${id$})`)
   //... preparator()()
-  //... var foo$ = C9r[eYo.$].manyEnhanced('foo', 'foo')
-  //... chai.expect(() => C9r[eYo.$].manyEnhanced('foo', 'foo')).xthrow()
-  //... C9r = eYo.c9r.newNS().makeC9rBase(true)
-  //... let dlgt = C9r[eYo.$]
+  //... var foo$ = C3s[eYo.$].manyEnhanced('foo', 'foo')
+  //... chai.expect(() => C3s[eYo.$].manyEnhanced('foo', 'foo')).xthrow()
+  //... C3s = eYo.c3s.newNS().makeC9rBase(true)
+  //... let dlgt = C3s[eYo.$]
   //... var foo$ = dlgt.manyEnhanced('foo', 'bar', {})
   //... ;[
   //...   // 'modelMap_',
@@ -171,8 +171,8 @@ eYo.Dlgt_p.manyEnhanced = function (id, type, path, manyModel) {
   //...   chai.assert(dlgt.C9r_p[sym])
   //... })
   //... chai.assert(dlgt[foo$.modelMap])
-  //... let o = new C9r()
-  //... eYo.dlgt.declareDlgt(C9r.prototype)
+  //... let o = new C3s()
+  //... eYo.dlgt.declareDlgt(C3s.prototype)
   //... dlgt[foo$.prepare](o)
   //... chai.assert(o[foo$.map])
   //... chai.expect(o[foo$.head]).undefined
@@ -200,8 +200,8 @@ eYo.Dlgt_p.manyEnhanced = function (id, type, path, manyModel) {
     [id$]: type$,
     //<<< mochai: id$ (dlgt)
     //... preparator()()
-    //... var foo$ = C9r[eYo.$].manyEnhanced('foo', 'foo')
-    //... chai.expect(foo$).equal(C9r[eYo.$].foo$)
+    //... var foo$ = C3s[eYo.$].manyEnhanced('foo', 'foo')
+    //... chai.expect(foo$).equal(C3s[eYo.$].foo$)
     //>>>
   })
   /* foo$.modelByKey is a key -> model object with no prototype.
@@ -237,14 +237,14 @@ eYo.Dlgt_p.manyEnhanced = function (id, type, path, manyModel) {
     configurable: true,
     //<<< mochai: modelByKey
     //... preparator()()
-    //... var foo$ = C9r[eYo.$].manyEnhanced('foo', 'foo')
-    //... chai.expect(C9r[eYo.$]).property(foo$.modelByKey)
+    //... var foo$ = C3s[eYo.$].manyEnhanced('foo', 'foo')
+    //... chai.expect(C3s[eYo.$]).property(foo$.modelByKey)
     //>>>
   })
 
   /**
    * Expands the property, data, fields, slots section into the receiver's corresponding model. Only works for objects.
-   * Usage: For the model `{foo: bar}`, run `C9r[eYo.$][foo$.merge](bar)`
+   * Usage: For the model `{foo: bar}`, run `C3s[eYo.$][foo$.merge](bar)`
    * @param{Object} model - A model object.
    */
   /* `?[foo$.modelMap_]` is a key -> model map.
@@ -264,34 +264,34 @@ eYo.Dlgt_p.manyEnhanced = function (id, type, path, manyModel) {
     model = this.modelValidate(path, model)
     eYo.provideFR(this[type$.modelByKey], model)
     delete this[type$.modelMap] // delete the shortcut
-    this.forEachSubC9r(C9r => C9r[eYo.$][type$.merge]({})) // delete the cache of descendants
+    this.forEachSubC9r(C3s => C3s[eYo.$][type$.merge]({})) // delete the cache of descendants
     //<<< mochai: merge
     //... preparator()()
-    //... var foo$ = C9r[eYo.$].manyEnhanced('foo', 'foo')
-    //... chai.expect(C9r[eYo.$][foo$.modelByKey].chi).undefined
-    //... C9r[eYo.$][foo$.merge]({
+    //... var foo$ = C3s[eYo.$].manyEnhanced('foo', 'foo')
+    //... chai.expect(C3s[eYo.$][foo$.modelByKey].chi).undefined
+    //... C3s[eYo.$][foo$.merge]({
     //...   chi: 421
     //... })
-    //... chai.expect(C9r[eYo.$][foo$.modelByKey].chi).equal(421)
-    //... chai.expect(C9r[eYo.$][foo$.modelByKey].mi).undefined
-    //... C9r[eYo.$][foo$.merge]({
+    //... chai.expect(C3s[eYo.$][foo$.modelByKey].chi).equal(421)
+    //... chai.expect(C3s[eYo.$][foo$.modelByKey].mi).undefined
+    //... C3s[eYo.$][foo$.merge]({
     //...   mi: '421'
     //... })
-    //... chai.expect(C9r[eYo.$][foo$.modelByKey].mi).equal('421')
+    //... chai.expect(C3s[eYo.$][foo$.modelByKey].mi).equal('421')
     //... preparator()()
-    //... var foo$ = C9r[eYo.$].manyEnhanced('foo', 'foo', {
+    //... var foo$ = C3s[eYo.$].manyEnhanced('foo', 'foo', {
     //...   [eYo.model.VALIDATE]: eYo.model.validateF,
     //... })
-    //... chai.expect(C9r[eYo.$][foo$.modelByKey].chi).undefined
-    //... C9r[eYo.$][foo$.merge]({
+    //... chai.expect(C3s[eYo.$][foo$.modelByKey].chi).undefined
+    //... C3s[eYo.$][foo$.merge]({
     //...   chi: flagor(1),
     //... })
-    //... C9r[eYo.$][foo$.modelByKey].chi(2)
+    //... C3s[eYo.$][foo$.modelByKey].chi(2)
     //... eYo.flag.expect('/12')
-    //... C9r[eYo.$][foo$.merge]({
+    //... C3s[eYo.$][foo$.merge]({
     //...   mi: flagor(12),
     //... })
-    //... C9r[eYo.$][foo$.modelByKey].mi(34)
+    //... C3s[eYo.$][foo$.modelByKey].mi(34)
     //... eYo.flag.expect('/1234')
     //>>>
   }
@@ -347,11 +347,11 @@ eYo.Dlgt_p.manyEnhanced = function (id, type, path, manyModel) {
     }}.$),
     //<<< mochai: modelMap
     //... preparator()()
-    //... var foo$ = C9r[eYo.$].manyEnhanced('foo', 'foo')
-    //... chai.expect(C9r[eYo.$]).property(foo$.modelMap)
+    //... var foo$ = C3s[eYo.$].manyEnhanced('foo', 'foo')
+    //... chai.expect(C3s[eYo.$]).property(foo$.modelMap)
     //... preparator()()
-    //... var foo$ = C9r[eYo.$].manyEnhanced('foo', 'foo')
-    //... C9r[eYo.$][foo$.merge]({
+    //... var foo$ = C3s[eYo.$].manyEnhanced('foo', 'foo')
+    //... C3s[eYo.$][foo$.merge]({
     //...   foo: {
     //...     after: 'chi',
     //...     flag: flagor(1),
@@ -364,7 +364,7 @@ eYo.Dlgt_p.manyEnhanced = function (id, type, path, manyModel) {
     //...     flag: flagor(3),
     //...   },
     //... })
-    //... for (let [k, model] of C9r[eYo.$][foo$.modelMap]) {
+    //... for (let [k, model] of C3s[eYo.$][foo$.modelMap]) {
     //...   model.flag(4)
     //... }
     //... eYo.flag.expect('/34/24/14')
@@ -402,13 +402,13 @@ eYo.Dlgt_p.manyEnhanced = function (id, type, path, manyModel) {
       }
       manyModel.prepare.call(this, object, ...$)
     //... preparator()()
-    //... var foo$ = C9r[eYo.$].manyEnhanced('foo', 'foo', {
+    //... var foo$ = C3s[eYo.$].manyEnhanced('foo', 'foo', {
     //...   prepare (object) {
     //...     eYo.flag.push(12)  
     //...   }      
     //... })
     //... var o = {}
-    //... C9r[eYo.$][foo$.prepare](o)
+    //... C3s[eYo.$][foo$.prepare](o)
     //... eYo.flag.expect(12)
     } : function (instance, ...$) {
       if (!eYo.objectHasOwnProperty(this, type$.merge)) {
@@ -421,14 +421,14 @@ eYo.Dlgt_p.manyEnhanced = function (id, type, path, manyModel) {
           $super[type$.merge] = this[type$.merge]
         }
       //... preparator()()
-      //... var foo$ = C9r[eYo.$].manyEnhanced('foo', 'foo')
+      //... var foo$ = C3s[eYo.$].manyEnhanced('foo', 'foo')
       //... var o = {}
-      //... C9r[eYo.$][foo$.prepare](o)
-      //... chai.expect(() => C9r[eYo.$][foo$.merge]()).xthrow()
+      //... C3s[eYo.$][foo$.prepare](o)
+      //... chai.expect(() => C3s[eYo.$][foo$.merge]()).xthrow()
       //... // Not tested for $super
       }
       //... preparator()()
-      //... var foo$ = C9r[eYo.$].manyEnhanced('foo', 'foo', {
+      //... var foo$ = C3s[eYo.$].manyEnhanced('foo', 'foo', {
       //...   make: flagor('m'),
       //...   suffix: '_x',
       //...   model: {
@@ -436,21 +436,21 @@ eYo.Dlgt_p.manyEnhanced = function (id, type, path, manyModel) {
       //...   },
       //... })
       //... var o = {}
-      //... C9r[eYo.$][foo$.prepare](o)
+      //... C3s[eYo.$][foo$.prepare](o)
       //... eYo.flag.expect('/m421foo')
       let attributes = []
       var map = instance[type$.map]
       if (map) {
       //... preparator()()
-      //... var foo$ = C9r[eYo.$].manyEnhanced('foo', 'foo')
+      //... var foo$ = C3s[eYo.$].manyEnhanced('foo', 'foo')
       //... var o = {
-      //...   [foo$.map]: new Map([['bar', eYo.c9r.new({
+      //...   [foo$.map]: new Map([['bar', eYo.c3s.new({
       //...     dispose () {
       //...       eYo.flag.push('d')
       //...     }
       //...   }, 'bar')]]),
       //... }
-      //... C9r[eYo.$][foo$.prepare](o)
+      //... C3s[eYo.$][foo$.prepare](o)
       //... eYo.flag.expect('d')
         for (let k of [...map.keys()].reverse()) {
           let attr = map.get(k)
@@ -458,14 +458,14 @@ eYo.Dlgt_p.manyEnhanced = function (id, type, path, manyModel) {
         }
       }
       //... preparator()()
-      //... var foo$ = C9r[eYo.$].manyEnhanced('foo', 'foo', {
+      //... var foo$ = C3s[eYo.$].manyEnhanced('foo', 'foo', {
       //...   make: flagor('m'),
       //...   model: {
       //...     foo: 421,
       //...   },
       //... })
       //... o = {}
-      //... C9r[eYo.$][foo$.prepare](o)
+      //... C3s[eYo.$][foo$.prepare](o)
       //... eYo.flag.expect('/m421foo')
       map = instance[type$.map] = new Map()
       /**
@@ -482,7 +482,7 @@ eYo.Dlgt_p.manyEnhanced = function (id, type, path, manyModel) {
         }
       }
     //... preparator()()
-    //... var foo$ = C9r[eYo.$].manyEnhanced('foo', 'foo', {
+    //... var foo$ = C3s[eYo.$].manyEnhanced('foo', 'foo', {
     //...   make (model, k, object) {
     //...     return eYo.o3d.new(model, k, object)
     //...   },
@@ -497,9 +497,9 @@ eYo.Dlgt_p.manyEnhanced = function (id, type, path, manyModel) {
     //...   },
     //...   suffix: '_x',
     //... })
-    //... o = eYo.c9r.new('onr')
-    //... C9r[eYo.$][foo$.prepare](o)
-    //... C9r[eYo.$][foo$.shortcuts](o)
+    //... o = eYo.c3s.new('onr')
+    //... C3s[eYo.$][foo$.prepare](o)
+    //... C3s[eYo.$][foo$.shortcuts](o)
     //... chai.expect(o.foo_x.key).equal('foo')
     //... chai.expect(o.chi_x.key).equal('chi')
     //... chai.expect(o.mee_x.key).equal('mee')
@@ -525,20 +525,20 @@ eYo.Dlgt_p.manyEnhanced = function (id, type, path, manyModel) {
       manyModel.links.call(this, object)
     //<<< mochai: links (1)
     //... preparator()()
-    //... var foo$ = C9r[eYo.$].manyEnhanced('foo', 'foo', {
+    //... var foo$ = C3s[eYo.$].manyEnhanced('foo', 'foo', {
     //...   links (object) {
     //...     eYo.flag.push(12)  
     //...   }      
     //... })
     //... var o = {}
-    //... C9r[eYo.$][foo$.links](o)
+    //... C3s[eYo.$][foo$.links](o)
     //... eYo.flag.expect(12)
     //>>>
     } : function (object) {
     //<<< mochai: links (2)
       let attributes = [...object[type$.map].values()]
       //... preparator()()
-      //... var foo$ = C9r[eYo.$].manyEnhanced('foo', 'foo', {
+      //... var foo$ = C3s[eYo.$].manyEnhanced('foo', 'foo', {
       //...   make (model, k, object) {
       //...     return eYo.o3d.new(model, k, object)
       //...   },
@@ -553,10 +553,10 @@ eYo.Dlgt_p.manyEnhanced = function (id, type, path, manyModel) {
       //...   },
       //...   suffix: '_x',
       //... })
-      //... o = eYo.c9r.new('onr')
-      //... C9r[eYo.$][foo$.prepare](o)
-      //... C9r[eYo.$][foo$.links](o)
-      //... C9r[eYo.$][foo$.shortcuts](o)
+      //... o = eYo.c3s.new('onr')
+      //... C3s[eYo.$][foo$.prepare](o)
+      //... C3s[eYo.$][foo$.links](o)
+      //... C3s[eYo.$][foo$.shortcuts](o)
       //... chai.expect(o[foo$.head]).equal(o.mi_x)
       //... chai.expect(o[foo$.tail]).equal(o.foo_x)
       //... chai.expect(o.foo_x[eYo.$next]).undefined
@@ -601,7 +601,7 @@ eYo.Dlgt_p.manyEnhanced = function (id, type, path, manyModel) {
       })
     }
     //... preparator()()
-    //... var foo$ = C9r[eYo.$].manyEnhanced('foo', 'foo', {
+    //... var foo$ = C3s[eYo.$].manyEnhanced('foo', 'foo', {
     //...   make (model, k, object) {
     //...     eYo.flag.push(1, k)
     //...     return eYo.o3d.new(model, k, object)
@@ -615,9 +615,9 @@ eYo.Dlgt_p.manyEnhanced = function (id, type, path, manyModel) {
     //...   },
     //...   suffix: '_x',
     //... })
-    //... o = eYo.c9r.new('foo')
-    //... C9r[eYo.$][foo$.prepare](o)
-    //... C9r[eYo.$][foo$.shortcuts](o)
+    //... o = eYo.c3s.new('foo')
+    //... C3s[eYo.$][foo$.prepare](o)
+    //... C3s[eYo.$][foo$.shortcuts](o)
     //... o.foo_x.eyo$.model.bar(3)
     //... eYo.flag.expect('1foo23')
     //>>>
@@ -650,7 +650,7 @@ eYo.Dlgt_p.manyEnhanced = function (id, type, path, manyModel) {
     //...     }
     //...   }
     //... })
-    //... var foo$ = C9r[eYo.$].manyEnhanced('foo', 'foo', {
+    //... var foo$ = C3s[eYo.$].manyEnhanced('foo', 'foo', {
     //...   make (model, k, object) {
     //...     return ns.new(model, k, object)
     //...   },
@@ -659,13 +659,13 @@ eYo.Dlgt_p.manyEnhanced = function (id, type, path, manyModel) {
     //...   },
     //...   suffix: '_x',
     //... })
-    //... o = eYo.c9r.new('onr')
-    //... C9r[eYo.$][foo$.prepare](o)
+    //... o = eYo.c3s.new('onr')
+    //... C3s[eYo.$][foo$.prepare](o)
     //... eYo.flag.expect('/i')
     //... o.fooFooInit = function (v, ...$) {
     //...   eYo.flag.push('f', ...$)
     //... }
-    //... C9r[eYo.$][foo$.init](o, 3)
+    //... C3s[eYo.$][foo$.init](o, 3)
     //... eYo.flag.expect('/pf3/i')
     //>>>
   }
@@ -690,7 +690,7 @@ eYo.Dlgt_p.manyEnhanced = function (id, type, path, manyModel) {
     //...     eYo.flag.push(1, ...$)
     //...   },
     //... })
-    //... var foo$ = C9r[eYo.$].manyEnhanced('foo', 'foo', {
+    //... var foo$ = C3s[eYo.$].manyEnhanced('foo', 'foo', {
     //...   make (model, k, object) {
     //...     return ns.new(model, k, object)
     //...   },
@@ -699,8 +699,8 @@ eYo.Dlgt_p.manyEnhanced = function (id, type, path, manyModel) {
     //...   },
     //...   suffix: '_x',
     //... })
-    //... o = eYo.c9r.new('onr')
-    //... C9r[eYo.$][foo$.prepare](o)
+    //... o = eYo.c3s.new('onr')
+    //... C3s[eYo.$][foo$.prepare](o)
     //... eYo.flag.expect(0)
     //... o.barFooDispose = function (v, ...$) {
     //...   v.dispose(...$)
@@ -709,7 +709,7 @@ eYo.Dlgt_p.manyEnhanced = function (id, type, path, manyModel) {
     //...   }
     //...   eYo.flag.push(2, ...$)
     //... }
-    //... C9r[eYo.$][foo$.dispose](o, 9)
+    //... C3s[eYo.$][foo$.dispose](o, 9)
     //... eYo.flag.expect(192939)
     //>>>
   }
@@ -719,8 +719,8 @@ eYo.Dlgt_p.manyEnhanced = function (id, type, path, manyModel) {
     [id$]: type$,
     //<<< mochai: id$ (instance)
     //... preparator()()
-    //... var foo$ = C9r[eYo.$].manyEnhanced('foo', 'foo')
-    //... var o = new C9r()
+    //... var foo$ = C3s[eYo.$].manyEnhanced('foo', 'foo')
+    //... var o = new C3s()
     //... chai.expect(foo$).equal(o.foo$)
     //>>>
   })
@@ -735,7 +735,7 @@ eYo.Dlgt_p.manyEnhanced = function (id, type, path, manyModel) {
     //... preparator()()
     //... var ns = eYo.o3d.newNS()
     //... ns.makeC9rBase()
-    //... var foo$ = C9r[eYo.$].manyEnhanced('foo', 'foo', {
+    //... var foo$ = C3s[eYo.$].manyEnhanced('foo', 'foo', {
     //...   make (model, k, object) {
     //...     return ns.new(model, k, object)
     //...   },
@@ -748,9 +748,9 @@ eYo.Dlgt_p.manyEnhanced = function (id, type, path, manyModel) {
     //...     },
     //...   },
     //... })
-    //... o = C9r[eYo.$].ns.new('o')
+    //... o = C3s[eYo.$].ns.new('o')
     //... eYo.flag.expect('/po')
-    //... C9r[eYo.$][foo$.prepare](o)
+    //... C3s[eYo.$][foo$.prepare](o)
     //... o[foo$.forEach](v => v.flag(9))
     //... eYo.flag.expect('/chi9/mee9')
     //... let $this = {
@@ -782,7 +782,7 @@ eYo.Dlgt_p.manyEnhanced = function (id, type, path, manyModel) {
     //... preparator()()
     //... var ns = eYo.o3d.newNS()
     //... ns.makeC9rBase()
-    //... var foo$ = C9r[eYo.$].manyEnhanced('foo', 'foo', {
+    //... var foo$ = C3s[eYo.$].manyEnhanced('foo', 'foo', {
     //...   make (model, k, object) {
     //...     return ns.new(model, k, object)
     //...   },
@@ -795,9 +795,9 @@ eYo.Dlgt_p.manyEnhanced = function (id, type, path, manyModel) {
     //...     },
     //...   },
     //... })
-    //... o = C9r[eYo.$].ns.new('o')
+    //... o = C3s[eYo.$].ns.new('o')
     //... eYo.flag.expect('/po')
-    //... C9r[eYo.$][foo$.prepare](o)
+    //... C3s[eYo.$][foo$.prepare](o)
     //... chai.expect(o[foo$.some](v => (v.flag(9), v.key === 'chi'))).true
     //... eYo.flag.expect('/chi9')
     //... chai.expect(o[foo$.some](v => (v.flag(9), v.key === 'mee'))).true

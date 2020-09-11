@@ -15,9 +15,9 @@ eYo.require('p6y')
 eYo.require('many')
 
 //<<< mochai: POC
-//... let ns = eYo.c9r.newNS()
-//... let C9r = ns.makeC9rBase()
-//... Object.defineProperties(C9r[eYo.$].C9r_p, {
+//... let ns = eYo.c3s.newNS()
+//... let C3s = ns.makeC9rBase()
+//... Object.defineProperties(C3s[eYo.$].C9r_p, {
 //...   foo: {
 //...     get () {
 //...       return this.bar
@@ -52,9 +52,9 @@ eYo.mixinFR(eYo.o4t, {
   /**
    * Prepares the given instance as owned.
    * For subclassers.
-   * @param{eYo.C9r} $this - the instance to initialize
+   * @param{eYo.C3s} $this - the instance to initialize
    * @param{String | Symbol} key - The key in the owner
-   * @param{eYo.C9r | namespace} [owner] - Defaults to the name space
+   * @param{eYo.C3s | namespace} [owner] - Defaults to the name space
    * @param{Boolean} [configurable] - Whether descriptors should be configurable, necessary for proxy.
    */
   c9rPrepare ($this, ...$) {
@@ -79,9 +79,9 @@ eYo.mixinFR(eYo.o4t, {
   /**
    * The default implementation does nothing.
    * For subclassers.
-   * @param{eYo.C9r} $this - the instance to initialize
+   * @param{eYo.C3s} $this - the instance to initialize
    * @param{String | Symbol} key - The key in the owner
-   * @param{eYo.C9r | namespace} [owner] - Defaults to the name space
+   * @param{eYo.C3s | namespace} [owner] - Defaults to the name space
    * @param{Boolean} [configurable] - Whether descriptors should be configurable, necessary for proxy.
    */
   c9rDispose ($this) {
@@ -139,9 +139,9 @@ eYo.Dlgt_p.p6yEnhanced = function (id = 'p6y') {
       //<<< mochai: p6yEnhanced/allow
       [eYo.model.ANY]: eYo.P6y[eYo.$].modelFormat,
       [eYo.model.VALIDATE]: eYo.model.validateD,
-      //... let ns = eYo.c9r.newNS()
-      //... let C9r = ns.makeC9rBase(true)
-      //... let eyo = C9r[eYo.$]
+      //... let ns = eYo.c3s.newNS()
+      //... let C3s = ns.makeC9rBase(true)
+      //... let eyo = C3s[eYo.$]
       //... eyo.p6yEnhanced()
       //... eyo.finalizeC9r()
       //... chai.assert(eyo.modelFormat.get('properties'))
@@ -169,9 +169,9 @@ eYo.Dlgt_p.p6yEnhanced = function (id = 'p6y') {
             [k]: eYo.descriptorR({$ () {
               return this[this.p6y$.map].get(k).value
               //<<< mochai: $foo
-              //... let ns = eYo.c9r.newNS()
-              //... let C9r = ns.makeC9rBase(true)
-              //... let eyo = C9r[eYo.$]
+              //... let ns = eYo.c3s.newNS()
+              //... let C3s = ns.makeC9rBase(true)
+              //... let eyo = C3s[eYo.$]
               //... eyo.p6yEnhanced()
               //... eyo.finalizeC9r()
               //... let $foo = Symbol('foo')
@@ -194,9 +194,9 @@ eYo.Dlgt_p.p6yEnhanced = function (id = 'p6y') {
           [k + '_p']: eYo.descriptorR({$ () {
             return this[this.p6y$.map].get(k)
             //<<< mochai: foo_p
-            //... let ns = eYo.c9r.newNS()
-            //... let C9r = ns.makeC9rBase(true)
-            //... let eyo = C9r[eYo.$]
+            //... let ns = eYo.c3s.newNS()
+            //... let C3s = ns.makeC9rBase(true)
+            //... let eyo = C3s[eYo.$]
             //... eyo.p6yEnhanced()
             //... eyo.finalizeC9r()
             //... eyo[eyo.p6y$.merge]({
@@ -223,9 +223,9 @@ eYo.Dlgt_p.p6yEnhanced = function (id = 'p6y') {
               }
             },
             //<<< mochai: foo_t
-            //... let ns = eYo.c9r.newNS()
-            //... let C9r = ns.makeC9rBase(true)
-            //... let eyo = C9r[eYo.$]
+            //... let ns = eYo.c3s.newNS()
+            //... let C3s = ns.makeC9rBase(true)
+            //... let eyo = C3s[eYo.$]
             //... eyo.p6yEnhanced()
             //... eyo.finalizeC9r()
             //... eyo[eyo.p6y$.merge]({
@@ -248,16 +248,16 @@ eYo.Dlgt_p.p6yEnhanced = function (id = 'p6y') {
             //>>>
           },
           //<<< mochai: foo, foo_, foo__
-          //... let ns = eYo.c9r.newNS()
-          //... let C9r = ns.makeC9rBase(true)
-          //... let eyo = C9r[eYo.$]
+          //... let ns = eYo.c3s.newNS()
+          //... let C3s = ns.makeC9rBase(true)
+          //... let eyo = C3s[eYo.$]
           //... eyo.p6yEnhanced()
           //... eyo.finalizeC9r()
           //... eyo[eyo.p6y$.merge]({
           //...   foo: 421,
           //... })
           //... eyo[eyo.p6y$.shortcuts]()
-          //... let _p = C9r.prototype
+          //... let _p = C3s.prototype
           //... let o = ns.new({
           //...   methods: {
           //...     flag (...$) {
@@ -343,9 +343,9 @@ eYo.Dlgt_p.p6yEnhanced = function (id = 'p6y') {
     }
   }[p6y$.shortcuts]
   //<<< mochai: p6y$.merge
-  //... let ns = eYo.c9r.newNS()
-  //... let C9r = ns.makeC9rBase(true)
-  //... let eyo = C9r[eYo.$]
+  //... let ns = eYo.c3s.newNS()
+  //... let C3s = ns.makeC9rBase(true)
+  //... let eyo = C3s[eYo.$]
   //... eyo.p6yEnhanced()
   //... eyo.finalizeC9r()
   //... eyo[eyo.p6y$.merge]({
@@ -357,12 +357,12 @@ eYo.Dlgt_p.p6yEnhanced = function (id = 'p6y') {
   //... eyo[eyo.p6y$.init](o)
   //... chai.expect(o[eyo.p6y$.map].get('foo').value).equal(421)
   //>>>
-  eYo.c9r.appendToMethod(this._p, p6y$.merge, {$ () {
+  eYo.c3s.appendToMethod(this._p, p6y$.merge, {$ () {
     this[this.p6y$.shortcuts]()
     //<<< mochai: p6y$.merge+shortcuts
-    //... let ns = eYo.c9r.newNS()
-    //... let C9r = ns.makeC9rBase(true)
-    //... let eyo = C9r[eYo.$]
+    //... let ns = eYo.c3s.newNS()
+    //... let C3s = ns.makeC9rBase(true)
+    //... let eyo = C3s[eYo.$]
     //... eyo.p6yEnhanced()
     //... eyo.finalizeC9r()
     //... eyo[eyo.p6y$.merge]({
@@ -404,7 +404,7 @@ eYo.Dlgt_p.p6yEnhanced = function (id = 'p6y') {
         map.set(p6y.key, p6y)
       } while ((p6y = p6y[eYo.$next]))
       //... var ns = eYo.o4t.newNS()
-      //... let C9r = ns.makeC9rBase({
+      //... let C3s = ns.makeC9rBase({
       //...   properties: {
       //...     foo: 1,
       //...     chi: {
@@ -417,7 +417,7 @@ eYo.Dlgt_p.p6yEnhanced = function (id = 'p6y') {
       //...     },
       //...   },
       //... })
-      //... let eyo = C9r[eYo.$]
+      //... let eyo = C3s[eYo.$]
       //... var o = ns.new('o', eYo.test.onr)
       //... eyo[eyo.p6y$.shortcuts]()
       //... eyo[eyo.p6y$.prepare](o)
@@ -513,9 +513,9 @@ eYo.mixinFR(eYo.Dlgt_p, {
    */
   o4tEnhanced () {
     //<<< mochai: o4tEnhanced
-    //... let ns = eYo.c9r.newNS()
-    //... let C9r = ns.makeC9rBase()
-    //... let eyo = C9r[eYo.$]
+    //... let ns = eYo.c3s.newNS()
+    //... let C3s = ns.makeC9rBase()
+    //... let eyo = C3s[eYo.$]
     //... let p6y$ = eyo.o4tEnhanced()
     //... var o = ns.new('o')
     this.p6yEnhanced() // just before finalizing
@@ -540,9 +540,9 @@ eYo.mixinFR(eYo.Dlgt_p, {
       p6yMerge (...$) {
         //<<< mochai: p6yMerge
         return this[this.p6y$.merge](...$)
-        //... let ns = eYo.c9r.newNS()
-        //... let C9r = ns.makeC9rBase()
-        //... let eyo = C9r[eYo.$]
+        //... let ns = eYo.c3s.newNS()
+        //... let C3s = ns.makeC9rBase()
+        //... let eyo = C3s[eYo.$]
         //... chai.expect(eyo[p6y$.merge]).eyo_F
         //... chai.expect(eyo.p6yMerge).eyo_F
         //... eyo.p6yMerge({
@@ -565,9 +565,9 @@ eYo.mixinFR(eYo.Dlgt_p, {
        */
       [p6y$.aliasesMerge] (aliases) {
         //<<< mochai: p6y$.aliasesMerge
-        //... let ns = eYo.c9r.newNS()
-        //... let C9r = ns.makeC9rBase(true)
-        //... let eyo = C9r[eYo.$]
+        //... let ns = eYo.c3s.newNS()
+        //... let C3s = ns.makeC9rBase(true)
+        //... let eyo = C3s[eYo.$]
         //... eyo.finalizeC9r()
         //... let p6y$ = eyo.o4tEnhanced()
         //... chai.expect(eyo[p6y$.aliasesMerge]).eyo_F
@@ -710,7 +710,7 @@ eYo.mixinFR(eYo.Dlgt_p, {
         //<<< mochai: c9rDispose
         //... chai.expect(eYo.o4t.Dlgt_p.c9rDispose).eyo_F
         this[this.p6y$.dispose]($this, ...$)
-        //... eYo.c9r.new({
+        //... eYo.c3s.new({
         //...   dispose (...$) {
         //...     eYo.flag.push(1, ...$, 4)
         //...   }
@@ -720,7 +720,7 @@ eYo.mixinFR(eYo.Dlgt_p, {
         //...   properties: {
         //...     foo: {
         //...       value () {
-        //...         return  eYo.c9r.new({
+        //...         return  eYo.c3s.new({
         //...           dispose (...$) {
         //...             eYo.flag.push('/d', ...$)
         //...           }
@@ -745,9 +745,9 @@ eYo.mixinFR(eYo.Dlgt_p, {
     })
     eYo.mixinFR(this.C9r_p, {
       //<<< mochai: iterators
-      //... let ns = eYo.c9r.newNS()
-      //... let C9r = ns.makeC9rBase()
-      //... let eyo = C9r[eYo.$]
+      //... let ns = eYo.c3s.newNS()
+      //... let C3s = ns.makeC9rBase()
+      //... let eyo = C3s[eYo.$]
       //... let p6y$ = eyo.o4tEnhanced()
       //... var o = ns.new('o')
       /**
@@ -809,8 +809,8 @@ eYo.mixinFR(eYo.o4t._p, {
     }
     let _p = this._p
     eYo.objectHasOwnProperty(_p, key) && eYo.throw(`Already done`)
-    _p[key] = function (C9r) {
-      C9r[eYo.$].modelMerge(model)
+    _p[key] = function (C3s) {
+      C3s[eYo.$].modelMerge(model)
     }
     //... let NS_super = eYo.o4t.newNS()
     //... let NS = NS_super.newNS('foo')

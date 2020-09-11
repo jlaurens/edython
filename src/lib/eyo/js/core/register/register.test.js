@@ -3,7 +3,7 @@ describe ('Tests: register', function () {
   var flag, onr
   beforeEach (function() {
     flag = new eYo.test.Flag()
-    onr = eYo.c9r && eYo.c9r.new({
+    onr = eYo.c3s && eYo.c3s.new({
       methods: {
         flag (what, ...$) {
           eYo.flag.push(1, what, ...$)
@@ -12,11 +12,11 @@ describe ('Tests: register', function () {
       },
     }, 'onr')
   })
-  it ('Register: C9r(2)', function () {
+  it ('Register: C3s(2)', function () {
     let ns = eYo.o4t.newNS()
     ns.makeC9rBase()
     eYo.register.add(ns.C9rBase, 'foo')
-    let onr = eYo.c9r.new()
+    let onr = eYo.c3s.new()
     let o = new ns.C9rBase('o', onr)
     chai.assert(o.fooRegister)
     chai.assert(o.fooUnregister)

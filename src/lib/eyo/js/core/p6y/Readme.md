@@ -20,7 +20,7 @@ Each property has 3 attributes.
 
 ### Default usage
 
-	let onr = eYo.c9r.new() // owner
+	let onr = eYo.c3s.new() // owner
 	let p6y = eYo.p6y.new('p6y', onr) // create the property
 	p6y.value_ = 421 // set its value
 	console.log(p6y.value) // read its value

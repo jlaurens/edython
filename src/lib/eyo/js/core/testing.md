@@ -12,7 +12,7 @@ From the simplest:
 - decorate/decorate.test.html
 - xre/xre.test.html
 - dlgt/dlgt.test.html
-- c9r/c9r.test.html
+- c3s/c3s.test.html
 - observe/observe.test.html
 - shared/shared.test.html
 - many/many.test.html

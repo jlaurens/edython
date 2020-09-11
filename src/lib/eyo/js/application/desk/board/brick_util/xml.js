@@ -592,7 +592,7 @@ eYo.xml.registerAllTags = function () {
       if (!type.startsWith || type.startsWith('.')) {
         continue
       }
-      var C9r = eYo.c9r.forType(type)
+      var C3s = eYo.c3s.forType(type)
       var model = eYo.model.forType(type)
       var xml = model && model.xml
       var attr = xml && xml.attr
@@ -619,9 +619,9 @@ eYo.xml.registerAllTags = function () {
         eYo.t3.xml.fromDom[attr] = type
       }
       // register the reverse
-      if (C9r) {
-        // console.warn('REGISTER XML ATTR:', c9r[eYo.$].key, eYo.t3.xml.toDom[mode][key], attr, key)
-        C9r[eYo.$].xmlAttr = eYo.t3.xml.toDom[mode][key] || attr || key // ERROR ? Dynamic tag name ?
+      if (C3s) {
+        // console.warn('REGISTER XML ATTR:', c3s[eYo.$].key, eYo.t3.xml.toDom[mode][key], attr, key)
+        C3s[eYo.$].xmlAttr = eYo.t3.xml.toDom[mode][key] || attr || key // ERROR ? Dynamic tag name ?
       }
     }
   }
@@ -885,8 +885,8 @@ eYo.xml.domToBrick = (() => {
               var where = dom.tagName.toLowerCase() === eYo.xml.EXPR ? eYo.t3.expr : eYo.t3.stmt
               for (var i = 0; i < prototypeName.length; i++) {
                 var candidate = prototypeName[i]
-                var C9r = eYo.model.forType(candidate)
-                if (C9r && where[C9r[eYo.$].key]) {
+                var C3s = eYo.model.forType(candidate)
+                if (C3s && where[C3s[eYo.$].key]) {
                   return candidate
                 }
               }
@@ -1160,16 +1160,16 @@ eYo.xml.comparison.domToComplete = function (element, owner) {
   var id = element.getAttribute('id')
   if (prototypeName === eYo.xml.cOMPARISON) {
     var op = element.getAttribute(eYo.xml.OPERATOR)
-    var C9r, model
+    var C3s, model
     var type = eYo.t3.expr.number_comparison
-    if ((C9r = eYo.model.forType(type))
-      && (model = C9r[eYo.$].model.data)
+    if ((C3s = eYo.model.forType(type))
+      && (model = C3s[eYo.$].model.data)
       && (model = model.operator)
       && model.all
       && (model.all.indexOf(op) >= 0)) {
       var b3k = eYo.brick.newReady(owner, type, id)
     } else if ((type = eYo.t3.expr.object_comparison)
-      && (model = C9r[eYo.$].model.data)
+      && (model = C3s[eYo.$].model.data)
       && (model = model.operator)
       && model.all
       && (model.all.indexOf(op) >= 0)) {

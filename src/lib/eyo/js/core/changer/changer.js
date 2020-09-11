@@ -167,7 +167,7 @@ eYo.changer.makeC9rBase({
       ++this.level_
       let o = this.owner_
       o.onChangeBegin && o.onChangeBegin()
-      //... let onr = eYo.c9r.new({
+      //... let onr = eYo.c3s.new({
       //...   methods: {
       //...     onChangeBegin () {
       //...       eYo.flag.push(1)
@@ -189,7 +189,7 @@ eYo.changer.makeC9rBase({
      */
     end () {
       //<<< mochai: end
-      //... let onr = eYo.c9r.new({
+      //... let onr = eYo.c3s.new({
       //...   methods: {
       //...     onChangeEnd () {
       //...       eYo.flag.push(2)
@@ -221,7 +221,7 @@ eYo.changer.makeC9rBase({
      */
     done () {
       //<<< mochai: done
-      //... let onr = eYo.c9r.new({
+      //... let onr = eYo.c3s.new({
       //...   methods: {
       //...     onChangeDone () {
       //...       eYo.flag.push(3)
@@ -250,7 +250,7 @@ eYo.changer.makeC9rBase({
      */
     wrap ($this, do_it, ...$) {
       //<<< mochai: wrap+begin/end/done
-      //... let onr = eYo.c9r.new({
+      //... let onr = eYo.c3s.new({
       //...   methods: {
       //...     onChangeBegin () {
       //...       eYo.flag.push(1)

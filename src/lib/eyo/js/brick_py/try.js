@@ -165,7 +165,7 @@ eYo.stmt.group[eYo.$newSubC9r]('except_part', true, {
 ;[
   'void_except_part'
 ].forEach(k => {
-  eYo.c9r.register(k, (eYo.stmt[k] = eYo.stmt.except_part))
+  eYo.c3s.register(k, (eYo.stmt[k] = eYo.stmt.except_part))
 })
 /**
  * The type and connection depend on the properties modifier, value and variant.

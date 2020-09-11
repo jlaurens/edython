@@ -27,7 +27,7 @@ eYo.require('do')
  * @name{eYo.t3.profile}
  * @namespace
  */
-eYo.c9r.newNS(eYo.t3, 'profile')
+eYo.c3s.newNS(eYo.t3, 'profile')
 
 eYo.mixinRO(eYo.t3.expr, {
   reserved_identifier: '.reserved identifier',

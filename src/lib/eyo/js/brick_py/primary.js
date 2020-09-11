@@ -1243,7 +1243,7 @@ eYo.register.add(eYo.expr, 'primary', function (b3k) {
     console.warn('BREAK HERE!')
   }
   //  console.warn(k)
-  eYo.c9r.register(k, (eYo.expr[k] = eYo.expr.primary))
+  eYo.c3s.register(k, (eYo.expr[k] = eYo.expr.primary))
 })
 
 /**

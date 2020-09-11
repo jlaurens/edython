@@ -67,12 +67,12 @@ eYo.test.makeOnr = function (model) {
       return what
     },
   })
-  return eYo.o4t && eYo.o4t.new(m, 'onr', eYo) || eYo.o3d && eYo.o3d.new(m, 'onr', eYo) || eYo.c9r && eYo.c9r.new(m, 'onr') || (() => {
-      let C9r = function () {}
-      C9r.prototype.flag = {
+  return eYo.o4t && eYo.o4t.new(m, 'onr', eYo) || eYo.o3d && eYo.o3d.new(m, 'onr', eYo) || eYo.c3s && eYo.c3s.new(m, 'onr') || (() => {
+      let C3s = function () {}
+      C3s.prototype.flag = {
         $ (what, ...$) { eYo.flag.push('/', what, ...$); return what }
       }.$
-      return new C9r()
+      return new C3s()
     })()
 }
 
@@ -182,9 +182,9 @@ chai.Assertion.addProperty('eyo_F', function () {
 
 chai.Assertion.addProperty('eyo_C9rBase', function () {
   this.eyo_C9r
-  let C9r = this._obj
+  let C3s = this._obj
   this.assert(
-    C9r[eYo.$].ns.C9rBase === C9r,
+    C3s[eYo.$].ns.C9rBase === C3s,
     'expected #{this} to be a base eYo constructor',
     'expected #{this} to not be a base eYo constructor',
   )
@@ -361,13 +361,13 @@ chai.use(function (_chai, utils) {
     )
   })
   // language chain method
-  chai.Assertion.addMethod('eyo_Subclass', function (C9r) {
+  chai.Assertion.addMethod('eyo_Subclass', function (C3s) {
     this.eyo_C9r
-    chai.expect(C9r).eyo_C9r
+    chai.expect(C3s).eyo_C9r
     var actual = this._obj[eYo.$].name
-    var expected = C9r && C9r[eYo.$].name
+    var expected = C3s && C3s[eYo.$].name
     this.assert(
-      eYo.isSubclass(this._obj, C9r)
+      eYo.isSubclass(this._obj, C3s)
       , `expected ${actual} to be a subclass of ${expected}\n`
       , `expected ${actual} not to be a subclass of ${expected}\n`
     )

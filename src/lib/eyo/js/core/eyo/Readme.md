@@ -6,10 +6,10 @@
 Names for constructors are title cased.
 Some names are used with a dedicated meaning.
 
-- `C9r` is a name designating a constructor
+- `C3s` is a name designating a constructor
 - `Super` is a name designating a constructor to be inherited from
-- `Dflt` is a name designating a subclass of `eYo.c9r.Dflt`
-- `Dlgt` is a name designating a subclass of `eYo.c9r.Dlgt`
+- `Dflt` is a name designating a subclass of `eYo.c3s.Dflt`
+- `Dlgt` is a name designating a subclass of `eYo.c3s.Dlgt`
 
 **Exception**: bricks correspond to lower cased identifiers in the python grammar. The corresponding constructor is named after the identifier **with no case change**.
 

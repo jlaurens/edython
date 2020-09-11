@@ -17,7 +17,7 @@
  */
 
 eYo.fcfl.newNS(eYo, 'dom', {
-  OWNER: new eYo.C9r(),
+  OWNER: new eYo.C3s(),
   CSS_CLASS: 'dom',
 })
 

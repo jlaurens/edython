@@ -291,5 +291,5 @@ eYo.expr.Starred.prototype.xmlAttr = function () {
   'parameter_star_star',
   'or_expr_star_star'
 ].forEach(k => {
-  eYo.c9r.register(k, (eYo.expr[k] = eYo.expr.Starred))
+  eYo.c3s.register(k, (eYo.expr[k] = eYo.expr.Starred))
 })

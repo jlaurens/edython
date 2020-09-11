@@ -9,13 +9,13 @@ The idea is to use a rather straightforward syntax.
 
 ## Namespaces
 
-`eYo.foo` namespace are used to collect technologies dedicated to some definite purpose. `eYo.c9r` is the namespace for the constructors, `eYo.dlgt` is the namespace for the constructor delegates.
+`eYo.foo` namespace are used to collect technologies dedicated to some definite purpose. `eYo.c3s` is the namespace for the constructors, `eYo.dlgt` is the namespace for the constructor delegates.
 
 ## Class extensions through delegation.
 
 Each constructor is extended through a property named `eyo`.
 This name is sufficiently weird to avoid collisions.
-Each class is a descendant of `eYo.C9r.C9rBase` whereas `eyo` object is an instance of `eYo.dlgt.C9rBase`.
+Each class is a descendant of `eYo.C3s.C9rBase` whereas `eyo` object is an instance of `eYo.dlgt.C9rBase`.
 
 This extension knows the namespace owning the class.
 It also knows the unique string identifying the class: its name.

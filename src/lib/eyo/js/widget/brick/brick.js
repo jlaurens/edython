@@ -87,7 +87,7 @@ eYo.brick.makeC9rBase({
    * Delegate initializator for bricks.
    * @param {Object} ns -  namespace.
    * @param {String} key -  the key used when the constructor was created.
-   * @param {Object} C9r -  the object to which this instance is attached.
+   * @param {Object} C3s -  the object to which this instance is attached.
    * @param {Object} model -  the model used to create the constructor.
    */
   [eYo.$] () { // eslint-disable-line
@@ -2540,16 +2540,16 @@ eYo.do.defineDataProperty = (object, k) => {
   }
 }
 
-eYo.brick.registerAll = function (typesByKey, C9r, fake) {
+eYo.brick.registerAll = function (typesByKey, C3s, fake) {
   for (var k in typesByKey) {
     var type = typesByKey[k]
     if (eYo.isStr(type)) {
       //        console.log('Registering', k)
-      eYo.c9r.register(type, C9r)
+      eYo.c3s.register(type, C3s)
       if (fake) {
         type = type.replace('eyo:', 'eyo:fake_')
         //          console.log('Registering', k)
-        eYo.c9r.register(type, C9r)
+        eYo.c3s.register(type, C3s)
       }
     }
   }

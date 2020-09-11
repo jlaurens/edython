@@ -614,7 +614,7 @@ eYo.mixinFR(eYo.model.Format_p, {
       key && eYo.throw(`eYo.model.Format_p.validate: unexpected last argument ${key}`)
       ;[path, model, key] = [eYo.NA, path, model]
     }
-    if (eYo.isDef(model)/* && !(model instanceof eYo.c9r.C9rBase)*/) {
+    if (eYo.isDef(model)/* && !(model instanceof eYo.c3s.C9rBase)*/) {
       // validate the model
       let v = c.validate_
         ? c.validate_(model, key)

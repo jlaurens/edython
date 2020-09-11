@@ -59,15 +59,15 @@ eYo.dlgt.C9rBase_p.viewEnhanced = function () {
           [k_v]: eYo.descriptorR({$ () {
             return this.viewMap.get(k)
             //... let NS = eYo.o4t.newNS()
-            //... let C9r = NS.makeC9rBase(true)
-            //... C9r[eYo.$].viewEnhanced()
-            //... C9r[eYo.$].finalizeC9r()
-            //... C9r[eYo.$].viewMerge({
+            //... let C3s = NS.makeC9rBase(true)
+            //... C3s[eYo.$].viewEnhanced()
+            //... C3s[eYo.$].finalizeC9r()
+            //... C3s[eYo.$].viewMerge({
             //...   foo: {
             //...     chi: 421,
             //...   },
             //... })
-            //... let _p = C9r[eYo.$].C9r_p
+            //... let _p = C3s[eYo.$].C9r_p
             //... eYo.objectHasOwnProperty(chai.expect(_p, 'foo_v')).true
             //... let o = NS.new('o', onr)
             //... chai.expect(o.foo_v).instanceOf(eYo.View)
@@ -94,27 +94,27 @@ eYo.dlgt.C9rBase_p.viewEnhanced = function () {
       [eYo.model.ANY]: eYo.View[eYo.$].modelFormat,
       [eYo.model.VALIDATE]: eYo.model.validateD,
       //... let ns = eYo.o4t.newNS()
-      //... let C9r = ns.makeC9rBase(true)
-      //... C9r[eYo.$].viewEnhanced()
-      //... C9r[eYo.$].finalizeC9r()
-      //... chai.assert(C9r[eYo.$].modelFormat.get('views'))
+      //... let C3s = ns.makeC9rBase(true)
+      //... C3s[eYo.$].viewEnhanced()
+      //... C3s[eYo.$].finalizeC9r()
+      //... chai.assert(C3s[eYo.$].modelFormat.get('views'))
       //>>>
     }
   }
   this.manyEnhanced('view', 'views', manyModel)
-  eYo.c9r.appendToMethod(this._p, 'viewMerge', function () {
+  eYo.c3s.appendToMethod(this._p, 'viewMerge', function () {
     this.viewShortcuts()
     //<<< mochai: viewMerge+viewShortcuts
     //... let ns = eYo.o4t.newNS()
-    //... let C9r = ns.makeC9rBase(true)
-    //... C9r[eYo.$].viewEnhanced()
-    //... C9r[eYo.$].finalizeC9r()
-    //... C9r[eYo.$].viewMerge({
+    //... let C3s = ns.makeC9rBase(true)
+    //... C3s[eYo.$].viewEnhanced()
+    //... C3s[eYo.$].finalizeC9r()
+    //... C3s[eYo.$].viewMerge({
     //...   foo: {
     //...     chi: 421,
     //...   },
     //... })
-    //... C9r[eYo.$].viewMerge({
+    //... C3s[eYo.$].viewMerge({
     //...   bar: {
     //...     chi: 666,
     //...   },
@@ -130,8 +130,8 @@ eYo.dlgt.C9rBase_p.viewEnhanced = function () {
   this.viewShortcuts()
 
   //... let ns = eYo.o4t.newNS()
-  //... let C9r = ns.makeC9rBase()
-  //... C9r[eYo.$].viewEnhanced()
+  //... let C3s = ns.makeC9rBase()
+  //... C3s[eYo.$].viewEnhanced()
   //... var o = ns.new('o', onr)
   
   eYo.mixinFR(this._p, {
@@ -236,11 +236,11 @@ eYo.dlgt.C9rBase_p.viewEnhanced = function () {
     },
     /**
      * Prepare an instance with properties.
-     * @param {Object} instance -  object is an instance of a subclass of the `C9r` of the receiver
+     * @param {Object} instance -  object is an instance of a subclass of the `C3s` of the receiver
      */
     prepareInstance (instance) {
       //<<< mochai: prepareInstance
-      //... chai.assert(C9r[eYo.$].prepareInstance)
+      //... chai.assert(C3s[eYo.$].prepareInstance)
       let $prepare = this.p6y$.prepare
       this[$prepare](instance)
       this.viewPrepare(instance)
@@ -262,7 +262,7 @@ eYo.dlgt.C9rBase_p.viewEnhanced = function () {
      */
     initInstance (instance, ...$) {
       //<<< mochai: initInstance
-      //... chai.assert(C9r[eYo.$].initInstance)
+      //... chai.assert(C3s[eYo.$].initInstance)
       let $init = this.p6y$.init
       let $links = this.p6y$.links
       this[$init](instance)
@@ -302,7 +302,7 @@ eYo.dlgt.C9rBase_p.viewEnhanced = function () {
      */
     c9rDispose (instance, ...$) {
       //<<< mochai: c9rDispose
-      //... chai.expect(C9r[eYo.$].c9rDispose).eyo_F
+      //... chai.expect(C3s[eYo.$].c9rDispose).eyo_F
       this.viewDispose(instance, ...$)
       this[this.p6y$.dispose](instance, ...$)
       //>>>
@@ -402,27 +402,27 @@ eYo.View[eYo.$].finalizeC9r({
   //<<< mochai: model
   views: {
     [eYo.model.ANY]: {
-      [eYo.model.DOT]: ['C9r', 'shared'],
+      [eYo.model.DOT]: ['C3s', 'shared'],
       [eYo.model.VALIDATE] (before, p) {  // eslint-disable-line
         if (eYo.isStr(before)) {
           var v = eYo.valueForKeyPath(before)
           if (eYo.isSubclass(v, eYo.view.C9rBase)) {
             return {
-              C9r: v,
+              C3s: v,
               shared: true,
             }
           } else if (!v) {
             v = eYo.view.valueForKeyPath(before)
             if (eYo.isC9r(v)) {
               return {
-                C9r: v,
+                C3s: v,
                 shared: true,
               }
             }
           }
         } else if (eYo.isSubclass(before, eYo.view.C9rBase)) {
           return {
-            C9r: before,
+            C3s: before,
             shared: true,
           }
         }
@@ -454,10 +454,10 @@ eYo.mixinFR(eYo.view._p, {
       return model.shared
     } else if (eYo.isStr(model.shared) && eYo.isC9r(eYo.view[model.shared])) {
       return eYo.view[model.shared]
-    } else if (eYo.isC9r(model.C9r)) {
-      return model.C9r
-    } else if (eYo.isStr(model.C9r) && eYo.isC9r(eYo.view[model.C9r])) {
-      return eYo.view[model.C9r]
+    } else if (eYo.isC9r(model.C3s)) {
+      return model.C3s
+    } else if (eYo.isStr(model.C3s) && eYo.isC9r(eYo.view[model.C3s])) {
+      return eYo.view[model.C3s]
     } else if (eYo.isC9r(eYo.view[key])) {
       eYo.view[key]
     } else {
@@ -469,7 +469,7 @@ eYo.mixinFR(eYo.view._p, {
    * View instances are unique when the model's `shared` attribute is not `false`.
    * If the model has an attribute `shared` which is a view instance,
    * then it is returned as is.
-   * If it is a C9r, an instance is created, cached and returned.
+   * If it is a C3s, an instance is created, cached and returned.
    * @param{Object} model - An object suitable to create such a view instance.
    * @param{String} [key] - The key of the created instance.
    * @param{Object} owner - and eYo object
@@ -500,7 +500,7 @@ eYo.mixinFR(eYo.view._p, {
     eYo.mixinFR(this._p, {
       new (...$) {
         let ans = enhancer(...$)
-        if (ans instanceof eYo.View) { // -> eYo.c9r._p.enhanceNew = (enhancer, C9r) => {...}
+        if (ans instanceof eYo.View) { // -> eYo.c3s._p.enhanceNew = (enhancer, C3s) => {...}
           return ans
         } else if (ans) {
           eYo.throw(`Unexpected enhancer return value: ${ans}`)

@@ -3,7 +3,7 @@ describe ('Tests: Observe', function () {
   var flag, onr
   beforeEach (function() {
     flag = new eYo.test.Flag()
-    onr = eYo.c9r && eYo.c9r.new({
+    onr = eYo.c3s && eYo.c3s.new({
       methods: {
         flag (what, ...$) {
           eYo.flag.push(1, what, ...$)
@@ -13,7 +13,7 @@ describe ('Tests: Observe', function () {
     }, 'onr')
   })
   it (`$this`, function () {
-    let ns = eYo.c9r.newNS()
+    let ns = eYo.c3s.newNS()
     ns.makeC9rBase()
     ns.C9rBase[eYo.$].observeEnhanced()
     let o = ns.new()
@@ -29,10 +29,10 @@ describe ('Tests: Observe', function () {
     eYo.flag.expect(1234)
   })
   it (`Inherited`, function () {
-    let ns = eYo.c9r.newNS()
+    let ns = eYo.c3s.newNS()
     let SuperC9r = ns.makeC9rBase()
-    let C9r = SuperC9r[eYo.$newSubC9r]('Foo')
-    let ChildC9r = C9r[eYo.$newSubC9r]('Bar')
+    let C3s = SuperC9r[eYo.$newSubC9r]('Foo')
+    let ChildC9r = C3s[eYo.$newSubC9r]('Bar')
     SuperC9r[eYo.$].observeEnhanced()
     let o = new ChildC9r()
     let o_o = o.addObserver(eYo.observe.BEFORE, function (before, after) {
@@ -45,7 +45,7 @@ describe ('Tests: Observe', function () {
     })
     o.willChange(1, 2)
     eYo.flag.expect(78912)
-    let o_C9r = C9r.prototype.addObserver(eYo.observe.BEFORE, function (before, after) {
+    let o_C9r = C3s.prototype.addObserver(eYo.observe.BEFORE, function (before, after) {
       eYo.flag.push(4, before + 4, after + 4)
     })
     o.willChange(1, 2)
@@ -61,7 +61,7 @@ describe ('Tests: Observe', function () {
     ChildC9r.prototype.removeObserver(o_ChildC9r)
     o.willChange(1, 2)
     eYo.flag.expect(123456)
-    C9r.prototype.removeObserver(o_C9r)
+    C3s.prototype.removeObserver(o_C9r)
     o.willChange(1, 2)
     eYo.flag.expect(123)
     SuperC9r.prototype.removeObserver(o_SuperC9r)
@@ -69,7 +69,7 @@ describe ('Tests: Observe', function () {
     eYo.flag.expect()
   })
   it (`Shared and inherited`, function () {
-    let ns = eYo.c9r.newNS()
+    let ns = eYo.c3s.newNS()
     ns.makeC9rBase()
     ns.C9rBase[eYo.$].observeEnhanced()
     ns.new().willChange(1, 2)

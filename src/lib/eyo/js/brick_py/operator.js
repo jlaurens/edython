@@ -143,7 +143,7 @@ eYo.expr.newC9r('Binary', {
 eYo.t3.expr.check.binary.forEach(k => {
   if (k !== eYo.t3.expr.any) {
     k = k.substring(4)
-    eYo.c9r.register(k, (eYo.expr[k] = eYo.expr.Binary))
+    eYo.c3s.register(k, (eYo.expr[k] = eYo.expr.Binary))
   }
 })
 
@@ -155,7 +155,7 @@ eYo.t3.expr.check.binary.forEach(k => {
   'number_comparison',
   'object_comparison'
 ].forEach(k => {
-  eYo.c9r.register(k, (eYo.expr[k] = eYo.expr.Binary))
+  eYo.c3s.register(k, (eYo.expr[k] = eYo.expr.Binary))
 })
 
 /**
@@ -350,7 +350,7 @@ eYo.expr.newC9r('unary', {
   'u_expr',
   'not_test'
 ].forEach(k => {
-  eYo.c9r.register(k, (eYo.expr[k] = eYo.expr.unary))
+  eYo.c3s.register(k, (eYo.expr[k] = eYo.expr.unary))
 })
 
 /**

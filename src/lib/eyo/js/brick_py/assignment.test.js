@@ -22,7 +22,7 @@ describe('Each assignment brick type', function() {
     it (`basic operator: ${Ts[0]} / ${Ts[1] || Ts[0]} / ${Ts[2]}`, function () {
       eYo.test.setItUp()
       var d = eYo.test.new_brick(Ts[0], Ts[1])
-      eYo.test.c9r(d, 'assignment_stmt')
+      eYo.test.c3s(d, 'assignment_stmt')
       eYo.test.data_value(d, 'operator', Ts[2])
       d.dispose()
       eYo.test.tearItDown()
@@ -36,7 +36,7 @@ describe('Assignment', function() {
     it(t, function() {
       eYo.test.setItUp()
       var d = eYo.test.new_brick(t)
-      eYo.test.c9r(d, 'assignment_stmt')
+      eYo.test.c3s(d, 'assignment_stmt')
       eYo.test.variant(d, variant)
       eYo.test.incog(d, incogs)
       d.dispose()
@@ -52,7 +52,7 @@ describe('Assignment', function() {
   it('variant change', function() {
     eYo.test.setItUp()
     var d1 = eYo.test.new_brick('expression_stmt')
-    eYo.test.c9r(d1, 'assignment_stmt')
+    eYo.test.c3s(d1, 'assignment_stmt')
     eYo.test.variant(d1, 'EXPRESSION')
     eYo.test.incog(d1, ['Xtarget', 'Xannotated', 'value'])
     eYo.test.variant(d1, 'EXPRESSION', '2')
@@ -171,7 +171,7 @@ describe('Comment/Variant changes', function() {
   it('variant change 1', function() {
     eYo.test.setItUp()
     var d1 = eYo.test.new_brick('expression_stmt')
-    eYo.test.c9r(d1, 'assignment_stmt')
+    eYo.test.c3s(d1, 'assignment_stmt')
     eYo.test.variant(d1, 'EXPRESSION', '1')
     eYo.test.incog(d1, ['Xtarget', 'Xannotated', 'value'])
     eYo.test.variant(d1, 'EXPRESSION', '2')
@@ -201,13 +201,13 @@ describe('Copy/Paste', function() {
     it(t, function() {
       eYo.test.setItUp()
       var d = eYo.test.new_brick(t)
-      eYo.test.c9r(d, 'assignment_stmt')
+      eYo.test.c3s(d, 'assignment_stmt')
       eYo.test.variant(d, variant)
       eYo.test.incog(d, incogs)
       var dom = eYo.xml.brickToDom(d)
       d.dispose()
       d = eYo.test.new_brick(dom)
-      eYo.test.c9r(d, 'assignment_stmt')
+      eYo.test.c3s(d, 'assignment_stmt')
       console.error(dom)
       eYo.test.variant(d, variant)
       eYo.test.incog(d, incogs)

@@ -552,5 +552,5 @@ eYo.expr.enclosure.prototype.getBaseType = function () {
   'set_display',
   'dict_display',
   'one_dict_display'].forEach(k => {
-  eYo.c9r.register(k, (eYo.expr[k] = eYo.expr.enclosure))
+  eYo.c3s.register(k, (eYo.expr[k] = eYo.expr.enclosure))
 })

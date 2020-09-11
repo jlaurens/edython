@@ -2,7 +2,7 @@
 
 `o3d` stands for `owned`.
 
-Basic objects are instances of `eYo.C9r`, `eYo.Object` and `eYo.Widget`. We detail here the second one.
+Basic objects are instances of `eYo.C3s`, `eYo.Object` and `eYo.Widget`. We detail here the second one.
 
 ## Model
 

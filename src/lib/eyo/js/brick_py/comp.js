@@ -100,7 +100,7 @@ eYo.expr.comprehension_p.getBaseType = function () {
 }
 
 ;['dict_comprehension'].forEach(k => {
-  eYo.c9r.register(k, (eYo.expr[k] = eYo.expr.comprehension))
+  eYo.c3s.register(k, (eYo.expr[k] = eYo.expr.comprehension))
 })
 
 /**

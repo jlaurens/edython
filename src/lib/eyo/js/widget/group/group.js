@@ -191,7 +191,7 @@ eYo.stmt.branch_p.getBaseType = function () {
   'last_else'
 ].forEach(name => {
   var k = name + '_part'
-  eYo.c9r.register(k, (eYo.stmt[k] = eYo.stmt.branch))
+  eYo.c3s.register(k, (eYo.stmt[k] = eYo.stmt.branch))
 })
 
 /**

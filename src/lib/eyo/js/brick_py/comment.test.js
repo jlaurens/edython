@@ -92,7 +92,7 @@ describe('Statement', function () {
       eYo.test.setItUp()
       var d = eYo.test.new_brick('comment_stmt')
       eYo.test.brick(d, 'comment_stmt')
-      eYo.test.c9r(d, 'comment_stmt')
+      eYo.test.c3s(d, 'comment_stmt')
       var d1 = eYo.test.new_brick('comment_stmt')
       d.Comment_p = 'abc'
       d1.Comment_p = 'cde'

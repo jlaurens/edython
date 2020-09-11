@@ -512,7 +512,7 @@ eYo.geom.Rect[eYo.$].modelMerge({
     copy: {
       //<<< mochai: copy
       get () {
-        return new this.eyo$.C9r(this)
+        return new this.eyo$.C3s(this)
       },
       //... R = new eYo.geom.Rect(false, m)
       //... let RR = R.copy

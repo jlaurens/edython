@@ -11,7 +11,7 @@
  */
 'use strict'
 
-eYo.require('c9r')
+eYo.require('c3s')
 
 // ANCHOR eYo.shared
 /**
@@ -19,9 +19,9 @@ eYo.require('c9r')
  * @namespace
  */
 eYo.newNS('shared', {
-  OWNER: eYo.c9r.new(),
+  OWNER: eYo.c3s.new(),
 })
 //<<< mochai: Basics
 //... chai.assert(eYo.shared)
-//... chai.expect(eYo.shared.OWNER).instanceof(eYo.c9r.C9rBase)
+//... chai.expect(eYo.shared.OWNER).instanceof(eYo.c3s.C9rBase)
 //>>>

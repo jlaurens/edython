@@ -32,8 +32,8 @@ describe ('POC', function () {
       AutoDlgt.call(this, ns, key, Dlgt, model)
     } // DlgtDlgt will never change and does not need to be suclassed
     eYo.inherits(Dlgt, AutoDlgt)
-    var dlgt = new AutoDlgt(eYo.c9r, 'Dlgt', Dlgt, {})
-    let auto = new AutoDlgt(eYo.c9r, 'Dlgt…', AutoDlgt, {})
+    var dlgt = new AutoDlgt(eYo.c3s, 'Dlgt', Dlgt, {})
+    let auto = new AutoDlgt(eYo.c3s, 'Dlgt…', AutoDlgt, {})
     chai.expect(dlgt).equal(Dlgt[eYo.$])
     chai.expect(dlgt).equal(Dlgt[eYo.$])
     chai.expect(dlgt).equal(Dlgt[eYo.$])
@@ -54,20 +54,20 @@ describe ('Tests: Dlgt', function () {
   beforeEach (function() {
     flag = new eYo.test.Flag()
   })
-  it ('Dlgt: new C9r()', function () {
+  it ('Dlgt: new C3s()', function () {
     chai.assert(eYo.dlgt.new)
-    let C9r = function () {}
+    let C3s = function () {}
     let dlgt = eYo.dlgt.new('Foo', {})
-    dlgt.setC9r(C9r)
+    dlgt.setC9r(C3s)
     dlgt.finalizeC9r()
-    let o = new C9r()
-    eYo.dlgt.declareDlgt(C9r.prototype)
+    let o = new C3s()
+    eYo.dlgt.declareDlgt(C3s.prototype)
     chai.expect(o.eyo$).equal(dlgt)
   })
   it ('Dlgt methodsMerge', function () {
-    let C9r = function () {}
+    let C3s = function () {}
     let dlgt = eYo.dlgt.new('Foo', {})
-    dlgt.setC9r(C9r)
+    dlgt.setC9r(C3s)
     dlgt.finalizeC9r()
     chai.expect(dlgt.model.bar).undefined
     flag.reset()
@@ -81,9 +81,9 @@ describe ('Tests: Dlgt', function () {
     eYo.flag.expect(1)
   })
   it ('Dlgt modelMerge', function () {
-    let C9r = function () {}
+    let C3s = function () {}
     let dlgt = eYo.dlgt.new('Foo', {})
-    dlgt.setC9r(C9r)
+    dlgt.setC9r(C3s)
     dlgt.finalizeC9r()
     chai.expect(dlgt.model.bar).undefined
     flag.reset()

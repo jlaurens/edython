@@ -3,7 +3,7 @@ describe('Span expression', function () {
   let flag = new eYo.test.Flag()
   let ns_span = eYo.span.newNS()
   ns_span.makeC9rBase()
-  let onr = eYo.c9r.new()
+  let onr = eYo.c3s.new()
   var b
   var b_g
   before(function() {

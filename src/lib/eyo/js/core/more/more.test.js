@@ -5,7 +5,7 @@ describe ('Tests: More', function () {
   })
   eYo.test.setup()
   it ('eYo.more.enhanceO3dValidate(, , false)', function () {
-    var ns = eYo.c9r.newNS()
+    var ns = eYo.c3s.newNS()
     ns.makeC9rBase()
     chai.expect(() => {
       eYo.more.enhanceO3dValidate(ns.C9rBase[eYo.$], 'foo', false)
@@ -31,7 +31,7 @@ describe ('Tests: More', function () {
     eYo.flag.expect('/vbar<>/fv<>')
   })
   it ('modelHandleValidate(..., false) + inheritance', function () {
-    let ns_onr = eYo.c9r.newNS()
+    let ns_onr = eYo.c3s.newNS()
     ns_onr.makeC9rBase({
       methods: {
         flag (...$) {
@@ -113,7 +113,7 @@ describe ('Tests: More', function () {
   })
   it ('eYo.more.enhanceO3dValidate(, , true)', function () {
     // `this` is the owner in validate.
-    let ns_onr = eYo.c9r.newNS()
+    let ns_onr = eYo.c3s.newNS()
     ns_onr.makeC9rBase({
       methods: {
         flag (...$) {

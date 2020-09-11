@@ -207,7 +207,7 @@ eYo.geom.newC9r('Size', {
      */
     copy: {
       get () {
-        return new this.eyo$.C9r(this)
+        return new this.eyo$.C3s(this)
       }
       //<<< mochai: copy
       //... var m = {w: 3, h: 4}
@@ -553,7 +553,7 @@ eYo.geom.newC9r('Size', {
 
 eYo.geom.Size$.finalizeC9r()
 
-eYo.c9r.Dlgt_p.makeSized = function (key) {
+eYo.c3s.Dlgt_p.makeSized = function (key) {
   //<<< mochai: eYo.o4t.Dlgt.makeSized
   //... let ns = eYo.o4t.newNS()
   //... ns.makeC9rBase(true)

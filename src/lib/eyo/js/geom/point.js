@@ -225,7 +225,7 @@ eYo.geom.newC9r('Point', {
     copy: {
       //<<< mochai: copy
       get () {
-        return new this.eyo$.C9r(this)
+        return new this.eyo$.C3s(this)
       }
       //... P = new eYo.geom.Point(false, m)
       //... let PP = P.copy
@@ -703,7 +703,7 @@ eYo.geom.tPoint = function (snap, c, l) {
 }
 //>>>
 
-eYo.c9r.Dlgt_p.makePointed = function (key) {
+eYo.c3s.Dlgt_p.makePointed = function (key) {
   //<<< mochai: eYo.o4t.Dlgt.makePointed
   //... let ns = eYo.o4t.newNS()
   //... ns.makeC9rBase(true)

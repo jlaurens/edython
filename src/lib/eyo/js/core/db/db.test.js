@@ -3,7 +3,7 @@ describe ('Tests: db', function () {
   var flag, onr
   beforeEach (function() {
     flag = new eYo.test.Flag()
-    onr = eYo.c9r && eYo.c9r.new({
+    onr = eYo.c3s && eYo.c3s.new({
       methods: {
         flag (what, ...$) {
           eYo.flag.push(1, what, ...$)
@@ -14,7 +14,7 @@ describe ('Tests: db', function () {
   })
   it ('DB: add, remove', function () {
     let db = new eYo.o3d.DB('db', onr)
-    let NS = eYo.c9r.newNS()
+    let NS = eYo.c3s.newNS()
     NS.makeC9rBase({
       init (id) {
         this.id = id

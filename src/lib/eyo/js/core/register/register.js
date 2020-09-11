@@ -39,12 +39,12 @@ eYo.register.add = function (object, key, filter) {
   //<<< mochai: add
   let $k = Symbol(key + ' registered map')
   if (eYo.isC9r(object)) {
-    //<<< mochai: C9r
-    //... let ns = eYo.c9r.newNS()
-    //... let C9r = ns.makeC9rBase(true)
-    //... let eyo = C9r[eYo.$]
+    //<<< mochai: C3s
+    //... let ns = eYo.c3s.newNS()
+    //... let C3s = ns.makeC9rBase(true)
+    //... let eyo = C3s[eYo.$]
     //... let p6y$ = eyo.p6yEnhanced()
-    //... let $k = eYo.register.add(C9r, 'foo')
+    //... let $k = eYo.register.add(C3s, 'foo')
     //... eyo.finalizeC9r()
     //... let o = ns.new('foo')
     //... chai.expect(o.fooRegister).eyo_F
@@ -70,9 +70,9 @@ eYo.register.add = function (object, key, filter) {
     //>>>
   } else if (eYo.isaDlgt(object)) {
     //<<< mochai: Dlgt
-    //... let ns = eYo.c9r.newNS()
-    //... let C9r = ns.makeC9rBase(true)
-    //... let eyo = C9r[eYo.$]
+    //... let ns = eYo.c3s.newNS()
+    //... let C3s = ns.makeC9rBase(true)
+    //... let eyo = C3s[eYo.$]
     //... let p6y$ = eyo.p6yEnhanced()
     //... let $k = eYo.register.add(eyo, 'foo')
     //... eyo.finalizeC9r()
@@ -107,15 +107,15 @@ eYo.register.add = function (object, key, filter) {
   }
   eYo.mixinFR(object, {
     //<<< mochai: methods
-    //... let ns = eYo.c9r.newNS()
-    //... let C9r = ns.makeC9rBase(true)
-    //... let eyo = C9r[eYo.$]
+    //... let ns = eYo.c3s.newNS()
+    //... let C3s = ns.makeC9rBase(true)
+    //... let eyo = C3s[eYo.$]
     //... let p6y$ = eyo.p6yEnhanced()
     //... let $k = eYo.register.add(eyo, 'foo')
     //... eyo.finalizeC9r()
     //... var o
     //... let prepare = () => {
-    //...   o = new C9r('o')
+    //...   o = new C3s('o')
     //...   eyo[p6y$.prepare](o)
     //...   eyo[p6y$.shortcuts](o)
     //...   eyo[p6y$.init](o)

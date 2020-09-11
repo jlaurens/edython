@@ -241,7 +241,7 @@ describe ('Tests: Property', function () {
     p = p.dispose()
     eYo.flag.expect(123)
     p = eYo.p6y.new({}, 'foo', eYo.test.onr)
-    p.value_ = eYo.c9r.new({
+    p.value_ = eYo.c3s.new({
       dispose (...$) {
         eYo.flag.push('/d', ...$)
       },
@@ -340,7 +340,7 @@ describe ('Tests: Property', function () {
         return x
       },
     }, 'foo', eYo.test.onr)
-    let value = eYo.c9r.new({
+    let value = eYo.c3s.new({
       dispose (what, how) {
         eYo.flag.push(what, how)
       }

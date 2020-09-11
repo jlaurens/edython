@@ -20,7 +20,7 @@ eYo.mixinFR(eYo._p, {
     return eYo.isaC9r(what) || eYo.isNS(what)
     //<<< mochai: isOwner (what)
     //... chai.expect(eYo.isOwner(true)).false
-    //... chai.expect(eYo.isOwner(new eYo.c9r.C9rBase())).true
+    //... chai.expect(eYo.isOwner(new eYo.c3s.C9rBase())).true
     //... chai.expect(eYo.isOwner(eYo.newNS())).true
     //>>>
   }
@@ -33,9 +33,9 @@ eYo.mixinFR(eYo._p, {
  * @name {eYo.o3d}
  * @namespace
  */
-eYo.c9r.newNS(eYo, 'o3d', {
+eYo.c3s.newNS(eYo, 'o3d', {
   //<<< mochai: CONST
-  OWNER: new eYo.C9r('OWNER')
+  OWNER: new eYo.C3s('OWNER')
   //... chai.expect(eYo.isaC9r(eYo.o3d.OWNER)).true
   //>>>
 })
@@ -46,7 +46,7 @@ eYo.mixinFR(eYo.o3d, {
    * For subclassers.
    * @param{eYo.O3d} $this - the instance to initialize
    * @param{String | Symbol} key - The key in the owner
-   * @param{eYo.C9r | namespace} [owner] - Defaults to the name space
+   * @param{eYo.C3s | namespace} [owner] - Defaults to the name space
    * @param{Boolean} [configurable] - Whether descriptors should be configurable, necessary for proxy.
    */
   c9rPrepare ($this, key, owner, configurable) {
@@ -72,7 +72,7 @@ eYo.mixinFR(eYo.o3d, {
    * For subclassers.
    * @param{eYo.O3d} _$this - the instance to initialize
    * @param{String | Symbol} key - The key in the owner
-   * @param{eYo.C9r | namespace} [owner] - Defaults to the name space
+   * @param{eYo.C3s | namespace} [owner] - Defaults to the name space
    * @param{Boolean} [configurable] - Whether descriptors should be configurable, necessary for proxy.
    */
   c9rInit (_$this, key, owner, configurable) {
@@ -82,7 +82,7 @@ eYo.mixinFR(eYo.o3d, {
    * For subclassers.
    * @param{eYo.O3d} $this - the instance to initialize
    * @param{String | Symbol} key - The key in the owner
-   * @param{eYo.C9r | namespace} [owner] - Defaults to the name space
+   * @param{eYo.C3s | namespace} [owner] - Defaults to the name space
    * @param{Boolean} [configurable] - Whether descriptors should be configurable, necessary for proxy.
    */
   c9rDispose ($this) {
@@ -94,7 +94,7 @@ eYo.mixinFR(eYo.o3d, {
 /**
  * @name{eYo.o3d.C9rBase}
  * @constructor
- * @property {eYo.c9r.C9rBase} owner - the owning object
+ * @property {eYo.c3s.C9rBase} owner - the owning object
  * @readonly
  * @property {String} key - the identifier within the owning object
  * @readonly
@@ -102,23 +102,23 @@ eYo.mixinFR(eYo.o3d, {
 eYo.o3d.makeC9rBase({
   /** 
    * @param {String} key - an identifier for the owner.
-   * @param {eYo.c9r.C9rBase} owner - the immediate owner of this object.
+   * @param {eYo.c3s.C9rBase} owner - the immediate owner of this object.
    */
   prepare (key, owner) {
-    eYo.c9r.c9rPrepare(this)
+    eYo.c3s.c9rPrepare(this)
     eYo.o3d.c9rPrepare(this, key, owner)
   },
   /** 
    * @param {String} key - an identifier for the owner.
-   * @param {eYo.c9r.C9rBase} owner - the immediate owner of this object.
+   * @param {eYo.c3s.C9rBase} owner - the immediate owner of this object.
    */
   init (key, owner) {
     eYo.o3d.c9rInit(this, key, owner)
-    eYo.c9r.c9rInit(this)
+    eYo.c3s.c9rInit(this)
   },
   dispose () {
     eYo.o3d.c9rDispose(this)
-    eYo.c9r.c9rDispose(this)
+    eYo.c3s.c9rDispose(this)
   },  
 })
 //<<< mochai: C9rBase
@@ -273,7 +273,7 @@ eYo.mixinFR(eYo.o3d._p, {
     //... var NS0 = eYo.newNS()
     //... var NS1 = eYo.o3d.newNS()
     //... var NS2 = eYo.o3d.newNS({
-    //...   OWNER: new eYo.C9r(),  
+    //...   OWNER: new eYo.C3s(),  
     //... })
     //... chai.expect(NS0.OWNER).undefined
     //... chai.expect(NS1.OWNER).equal(eYo.o3d.OWNER)
