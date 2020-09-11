@@ -93,7 +93,7 @@ eYo.app.newC9r('Options', {
     this.disable = hasDisable
     this.hasSounds = hasSounds
     this.hasScrollbars = eYo.asDef(options.scrollbars, true)
-    this.maxBricks = options.maxBricks || Infinity
+    this.maxBricks = options.maxBricks ?? Infinity
     this.hasCss = eYo.asDef(options.css, true)
     this.noLeftSeparator = eYo.asDef(options.noLeftSeparator, true)
     this.noDynamicList = eYo.asDef(options.noDynamicList, false)
@@ -101,7 +101,7 @@ eYo.app.newC9r('Options', {
     this.flyoutAnchor = eYo.asDef(options.flyoutAnchor, eYo.flyout.AT_RIGHT)
     this.container = eYo.asDef(options.container, 'eyo-desk')
     this.backgroundClass = eYo.asDef(options.backgroundClass,'eyo-main-board-background')
-    var pathToMedia = options.media || './static/media'
+    var pathToMedia = options.media ?? './static/media'
     // Strip off any trailing slash (either Unix or Windows).
     pathToMedia = pathToMedia.replace(/[\\/]$/, '')
     this.pathToMedia = pathToMedia
@@ -119,7 +119,7 @@ eYo.app.newC9r('Options', {
  * @private
  */
 eYo.app._p.parseZoom_ = function (options = {}) {
-  var zoom = options.zoom || {}
+  var zoom = options.zoom ?? {}
   options.controls = !!zoom.controls
   options.wheel = !!zoom.wheel
   let f = (s, d) => {
@@ -156,7 +156,7 @@ eYo.app._p.parseZoom_ = function (options = {}) {
  */
 eYo.app.makeC9rBase({
   init (options) {
-    this.options_ = new eYo.app.Options(options || {})
+    this.options_ = new eYo.app.Options(options ?? {})
   },
   /**
    * Dispose of the audio and the motion.
@@ -183,7 +183,7 @@ eYo.app.makeC9rBase({
     },
     driver_mngr: {
       lazy () {
-        let UI = this.options.UI || 'fcls'
+        let UI = this.options.UI ?? 'fcls'
         return new eYo[UI].Mngr(this)
       },
       willChange(before) {
