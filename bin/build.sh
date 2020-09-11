@@ -259,7 +259,7 @@ java -jar "$COMPILER"\
 --js "src/lib/eyo/blockly/workspace_dragger.js" \
 --js "src/lib/eyo/core/do.js" \
 --js "src/lib/eyo/core/const.js" \
---js "src/lib/eyo/core/Field.js" \
+--js "src/lib/eyo/core/field.js" \
 --js "src/lib/eyo/core/ui.js" \
 --js "src/lib/eyo/protocol/protocol.js" \
 --js "src/lib/eyo/core/xre.js" \
