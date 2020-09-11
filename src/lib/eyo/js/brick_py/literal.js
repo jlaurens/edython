@@ -207,15 +207,15 @@ eYo.expr.literal[eYo.$newSubC9r]('shortliteral', {
         var F = (xre, type, formatted) => {
           var m = XRegExp.exec(after, xre)
           if (m) {
-            b3k.Prefix_p = m.prefix || ''
-            b3k.Delimiter_p = m.delimiter || "'"
-            b3k.Content_p = m.content || ''
-            b3k.Subtype_p = m.formatted ? (formatted || type) : type
+            b3k.Prefix_p = m.prefix ?? ''
+            b3k.Delimiter_p = m.delimiter ?? "'"
+            b3k.Content_p = m.content ?? ''
+            b3k.Subtype_p = m.formatted ? (formatted ?? type) : type
             return true
           }
           return false
         }
-        if (F(eYo.xre.ShortstringliteralSingle, eYo.t3.expr.shortstringliteral, eYo.t3.expr.shortformattedliteral) ||
+        if (F(eYo.xre.ShortstringliteralSingle, eYo.t3.expr.shortstringliteral, eYo.t3.expr.shortformattedliteral) ??
         F(eYo.xre.ShortstringliteralDouble, eYo.t3.expr.shortstringliteral, eYo.t3.expr.shortformattedliteral) ||
         F(eYo.xre.ShortbytesliteralSingle, eYo.t3.expr.shortbytesliteral) ||
         F(eYo.xre.ShortbytesliteralDouble, eYo.t3.expr.shortbytesliteral)) {
@@ -301,7 +301,7 @@ eYo.expr.shortliteral.prototype.getBaseType = function () {
 eYo.expr.shortliteral.prototype.validateComponents = function(kvargs) {
   var prefix = kvargs.prefix || this.Prefix_p
   var delimiter = kvargs.delimiter || this.Delimiter_p
-  var content = kvargs.content || this.Content_p
+  var content = kvargs.content ?? this.Content_p
   var value = `${prefix}${delimiter}${content}${delimiter}`
   return (!!XRegExp.exec(value, eYo.xre.ShortbytesliteralSingle) && eYo.t3.expr.shortbytesliteral) ||
   (!!XRegExp.exec(value, eYo.xre.ShortbytesliteralDouble) && eYo.t3.expr.shortbytesliteral) ||

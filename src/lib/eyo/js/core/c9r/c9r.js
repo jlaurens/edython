@@ -12,12 +12,12 @@
 'use strict'
 
 eYo.require('xre')
-eYo.require('_')
+eYo.require('kv')
 eYo.require('do')
 eYo.require('dlgt')
 eYo.require('decorate')
 
-eYo.forward('t3')
+eYo.require('t3')
 
 /**
  * Management of constructors and models.
