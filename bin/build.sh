@@ -415,7 +415,7 @@ Miscellaneous:
 --js "closure-library/closure/goog/html/uncheckedconversions.js" \
 --js "eyo/js/core/dlgt/dlgt.js" \
 --js "closure-library/closure/goog/dom/dom.js" \
---js "eyo/js/core/c9r/c9r.js" \
+--js "eyo/js/core/c3s/c3s.js" \
 --js "closure-library/closure/goog/dom/xml.js" \
 --js "closure-library/closure/goog/style/style.js" \
 --js "eyo/js/core/o3d/o3d.js" \

@@ -218,8 +218,8 @@ class __:
 # Dependencies data base
 class BDD:
   """
-  Here a ``symbol`` is a string like 'eYo.c9r'.
-  It corresponds to an object ``eYo.c9r`` defined in some file.
+  Here a ``symbol`` is a string like 'eYo.c3s'.
+  It corresponds to an object ``eYo.c3s`` defined in some file.
   This data bas keeps track of dependencies
   between different javascript source files.
   """

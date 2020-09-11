@@ -19,7 +19,7 @@ class Info:
   #eYo.dom.newSingleton('Dlgt', ...
   re_new = re.compile(r"""^\s*
   (?P<NS>eYo(?:\.[a-z][\w0-9_]*)*)
-  \.new(?:Drvr)?(?P<what>C9r|NS|Singleton)\s*\(\s*
+  \.new(?:Drvr)?(?P<what>C3s|NS|Singleton)\s*\(\s*
   (?P<suite>.*)""", re.X)
 
   assert re.match(re_new, "eYo.newNS('Brick')"), 'BAD re_new 2'
@@ -197,8 +197,8 @@ class Info:
         def base_require(l):
           if re.search(r'^\s*eYo', l):
             required.add('eYo')
-          if re.search(r'^\s*eYo\.c9r\.', l):
-            required.add('eYo.c9r')
+          if re.search(r'^\s*eYo\.c3s\.', l):
+            required.add('eYo.c3s')
       for l in f.readlines():
         base_require(l)
         m = self.re_makeC9rBase.match(l)
@@ -305,7 +305,7 @@ class Info:
         m = self.re_new.match(l)
         if m:
           if m.group('what') != 'NS':
-            required.add('eYo.c9r')
+            required.add('eYo.c3s')
           NS = m.group('NS')
           required.add(NS)
           parse_args(m.group('suite'))
@@ -324,7 +324,7 @@ class Info:
           continue
         m = self.re_newSubC9r.match(l)
         if m:
-          required.add('eYo.c9r')
+          required.add('eYo.c3s')
           NS = m.group('NS')
           key = m.group('Super')
           required.add(f'{NS}.{key}')
