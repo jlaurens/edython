@@ -89,7 +89,7 @@ eYo.consolidator.List[eYo.$newSubC3s]('Target', {
 /**
  * Prepare io, just before walking through the input list.
  * Subclassers may add their own stuff to io.
- * @param {eYo.brick.C3sBase} brick - owner or the receiver.
+ * @param {eYo.brick.BaseC3s} brick - owner or the receiver.
  */
 eYo.consolidator.Target_p.getIO = function (brick) {
   var io = eYo.consolidator.Target[eYo.$].C3s_s.getIO.call(this, brick)
@@ -318,8 +318,8 @@ eYo.expr.target_list_p.getSubtype = function () {
 
 /**
  * Did disconnect this brick's connection from another connection.
- * @param {eYo.magnet.C3sBase} m4t
- * @param {eYo.magnet.C3sBase} oldTargetM4t that was connected to blockConnection
+ * @param {eYo.magnet.BaseC3s} m4t
+ * @param {eYo.magnet.BaseC3s} oldTargetM4t that was connected to blockConnection
  */
 eYo.expr.target_list_p.xdidDisconnect = function (m4t, oldTargetM4t) {
   if (m4t.isSlot) {
@@ -356,9 +356,9 @@ eYo.expr.target_list_p.xdidDisconnect = function (m4t, oldTargetM4t) {
 /**
  * Hook.
  * If more that 2 bricks are connected, the variant is target_valued.
- * @param {eYo.magnet.C3sBase} m4t.
- * @param {eYo.magnet.C3sBase} oldTargetM4t.
- * @param {eYo.magnet.C3sBase} targetOldM4t
+ * @param {eYo.magnet.BaseC3s} m4t.
+ * @param {eYo.magnet.BaseC3s} oldTargetM4t.
+ * @param {eYo.magnet.BaseC3s} targetOldM4t
  */
 eYo.expr.target_list_p.xdidConnect = function (m4t, oldTargetM4t, targetOldM4t) {
   eYo.expr.target_list.eyo$.C3s_s.didConnect.call(this, m4t, oldTargetM4t, targetOldM4t)
@@ -1251,7 +1251,7 @@ eYo.register.add(eYo.expr, 'primary', function (b3k) {
  * Called from brick's init method.
  * This should be called only once.
  * The underlying model is not expected to change while running.
- * @param {eYo.brick.C3sBase} brick to be initialized.
+ * @param {eYo.brick.BaseC3s} brick to be initialized.
  * For subclassers eventually
  */
 eYo.expr.primary_p.init = function () {
@@ -1763,7 +1763,7 @@ eYo.expr.primary_p.getSubtype = function () {
  * @param {Brick} brick
  * @param {String} name The name of the input.
  * @param {Boolean} [dontCreate] Whether the receiver should create inputs on the fly.
- * @return {eYo.slot.C3sBase} The slot object, or null if slot does not exist or eYo.NA for the default brick implementation.
+ * @return {eYo.slot.BaseC3s} The slot object, or null if slot does not exist or eYo.NA for the default brick implementation.
  */
 eYo.expr.primary_p.getSlot = function (name) {
   var slot = eYo.expr.primary.eyo$.C3s_s.getSlot.call(this, name)
@@ -1832,7 +1832,7 @@ eYo.stmt.call_stmt_p.getProfile = eYo.expr.primary_p.getProfile
  * Called from brick's init method.
  * This should be called only once.
  * The underlying model is not expected to change while running.
- * @param {eYo.brick.C3sBase} brick to be initialized.
+ * @param {eYo.brick.BaseC3s} brick to be initialized.
  * For subclassers eventually
  */
 eYo.stmt.call_stmt_p.init = function () {

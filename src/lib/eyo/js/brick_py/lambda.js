@@ -72,7 +72,7 @@ eYo.consolidator.Parameter.prototype.consolidate_connected = function (io) {
 /**
  * Prepare io, just before walking through the input list for example.
  * Subclassers may add their own stuff to io.
- * @param {eYo.brick.C3sBase} brick owner of the receiver
+ * @param {eYo.brick.BaseC3s} brick owner of the receiver
  */
 eYo.consolidator.Parameter.prototype.getIO = function (brick) {
   var io = eYo.consolidator.Parameter[eYo.$].C3s_s.getIO.call(this, brick)
@@ -423,7 +423,7 @@ eYo.expr.newC3s('lambda', true, {
  * The output check may change depending on the content.
  * For edython.
  */
-eYo.magnet.C3sBase_p.consolidateType = function () {
+eYo.magnet.BaseC3s_p.consolidateType = function () {
   eYo.magnet.eyo$.C3s_s.consolidateType.call(this)
   var brick = this.brick
   var m4tOut = brick.out_m

@@ -54,7 +54,7 @@ eYo.view.newNS(eYo, 'flyout', {
  * @property {eYo.section.Search} search Search section.
  * 
  * @private
- * @property {eYo.library.C3sBase} library Library section.
+ * @property {eYo.library.BaseC3s} library Library section.
  * 
  * @private
  * @property {eYo.section.Draft} draft - Draft section.
@@ -146,7 +146,7 @@ eYo.flyout.newC3s('View', {
     },
     library: {
       value () {
-        return new eYo.library.C3sBase(this)
+        return new eYo.library.BaseC3s(this)
       },
     },
     draft: {
@@ -483,8 +483,8 @@ eYo.flyout.View_p.on_wheel = function(e) {
 
 /**
  * Create a copy of this brick on the board.
- * @param {eYo.brick.C3sBase} originalBrick The brick to copy from the flyout.
- * @return {eYo.brick.C3sBase} The newly created brick, or null if something
+ * @param {eYo.brick.BaseC3s} originalBrick The brick to copy from the flyout.
+ * @return {eYo.brick.BaseC3s} The newly created brick, or null if something
  *     went wrong with deserialization.
  */
 eYo.flyout.View_p.createBrick = function(originalBrick) {
@@ -626,8 +626,8 @@ console.error('IN PROGRESS')
  * Copy a brick from the flyout to the board and position it correctly.
  * Edython adds a full rendering process.
  * No rendering is made while bricks are dragging.
- * @param {eYo.brick.C3sBase} srcBrick The flyout brick to copy.
- * @return {!eYo.brick.C3sBase} The new brick in the main board.
+ * @param {eYo.brick.BaseC3s} srcBrick The flyout brick to copy.
+ * @return {!eYo.brick.BaseC3s} The new brick in the main board.
  * @private
  */
 eYo.flyout.View_p.placeNewBrick_ = function(srcBrick) {

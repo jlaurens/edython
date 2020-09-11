@@ -70,7 +70,7 @@ eYo.mixinFR(eYo.field._p, {
     return eYo.isStr(key) ? `fields.${key}` : 'fields'
   },
   /**
-   * The model Base used to derive a new class.
+   * The model BaseC3s used to derive a new class.
    * @see The `new` method.
    * @param {Object} model
    * @param {Object} key
@@ -94,11 +94,11 @@ eYo.mixinFR(eYo.field._p, {
 
 /**
  * Abstract class for text fields.
- * @param {eYo.brick|eYo.slot.C3sBase|eYo.magnet.C3sBase} bsim The owner of the field.
+ * @param {eYo.brick|eYo.slot.BaseC3s|eYo.magnet.BaseC3s} bsim The owner of the field.
  * @param {string} text The initial content of the field.
  * @constructor
  */
-eYo.field.makeC3sBase(true, {
+eYo.field.makeBaseC3s(true, {
   //<<< mochai: eYo.Field
   //<<< mochai: Basics
   //... chai.expect(eYo.Field).not.undefined
@@ -326,9 +326,9 @@ eYo.mixinFR(eYo.field.Dlgt_p, {
     //... let new_ns = () => {
     //...   flag.reset()
     //...   ns = eYo.field.newNS()
-    //...   ns.makeC3sBase()
-    //...   ns.C3sBase[eYo.$newSubC3s]('Label')[eYo.$].finalizeC3s()
-    //...   ns.C3sBase[eYo.$newSubC3s]('Input')[eYo.$].finalizeC3s()
+    //...   ns.makeBaseC3s()
+    //...   ns.BaseC3s[eYo.$newSubC3s]('Label')[eYo.$].finalizeC3s()
+    //...   ns.BaseC3s[eYo.$newSubC3s]('Input')[eYo.$].finalizeC3s()
     //... }
     //... mngr.newDrvrC3s('Field', {
     //...   methods: {
@@ -365,7 +365,7 @@ eYo.mixinFR(eYo.field.Dlgt_p, {
           //...     builtin()
           //...   }
           //...   test(1234, f_m) 
-          //...   eYo.test.extend(ns.C3sBase_p, K, function() {
+          //...   eYo.test.extend(ns.BaseC3s_p, K, function() {
           //...     eYo.flag.push(5)
           //...   })
           //...   test(12345, f_m)
@@ -382,7 +382,7 @@ eYo.mixinFR(eYo.field.Dlgt_p, {
             //...     this[K]()
             //...   }
             //...   test(1234, f_m)
-            //...   eYo.test.extend(ns.C3sBase_p, K, function() {
+            //...   eYo.test.extend(ns.BaseC3s_p, K, function() {
             //...     eYo.flag.push(5)
             //...   })
             //...   test(12345, f_m)
@@ -425,9 +425,9 @@ eYo.mixinFR(eYo.field.Dlgt_p, {
     //... let new_ns = () => {
     //...   flag.reset()
     //...   ns = eYo.field.newNS()
-    //...   ns.makeC3sBase()
-    //...   ns.C3sBase[eYo.$newSubC3s]('Label')[eYo.$].finalizeC3s()
-    //...   ns.C3sBase[eYo.$newSubC3s]('Input')[eYo.$].finalizeC3s()
+    //...   ns.makeBaseC3s()
+    //...   ns.BaseC3s[eYo.$newSubC3s]('Label')[eYo.$].finalizeC3s()
+    //...   ns.BaseC3s[eYo.$newSubC3s]('Input')[eYo.$].finalizeC3s()
     //... }
     //... mngr.newDrvrC3s('Field', {})
     let _p = this.C3s_p
@@ -463,7 +463,7 @@ eYo.mixinFR(eYo.field.Dlgt_p, {
           //...     builtin()
           //...   }
           //...   test(12, f_m) 
-          //...   eYo.test.extend(ns.C3sBase_p, K, function() {
+          //...   eYo.test.extend(ns.BaseC3s_p, K, function() {
           //...     eYo.flag.push(3)
           //...   })
           //...   test(123, f_m)
@@ -480,7 +480,7 @@ eYo.mixinFR(eYo.field.Dlgt_p, {
             //...     this[K]()
             //...   }
             //...   test(12, f_m)
-            //...   eYo.test.extend(ns.C3sBase_p, K, function() {
+            //...   eYo.test.extend(ns.BaseC3s_p, K, function() {
             //...     eYo.flag.push(3)
             //...   })
             //...   test(123, f_m)
@@ -559,7 +559,7 @@ eYo.mixinFR(eYo.field.Dlgt_p, {
 /**
  * Class for a non-editable field.
  * The only purpose is to start with a different height.
- * @param {eYo.brick|eYo.slot.C3sBase} bsi The owner of the field.
+ * @param {eYo.brick|eYo.slot.BaseC3s} bsi The owner of the field.
  * @param {string} name The required name of the field
  * @param {string} text The initial content of the field.
  * @extends {eYo.field}
@@ -574,7 +574,7 @@ eYo.field.Label$.finalizeC3s()
 
 /**
  * Class for an editable code field.
- * @param {eYo.brick.C3sBase|eYo.slot.C3sBase} bs The owner of the field.
+ * @param {eYo.brick.BaseC3s|eYo.slot.BaseC3s} bs The owner of the field.
  * @param {string=} name
  * @param {string} text The initial content of the field.
  * @extends {eYo.field}

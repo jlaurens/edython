@@ -107,17 +107,17 @@ describe('drvr', function() {
     root._p.flag = (...$) => {
       eYo.flag.push(1, ...$)
     }
-    root.makeC3sBase({
+    root.makeBaseC3s({
       methods: {
         fromC3sBase (...$) {
           this.owner.flag(2, ...$)
         },
       },
     })
-    chai.expect(root.C3sBase_p.fromC3sBase).eyo_F
+    chai.expect(root.BaseC3s_p.fromC3sBase).eyo_F
     // base root driver
     var rootDrvr = root.new('root', onr)
-    chai.expect(rootDrvr).instanceOf(root.C3sBase)
+    chai.expect(rootDrvr).instanceOf(root.BaseC3s)
     rootDrvr.fromC3sBase(3, 4)
     eYo.flag.expect(1234)
     // inherited Foo driver <- base
@@ -136,7 +136,7 @@ describe('drvr', function() {
     eYo.flag.expect(1357)
     // Inherited namespace
     root.newNS('chi')
-    root.chi.makeC3sBase({
+    root.chi.makeBaseC3s({
       methods: {
         fromChiC3sBase (...$) {
           this.owner.flag(4, ...$)

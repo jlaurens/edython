@@ -20,7 +20,7 @@ eYo.svg.newDrvrC3s('Magnet')
 
 /**
  * Hilight the given magnet.
- * @param {eYo.magnet.C3sBase} m4t
+ * @param {eYo.magnet.BaseC3s} m4t
  */
 eYo.svg.Magnet.prototype.hilight = function (m4t) {
   if (!m4t.board) {

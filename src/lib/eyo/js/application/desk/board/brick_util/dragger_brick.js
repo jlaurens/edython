@@ -93,7 +93,7 @@ eYo.dragger.newC3s('Brick', {
      * When the center of the brick will gout out the visible area,
      * we scroll the brick board to keep it back.
      * @param {eYo.event.Motion} motion  The motion initiating the eventual drag.
-     * @return {eYo.brick.C3sBase}  The target brick of the drag event, if any.
+     * @return {eYo.brick.BaseC3s}  The target brick of the drag event, if any.
      */
     start (motion) {
       if (this.brick_) {
@@ -135,7 +135,7 @@ eYo.dragger.newC3s('Brick', {
       }
       /**
       * The top brick in the stack that is being dragged.
-      * @type {!eYo.brick.C3sBase}
+      * @type {!eYo.brick.BaseC3s}
       * @private
       */
       this.brick_ = targetBrick.focusOn()
@@ -159,7 +159,7 @@ eYo.dragger.newC3s('Brick', {
       * The connection that would connect to this.target_ if this brick
       * were released immediately.
       * Updated on every mouse move.
-      * @type {eYo.magnet.C3sBase}
+      * @type {eYo.magnet.BaseC3s}
       * @private
       */
       this.magnet_ = null
@@ -167,7 +167,7 @@ eYo.dragger.newC3s('Brick', {
       /**
       * The target magnet that this brick would connect to if released immediately.
       * Updated on every mouse move.
-      * @type {eYo.magnet.C3sBase}
+      * @type {eYo.magnet.BaseC3s}
       * @private
       */
       this.target_ = null
@@ -237,7 +237,7 @@ eYo.dragger.newC3s('Brick', {
      * If the answer is `{x: -15, y: 0}`, we just have to scroll the board
      * 15 units to the right and the brick is visible.
      * For edython.
-     * @param {eYo.brick.C3sBase} brick The new location of the receiver, the actual location when eYo.NA.
+     * @param {eYo.brick.BaseC3s} brick The new location of the receiver, the actual location when eYo.NA.
      * @param {Object} [newLoc] The new location of the receiver, the actual location when eYo.NA.
      * @return {{x: number, y: number}|eYo.NA}
      */

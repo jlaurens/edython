@@ -6,7 +6,7 @@ describe ('Tests: data', function () {
   let new_ns = () => {
     flag.reset()
     ns = eYo.data.newNS()
-    ns.makeC3sBase()
+    ns.makeBaseC3s()
   }
   it (`Merge only once`, function () {
     // Absolutely ugly design
@@ -25,7 +25,7 @@ describe ('Tests: data', function () {
   })
   //   it('Data model', function () {
   //     let ns = eYo.data.newNS()
-  //     ns.makeC3sBase()
+  //     ns.makeBaseC3s()
 
   //     let test = (key, value) => {
   //       let one = ns.singleton({eyo: true}, {

@@ -58,15 +58,15 @@ eYo.newNS('dlgt')
 //...   chai.expect(C3s[eYo.$]).equal(dlgt)
 //...   _p.prepare = function (...$) {
 //...     this.flag('p', ...$)
-//...     this[eYo.$].c9rPrepare && this[eYo.$].c9rPrepare(this, ...$)
+//...     this[eYo.$].c3sPrepare && this[eYo.$].c3sPrepare(this, ...$)
 //...   }
 //...   _p.init = function (...$) {
 //...     this.flag('i', ...$) 
-//...     this[eYo.$].c9rInit && this[eYo.$].c9rInit(this, ...$)
+//...     this[eYo.$].c3sInit && this[eYo.$].c3sInit(this, ...$)
 //...   }
 //...   _p.dispose = function (...$) {
 //...     this.flag('x', ...$) 
-//...     this[eYo.$].c9rDispose && this[eYo.$].c9rDispose(this, ...$)
+//...     this[eYo.$].c3sDispose && this[eYo.$].c3sDispose(this, ...$)
 //...   }
 //...   dlgt.finalizeC3s()
 //... }
@@ -74,12 +74,12 @@ eYo.newNS('dlgt')
 
 //<<< mochai: Basics
 //... chai.assert(eYo.dlgt)
-//... chai.expect(eYo.dlgt.C3sBase).equal(eYo.Dlgt)
+//... chai.expect(eYo.dlgt.BaseC3s).equal(eYo.Dlgt)
 //... chai.expect(eYo.Dlgt).property(eYo.$)
 //... var set = new Set([
-//...   eYo.dlgt.C3sBase[eYo.$],
-//...   eYo.dlgt.C3sBase[eYo.$][eYo.$],
-//...   eYo.dlgt.C3sBase[eYo.$][eYo.$][eYo.$],
+//...   eYo.dlgt.BaseC3s[eYo.$],
+//...   eYo.dlgt.BaseC3s[eYo.$][eYo.$],
+//...   eYo.dlgt.BaseC3s[eYo.$][eYo.$][eYo.$],
 //... ])
 //... chai.expect(set.size).equal(1)
 //... chai.expect(eYo.Dlgt[eYo.$]).instanceof(eYo.Dlgt)
@@ -95,14 +95,14 @@ eYo.mixinFR(eYo.dlgt, {
    * @param {Object} model - the model used for extension
    * The problem of constructor delegation is the possibility of an infinite loop :
     object->constructor->eyo$->contructor->eyo$->constructor->[eYo.$]...
-    The Base is its own delegate's constructor
+    The BaseC3s is its own delegate's constructor
   */
-  C3sBase: function (ns, id, model) {
-    //<<< mochai: eYo.dlgt.C3sBase
-    //... chai.expect(eYo.dlgt).property('C3sBase')
+  BaseC3s: function (ns, id, model) {
+    //<<< mochai: eYo.dlgt.BaseC3s
+    //... chai.expect(eYo.dlgt).property('BaseC3s')
     if (ns && !eYo.isNS(ns)) {
-      model && eYo.throw(`eYo.dlgt.C3sBase: unexpected model (${model})`)
-      //... chai.expect(() => {new eYo.delegate.C3sBase(1, 2, 3, 4)}).xthrow()
+      model && eYo.throw(`eYo.dlgt.BaseC3s: unexpected model (${model})`)
+      //... chai.expect(() => {new eYo.delegate.BaseC3s(1, 2, 3, 4)}).xthrow()
       ;[ns, id, model] = [eYo.NA, ns, id]
     }
     var anonymous = false
@@ -112,7 +112,7 @@ eYo.mixinFR(eYo.dlgt, {
       anonymous = true
     } else {
       if (!eYo.isStr(id)) {
-        model && eYo.throw(`eYo.dlgt.C3sBase: unexpected model 2 (${model})`)
+        model && eYo.throw(`eYo.dlgt.BaseC3s: unexpected model 2 (${model})`)
         ;[id, model] = ['?', id]
         anonymous = true
       }
@@ -156,7 +156,7 @@ eYo.mixinFR(eYo.dlgt, {
 })
 
 eYo.mixinFR(eYo.dlgt, {
-  C3sBase_p: eYo.dlgt.C3sBase.prototype,
+  BaseC3s_p: eYo.dlgt.BaseC3s.prototype,
 })
 
 eYo.mixinFR(eYo._p, {
@@ -170,8 +170,8 @@ eYo.mixinFR(eYo._p, {
     //... chai.expect(eYo.isaDlgt(dlgt)).true
     //>>>
   },
-  Dlgt: eYo.dlgt.C3sBase,
-  Dlgt_p: eYo.dlgt.C3sBase_p,
+  Dlgt: eYo.dlgt.BaseC3s,
+  Dlgt_p: eYo.dlgt.BaseC3s_p,
   /**
    * Whether the argument is a constructor, in edython paradigm.
    * Such a constructor is a function with an `[eYo.$]` property pointing to
@@ -235,7 +235,7 @@ eYo.mixinFR(eYo._p, {
   //... chai.expect(superDlgt).equal(dlgt.$super)
   // convenient shortcut
   //... chai.expect(dlgt).instanceof(eYo.Dlgt)
-  //... chai.expect(eYo.Dlgt_p).equal(eYo.dlgt.C3sBase_p).equal(eYo.dlgt.C3sBase.prototype)
+  //... chai.expect(eYo.Dlgt_p).equal(eYo.dlgt.BaseC3s_p).equal(eYo.dlgt.BaseC3s.prototype)
   eYo.mixinRO(_p, {
     _p () {
       return this.constructor.prototype
@@ -464,8 +464,8 @@ eYo.mixinFR(eYo._p, {
       //>>>
     },
     /**
-     * Make the `c9rPrepare` method of the receiver.
-     * Any edython delegate has a `c9rPrepare`.
+     * Make the `c3sPrepare` method of the receiver.
+     * Any edython delegate has a `c3sPrepare`.
      * It will call the model's `prepare` method when available.
      * @this {eYo.Dlgt}
      */
@@ -474,7 +474,7 @@ eYo.mixinFR(eYo._p, {
       eYo.mixinFR(this, {
         makeC3sPrepare: eYo.oneShot('makeC3sPrepare only once'),
       })
-      let K = 'c9rPrepare'
+      let K = 'c3sPrepare'
       let f_m = this.model.prepare
       if (f_m) {
         if (!eYo.isF(f_m)) {
@@ -496,17 +496,17 @@ eYo.mixinFR(eYo._p, {
       //>>>
     },
     /**
-     * Make the `c9rInit` method of the associate contructor.
+     * Make the `c3sInit` method of the associate contructor.
      * Any constructor must have a `init` method.
      * This methods forwards to the delegate
      * @this {eYo.Dlgt}
      */
     makeC3sInit () {
-      //<<< mochai: eYo.dlgt.C3sBase_p.makeC3sInit
+      //<<< mochai: eYo.dlgt.BaseC3s_p.makeC3sInit
       eYo.mixinFR(this, {
         makeC3sInit: eYo.oneShot('makeC3sInit only once'),
       })
-      let K = 'c9rInit'
+      let K = 'c3sInit'
       let f_m = this.model.init
       let f_p = this.$super && this.$super[K]
       if (f_m) {
@@ -534,7 +534,7 @@ eYo.mixinFR(eYo._p, {
             //...     eYo.flag.push('>')
             //...   },
             //...   $super: {
-            //...     c9rInit ($this, ...$) {
+            //...     c3sInit ($this, ...$) {
             //...       $this.flag('$I', ...$)
             //...     }
             //...   }
@@ -565,7 +565,7 @@ eYo.mixinFR(eYo._p, {
           //...     this.flag('I', ...$)
           //...   },
           //...   $super: {
-          //...     c9rInit ($this, ...$) {
+          //...     c3sInit ($this, ...$) {
           //...       $this.flag('$I', ...$)
           //...     },
           //...   },
@@ -590,7 +590,7 @@ eYo.mixinFR(eYo._p, {
         }}
         //... preparator({
         //...   $super: {
-        //...     c9rInit ($this, ...$) {
+        //...     c3sInit ($this, ...$) {
         //...       $this.flag('$I', ...$)
         //...     },
         //...   },
@@ -609,9 +609,9 @@ eYo.mixinFR(eYo._p, {
         makeC3sDispose: eYo.oneShot('makeC3sDispose only once'),
       })
       let f_m = this.model.dispose
-      let K = 'c9rDispose'
+      let K = 'c3sDispose'
       let f_p = this.$super && this.$super[K]
-      //<<< mochai: eYo.dlgt.C3sBase_p.makeC3sDispose
+      //<<< mochai: eYo.dlgt.BaseC3s_p.makeC3sDispose
       if (f_m) {
         if (XRegExp.exec(f_m.toString(), eYo.xre.function_builtin)) {
           if (f_p) {
@@ -625,7 +625,7 @@ eYo.mixinFR(eYo._p, {
             //...     eYo.flag.push('>')
             //...   },
             //...   $super: {
-            //...     c9rDispose ($this, ...$) {
+            //...     c3sDispose ($this, ...$) {
             //...       $this.flag('$X', ...$)
             //...     },
             //...   },
@@ -655,7 +655,7 @@ eYo.mixinFR(eYo._p, {
           //...     this.flag('X', ...$)
           //...   },
           //...   $super: {
-          //...     c9rDispose ($this, ...$) {
+          //...     c3sDispose ($this, ...$) {
           //...       $this.flag('$X', ...$)
           //...     },
           //...   },
@@ -680,7 +680,7 @@ eYo.mixinFR(eYo._p, {
         }}
         //... preparator({
         //...   $super: {
-        //...     c9rDispose ($this, ...$) {
+        //...     c3sDispose ($this, ...$) {
         //...       $this.flag('$X', ...$)
         //...     },
         //...   },
@@ -790,21 +790,21 @@ eYo.mixinFR(eYo._p, {
      * Default implementation does nothing.
      * @param {Object} instance -  instance is an instance of a subclass of the `C3s_` of the receiver
      */
-    c9rPrepare: eYo.doNothing,
+    c3sPrepare: eYo.doNothing,
     /**
      * Defined by subclassers.
      * @param {Object} instance -  instance is an instance of a subclass of the `C3s_` of the receiver
      */
-    c9rInit: eYo.doNothing,
+    c3sInit: eYo.doNothing,
     /**
      * Defined by subclassers.
      */
-    c9rDispose: eYo.doNothing,
+    c3sDispose: eYo.doNothing,
   })
-  let dlgt = new eYo.Dlgt(eYo.dlgt, 'C3sBase', {})
+  let dlgt = new eYo.Dlgt(eYo.dlgt, 'BaseC3s', {})
   dlgt.setC3s(eYo.Dlgt, true)
   eYo.mixinRO(eYo._p, {
-    Dlgt$: eYo.dlgt.C3sBase[eYo.$]
+    Dlgt$: eYo.dlgt.BaseC3s[eYo.$]
   })
   //>>>
 
@@ -833,12 +833,12 @@ eYo.mixinFR(eYo._p, {
         var C3s = function (...$) {
           if (this.dispose === eYo.doNothing) {
             SuperC3s.call(this, ...$) // top down call
-            eyo$.c9rPrepare(this, ...$)
+            eyo$.c3sPrepare(this, ...$)
           } else {
             try {
               this.dispose = eYo.doNothing
               SuperC3s.call(this, ...$) // top down call
-              eyo$.c9rPrepare(this, ...$)
+              eyo$.c3sPrepare(this, ...$)
             } finally {
               delete this.dispose
             }
@@ -866,11 +866,11 @@ eYo.mixinFR(eYo._p, {
         // create the constructor
         C3s = function (...$) {
           if (this.dispose === eYo.doNothing) {
-            eyo$.c9rPrepare(this, ...$)
+            eyo$.c3sPrepare(this, ...$)
           } else {
             try {
               this.dispose = eYo.doNothing
-              eyo$.c9rPrepare(this, ...$)
+              eyo$.c3sPrepare(this, ...$)
             } finally {
               delete this.dispose
             }
@@ -971,7 +971,7 @@ eYo.mixinFR(eYo.dlgt._p, {
     }
     // in next function call, all the parameters are required
     // but some may be eYo.NA
-    let dlgt = new eYo.Dlgt(ns, Symbol('C3sBase'), {})
+    let dlgt = new eYo.Dlgt(ns, Symbol('BaseC3s'), {})
     dlgt.setC3s(Dlgt, true)
     let ans = new Dlgt(ns, id, model)
     return ans
@@ -981,7 +981,7 @@ eYo.mixinFR(eYo.dlgt._p, {
 eYo.dlgt.declareDlgt(eYo._p)
 
 // ANCHOR modelling functions
-eYo.mixinFR(eYo.dlgt.C3sBase_p, {
+eYo.mixinFR(eYo.dlgt.BaseC3s_p, {
   //<<< mochai: model
   /**
    * Finalize the associate constructor and allow some model format.
@@ -990,7 +990,7 @@ eYo.mixinFR(eYo.dlgt.C3sBase_p, {
    * Raises if the `$super` is not already finalized.
    * This must be done by hand because we do not know
    * what is the ancestor's model format.
-   * @name {eYo.dlgt.C3sBase.modelAllow}
+   * @name {eYo.dlgt.BaseC3s.modelAllow}
    */
   finalizeC3s (...$) {
     //<<< mochai: finalizeC3s
@@ -1013,9 +1013,9 @@ eYo.mixinFR(eYo.dlgt.C3sBase_p, {
     //... chai.expect(dlgt.hasFinalizedC3s).false
     //... dlgt.finalizeC3s()
     //... chai.expect(dlgt.hasFinalizedC3s).true
-    //... chai.expect(dlgt.c9rPrepare).eyo_F
-    //... chai.expect(dlgt.c9rInit).eyo_F
-    //... chai.expect(dlgt.c9rDispose).eyo_F
+    //... chai.expect(dlgt.c3sPrepare).eyo_F
+    //... chai.expect(dlgt.c3sInit).eyo_F
+    //... chai.expect(dlgt.c3sDispose).eyo_F
     //... chai.expect(() => {
     //...   dlgt.finalizeC3s()
     //... }).xthrow()
@@ -1028,14 +1028,14 @@ eYo.mixinFR(eYo.dlgt.C3sBase_p, {
   }, 
   /**
    * Forwards all the arguments to the `modelFormat` of the receiver.
-   * @name {eYo.dlgt.C3sBase.modelValidate}
+   * @name {eYo.dlgt.BaseC3s.modelValidate}
    * @return {Object} a validated model object
    */
   modelValidate (...$) {
     return this.modelFormat.validate(...$)
   },
   /**
-   * @name{eYo.dlgt.C3sBase.modelIsAllowed}
+   * @name{eYo.dlgt.BaseC3s.modelIsAllowed}
    * @return {Boolean} Whether the key is authorized with the given path.
    */
   modelIsAllowed (...$) {
@@ -1147,5 +1147,5 @@ eYo.mixinFR(eYo.dlgt.C3sBase_p, {
 
 eYo.Dlgt$.finalizeC3s()
 
-eYo.provide('dlgt.C3sBase')
+eYo.provide('dlgt.BaseC3s')
 eYo.provide('Dlgt')

@@ -82,7 +82,7 @@ eYo.o4t.newNS(eYo, 'brick')
  * @readonly
  * @property {object} wrapper - Get the surround parent which is not wrapped_.
  */
-eYo.brick.makeC3sBase({
+eYo.brick.makeBaseC3s({
   /**
    * Delegate initializator for bricks.
    * @param {Object} ns -  namespace.
@@ -153,7 +153,7 @@ eYo.brick.makeC3sBase({
       },
     },
     /**
-     * @type{eYo.changer.C3sBase}
+     * @type{eYo.changer.BaseC3s}
      * @readonly
      */
     change: {
@@ -1299,7 +1299,7 @@ eYo.brick.makeC3sBase({
             } else {
               continue
             }
-          } else if (eYo.isObject(m) && (slot = new eYo.slot.C3sBase(this, k, m))) {
+          } else if (eYo.isObject(m) && (slot = new eYo.slot.BaseC3s(this, k, m))) {
             eYo.assert(!eYo.isDef(slots[k]),
               `Duplicate slot key ${k}/${this.type}`)
             slots[k] = slot
@@ -1520,7 +1520,7 @@ eYo.brick.makeC3sBase({
 
     /**
      * Adds a magnet to later wrapping.
-     * @param {eYo.magnet.C3sBase} magnet  The magnet that should connect to a wrapped brick.
+     * @param {eYo.magnet.BaseC3s} magnet  The magnet that should connect to a wrapped brick.
      */
     addWrapperMagnet (magnet) {
       magnet && (this.wrappedMagnets.push(magnet))
@@ -1528,7 +1528,7 @@ eYo.brick.makeC3sBase({
 
     /**
      * Adds a magnet to later wrapping.
-     * @param {eYo.magnet.C3sBase} magnet  The magnet that should connect to a wrapped brick.
+     * @param {eYo.magnet.BaseC3s} magnet  The magnet that should connect to a wrapped brick.
      */
     removeWrapperMagnet (magnet) {
       var i = this.wrappedMagnets.indexOf(magnet)
@@ -1588,17 +1588,17 @@ eYo.brick.makeC3sBase({
 
     /**
      * Will connect this brick's connection to another connection.
-     * @param {eYo.magnet.C3sBase} m4t
-     * @param {eYo.magnet.C3sBase} childM4t
+     * @param {eYo.magnet.BaseC3s} m4t
+     * @param {eYo.magnet.BaseC3s} childM4t
      */
     willConnect (m4t, childM4t) { // eslint-disable-line
     },
 
     /**
      * Did connect this brick's magnet to another magnet.
-     * @param {eYo.magnet.C3sBase} m4t what has been connected in the brick
-     * @param {eYo.magnet.C3sBase} oldTargetM4t what was previously connected in the brick
-     * @param {eYo.magnet.C3sBase} targetOldM4t what was previously connected to the new magnet
+     * @param {eYo.magnet.BaseC3s} m4t what has been connected in the brick
+     * @param {eYo.magnet.BaseC3s} oldTargetM4t what was previously connected in the brick
+     * @param {eYo.magnet.BaseC3s} targetOldM4t what was previously connected to the new magnet
      */
     didConnect (m4t, oldTargetM4t, targetOldM4t) { // eslint-disable-line
       // new connections change the span properties of the superior block.
@@ -1620,15 +1620,15 @@ eYo.brick.makeC3sBase({
 
     /**
      * Will disconnect this brick's connection.
-     * @param {eYo.magnet.C3sBase} m4t
+     * @param {eYo.magnet.BaseC3s} m4t
      */
     willDisconnect (m4t) { // eslint-disable-line
     },
 
     /**
      * Did disconnect this receiver's magnet from another magnet.
-     * @param {eYo.magnet.C3sBase} m4t  
-     * @param {eYo.magnet.C3sBase} oldTargetM4t  that was connected to m4t
+     * @param {eYo.magnet.BaseC3s} m4t  
+     * @param {eYo.magnet.BaseC3s} oldTargetM4t  that was connected to m4t
      */
     didDisconnect (m4t, oldTargetM4t) {
       // how many bricks/line did I remove in the superior brick?
@@ -1886,7 +1886,7 @@ eYo.brick.makeC3sBase({
     /**
      * Fetches the named slot object.
      * @param {String} name The name of the input.
-     * @return {eYo.slot.C3sBase} The slot object, or null if input does not exist. Input that are disabled are skipped.
+     * @return {eYo.slot.BaseC3s} The slot object, or null if input does not exist. Input that are disabled are skipped.
      */
     getSlot (name) {
       return this.slotSome(slot => slot.name === name)
@@ -2033,7 +2033,7 @@ eYo.brick.makeC3sBase({
      * Insert a brick of the given type.
      * For edython.
      * @param {Object|string} model
-     * @param {eYo.magnet.C3sBase} m4t
+     * @param {eYo.magnet.BaseC3s} m4t
      * @return {?eYo.Brick} the brick that was inserted
      */
     insertBrickWithModel (model, m4t) {

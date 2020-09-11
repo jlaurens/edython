@@ -37,7 +37,7 @@ eYo.dom.newDrvrC3s('Brick', {
   },
   /**
    * Dispose of the desk dom resources.
-   * @param {eYo.brick.C3sBase} brick
+   * @param {eYo.brick.BaseC3s} brick
    */
   disposeUI (brick) {
     if (brick.dom && brick.dom.div_) {

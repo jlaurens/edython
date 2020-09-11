@@ -20,7 +20,7 @@ eYo.mixinFR(eYo._p, {
     return eYo.isaC3s(what) || eYo.isNS(what)
     //<<< mochai: isOwner (what)
     //... chai.expect(eYo.isOwner(true)).false
-    //... chai.expect(eYo.isOwner(new eYo.c3s.C3sBase())).true
+    //... chai.expect(eYo.isOwner(new eYo.c3s.BaseC3s())).true
     //... chai.expect(eYo.isOwner(eYo.newNS())).true
     //>>>
   }
@@ -49,10 +49,10 @@ eYo.mixinFR(eYo.o3d, {
    * @param{eYo.C3s | namespace} [owner] - Defaults to the name space
    * @param{Boolean} [configurable] - Whether descriptors should be configurable, necessary for proxy.
    */
-  c9rPrepare ($this, key, owner, configurable) {
-    eYo.isId(key) || eYo.throw('eYo.o3d.c9rPrepare: Bad key')
+  c3sPrepare ($this, key, owner, configurable) {
+    eYo.isId(key) || eYo.throw('eYo.o3d.c3sPrepare: Bad key')
     if (!eYo.isOwner(owner)) {
-      eYo.isNA(configurable) || eYo.throw(`eYo.o3d.c9rPrepare: Unexpected argument (${configurable})`)
+      eYo.isNA(configurable) || eYo.throw(`eYo.o3d.c3sPrepare: Unexpected argument (${configurable})`)
       ;[owner, configurable] = [$this.eyo.ns, owner]
     }
     $this.owner__ = owner
@@ -75,7 +75,7 @@ eYo.mixinFR(eYo.o3d, {
    * @param{eYo.C3s | namespace} [owner] - Defaults to the name space
    * @param{Boolean} [configurable] - Whether descriptors should be configurable, necessary for proxy.
    */
-  c9rInit (_$this, key, owner, configurable) {
+  c3sInit (_$this, key, owner, configurable) {
   },
   /**
    * The default implementation does nothing.
@@ -85,46 +85,46 @@ eYo.mixinFR(eYo.o3d, {
    * @param{eYo.C3s | namespace} [owner] - Defaults to the name space
    * @param{Boolean} [configurable] - Whether descriptors should be configurable, necessary for proxy.
    */
-  c9rDispose ($this) {
+  c3sDispose ($this) {
     $this.disposeUI()
     $this.owner__ = $this.key_ = eYo.NA
   },
 })
 
 /**
- * @name{eYo.o3d.C3sBase}
+ * @name{eYo.o3d.BaseC3s}
  * @constructor
- * @property {eYo.c3s.C3sBase} owner - the owning object
+ * @property {eYo.c3s.BaseC3s} owner - the owning object
  * @readonly
  * @property {String} key - the identifier within the owning object
  * @readonly
  */
-eYo.o3d.makeC3sBase({
+eYo.o3d.makeBaseC3s({
   /** 
    * @param {String} key - an identifier for the owner.
-   * @param {eYo.c3s.C3sBase} owner - the immediate owner of this object.
+   * @param {eYo.c3s.BaseC3s} owner - the immediate owner of this object.
    */
   prepare (key, owner) {
-    eYo.c3s.c9rPrepare(this)
-    eYo.o3d.c9rPrepare(this, key, owner)
+    eYo.c3s.c3sPrepare(this)
+    eYo.o3d.c3sPrepare(this, key, owner)
   },
   /** 
    * @param {String} key - an identifier for the owner.
-   * @param {eYo.c3s.C3sBase} owner - the immediate owner of this object.
+   * @param {eYo.c3s.BaseC3s} owner - the immediate owner of this object.
    */
   init (key, owner) {
-    eYo.o3d.c9rInit(this, key, owner)
-    eYo.c3s.c9rInit(this)
+    eYo.o3d.c3sInit(this, key, owner)
+    eYo.c3s.c3sInit(this)
   },
   dispose () {
-    eYo.o3d.c9rDispose(this)
-    eYo.c3s.c9rDispose(this)
+    eYo.o3d.c3sDispose(this)
+    eYo.c3s.c3sDispose(this)
   },  
 })
-//<<< mochai: C3sBase
+//<<< mochai: BaseC3s
 //... chai.assert(eYo.o3d)
-//... eYo.objectHasOwnProperty(chai.assert(eYo.o3d._p, 'C3sBase'))
-//... chai.expect(eYo.o3d.C3sBase).equal(eYo.O3d)
+//... eYo.objectHasOwnProperty(chai.assert(eYo.o3d._p, 'BaseC3s'))
+//... chai.expect(eYo.o3d.BaseC3s).equal(eYo.O3d)
 //>>>
 
 eYo.mixinFR(eYo._p, {
@@ -247,25 +247,25 @@ eYo.mixinFR(eYo.o3d._p, {
     }
     //<<< mochai: SuperC3s
     //... var NS = eYo.o3d.newNS()
-    //... NS.makeC3sBase()
+    //... NS.makeBaseC3s()
     if (model) {
       if (!model[eYo.$SuperC3s]) {
-        model[eYo.$SuperC3s] = this.C3sBase
-        //... chai.expect(NS.newSingleton(Symbol(), {})).instanceOf(NS.C3sBase)
+        model[eYo.$SuperC3s] = this.BaseC3s
+        //... chai.expect(NS.newSingleton(Symbol(), {})).instanceOf(NS.BaseC3s)
       }
       //... var SuperC3s = NS.newC3s()
       //... SuperC3s[eYo.$].finalizeC3s()
       //... chai.expect(NS.newSingleton(Symbol(), {
       //...   [eYo.$SuperC3s]: SuperC3s,
-      //... })).instanceOf(NS.C3sBase)
+      //... })).instanceOf(NS.BaseC3s)
       //... chai.expect(NS.newSingleton(Symbol(), {
       //...   [eYo.$SuperC3s]: eYo.NA,
       //... }).eyo$.SuperC3s).undefined
     } else {
       model = {
-        [eYo.$SuperC3s]: this.C3sBase,
+        [eYo.$SuperC3s]: this.BaseC3s,
       }
-      //... chai.expect(NS.newSingleton(Symbol())).instanceOf(NS.C3sBase)
+      //... chai.expect(NS.newSingleton(Symbol())).instanceOf(NS.BaseC3s)
     }
     //>>>
     //<<< mochai: owner

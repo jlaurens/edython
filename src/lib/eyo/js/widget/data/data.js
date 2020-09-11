@@ -6,7 +6,7 @@
  * @license EUPL-1.2
  */
 /**
- * @fileoverview eYo.data.C3sBase is a class for a data controller.
+ * @fileoverview eYo.data.BaseC3s is a class for a data controller.
  * It merely provides the API.
  * There is a design problem concerning the binding between the model
  * and the ui.
@@ -47,23 +47,23 @@ eYo.o4t.newNS(eYo, 'data')
 //... chai.expect(eYo.data).eyo_NS
 //>>>
 /**
- * @name {eYo.data.C3sBase}
+ * @name {eYo.data.BaseC3s}
  * @constructor
- * Base property constructor.
+ * BaseC3s property constructor.
  * The bounds between the data and the arguments are immutable.
  * For edython.
- * @param {eYo.brick.C3sBase} brick The object owning the data.
+ * @param {eYo.brick.BaseC3s} brick The object owning the data.
  * @param {string} key name of the data.
  * @param {Object} model contains methods and properties.
  * It is shared by all data controllers belonging to the same kind
  * of owner. Great care should be taken when editing this model.
  */
-eYo.data.makeC3sBase(true, {
+eYo.data.makeBaseC3s(true, {
   //<<< mochai: eYo.Data
   //<<< mochai: Basics
   init (key, brick) {
     //<<< mochai: init
-    eYo.isStr(key) || eYo.throw(`${this.eyo$.name}: Missing key in makeC3sBase`)
+    eYo.isStr(key) || eYo.throw(`${this.eyo$.name}: Missing key in makeBaseC3s`)
     //... chai.expect(() => new eYo.Data(1)).xthrow()
     eYo.isaC3s(brick) || eYo.throw(`${this.eyo$.name}: Missing brick`)
     //... chai.expect(() => new eYo.Data('foo', 'bar')).xthrow()
@@ -933,7 +933,7 @@ eYo.mixinFR(eYo.data.Dlgt_p, {
     //... let new_ns = () => {
     //...   flag.reset()
     //...   ns = eYo.data.newNS()
-    //...   ns.makeC3sBase()
+    //...   ns.makeBaseC3s()
     //... }
     let _p = this.C3s_p
     ;['willChange', 'onChange', 'didChange'].forEach(K => { // closure!
@@ -961,7 +961,7 @@ eYo.mixinFR(eYo.data.Dlgt_p, {
           //...     builtin(before, after)
           //...     eYo.flag.push(after + 1)
           //...   }) 
-          //...   eYo.test.extend(ns.C3sBase_p, K, function(before, after) {
+          //...   eYo.test.extend(ns.BaseC3s_p, K, function(before, after) {
           //...     eYo.flag.push(before + 2, after + 2)
           //...   })
           //...   test(1234, function (builtin, before, after) {
@@ -978,7 +978,7 @@ eYo.mixinFR(eYo.data.Dlgt_p, {
           //...     eYo.flag.push(1, after)
           //...     builtin(after)
           //...   }) 
-          //...   eYo.test.extend(ns.C3sBase_p, K, function(before, after) {
+          //...   eYo.test.extend(ns.BaseC3s_p, K, function(before, after) {
           //...     eYo.flag.push(before + 4, after + 4)
           //...   })
           //...   test(123456, function (builtin, after) {
@@ -992,7 +992,7 @@ eYo.mixinFR(eYo.data.Dlgt_p, {
               //...   test(12, function(before, after) {
               //...     eYo.flag.push(before, after)
               //...   })
-              //...   eYo.test.extend(ns.C3sBase_p, K, function(before, after) {
+              //...   eYo.test.extend(ns.BaseC3s_p, K, function(before, after) {
               //...     eYo.flag.push(before + 2, after + 2)
               //...   })
               //...   test(123456, function (before, after) {
@@ -1017,7 +1017,7 @@ eYo.mixinFR(eYo.data.Dlgt_p, {
               //...     eYo.flag.push(1, after)
               //...   })
               //...   new_ns()
-              //...   eYo.test.extend(ns.C3sBase_p, K, function(before, after) {
+              //...   eYo.test.extend(ns.BaseC3s_p, K, function(before, after) {
               //...     eYo.flag.push(before + 2, after + 2)
               //...   })
               //...   test(123456, function (after) {
@@ -1054,7 +1054,7 @@ eYo.mixinFR(eYo.data.Dlgt_p, {
     //... let new_ns = () => {
     //...   flag.reset()
     //...   ns = eYo.data.newNS()
-    //...   ns.makeC3sBase()
+    //...   ns.makeBaseC3s()
     //... }
     let _p = this.C3s_p
     ;[
@@ -1087,7 +1087,7 @@ eYo.mixinFR(eYo.data.Dlgt_p, {
           //...     eYo.flag.push(before, after)
           //...     builtin(before, after)
           //...   }) 
-          //...   eYo.test.extend(ns.C3sBase_p, K, function(before, after) {
+          //...   eYo.test.extend(ns.BaseC3s_p, K, function(before, after) {
           //...     eYo.flag.push(before + 2, after + 2)
           //...   })
           //...   test(1234, function (builtin, before, after) {
@@ -1104,7 +1104,7 @@ eYo.mixinFR(eYo.data.Dlgt_p, {
           //...     eYo.flag.push(1, after)
           //...     builtin(after)
           //...   }) 
-          //...   eYo.test.extend(ns.C3sBase_p, K, function(before, after) {
+          //...   eYo.test.extend(ns.BaseC3s_p, K, function(before, after) {
           //...     eYo.flag.push(before + 4, after + 4)
           //...   })
           //...   test(123456, function (builtin, after) {
@@ -1118,7 +1118,7 @@ eYo.mixinFR(eYo.data.Dlgt_p, {
               //...   test(12, function(before, after) {
               //...     eYo.flag.push(before, after)
               //...   })
-              //...   eYo.test.extend(ns.C3sBase_p, K, function(before, after) {
+              //...   eYo.test.extend(ns.BaseC3s_p, K, function(before, after) {
               //...     eYo.flag.push(before + 2, after + 2)
               //...   })
               //...   test(123456, function (before, after) {
@@ -1143,7 +1143,7 @@ eYo.mixinFR(eYo.data.Dlgt_p, {
               //...     eYo.flag.push(1, after)
               //...   })
               //...   new_ns()
-              //...   eYo.test.extend(ns.C3sBase_p, K, function(before, after) {
+              //...   eYo.test.extend(ns.BaseC3s_p, K, function(before, after) {
               //...     eYo.flag.push(before + 2, after + 2)
               //...   })
               //...   test(123456, function (after) {
@@ -1180,7 +1180,7 @@ eYo.mixinFR(eYo.data.Dlgt_p, {
     //... let new_ns = () => {
     //...   flag.reset()
     //...   ns = eYo.data.newNS()
-    //...   ns.makeC3sBase()
+    //...   ns.makeBaseC3s()
     //... }
     //... var K
     let _p = this.C3s_p
@@ -1210,7 +1210,7 @@ eYo.mixinFR(eYo.data.Dlgt_p, {
         //...     eYo.flag.push(after)
         //...     return after
         //...   }) 
-        //...   eYo.test.extend(ns.C3sBase_p, K, function(before, after) {
+        //...   eYo.test.extend(ns.BaseC3s_p, K, function(before, after) {
         //...     eYo.flag.push(before + 2, after + 1)
         //...   })
         //...   test(12345, function (builtin, before, after) {
@@ -1239,7 +1239,7 @@ eYo.mixinFR(eYo.data.Dlgt_p, {
             //...     eYo.flag.push(before, after)
             //...     return after + 1
             //...   })
-            //...   eYo.test.extend(ns.C3sBase_p, K, function(before, after) {
+            //...   eYo.test.extend(ns.BaseC3s_p, K, function(before, after) {
             //...     eYo.flag.push(before + 2, after + 1)
             //...   })
             //...   test(123456, function (before, after) {
@@ -1266,7 +1266,7 @@ eYo.mixinFR(eYo.data.Dlgt_p, {
             //...     return after + 1
             //...   })
             //...   new_ns()
-            //...   eYo.test.extend(ns.C3sBase_p, K, function(before, after) {
+            //...   eYo.test.extend(ns.BaseC3s_p, K, function(before, after) {
             //...     eYo.flag.push(before + 2, after + 1)
             //...   })
             //...   test(123456, function (after) {
@@ -1305,7 +1305,7 @@ eYo.mixinFR(eYo.data.Dlgt_p, {
     //... let new_ns = () => {
     //...   flag.reset()
     //...   ns = eYo.data.newNS()
-    //...   ns.makeC3sBase()
+    //...   ns.makeBaseC3s()
     //... }
     //... var K
     let _p = this.C3s_p
@@ -1335,7 +1335,7 @@ eYo.mixinFR(eYo.data.Dlgt_p, {
           //...     builtin(before, after)
           //...     eYo.flag.push(after + 1)
           //...   }) 
-          //...   eYo.test.extend(ns.C3sBase_p, K, function(before, after) {
+          //...   eYo.test.extend(ns.BaseC3s_p, K, function(before, after) {
           //...     eYo.flag.push(before + 2, after + 2)
           //...   })
           //...   test(1234, function (builtin, before, after) {
@@ -1352,7 +1352,7 @@ eYo.mixinFR(eYo.data.Dlgt_p, {
           //...     eYo.flag.push(1, after)
           //...     builtin(after)
           //...   }) 
-          //...   eYo.test.extend(ns.C3sBase_p, K, function(before, after) {
+          //...   eYo.test.extend(ns.BaseC3s_p, K, function(before, after) {
           //...     eYo.flag.push(before + 4, after + 4)
           //...   })
           //...   test(123456, function (builtin, after) {
@@ -1366,7 +1366,7 @@ eYo.mixinFR(eYo.data.Dlgt_p, {
               //...   test(12, function(before, after) {
               //...     eYo.flag.push(before, after)
               //...   })
-              //...   eYo.test.extend(ns.C3sBase_p, K, function(before, after) {
+              //...   eYo.test.extend(ns.BaseC3s_p, K, function(before, after) {
               //...     eYo.flag.push(before + 2, after + 2)
               //...   })
               //...   test(123456, function (before, after) {
@@ -1386,7 +1386,7 @@ eYo.mixinFR(eYo.data.Dlgt_p, {
               //...     eYo.flag.push(1, after)
               //...   })
               //...   new_ns()
-              //...   eYo.test.extend(ns.C3sBase_p, K, function(before, after) {
+              //...   eYo.test.extend(ns.BaseC3s_p, K, function(before, after) {
               //...     eYo.flag.push(before + 2, after + 2)
               //...   })
               //...   test(123456, function (after) {
@@ -1418,7 +1418,7 @@ eYo.mixinFR(eYo.data.Dlgt_p, {
     //... let new_ns = () => {
     //...   flag.reset()
     //...   ns = eYo.data.newNS()
-    //...   ns.makeC3sBase()
+    //...   ns.makeBaseC3s()
     //... }
     //... var K
     let _p = this.C3s_p
@@ -1457,7 +1457,7 @@ eYo.mixinFR(eYo.data.Dlgt_p, {
             //...     eYo.flag.push(2)
             //...     builtin()
             //...   })
-            //...   eYo.test.extend(ns.C3sBase_p, K, function() {
+            //...   eYo.test.extend(ns.BaseC3s_p, K, function() {
             //...     eYo.flag.push(3)
             //...   })
             //...   test(123, function (builtin) {
@@ -1471,7 +1471,7 @@ eYo.mixinFR(eYo.data.Dlgt_p, {
             //...     eYo.flag.push(2)
             //...   })
             //...   new_ns()
-            //...   eYo.test.extend(ns.C3sBase_p, K, function() {
+            //...   eYo.test.extend(ns.BaseC3s_p, K, function() {
             //...     eYo.flag.push(3)
             //...   })
             //...   test(123, function () {
@@ -1504,7 +1504,7 @@ eYo.mixinFR(eYo.data.Dlgt_p, {
     //... let new_ns = () => {
     //...   flag.reset()
     //...   ns = eYo.data.newNS()
-    //...   ns.makeC3sBase()
+    //...   ns.makeBaseC3s()
     //... }
     //... var K
     let _p = this.C3s_p
@@ -1544,7 +1544,7 @@ eYo.mixinFR(eYo.data.Dlgt_p, {
             //...     eYo.flag.push(3, after+3)
             //...     return builtin(after)
             //...   })
-            //...   eYo.test.extend(ns.C3sBase_p, K, function(after) {
+            //...   eYo.test.extend(ns.BaseC3s_p, K, function(after) {
             //...     eYo.flag.push(5, after+5)
             //...   })
             //...   test(123456, function (builtin, after) {
@@ -1559,7 +1559,7 @@ eYo.mixinFR(eYo.data.Dlgt_p, {
             //...     return after
             //...   })
             //...   new_ns()
-            //...   eYo.test.extend(ns.C3sBase_p, K, function(after) {
+            //...   eYo.test.extend(ns.BaseC3s_p, K, function(after) {
             //...     eYo.flag.push(5, after+5)
             //...     return after
             //...   })

@@ -108,9 +108,9 @@ class Info:
   (?:'|")(?P<Key>[^'"]+)(?:'|")
   .*""", re.X)
 
-  # eYo.widget.makeC3sBase()
+  # eYo.widget.makeBaseC3s()
   re_makeC3sBase = re.compile(r"""^\s*
-  (?P<ns>eYo(?:\.[a-z]\w*)*)(?:\.(?P<key>[a-z]\w*))\.makeC3sBase\s*\(.*""", re.X)
+  (?P<ns>eYo(?:\.[a-z]\w*)*)(?:\.(?P<key>[a-z]\w*))\.makeBaseC3s\s*\(.*""", re.X)
 
   # eYo.drvr.makeMngr(model)
   re_makeMngr = re.compile(r"""^\s*
@@ -206,8 +206,8 @@ class Info:
           ns = m.group('ns')
           k = m.group('key')
           required.add(f'{ns}')
-          addProvided(f'{ns}.{k}.C3sBase')
-          print(f'addProvided({ns}.{k}.C3sBase)')
+          addProvided(f'{ns}.{k}.BaseC3s')
+          print(f'addProvided({ns}.{k}.BaseC3s)')
           K = k.title()
           if k != K:
             addProvided(f'{ns}.{K}')
@@ -218,7 +218,7 @@ class Info:
           ns = m.group('ns')
           required.add(f'{ns}')
           addProvided(f'{ns}.Mngr')
-          addProvided(f'{ns}.C3sBase')
+          addProvided(f'{ns}.BaseC3s')
           continue
         m = self.re_makeForwarder.match(l)
         if m:

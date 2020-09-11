@@ -18,17 +18,31 @@
  * @name {eYo.kv}
  * @namespace
  */
-eYo.newNS('kv', {
-  $target: Symbol('target')
-})
+eYo.newNS('kv')
+
+//<<< mochai: Basics
+//... var x = {}
+//... x.foo = 421
+//... chai.expect(x.foo).equal(421)
+//... var d8r = Object.getOwnPropertyDescriptor(x, 'foo')
+//... chai.expect(d8r).not.undefined
+//... let C3s = function () {}
+//... var x = new C3s ()
+//... x.foo = 123
+//... chai.expect(x.foo).equal(123)
+//... var d8r = Object.getOwnPropertyDescriptor(x, 'foo')
+//... chai.expect(d8r).not.undefined
+//>>>
 
 eYo.kv.handler = {
   //<<< mochai: eYo.kv.handler
-  //... let C3s = class {}
+  //... let C3s = function () {}
   //... let target = new C3s ()
+  //... target.foo = 123
+  //... chai.expect(target.foo).equal(123)
   //... let p3y = new Proxy(target, eYo.kv.handler)
   getPrototypeOf (target) {
-    return target.prototype
+    return Reflect.getPrototypeOf(target)
     //... chai.expect(Object.getPrototypeOf(p3y)).equal(C3s.prototype)
   },
   setPrototypeOf (target, prototype) { // Reflect.setPrototypeOf
@@ -36,39 +50,36 @@ eYo.kv.handler = {
     return true
     //... chai.expect(() => Object.setPrototypeOf(p3y, C3s.prototype)).throw()
   },
-  isExtensible (target) {
-    return Reflect.isExtensible(target)
-    //... chai.expect(Object.isExtensible(p3y)).equal(Object.isExtensible(target))
-  },
-  preventExtensions (target) {
-    return Reflect.preventExtensions(target)
-    //... chai.expect(Object.preventExtensions(p3y)).equal(Object.preventExtensions(target))
-  },
-  getOwnPropertyDescriptor (target, prop) {
+   getOwnPropertyDescriptor (target, prop) {
     return Object.getOwnPropertyDescriptor(target, prop)
     //... target.foo = 'bar'
+    //... chai.expect(target.foo).equal('bar')
     //... let d8r = Object.getOwnPropertyDescriptor(target, 'foo')
-    //... chai.expect(Object.getOwnPropertyDescriptor(p3y, 'foo')).equal(d8r)
+    //... chai.expect(d8r).not.undefined
+    //... chai.expect(Object.getOwnPropertyDescriptor(p3y, 'foo')).eql(d8r)
     //... delete target.foo
   },
-  defineProperty(target, key, descriptor) {
-    return Object.defineProperty(target, key, descriptor)
-    //... Object.defineProperty(p3y, 'bar', descriptor)
+  defineProperty(target, key, d8r) {
+    return Object.defineProperty(target, key, d8r)
+    //... Object.defineProperty(p3y, 'bar', d8r)
     //... chai.expect(target.bar).equal('bar')
   },
   has(target, key) {
     return key in target
-    //... chai.expect(p3y.has('foo')).false
-    //... chai.expect(p3y.has('bar')).true
+    //... chai.expect('foo' in p3y).false
+    //... chai.expect('bar' in p3y).true
   },
   get (target, prop, receiver) {
     if (prop === eYo.$$.target) {
       return target
+      //... chai.expect(p3y[eYo.$$.target]).equal(target)
     }
     return Reflect.get(target, prop, receiver)
-    //... chai.expect(p3y.get('foo')).undefined
-    //... chai.expect(p3y.get('bar')).equal('bar')
-    //... chai.expect(p3y.get(eYo.$$.target)).equal(target)
+    //... chai.expect(p3y.chi).undefined
+    //... target.chi = 123
+    //... chai.expect(target.chi).equal(123)
+    //... chai.expect(p3y.chi).equal(123)
+    //... chai.expect(p3y.bar).equal('bar')
   },
   set (target, prop, value) {
     if (prop === eYo.$$.target) {
@@ -92,9 +103,13 @@ eYo.kv.handler = {
     //... chai.expect(target[s4l]).undefined
   },
   ownKeys (target) {
-    return Reflect.ownKeys(target) // no symbols listed
+    return Object.getOwnPropertyNames(target)
     //... p3y.chi = 421
-    //... chai.expect(Object.ownKeys(p3y)).members(['chi'])
+    //... chai.expect(Object.getOwnPropertyNames(p3y)).members(['bar', 'chi'])
+    //... delete p3y.chi
+    //... chai.expect(Object.getOwnPropertyNames(p3y)).members(['bar'])
+    //... delete p3y.bar
+    //... chai.expect(Object.getOwnPropertyNames(p3y)).members([])
   },
   apply (target, $this, $) {
     eYo.throw('Not a callable pliz')
@@ -107,6 +122,29 @@ eYo.kv.handler = {
     //... chai.expect(() => new p3y(123)).throw()
   },
   //>>>
+  //<<< mochai: eYo.kv.handler (extensions)
+  isExtensible (target) {
+    return Reflect.isExtensible(target)
+  },
+  preventExtensions (target) {
+    return Reflect.preventExtensions(target)
+  },
+  //... let C3s = function () {}
+  //... var target = new C3s ()
+  //... var p3y = new Proxy(target, eYo.kv.handler)
+  //... chai.expect(Object.isExtensible(target)).true
+  //... chai.expect(Object.isExtensible(p3y)).true
+  //... Object.preventExtensions(p3y)
+  //... chai.expect(Object.isExtensible(target)).false
+  //... chai.expect(Object.isExtensible(p3y)).false
+  //... var target = new C3s ()
+  //... var p3y = new Proxy(target, eYo.kv.handler)
+  //... chai.expect(Object.isExtensible(target)).true
+  //... chai.expect(Object.isExtensible(p3y)).true
+  //... Object.preventExtensions(target)
+  //... chai.expect(Object.isExtensible(target)).false
+  //... chai.expect(Object.isExtensible(p3y)).false
+//>>>
 }
 /**
  * Named arguments constructor.
@@ -154,13 +192,13 @@ eYo.mixinFR(eYo, {
    * Whether the argument is a named arguments object.
    * @param {*} what 
    */
-  isa$ (what) {
-    //<<< mochai: eYo.isa$
+  isaKV (what) {
+    //<<< mochai: eYo.isaKV
     return !!what && what instanceof eYo.kv.C3s
-    //... chai.expect(eYo.isa$()).false
-    //... chai.expect(eYo.isa$({})).false
-    //... chai.expect(eYo.isa$(new eYo.kv.C3s())).true
-    //... chai.expect(eYo.isa$(eYo.kv.new())).true
+    //... chai.expect(eYo.isaKV()).false
+    //... chai.expect(eYo.isaKV({})).false
+    //... chai.expect(eYo.isaKV(new eYo.kv.C3s())).true
+    //... chai.expect(eYo.isaKV(eYo.kv.new())).true
     //>>>
   },
   KV: eYo.kv.C3s,

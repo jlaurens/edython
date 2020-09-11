@@ -23,5 +23,5 @@ eYo.newNS('shared', {
 })
 //<<< mochai: Basics
 //... chai.assert(eYo.shared)
-//... chai.expect(eYo.shared.OWNER).instanceof(eYo.c3s.C3sBase)
+//... chai.expect(eYo.shared.OWNER).instanceof(eYo.c3s.BaseC3s)
 //>>>

@@ -40,7 +40,7 @@ eYo.view.newC3s('Scroller', {
   },
   properties: {
     /**
-     * @type {eYo.board.C3sBase} The scrolled board...
+     * @type {eYo.board.BaseC3s} The scrolled board...
      * @readonly
      */
     board: {

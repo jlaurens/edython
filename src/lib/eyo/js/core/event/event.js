@@ -41,12 +41,12 @@ eYo.event.MAX_UNDO = 1024,
 //>>>
 //<<< mochai: Basics
 //... chai.assert(eYo.event)
-//... eYo.objectHasOwnProperty(chai.assert(eYo.event._p, 'C3sBase'))
+//... eYo.objectHasOwnProperty(chai.assert(eYo.event._p, 'BaseC3s'))
 //... chai.assert(eYo.event.Mngr)
 //>>>
 
-// No special Base class
-eYo.event.makeC3sBase()
+// No special BaseC3s class
+eYo.event.makeBaseC3s()
 
 /**
  * An event manager.

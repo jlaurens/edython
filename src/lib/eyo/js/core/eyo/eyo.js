@@ -1382,11 +1382,11 @@ eYo.mixinFR(eYo._p, {
           eYo.test && eYo.test.IN_THROW || console.error('BREAK HERE!!! parent')
           return ns
         },
-        // value: ns, // used in makeC3sBase
+        // value: ns, // used in makeBaseC3s
         // writable: false,
       })
       Object.defineProperty(NS.prototype, 'parentNS', {
-        value: ns, // used in makeC3sBase
+        value: ns, // used in makeBaseC3s
         writable: false,
       })
     }

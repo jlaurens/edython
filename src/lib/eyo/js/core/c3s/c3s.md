@@ -15,7 +15,7 @@ The idea is to use a rather straightforward syntax.
 
 Each constructor is extended through a property named `eyo`.
 This name is sufficiently weird to avoid collisions.
-Each class is a descendant of `eYo.C3s.C3sBase` whereas `eyo` object is an instance of `eYo.dlgt.C3sBase`.
+Each class is a descendant of `eYo.C3s.BaseC3s` whereas `eyo` object is an instance of `eYo.dlgt.BaseC3s`.
 
 This extension knows the namespace owning the class.
 It also knows the unique string identifying the class: its name.
@@ -29,19 +29,19 @@ object[0] -> constructor[0] -> eyo[1] -> constructor[1] -> eyo[2] -> constructor
 
 This list is turned into an infinite loop.
 
-* object[0] is not an instance of `eYo.dlgt.C3sBase`.
-* eyo[1] is an instance of a subclass of `eYo.dlgt.C3sBase`
-* eyo[i] is the same instance of `eYo.dlgt.C3sBase` for i>1
+* object[0] is not an instance of `eYo.dlgt.BaseC3s`.
+* eyo[1] is an instance of a subclass of `eYo.dlgt.BaseC3s`
+* eyo[i] is the same instance of `eYo.dlgt.BaseC3s` for i>1
 
-`eYo.dlgt.C3sBase` is instantiated only once.
+`eYo.dlgt.BaseC3s` is instantiated only once.
 
 This means that constructor[2] does not depend on object[0]
 and that since eyo[3], all the delegates are the same.
 
 With the `eyo` property shortcut
 
-* `object.eyo` is an instance of an unexposed subclass of `eYo.dlgt.C3sBase`
-* `object.eyo.eyo` is an instance of `eYo.dlgt.C3sBase`
+* `object.eyo` is an instance of an unexposed subclass of `eYo.dlgt.BaseC3s`
+* `object.eyo.eyo` is an instance of `eYo.dlgt.BaseC3s`
 * `object.eyo.eyo.eyo` is another instance of this unexposed class which is the same for all objects
 * `object.eyo.eyo.eyo.eyo...` is exactly the same instance
 
@@ -76,9 +76,9 @@ A model is a tree, based on objects.
 
 If `Foo` inherits from `Bar`, then model of `Foo` also from the model of `Bar`.
 
-## Base classes
+## BaseC3s classes
 
-Each namespace `ns` contains `ns.C3sBase` which is the root class for all thge classes in that namespace. It also contains `ns.Dlgt` which the root class of the constructor delegats in that namespace.
+Each namespace `ns` contains `ns.BaseC3s` which is the root class for all thge classes in that namespace. It also contains `ns.Dlgt` which the root class of the constructor delegats in that namespace.
 
 ## Class models for Edython
 

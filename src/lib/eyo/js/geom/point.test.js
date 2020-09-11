@@ -150,7 +150,7 @@ describe ('geometry/Point', function () {
       let c_p = eYo.p6y.new('c', onr)
       let l_p = eYo.p6y.new('l', onr)
       let ns = eYo.geom.newNS()
-      ns.makeC3sBase(eYo.geom.Point, {
+      ns.makeBaseC3s(eYo.geom.Point, {
         init (c_p, l_p) {
           eYo.objectHasOwnProperty(chai.expect(this, 'c_p')).false
           eYo.objectHasOwnProperty(chai.expect(this, 'l_p')).false

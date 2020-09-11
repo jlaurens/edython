@@ -58,10 +58,10 @@ eYo.mixinFR(eYo.p6y, {
    * @param{eYo.C3s | namespace} [owner] - Defaults to the name space
    * @param{Boolean} [configurable] - Whether descriptors should be configurable, necessary for proxy.
    */
-  c9rPrepare ($this, key, owner, configurable) {
-    eYo.isId(key) || eYo.throw('eYo.o3d.c9rPrepare: Bad key')
+  c3sPrepare ($this, key, owner, configurable) {
+    eYo.isId(key) || eYo.throw('eYo.o3d.c3sPrepare: Bad key')
     if (!eYo.isOwner(owner)) {
-      eYo.isNA(configurable) || eYo.throw(`eYo.o3d.c9rPrepare: Unexpected argument (${configurable})`)
+      eYo.isNA(configurable) || eYo.throw(`eYo.o3d.c3sPrepare: Unexpected argument (${configurable})`)
       ;[owner, configurable] = [$this.eyo.ns, owner]
     }
     $this.owner__ = owner
@@ -84,7 +84,7 @@ eYo.mixinFR(eYo.p6y, {
    * @param{eYo.C3s | namespace} [owner] - Defaults to the name space
    * @param{Boolean} [configurable] - Whether descriptors should be configurable, necessary for proxy.
    */
-  c9rInit (_$this, key, owner, configurable) {
+  c3sInit (_$this, key, owner, configurable) {
   },
   /**
    * The default implementation does nothing.
@@ -94,7 +94,7 @@ eYo.mixinFR(eYo.p6y, {
    * @param{eYo.C3s | namespace} [owner] - Defaults to the name space
    * @param{Boolean} [configurable] - Whether descriptors should be configurable, necessary for proxy.
    */
-  c9rDispose ($this) {
+  c3sDispose ($this) {
     $this.disposeUI()
     $this.owner__ = $this.key_ = eYo.NA
   },
@@ -104,7 +104,7 @@ eYo.mixinFR(eYo.p6y, {
 // ANCHOR eYo.P6y_p
 /**
  * @name{eYo.P6y}
- * Base property constructor.
+ * BaseC3s property constructor.
  * The bounds between the property and the arguments are immutable.
  * For edython.
  * @param {*} owner - The object owning the property.
@@ -114,13 +114,13 @@ eYo.mixinFR(eYo.p6y, {
  * of owner. Great care should be taken when editing this model.
  * @constructor
  */
-eYo.p6y.makeC3sBase(true, {
+eYo.p6y.makeBaseC3s(true, {
   //<<< mochai: eYo.P6y
   //<<< mochai: Basic
-  //... chai.expect(eYo.p6y.C3sBase).equal(eYo.P6y)
+  //... chai.expect(eYo.p6y.BaseC3s).equal(eYo.P6y)
   //>>>
   prepare (model, key, owner) {
-    eYo.p6y.c9rPrepare(this, model, key, owner)
+    eYo.p6y.c3sPrepare(this, model, key, owner)
     //<<< mochai: eYo.P6y_p, prepare
     //... ;[
     //...     new eYo.P6y('foo', eYo.test.onr),
@@ -927,8 +927,8 @@ eYo.mixinFR(eYo.p6y.Dlgt_p, {
     let K = '_disposeStored'
     //... chai.assert(eYo.P6y_p._disposeStored)
     //... let ns = eYo.p6y.newNS()
-    //... ns.makeC3sBase()
-    //... ns.C3sBase_p._disposeStored = function(...$) {
+    //... ns.makeBaseC3s()
+    //... ns.BaseC3s_p._disposeStored = function(...$) {
     //...   this.owner.flag('d', ...$)
     //... }
     //... var p6y = ns.new('foo', eYo.test.onr)
@@ -974,8 +974,8 @@ eYo.mixinFR(eYo.p6y.Dlgt_p, {
               when_p.call(this, before, after)
             }}.$)
             //... var ns = eYo.p6y.newNS()
-            //... ns.makeC3sBase()
-            //... ns.C3sBase_p[when] = function (before, after) {
+            //... ns.makeBaseC3s()
+            //... ns.BaseC3s_p[when] = function (before, after) {
             //...   this.owner.flag('w', before, after)
             //... }
             //... let f_before_after = function (before, after) {
@@ -1001,7 +1001,7 @@ eYo.mixinFR(eYo.p6y.Dlgt_p, {
               when_m.call(this.owner, before, after)
             }}.$)
             //... var ns = eYo.p6y.newNS()
-            //... ns.makeC3sBase()
+            //... ns.makeBaseC3s()
             //... var p6y = ns.new({
             //...   [when]: f_before_after,
             //... }, 'foo', eYo.test.onr)
@@ -1022,8 +1022,8 @@ eYo.mixinFR(eYo.p6y.Dlgt_p, {
               when_p.call(this, before, after)
             }}.$)
             //... var ns = eYo.p6y.newNS()
-            //... ns.makeC3sBase()
-            //... ns.C3sBase_p[when] = function (before, after) {
+            //... ns.makeBaseC3s()
+            //... ns.BaseC3s_p[when] = function (before, after) {
             //...   this.owner.flag('w', before, after)
             //... }
             //... var p6y = ns.new({
@@ -1037,7 +1037,7 @@ eYo.mixinFR(eYo.p6y.Dlgt_p, {
               when_m.call(this.owner, after)
             }}.$)
             //... var ns = eYo.p6y.newNS()
-            //... ns.makeC3sBase()
+            //... ns.makeBaseC3s()
             //... var p6y = ns.new({
             //...   [when]: f_after,
             //... }, 'foo', eYo.test.onr)
@@ -1516,11 +1516,11 @@ eYo.o3d.newNS(eYo.p6y, 'handler')
  * Beware of loops.
  * 
  * The handlers covers the target either with its own keys or its internal `cover__` object.
- * @name {eYo.p6y.handler.C3sBase}
+ * @name {eYo.p6y.handler.BaseC3s}
  * @constructor
  */
-eYo.p6y.handler.makeC3sBase({
-  //<<< mochai: eYo.p6y.handler.C3sBase
+eYo.p6y.handler.makeBaseC3s({
+  //<<< mochai: eYo.p6y.handler.BaseC3s
   /**
    * Initialize a proxy's handler.
    * Debug note: if `foo.eyo$.name` is `eYo.p6y.handler.Changer` then `foo` is an alias to a property named `changer` (more precisely the handler of the proxy).
@@ -1747,7 +1747,7 @@ eYo.p6y.handler.makeC3sBase({
   //>>>
 })
 
-eYo.mixinRO(eYo.p6y.handler.C3sBase_p, {
+eYo.mixinRO(eYo.p6y.handler.BaseC3s_p, {
   keys_RO: [
     eYo.$$.target, // expose the proxy target
     eYo.$$.handler, // expose the proxy handler

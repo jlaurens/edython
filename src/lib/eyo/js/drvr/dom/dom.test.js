@@ -4,7 +4,7 @@ describe('Dom driver', function() {
     chai.assert(eYo.dom.Mngr)
     chai.assert(eYo.dom.newDrvrC3s)
     chai.assert(eYo.dom.makeMngr)
-    chai.assert(eYo.dom.C3sBase)
+    chai.assert(eYo.dom.BaseC3s)
   })
   it ("eYo.dom.newDrvrC3s('A')", function () {
     chai.assert(eYo.dom.newDrvrC3s('A'))

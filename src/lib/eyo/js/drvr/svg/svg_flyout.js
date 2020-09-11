@@ -132,8 +132,8 @@ eYo.svg.newDrvrC3s('FlyoutToolbar', {
     svg.pathControl_ = eYo.svg.newElement('path', {
       id: 'p-flyout-control'
     }, dom.svg)
-    if (eYo.app.C3sBase && ftb.app.flyoutDropDown) { // eslint-disable-line
-    } else if (eYo.app.C3sBase && ftb.app.flyoutDropDownGeneral && ftb.app.flyoutDropDownModule) {
+    if (eYo.app.BaseC3s && ftb.app.flyoutDropDown) { // eslint-disable-line
+    } else if (eYo.app.BaseC3s && ftb.app.flyoutDropDownGeneral && ftb.app.flyoutDropDownModule) {
       dom.select_module_ = eYo.dom.createDom(
         eYo.dom.TagName.DIV,
         eYo.dom.getCssClass(cssClass, 'select-module'),
@@ -263,7 +263,7 @@ eYo.svg.Flyout.prototype.removeAllBrickListeners = function(flyout) {
  * Listeners work only when the flyout authorizes it.
  * The 'rect' listeners have been removed.
  * @param {eYo.flyout.View} flyout
- * @param {eYo.brick.C3sBase} brick The block to add listeners for.
+ * @param {eYo.brick.BaseC3s} brick The block to add listeners for.
  */
 eYo.svg.Flyout.prototype.addListeners = function(flyout, brick) {
   var g = brick.dom.svg.group_

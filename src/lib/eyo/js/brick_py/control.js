@@ -80,7 +80,7 @@ eYo.require('stmt.group')
  * Run the script exported from the brick.
  * @private
  */
-eYo.brick.C3sBase_p.runScript = function () {
+eYo.brick.BaseC3s_p.runScript = function () {
   console.log('Someone should everride this method to really run some script')
 }
 

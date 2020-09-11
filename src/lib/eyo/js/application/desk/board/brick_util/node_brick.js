@@ -28,7 +28,7 @@ eYo.py.node.newNS('brick')
  * `this.type === eYo.py.tkn.suite`.
  * @param {Object} a brick
  */
-eYo.py.node.C3sBase_p.suiteInBrick = function (brick) {
+eYo.py.node.BaseC3s_p.suiteInBrick = function (brick) {
   // simple_stmt | NEWLINE INDENT stmt+ DEDENT
   var n = this.n0
   // suite: simple_stmt | NEWLINE INDENT stmt+ DEDENT
@@ -55,7 +55,7 @@ eYo.py.node.C3sBase_p.suiteInBrick = function (brick) {
  * `this.type === eYo.py.func_body_suite`.
  * @param {Object} a brick
  */
-eYo.py.node.C3sBase_p.func_body_suiteInBrick = function (brick) {
+eYo.py.node.BaseC3s_p.func_body_suiteInBrick = function (brick) {
   var n = this.n0
   // func_body_suite: simple_stmt | NEWLINE [TYPE_COMMENT NEWLINE] INDENT stmt+ DEDENT
   if (n.n_type === eYo.py.tkn.NEWLINE) {
@@ -93,7 +93,7 @@ eYo.py.node.C3sBase_p.func_body_suiteInBrick = function (brick) {
  * `this.type === eYo.py.tkn.COMMENT`
  * @param {Object} a brick
  */
-eYo.py.node.C3sBase_p.comment2Brick = function (owner) {
+eYo.py.node.BaseC3s_p.comment2Brick = function (owner) {
   var brick = eYo.brick.newReady(eYo.t3.stmt.comment_stmt, owner)
   brick.Comment_p = this.n_comment
   console.log('ONE COMMENT', this.n_comment)
@@ -105,7 +105,7 @@ eYo.py.node.C3sBase_p.comment2Brick = function (owner) {
  * `this.type === eYo.py.tkn.TYPE_COMMENT`
  * @param {Object} a brick
  */
-eYo.py.node.C3sBase_p.typeComment2Brick = function (owner) {
+eYo.py.node.BaseC3s_p.typeComment2Brick = function (owner) {
   var b3k = eYo.brick.newReady(eYo.t3.stmt.comment_stmt, owner)
   b3k.Comment_p = this.n0.n_str
   return b3k
@@ -116,7 +116,7 @@ eYo.py.node.C3sBase_p.typeComment2Brick = function (owner) {
  * `this.type === eYo.py.simple_stmt`
  * @param {Object} a brick
  */
-eYo.py.node.C3sBase_p.simple_stmt2Brick = function (owner) {
+eYo.py.node.BaseC3s_p.simple_stmt2Brick = function (owner) {
   // simple_stmt: small_stmt (';' small_stmt)* [';'] NEWLINE
   var n = this.n0
   var brick = n.toBrick(owner)
@@ -152,7 +152,7 @@ eYo.py.node.C3sBase_p.simple_stmt2Brick = function (owner) {
  * `this.type === eYo.py.tkn.NAME`
  * @param {Object} a brick
  */
-eYo.py.node.C3sBase_p.nAME2Brick = function (owner) {
+eYo.py.node.BaseC3s_p.nAME2Brick = function (owner) {
   var brick = eYo.brick.newReady({
     type: eYo.t3.expr.identifier,
     target_p: this.n_str
@@ -166,7 +166,7 @@ eYo.py.node.C3sBase_p.nAME2Brick = function (owner) {
  * `this.type === eYo.py.dotted_name`
  * @param {Object} a brick
  */
-eYo.py.node.C3sBase_p.dotted_name2Brick = function (owner) {
+eYo.py.node.BaseC3s_p.dotted_name2Brick = function (owner) {
   // dotted_name: NAME ('.' NAME)*
   var n = this.n0
   var brick = eYo.brick.newReady({
@@ -189,7 +189,7 @@ eYo.py.node.C3sBase_p.dotted_name2Brick = function (owner) {
  * `this.type === eYo.py.comp_iter`
  * @param {Object} a brick
  */
-eYo.py.node.C3sBase_p.comp_iter2Brick = function (board) {
+eYo.py.node.BaseC3s_p.comp_iter2Brick = function (board) {
   // comp_iter: comp_for | comp_if
   var n = this.n0
   if (n.type === eYo.py.comp_if) {
@@ -211,9 +211,9 @@ eYo.py.node.C3sBase_p.comp_iter2Brick = function (board) {
 /**
  * Converts the node `n` to a visual brick.
  * `this.type === eYo.py.comp_for`
- * @param {eYo.brick.C3sBase} brick  a brick with a 'for' slot.
+ * @param {eYo.brick.BaseC3s} brick  a brick with a 'for' slot.
  */
-eYo.py.node.C3sBase_p.comp_forInBrick = function (brick) {
+eYo.py.node.BaseC3s_p.comp_forInBrick = function (brick) {
   // comp_for: ['async'] sync_comp_for
   this.last_child.sync_comp_forInBrick(brick)
   if (this.n1) {
@@ -225,9 +225,9 @@ eYo.py.node.C3sBase_p.comp_forInBrick = function (brick) {
 /**
  * Converts the node `n` to a visual brick.
  * `this.type === eYo.py.sync_comp_for`
- * @param {eYo.brick.C3sBase} brick  a brick with a 'for' slot.
+ * @param {eYo.brick.BaseC3s} brick  a brick with a 'for' slot.
  */
-eYo.py.node.C3sBase_p.sync_comp_forInBrick = function (brick) {
+eYo.py.node.BaseC3s_p.sync_comp_forInBrick = function (brick) {
   // 'for' exprlist 'in' or_test [comp_iter]
   this.n1.exprlistInBrick(brick.for_b)
   brick.in_s.connect(this.n3.toBrick(brick))
@@ -240,7 +240,7 @@ eYo.py.node.C3sBase_p.sync_comp_forInBrick = function (brick) {
  * `this.type === eYo.py.sync_comp_for`
  * @param {Object} a brick
  */
-eYo.py.node.C3sBase_p.sync_comp_for2Brick = function (board) {
+eYo.py.node.BaseC3s_p.sync_comp_for2Brick = function (board) {
   // 'for' exprlist 'in' or_test [comp_iter]
   var brick = eYo.brick.newReady(eYo.t3.expr.comp_for, board)
   this.sync_comp_forInBrick(brick)
@@ -252,7 +252,7 @@ eYo.py.node.C3sBase_p.sync_comp_for2Brick = function (board) {
  * `this.type === eYo.py.comp_if`
  * @param {Object} a brick
  */
-eYo.py.node.C3sBase_p.comp_if2Brick = function (board) {
+eYo.py.node.BaseC3s_p.comp_if2Brick = function (board) {
   // 'if' test_nocond [comp_iter]
   var brick = eYo.brick.newReady(eYo.t3.expr.comp_if, board)
   brick.if_s.connect(this.n1.toBrick(board))
@@ -266,7 +266,7 @@ eYo.py.node.C3sBase_p.comp_if2Brick = function (board) {
  * `this.type === eYo.py.for_stmt`
  * @param {Object} a brick
  */
-eYo.py.node.C3sBase_p.for_stmt2Brick = function (board) {
+eYo.py.node.BaseC3s_p.for_stmt2Brick = function (board) {
   // 'for' exprlist 'in' testlist ':' suite ['else' ':' suite]
   var b3k = eYo.brick.newReady(eYo.t3.stmt.for_part, board)
   var n = this.n1
@@ -288,7 +288,7 @@ eYo.py.node.C3sBase_p.for_stmt2Brick = function (board) {
  * `this.type === eYo.py.namedexpr_test`
  * @param {Object} a brick
  */
-eYo.py.node.C3sBase_p.namedexpr_test2Brick = function (board) {
+eYo.py.node.BaseC3s_p.namedexpr_test2Brick = function (board) {
   // test [':=' test]
   var brick = this.n0.toBrick(board)
   var n = this.n2
@@ -318,7 +318,7 @@ eYo.py.node.C3sBase_p.namedexpr_test2Brick = function (board) {
  * `this.type === eYo.py.if_stmt`
  * @param {Object} a brick
  */
-eYo.py.node.C3sBase_p.if_stmt2Brick = function (board) {
+eYo.py.node.BaseC3s_p.if_stmt2Brick = function (board) {
   // 'if' namedexpr_test ':' suite ('elif' namedexpr_test ':' suite)* ['else' ':' suite]
   var brick = eYo.brick.newReady(board, eYo.t3.stmt.if_part)
   var n = this.n1
@@ -348,7 +348,7 @@ eYo.py.node.C3sBase_p.if_stmt2Brick = function (board) {
  * `this.type === eYo.py.while_stmt`
  * @param {Object} a brick
  */
-eYo.py.node.C3sBase_p.while_stmt2Brick = function (board) {
+eYo.py.node.BaseC3s_p.while_stmt2Brick = function (board) {
   // 'while' namedexpr_test ':' suite ['else' ':' suite]
   var brick = eYo.brick.newReady(board, eYo.t3.stmt.while_part)
   var n = this.n1
@@ -370,7 +370,7 @@ eYo.py.node.C3sBase_p.while_stmt2Brick = function (board) {
  * `this.type === eYo.py.try_stmt`
  * @param {Object} a brick
  */
-eYo.py.node.C3sBase_p.try_stmt2Brick = function (board) {
+eYo.py.node.BaseC3s_p.try_stmt2Brick = function (board) {
   /*try_stmt: ('try' ':' suite
            ((except_clause ':' suite)+
             ['else' ':' suite]
@@ -412,7 +412,7 @@ eYo.py.node.C3sBase_p.try_stmt2Brick = function (board) {
  * `this.type === eYo.py.with_stmt`
  * @param {Object} a brick
  */
-eYo.py.node.C3sBase_p.with_stmt2Brick = function (board) {
+eYo.py.node.BaseC3s_p.with_stmt2Brick = function (board) {
   // 'with' with_item (',' with_item)*  ':' suite
   var root = eYo.brick.newReady(board, eYo.t3.stmt.with_part)
   var with_b = root.with_b
@@ -439,7 +439,7 @@ eYo.py.node.C3sBase_p.with_stmt2Brick = function (board) {
  * `this.type === eYo.py.funcdef`
  * @param {Object} a brick
  */
-eYo.py.node.C3sBase_p.funcdef2Brick = function (board) {
+eYo.py.node.BaseC3s_p.funcdef2Brick = function (board) {
   // 'def' NAME parameters ['->' test] ':' [TYPE_COMMENT] func_body_suite
   var root = eYo.brick.newReady(board, eYo.t3.stmt.funcdef_part)
   root.name_ = this.n1.n_str
@@ -467,7 +467,7 @@ eYo.py.node.C3sBase_p.funcdef2Brick = function (board) {
  * `this.type === eYo.py.classdef`
  * @param {Object} a brick
  */
-eYo.py.node.C3sBase_p.classdef2Brick = function (board) {
+eYo.py.node.BaseC3s_p.classdef2Brick = function (board) {
   // 'class' NAME ['(' [arglist] ')'] ':' suite
   var root = eYo.brick.newReady(board, eYo.t3.stmt.classdef_part)
   var n = this.n1
@@ -491,7 +491,7 @@ eYo.py.node.C3sBase_p.classdef2Brick = function (board) {
  * `this.type === eYo.py.decorated`
  * @param {Object} a brick
  */
-eYo.py.node.C3sBase_p.decorated2Brick = function (board) {
+eYo.py.node.BaseC3s_p.decorated2Brick = function (board) {
   /*
 decorators: decorator+
 decorated: decorators (classdef | funcdef | async_funcdef)
@@ -521,7 +521,7 @@ decorated: decorators (classdef | funcdef | async_funcdef)
  * `this.type === eYo.py.decorator`
  * @param {Object} a brick
  */
-eYo.py.node.C3sBase_p.decorator2Brick = function (board) {
+eYo.py.node.BaseC3s_p.decorator2Brick = function (board) {
   // decorator: '@' dotted_name [ '(' [arglist] ')' ] NEWLINE
   var brick = eYo.brick.newReady(board, eYo.t3.stmt.decorator_stmt)
   var n = this.n1
@@ -552,7 +552,7 @@ eYo.py.node.C3sBase_p.decorator2Brick = function (board) {
  * `this.type === eYo.py.tfpdef`
  * @param {Object} a brick
  */
-eYo.py.node.C3sBase_p.tfpdef2Brick = function (board) {
+eYo.py.node.BaseC3s_p.tfpdef2Brick = function (board) {
   /* tfpdef: NAME [':' test] */
   var brick = eYo.brick.newReady(eYo.t3.expr.identifier, board)
   var n = this.n0
@@ -567,9 +567,9 @@ eYo.py.node.C3sBase_p.tfpdef2Brick = function (board) {
 /**
  * `this` is the first node of a typedargslist.
  * `this.type === eYo.py.typedargslist`
- * @param {eYo.brick.C3sBase} brick  a brick
+ * @param {eYo.brick.BaseC3s} brick  a brick
  */
-eYo.py.node.C3sBase_p.typedargslistInBrick = function (brick) {
+eYo.py.node.BaseC3s_p.typedargslistInBrick = function (brick) {
   var n = this.n0
   /* typedargslist:
   1) tfpdef ['=' test] (',' tfpdef ['=' test])* [',' [
@@ -631,7 +631,7 @@ eYo.py.node.C3sBase_p.typedargslistInBrick = function (brick) {
  * You'd better not call this twice on the same target.
  * @param {Object} a brick
  */
-eYo.py.node.C3sBase_p.knownListInBrick = function (brick, toBrick) {
+eYo.py.node.BaseC3s_p.knownListInBrick = function (brick, toBrick) {
   var n = this.n0
   while (true) { // eslint-disable-line
     var d = toBrick.call(n, brick)
@@ -653,7 +653,7 @@ eYo.py.node.C3sBase_p.knownListInBrick = function (brick, toBrick) {
  * `this` is the first node of a typedargslist.
  * @param {Object} a brick
  */
-eYo.py.node.C3sBase_p.do_list = function (brick) {
+eYo.py.node.BaseC3s_p.do_list = function (brick) {
   var n = this.n0
   do {
     var d = n.toBrick(brick)
@@ -666,19 +666,19 @@ eYo.py.node.C3sBase_p.do_list = function (brick) {
   } while ((n = n.sibling) && (n = n.sibling)) // goddle comma
 }
 
-eYo.py.node.C3sBase_p.exprlistInBrick =
-eYo.py.node.C3sBase_p.arglistInBrick =
-eYo.py.node.C3sBase_p.testlistInBrick =
-eYo.py.node.C3sBase_p.testlist_star_exprInBrick =
-eYo.py.node.C3sBase_p.subscriptlistInBrick = eYo.py.node.C3sBase_p.do_list
+eYo.py.node.BaseC3s_p.exprlistInBrick =
+eYo.py.node.BaseC3s_p.arglistInBrick =
+eYo.py.node.BaseC3s_p.testlistInBrick =
+eYo.py.node.BaseC3s_p.testlist_star_exprInBrick =
+eYo.py.node.BaseC3s_p.subscriptlistInBrick = eYo.py.node.BaseC3s_p.do_list
 
 /**
  * `this` is binary expression.
- * @param {eYo.board|eYo.brick.C3sBase} owner
+ * @param {eYo.board|eYo.brick.BaseC3s} owner
  * @param {String} type
  * @param {String} op
  */
-eYo.py.node.C3sBase_p.binary2Brick = function (owner, type, op) {
+eYo.py.node.BaseC3s_p.binary2Brick = function (owner, type, op) {
   var n0 = this.n0
   var n1
   var root = n0.toBrick(owner)
@@ -697,7 +697,7 @@ eYo.py.node.C3sBase_p.binary2Brick = function (owner, type, op) {
  * `this.type === eYo.py.yield_expr`
  * @param {Object} owner
  */
-eYo.py.node.C3sBase_p.yield_expr2Brick = function (owner) {
+eYo.py.node.BaseC3s_p.yield_expr2Brick = function (owner) {
   /*yield_expr: 'yield' [yield_arg]
 yield_arg: 'from' test | testlist_star_expr */
   var brick = eYo.brick.newReady(owner, eYo.t3.expr.yield_expr)
@@ -710,7 +710,7 @@ yield_arg: 'from' test | testlist_star_expr */
  * `this.type === eYo.py.yield_expr`
  * @param {Object} a brick
  */
-eYo.py.node.C3sBase_p.yield_exprInBrick = function (brick) {
+eYo.py.node.BaseC3s_p.yield_exprInBrick = function (brick) {
   var n = this.n1
   if (n) {
     if (n.n1) {
@@ -726,7 +726,7 @@ eYo.py.node.C3sBase_p.yield_exprInBrick = function (brick) {
  * `this.type === eYo.py.yield_expr`
  * @param {Object} brick  a delegate
  */
-eYo.py.node.C3sBase_p.yield_exprInListBrick = function (brick) {
+eYo.py.node.BaseC3s_p.yield_exprInListBrick = function (brick) {
   brick.connectLast(this.yield_expr2Brick(brick))
 }
 
@@ -735,7 +735,7 @@ eYo.py.node.C3sBase_p.yield_exprInListBrick = function (brick) {
  * `this.type === eYo.py.varargslist`
  * @param {Object} a brick
  */
-eYo.py.node.C3sBase_p.varargslistInBrick = function (brick) {
+eYo.py.node.BaseC3s_p.varargslistInBrick = function (brick) {
 /* (vfpdef ['=' test] (',' vfpdef ['=' test])* [',' [
         '*' [vfpdef] (',' vfpdef ['=' test])* [',' ['**' vfpdef [',']]]
       | '**' vfpdef [',']]]
@@ -792,9 +792,9 @@ eYo.py.node.C3sBase_p.varargslistInBrick = function (brick) {
 /**
  * `this` is the first node of a typedargslist.
  * `this.type === eYo.py.dictorsetmaker`
- * @param {eYo.brick.C3sBase} brick  a brick
+ * @param {eYo.brick.BaseC3s} brick  a brick
  */
-eYo.py.node.C3sBase_p.dictorsetmakerInBrick = function (brick) {
+eYo.py.node.BaseC3s_p.dictorsetmakerInBrick = function (brick) {
 /*dictorsetmaker: ( ((test ':' test | '**' expr)
     (comp_for | (',' (test ':' test | '**' expr))* [','])) |
   ((test | star_expr)
@@ -868,9 +868,9 @@ eYo.py.node.C3sBase_p.dictorsetmakerInBrick = function (brick) {
 /**
  * Partially converts the node `this` to a visual brick.
  * `this.n_type === eo.TKN.comp_for`
- * @param {eYo.brick.C3sBase} brick a brick
+ * @param {eYo.brick.BaseC3s} brick a brick
  */
-eYo.py.node.C3sBase_p.comprehensionInBrick = function (brick) {
+eYo.py.node.BaseC3s_p.comprehensionInBrick = function (brick) {
   this.comp_forInBrick(brick)
   var for_if_b = brick.for_if_b
   var d = brick
@@ -885,7 +885,7 @@ eYo.py.node.C3sBase_p.comprehensionInBrick = function (brick) {
  * Converts the node `this` to a visual brick.
  * @param {Object} board  a board
  */
-eYo.py.node.C3sBase_p.comprehension2Brick = function (owner) {
+eYo.py.node.BaseC3s_p.comprehension2Brick = function (owner) {
   var brick = eYo.brick.newReady(owner, eYo.t3.expr.comprehension)
   brick.expression_s.connect(this.n0.toBrick(owner))
   this.n1.comprehensionInBrick(brick)
@@ -897,7 +897,7 @@ eYo.py.node.C3sBase_p.comprehension2Brick = function (owner) {
  * `this.type === eYo.py.dictorsetaker`
  * @param {Object} a brick
  */
-eYo.py.node.C3sBase_p.dict_comprehension2Brick = function (owner) {
+eYo.py.node.BaseC3s_p.dict_comprehension2Brick = function (owner) {
   /*dictorsetmaker: (test ':' test | '**' expr) comp_for
     */
   var brick = eYo.brick.newReady(owner, eYo.t3.expr.dict_comprehension)
@@ -921,7 +921,7 @@ eYo.py.node.C3sBase_p.dict_comprehension2Brick = function (owner) {
  * `this.type === eYo.py.testlist_comp`
  * @param {Object} a brick
  */
-eYo.py.node.C3sBase_p.testlist_compInBrick = function (brick) {
+eYo.py.node.BaseC3s_p.testlist_compInBrick = function (brick) {
   // (namedexpr_test|star_expr) ( comp_for | (',' (namedexpr_test|star_expr))* [','] )
   var n = this.n1
   if (n && n.n_type === eYo.py.comp_for) {
@@ -936,7 +936,7 @@ eYo.py.node.C3sBase_p.testlist_compInBrick = function (brick) {
  * @param {Object} board A board.
  * @param {Object} a brick or an array of bricks
  */
-eYo.py.node.C3sBase_p.toBrick = function (board) {
+eYo.py.node.BaseC3s_p.toBrick = function (board) {
   var root = this.toBrick_(board)
   if (this.comments) {
     var ds = this.comments.map(n => n.comment2Brick(board))
@@ -992,7 +992,7 @@ eYo.py.node.C3sBase_p.toBrick = function (board) {
  * @param {Object} board A board.
  * @param {Object} a brick or an array of bricks
  */
-eYo.py.node.C3sBase_p.toBrick_ = function (board) {
+eYo.py.node.BaseC3s_p.toBrick_ = function (board) {
   // console.log(`node type: ${this.name}`)
   var root, d, d0, d1, d2, n, n0, n1, n2, s, t, m4t
   switch (this.n_type) {

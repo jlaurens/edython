@@ -18,7 +18,7 @@ eYo.forward('msg')
 /**
  * @name{eYo.stmt.group}
  * Class for a Delegate, base group statement brick.
- * Base group is subclassed into Group and Control.
+ * BaseC3s group is subclassed into Group and Control.
  * For edython.
  */
 eYo.stmt.newC3s('group', {
@@ -210,7 +210,7 @@ eYo.stmt.group.prototype.willRender_ = function (recorder) {
 
 /**
  * Populate the context menu for the given brick.
- * @param {eYo.brick.C3sBase} brick The brick.
+ * @param {eYo.brick.BaseC3s} brick The brick.
  * @param {eYo.MenuManager} mngr mngr.menu is the menu to populate.
  * @private
  */

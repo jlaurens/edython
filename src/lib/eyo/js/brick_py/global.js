@@ -179,7 +179,7 @@ eYo.stmt.global_stmt.prototype.xmlAttr = function () {
 
 /**
  * Populate the context menu for the given brick.
- * @param {eYo.brick.C3sBase} brick The brick.
+ * @param {eYo.brick.BaseC3s} brick The brick.
  * @param {eYo.MenuManager} mngr mngr.menu is the menu to populate.
  * @private
  */

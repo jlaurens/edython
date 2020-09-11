@@ -36,7 +36,7 @@ eYo.mixinRO(eYo.observe._p, {
 //... chai.assert(eYo.observe)
 //... eYo.observe.HOOKS.forEach(s => chai.expect(s).eyo_Str)
 //>>>
-eYo.observe.makeC3sBase({
+eYo.observe.makeBaseC3s({
   /**
    * Object containing information for observation.
    * @param {String} [when] - One of the observe HOOKS
@@ -73,7 +73,7 @@ eYo.observe.makeC3sBase({
 eYo.mixinFR(eYo.observe, {
   /**
    * @param {String} [when] - One of the observe HOOKS
-   * @param {Object} [$this | eYo.observe.C3sBase] - Self explanatory
+   * @param {Object} [$this | eYo.observe.BaseC3s] - Self explanatory
    * @param {Function} [f] - function ([before], after) => void. arguments must ont have another name.
    */
   new (when, $this, callback) {
@@ -81,12 +81,12 @@ eYo.mixinFR(eYo.observe, {
       eYo.isDef(callback) && eYo.throw(`${this.eyo$.name}/addObserver: Too many arguments ${callback}`)
       ;[when, $this, callback] = [eYo.NA, when, $this]
     }
-    if ($this instanceof eYo.observe.C3sBase) {
+    if ($this instanceof eYo.observe.BaseC3s) {
       eYo.isDef(callback) && eYo.throw(`${this.eyo$.name}/addObserver: Too many arguments ${callback}`)
       if (!eYo.isDef(when) || when === $this.when) {
         return $this
       }
-      return new eYo.observe.C3sBase(when, $this.$this, $this.callback_)
+      return new eYo.observe.BaseC3s(when, $this.$this, $this.callback_)
     }
     if (eYo.isF($this)) {
       eYo.isDef(callback) && eYo.throw(`${this.eyo$.name}: unexpected (last?) parameter, got ${callback}`)
@@ -95,16 +95,16 @@ eYo.mixinFR(eYo.observe, {
       eYo.isF(callback) || eYo.throw(`Callback must be a function, got ${callback}`)
     }
     (!when && (when = eYo.observe.AFTER)) || eYo.observe.HOOKS.includes(when) || eYo.throw(`Unexpected when, got ${when}`)
-    return new eYo.observe.C3sBase(when, $this, callback)
+    return new eYo.observe.BaseC3s(when, $this, callback)
   },
 })
 
-eYo.dlgt.C3sBase_p.observeEnhanced = function () {
+eYo.dlgt.BaseC3s_p.observeEnhanced = function () {
   //<<< mochai: ../observeEnhanced
   //<<< mochai: Basics
   //... let ns = eYo.c3s.newNS()
-  //... ns.makeC3sBase()
-  //... ns.C3sBase$.observeEnhanced()
+  //... ns.makeBaseC3s()
+  //... ns.BaseC3s$.observeEnhanced()
   //... let o = ns.new()
   //... chai.expect(o.willChange).eyo_F
   //... chai.expect(o.atChange).eyo_F
@@ -166,8 +166,8 @@ eYo.dlgt.C3sBase_p.observeEnhanced = function () {
     }
     //<<< mochai: (will|at|did)Change
     //... let ns = eYo.c3s.newNS()
-    //... ns.makeC3sBase()
-    //... ns.C3sBase[eYo.$].observeEnhanced()
+    //... ns.makeBaseC3s()
+    //... ns.BaseC3s[eYo.$].observeEnhanced()
     //... for (let [k, v] of Object.entries({
     //...   [eYo.observe.BEFORE]: [123, 0, 0,],
     //...   [eYo.observe.DURING]: [0, 123, 0,],
@@ -209,7 +209,7 @@ eYo.dlgt.C3sBase_p.observeEnhanced = function () {
    * Add the observer.
    * The observer is a bound method.
    * @param {String} [when] - One of the observe HOOKS
-   * @param {Object || eYo.observe.C3sBase} [$this] - Self explanatory
+   * @param {Object || eYo.observe.BaseC3s} [$this] - Self explanatory
    * @param {Function} [f] - function ([before], after) => void. arguments must ont have another name. Must not be provided, when the first argument is an observer.
    * @return {*} Private structure, to be used for removing the observer.
    */
@@ -222,8 +222,8 @@ eYo.dlgt.C3sBase_p.observeEnhanced = function () {
     observers.push(observer)
     return observer
     //... let ns = eYo.c3s.newNS()
-    //... ns.makeC3sBase()
-    //... ns.C3sBase[eYo.$].observeEnhanced()
+    //... ns.makeBaseC3s()
+    //... ns.BaseC3s[eYo.$].observeEnhanced()
     //... let o = ns.new()
     //... let observer1 = o.addObserver(eYo.observe.BEFORE, function (before, after) {
     //...   eYo.flag.push(1, before + 1, after + 1)
@@ -260,8 +260,8 @@ eYo.dlgt.C3sBase_p.observeEnhanced = function () {
     }
     return observer
     //... let ns = eYo.c3s.newNS()
-    //... ns.makeC3sBase()
-    //... ns.C3sBase[eYo.$].observeEnhanced()
+    //... ns.makeBaseC3s()
+    //... ns.BaseC3s[eYo.$].observeEnhanced()
     //... let o = ns.new()
     //... let observer = o.addObserver(eYo.observe.BEFORE, function (before, after) {
     //...   eYo.flag.push(1, before, after)

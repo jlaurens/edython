@@ -184,7 +184,7 @@ chai.Assertion.addProperty('eyo_C3sBase', function () {
   this.eyo_C3s
   let C3s = this._obj
   this.assert(
-    C3s[eYo.$].ns.C3sBase === C3s,
+    C3s[eYo.$].ns.BaseC3s === C3s,
     'expected #{this} to be a base eYo constructor',
     'expected #{this} to not be a base eYo constructor',
   )
@@ -315,7 +315,7 @@ chai.use(function (_chai, utils) {
   chai.Assertion.addMethod('eqlSpan', function (expected) {
     var actual = this._obj
     // first, our instanceof check, shortcut
-    new chai.Assertion(actual).instanceof(eYo.span.C3sBase)
+    new chai.Assertion(actual).instanceof(eYo.span.BaseC3s)
     ;[
       'c_padding',
       'header',
@@ -437,7 +437,7 @@ chai.use(function (chai, utils) {
         }
       }
       if (eYo.span) {
-        if (eYo.span.C3sBase && this._obj instanceof eYo.span.C3sBase) {
+        if (eYo.span.BaseC3s && this._obj instanceof eYo.span.BaseC3s) {
           return this.eqlSpan(val)
         }
       }

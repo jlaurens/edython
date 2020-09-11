@@ -45,7 +45,7 @@ eYo.consolidator.List[eYo.$newSubC3s]('Arguments', {
 /**
  * Prepare io, just before walking through the input list.
  * Subclassers may add their own stuff to io.
- * @param {eYo.brick.C3sBase} brick - owner or the receiver.
+ * @param {eYo.brick.BaseC3s} brick - owner or the receiver.
  */
 eYo.consolidator.Arguments.prototype.getIO = function (brick) {
   var io = eYo.consolidator.Arguments[eYo.$].C3s_s.getIO.call(this, brick)

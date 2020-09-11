@@ -26,7 +26,7 @@ eYo.forward('view.Workspace')
  * @name{eYo.view.Desk}
  * Class for a desk.
  * This is the structure above the panes but below the application.
- * @param {eYo.app.C3sBase|Object} owner Owner application.
+ * @param {eYo.app.BaseC3s|Object} owner Owner application.
  * @constructor
  */
 eYo.view.newC3s('Desk', {
@@ -160,7 +160,7 @@ eYo.view.Desk_p.updateScreenCalculations_ = function() {
   this.workspace.recordDeleteAreas()
 }
 
-eYo.view.C3sBase[eYo.$].p6yMerge({
+eYo.view.BaseC3s[eYo.$].p6yMerge({
   /**
    * The desk of the receiver.
    * @type {eYo.view.Desk}

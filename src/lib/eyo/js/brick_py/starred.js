@@ -261,9 +261,9 @@ eYo.expr.Starred.prototype.xmlAttr = function () {
 
 // /**
 //  * Did connect this brick's connection from another connection.
-//  * @param {eYo.magnet.C3sBase} m4t
-//  * @param {eYo.magnet.C3sBase} oldTargetM4t that was connected to connection
-//  * @param {eYo.magnet.C3sBase} targetOldM4t that was connected to the old target connection.
+//  * @param {eYo.magnet.BaseC3s} m4t
+//  * @param {eYo.magnet.BaseC3s} oldTargetM4t that was connected to connection
+//  * @param {eYo.magnet.BaseC3s} targetOldM4t that was connected to the old target connection.
 //  */
 // eYo.expr.Starred.prototype.didConnect = function (m4t, oldTargetM4t, targetOldM4t) {
 //   eYo.expr.Starred[eYo.$].C3s_s.didConnect.call(this, m4t, oldTargetM4t, targetOldM4t)
@@ -274,8 +274,8 @@ eYo.expr.Starred.prototype.xmlAttr = function () {
 
 // /**
 //  * Did disconnect this brick's connection from another connection.
-//  * @param {eYo.magnet.C3sBase} m4t
-//  * @param {eYo.magnet.C3sBase} oldTargetM4t that was connected to m4t
+//  * @param {eYo.magnet.BaseC3s} m4t
+//  * @param {eYo.magnet.BaseC3s} oldTargetM4t that was connected to m4t
 //  */
 // eYo.expr.Starred.prototype.didDisconnect = function (m4t, oldTargetM4t) {
 //   eYo.expr.Starred[eYo.$].C3s_s.didDisconnect.call(this, m4t, oldTargetM4t)

@@ -14,8 +14,8 @@ describe ('Tests: Observe', function () {
   })
   it (`$this`, function () {
     let ns = eYo.c3s.newNS()
-    ns.makeC3sBase()
-    ns.C3sBase[eYo.$].observeEnhanced()
+    ns.makeBaseC3s()
+    ns.BaseC3s[eYo.$].observeEnhanced()
     let o = ns.new()
     let oo = {
       flag(...$) {
@@ -30,7 +30,7 @@ describe ('Tests: Observe', function () {
   })
   it (`Inherited`, function () {
     let ns = eYo.c3s.newNS()
-    let SuperC3s = ns.makeC3sBase()
+    let SuperC3s = ns.makeBaseC3s()
     let C3s = SuperC3s[eYo.$newSubC3s]('Foo')
     let ChildC3s = C3s[eYo.$newSubC3s]('Bar')
     SuperC3s[eYo.$].observeEnhanced()
@@ -70,11 +70,11 @@ describe ('Tests: Observe', function () {
   })
   it (`Shared and inherited`, function () {
     let ns = eYo.c3s.newNS()
-    ns.makeC3sBase()
-    ns.C3sBase[eYo.$].observeEnhanced()
+    ns.makeBaseC3s()
+    ns.BaseC3s[eYo.$].observeEnhanced()
     ns.new().willChange(1, 2)
     eYo.flag.expect()
-    ns.C3sBase_p.addObserver(eYo.observe.BEFORE, function (before, after) {
+    ns.BaseC3s_p.addObserver(eYo.observe.BEFORE, function (before, after) {
       eYo.flag.push(1, before+1, after+1)
     })
     ns.new().willChange(1, 2)

@@ -4,7 +4,7 @@ describe('app', function() {
       eyo: true,
       app: 421
     }
-    let o = new eYo.o3d.C3sBase(onr)
+    let o = new eYo.o3d.BaseC3s(onr)
     chai.assert(o.owner_p)
     chai.expect(o.owner).equal(onr)
     chai.assert(o.app_p)
@@ -15,8 +15,8 @@ describe('app', function() {
     chai.expect(o.app).equal(123)
   })
   it ('Application: Basic', function () {
-    chai.assert(eYo.app.C3sBase)
-    let APP = new eYo.app.C3sBase()
+    chai.assert(eYo.app.BaseC3s)
+    let APP = new eYo.app.BaseC3s()
     chai.assert(APP)
   })
   // it ('Application: UI', function () {
@@ -24,7 +24,7 @@ describe('app', function() {
   //     let options = {
   //       UI: UI
   //     }
-  //     let APP = new eYo.app.C3sBase(options)
+  //     let APP = new eYo.app.BaseC3s(options)
   //     eYo.test && eYo.test.IN_THROW || console.error('BREAK HERE!')
   //     console.error(APP.options)
   //     chai.expect(APP.options.UI).equal(UI)

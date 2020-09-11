@@ -2,7 +2,7 @@ describe("Group", function () {
   it ("Group: Basic", function () {
     chai.assert(eYo.test)
     chai.assert(eYo.stmt.group)
-    chai.assert(eYo.isSubclass(eYo.stmt.group, eYo.stmt.C3sBase))
+    chai.assert(eYo.isSubclass(eYo.stmt.group, eYo.stmt.BaseC3s))
   })
 })
 

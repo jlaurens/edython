@@ -68,7 +68,7 @@ eYo.svg.Effect.prototype.brickDispose = (() => {
 
 /**
  * Make the given field reserved or not, to emphasize reserved keywords.
- * @param {eYo.brick.C3sBase} brick  the brick the driver acts on
+ * @param {eYo.brick.BaseC3s} brick  the brick the driver acts on
  */
 eYo.svg.Effect.prototype.brickConnect = (() => {
   /*

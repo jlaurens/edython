@@ -18,7 +18,7 @@ eYo.fcfl.newDrvrC3s('Board')
 
 console.error('NYI')
 
-eYo.board.C3sBase[eYo.$].p6yMerge({
+eYo.board.BaseC3s[eYo.$].p6yMerge({
   ui () {
     return Object.create(null)
   },
@@ -84,7 +84,7 @@ eYo.board.C3sBase[eYo.$].p6yMerge({
     }
   },
 })
-eYo.board.C3sBase[eYo.$].p6yAliasesMerge({
+eYo.board.BaseC3s[eYo.$].p6yAliasesMerge({
   'xy': 'where',
 })
 
@@ -426,7 +426,7 @@ eYo.fcfl.Board._p.willShortRender_ = function (board, recorder) {
 /**
  * Translates the board, forwards to the ui driver after managing the snap formal argument.
  * Contrary to |moveBy| there is no undo management here.
- * @param {eYo.board.C3sBase} board - The board to move.
+ * @param {eYo.board.BaseC3s} board - The board to move.
  * @param {eYo.geom.Point} xy - The xy coordinate of the translation in board units.
  * @param {Boolean} snap Whether we should snap to the grid.
  */
@@ -898,7 +898,7 @@ eYo.fcfl.Board._p.drawSharp_ = function (io) {
 /**
  * Draw/hide the sharp.
  * Default implementation does nothing.
- * @param {eYo.board.C3sBase} board - the board the driver acts on
+ * @param {eYo.board.BaseC3s} board - the board the driver acts on
  * @param {Boolean} visible - the board the driver acts on
  * @private
  */
@@ -1362,12 +1362,12 @@ eYo.fcfl.Board._p.drawInputMagnet_ = function (b3d) {
  * Forwards to the driver.
  * @protected
  */
-eYo.drvr.makeForwarder(eYo.board.C3sBase_p, 'updateShape')
+eYo.drvr.makeForwarder(eYo.board.BaseC3s_p, 'updateShape')
 
 /**
  * Update the shape of the board.
  * To be subclassed.
- * @param {eYo.board.C3sBase} board - The board of which the shape would need an update
+ * @param {eYo.board.BaseC3s} board - The board of which the shape would need an update
  * @protected
  */
 eYo.fcfl.Board._p.do_updateShape = eYo.doNothing
@@ -1375,7 +1375,7 @@ eYo.fcfl.Board._p.do_updateShape = eYo.doNothing
 /**
  * Hide the board.
  * Forwards to the driver.
- * @param {eYo.board.C3sBase} board - the board the driver acts on
+ * @param {eYo.board.BaseC3s} board - the board the driver acts on
  */
 eYo.fcfl.Board._p.hide = function (board) {
   this.displayedSet(board, false)
@@ -1384,7 +1384,7 @@ eYo.fcfl.Board._p.hide = function (board) {
 /**
  * The default implementation forwards to the driver.
  * This must take place while the board is still in a consistent state.
- * @param {eYo.board.C3sBase} board - the board the driver acts on
+ * @param {eYo.board.BaseC3s} board - the board the driver acts on
  */
 eYo.fcfl.Board._p.disposeEffect = function (board) { // eslint-disable-line
   //TODO: Missing implementation
@@ -1393,7 +1393,7 @@ eYo.fcfl.Board._p.disposeEffect = function (board) { // eslint-disable-line
 /**
  * Show the given menu.
  * The default implementation forwards to the driver.
- * @param {eYo.board.C3sBase} board - the board the driver acts on
+ * @param {eYo.board.BaseC3s} board - the board the driver acts on
  * @param {*} menu
  */
 eYo.fcfl.Board._p.showMenu = function (board, menu) {
@@ -1405,10 +1405,10 @@ eYo.fcfl.Board._p.showMenu = function (board, menu) {
 /**
  * Did connect some board's connection to another connection.
  * When connecting locked boards, select the receiver.
- * @param {eYo.board.C3sBase} board - the board the driver acts on
- * @param {eYo.magnet.C3sBase} m4t what has been connected in the board
- * @param {eYo.magnet.C3sBase} oldTargetM4t what was previously connected in the board
- * @param {eYo.magnet.C3sBase} targetOldM4t what was previously connected to the new targetConnection
+ * @param {eYo.board.BaseC3s} board - the board the driver acts on
+ * @param {eYo.magnet.BaseC3s} m4t what has been connected in the board
+ * @param {eYo.magnet.BaseC3s} oldTargetM4t what was previously connected in the board
+ * @param {eYo.magnet.BaseC3s} targetOldM4t what was previously connected to the new targetConnection
  */
 eYo.fcfl.Board._p.didConnect = function (board, m4t, oldTargetM4t, targetOldM4t) { // eslint-disable-line
   if (m4t.isOut) {
@@ -1418,9 +1418,9 @@ eYo.fcfl.Board._p.didConnect = function (board, m4t, oldTargetM4t, targetOldM4t)
 
 /**
  * Converse of the preceeding.
- * @param {eYo.board.C3sBase} board - the board the driver acts on
- * @param {eYo.magnet.C3sBase} m4t what has been connected in the board
- * @param {eYo.magnet.C3sBase} oldTargetM4t what was previously connected in the board
+ * @param {eYo.board.BaseC3s} board - the board the driver acts on
+ * @param {eYo.magnet.BaseC3s} m4t what has been connected in the board
+ * @param {eYo.magnet.BaseC3s} oldTargetM4t what was previously connected in the board
  */
 eYo.fcfl.Board._p.didDisconnect = function (board, m4t, oldTargetM4t) { // eslint-disable-line
   if (m4t.isOut) {
@@ -1450,7 +1450,7 @@ eYo.fcls.Board._p.xyInDesk = eYo.do.NYI
  * As the shape is not the same comparing to Blockly's default,
  * the bounding rect changes too.
  * Coordinate system: board coordinates.
- * @param {eYo.board.C3sBase} board - the board the driver acts on
+ * @param {eYo.board.BaseC3s} board - the board the driver acts on
  * @return {!eYo.geom.Rect}
  *    Object with top left and bottom right coordinates of the bounding box.
  */
@@ -1462,7 +1462,7 @@ eYo.fcfl.Board._p.boundingRect = function (board) {
 }
 /**
  * The size
- * @param {eYo.board.C3sBase} board - the board the driver acts on
+ * @param {eYo.board.BaseC3s} board - the board the driver acts on
  */
 eYo.fcfl.Board._p.size = function (board) {
   return board.size
@@ -1471,7 +1471,7 @@ eYo.fcfl.Board._p.size = function (board) {
  * Returns the coordinates of a bounding box describing the dimensions of this
  * board.
  * Coordinate system: board coordinates.
- * @param {eYo.board.C3sBase} board - the board the driver acts on
+ * @param {eYo.board.BaseC3s} board - the board the driver acts on
  * @return {!goog.math.Box}
  *    Object with top left and bottom right coordinates of the bounding box.
  */
@@ -1481,7 +1481,7 @@ eYo.fcfl.Board._p.boundingBox = function (board) {
 
 /**
  * Show the context menu for this board.
- * @param {eYo.board.C3sBase} board - the board the driver acts on
+ * @param {eYo.board.BaseC3s} board - the board the driver acts on
  * @param {Event} e Mouse event.
  * @private
  */

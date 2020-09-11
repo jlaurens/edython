@@ -65,8 +65,8 @@ eYo.c3s.newNS(eYo, 'geom', true, {
   //>>>
 })
 
-eYo.geom.makeC3sBase(true, {
-  //<<< mochai: eYo.geom.C3sBase
+eYo.geom.makeBaseC3s(true, {
+  //<<< mochai: eYo.geom.BaseC3s
   properties: {
     snap: false,
   },
@@ -93,7 +93,7 @@ eYo.geom.makeC3sBase(true, {
 
 eYo.Geom[eYo.$].o4tEnhanced()
 
-eYo.geom.C3sBase[eYo.$].finalizeC3s(['aliases'], {
+eYo.geom.BaseC3s[eYo.$].finalizeC3s(['aliases'], {
   properties: {
     [eYo.model.ANY]: eYo.P6y[eYo.$].modelFormat,
     [eYo.model.VALIDATE]: eYo.model.validateD,

@@ -41,13 +41,13 @@ eYo.provide('many')
 //... var C3s, foo$
 //... let preparator = f => {
 //...   return model => {
-//...     C3s = eYo.c3s.newNS().makeC3sBase(true)
+//...     C3s = eYo.c3s.newNS().makeBaseC3s(true)
 //...     C3s.prototype.flag = (...$) => eYo.flag.push('/', ...$)
 //...     let eyo$ = C3s[eYo.$]
-//...     eyo$._p.c9rPrepare = (object, ...$) => {
+//...     eyo$._p.c3sPrepare = (object, ...$) => {
 //...       object.flag('p', ...$)
 //...     }
-//...     eyo$._p.c9rInit = (object, ...$) => {
+//...     eyo$._p.c3sInit = (object, ...$) => {
 //...       object.flag('i', ...$)
 //...     }
 //...     f && f(_p)
@@ -141,7 +141,7 @@ eYo.Dlgt_p.manyEnhanced = function (id, type, path, manyModel) {
   //... preparator()()
   //... var foo$ = C3s[eYo.$].manyEnhanced('foo', 'foo')
   //... chai.expect(() => C3s[eYo.$].manyEnhanced('foo', 'foo')).xthrow()
-  //... C3s = eYo.c3s.newNS().makeC3sBase(true)
+  //... C3s = eYo.c3s.newNS().makeBaseC3s(true)
   //... let dlgt = C3s[eYo.$]
   //... var foo$ = dlgt.manyEnhanced('foo', 'bar', {})
   //... ;[
@@ -640,7 +640,7 @@ eYo.Dlgt_p.manyEnhanced = function (id, type, path, manyModel) {
     }
     //... preparator()()
     //... var ns = eYo.o3d.newNS()
-    //... ns.makeC3sBase({
+    //... ns.makeBaseC3s({
     //...   init (model, k, object) {
     //...     eYo.flag.push('/i')
     //...   },
@@ -685,7 +685,7 @@ eYo.Dlgt_p.manyEnhanced = function (id, type, path, manyModel) {
     object.boundField = eYo.NA // not here
     //... preparator()()
     //... var ns = eYo.o3d.newNS()
-    //... ns.makeC3sBase({
+    //... ns.makeBaseC3s({
     //...   dispose (...$) {
     //...     eYo.flag.push(1, ...$)
     //...   },
@@ -734,7 +734,7 @@ eYo.Dlgt_p.manyEnhanced = function (id, type, path, manyModel) {
     }
     //... preparator()()
     //... var ns = eYo.o3d.newNS()
-    //... ns.makeC3sBase()
+    //... ns.makeBaseC3s()
     //... var foo$ = C3s[eYo.$].manyEnhanced('foo', 'foo', {
     //...   make (model, k, object) {
     //...     return ns.new(model, k, object)
@@ -781,7 +781,7 @@ eYo.Dlgt_p.manyEnhanced = function (id, type, path, manyModel) {
     return false
     //... preparator()()
     //... var ns = eYo.o3d.newNS()
-    //... ns.makeC3sBase()
+    //... ns.makeBaseC3s()
     //... var foo$ = C3s[eYo.$].manyEnhanced('foo', 'foo', {
     //...   make (model, k, object) {
     //...     return ns.new(model, k, object)

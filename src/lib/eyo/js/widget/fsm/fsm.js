@@ -34,7 +34,7 @@ eYo.o4t.newNS(eYo, 'fsm', {
 
 //<<< mochai: Basics
 //... chai.assert(eYo.fsm)
-//... chai.assert(eYo.fsm.C3sBase)
+//... chai.assert(eYo.fsm.BaseC3s)
 //... chai.assert(eYo.Fsm)
 //... chai.assert(eYo.Fsm_p)
 //... chai.assert(eYo.Fsm$)
@@ -43,19 +43,19 @@ eYo.o4t.newNS(eYo, 'fsm', {
 /**
  * Class for a basic object indirectly owned by a brick.
  * 
- * @name {eYo.fsm.C3sBase}
+ * @name {eYo.fsm.BaseC3s}
  * @constructor
- * @param {eYo.brick|eYo.slot.C3sBase|eYo.magnet.C3sBase} owner - the immediate owner of this magnet. When not a brick, it is indirectly owned by a brick.
+ * @param {eYo.brick|eYo.slot.BaseC3s|eYo.magnet.BaseC3s} owner - the immediate owner of this magnet. When not a brick, it is indirectly owned by a brick.
  * @readonly
  * @property {eYo.brick.UI} ui - The ui object used for rendering.
  * @readonly
- * @property {eYo.brick.C3sBase} brick - The brick.
+ * @property {eYo.brick.BaseC3s} brick - The brick.
  * @readonly
- * @property {eYo.slot.C3sBase} slot - The slot.
+ * @property {eYo.slot.BaseC3s} slot - The slot.
  * @readonly
- * @property {eYo.magnet.C3sBase} magnet - The magnet.
+ * @property {eYo.magnet.BaseC3s} magnet - The magnet.
  */
-eYo.fsm.makeC3sBase(true, {
+eYo.fsm.makeBaseC3s(true, {
   init (key, owner) { // eslint-disable-line
     this.resetBSM(owner)
   },
@@ -70,7 +70,7 @@ eYo.fsm.makeC3sBase(true, {
     //...   }
     //... })
     //... let ns = eYo.fsm.newNS()
-    //... ns.makeC3sBase()
+    //... ns.makeBaseC3s()
     //... var fsm = ns.new({}, 'fsm', onr)
     //... chai.expect(fsm.brick).equal(onr)
     'brick.ui': 'ui',
@@ -95,7 +95,7 @@ eYo.fsm.makeC3sBase(true, {
     resetBSM (owner) {
       //<<< mochai: resetBSM
       //... let ns = eYo.fsm.newNS()
-      //... ns.makeC3sBase()
+      //... ns.makeBaseC3s()
       //... var fsm = ns.new({}, 'fsm', onr)
       //... chai.expect(fsm.brick).equal(onr)
       //... chai.expect(fsm.slot).undefined
@@ -147,15 +147,15 @@ eYo.fsm.makeC3sBase(true, {
     ownerDidChange (before, after) {
       //<<< mochai: ownerDidChange
       //... let ns = eYo.fsm.newNS()
-      //... ns.makeC3sBase()
-      //... eYo.test.extend(ns.C3sBase_p, 'ownerDidChange', function (before, after) {
+      //... ns.makeBaseC3s()
+      //... eYo.test.extend(ns.BaseC3s_p, 'ownerDidChange', function (before, after) {
       //...   eYo.flag.push(421)
       //... })
       //... var fsm = ns.new({}, 'fsm', onr)
       //... setup()
       //... fsm.owner_ = onr
       //... eYo.flag.expect(421)
-      let inherited = eYo.fsm.C3sBase[eYo.$SuperC3s_p].ownerDidChange
+      let inherited = eYo.fsm.BaseC3s[eYo.$SuperC3s_p].ownerDidChange
       inherited && inherited.call(this, before, after)
       this.resetBSM()
       //>>>
@@ -167,7 +167,7 @@ eYo.fsm.makeC3sBase(true, {
 eYo.Fsm$.drvrEnhanced()
 //<<< mochai: drvrEnhanced
 //... let mngr = eYo.drvr.newNS()
-//... mngr.makeC3sBase()
+//... mngr.makeBaseC3s()
 //... let drvr = mngr.getDrvr('')
 //... setup({
 //...   properties: {
@@ -186,7 +186,7 @@ eYo.Fsm$.drvrEnhanced()
 //...   },
 //... })
 //... let NS = ns.newNS('foo')
-//... chai.expect(NS.makeC3sBase(true)).equal(ns.Foo)
+//... chai.expect(NS.makeBaseC3s(true)).equal(ns.Foo)
 //... chai.expect(ns.Foo_p).not.undefined
 //... mngr.makeForwarder(ns.Foo_p, 'push')
 //... ns.Foo$.finalizeC3s()

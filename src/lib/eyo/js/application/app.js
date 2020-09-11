@@ -154,7 +154,7 @@ eYo.app._p.parseZoom_ = function (options = {}) {
  * @property {eYo.focus.Main} focus_main
  *
  */
-eYo.app.makeC3sBase({
+eYo.app.makeBaseC3s({
   init (options) {
     this.options_ = new eYo.app.Options(options ?? {})
   },
@@ -291,7 +291,7 @@ eYo.app.makeC3sBase({
     },
     /**
      * Copy a brick onto the local clipboard.
-     * @param {eYo.brick.C3sBase} b3k - Brick to be copied.
+     * @param {eYo.brick.BaseC3s} b3k - Brick to be copied.
      * @private
      */
     copyBrick (b3k, deep) {
@@ -312,7 +312,7 @@ eYo.app.makeC3sBase({
   },
 })
 
-eYo.o4t.C3sBase[eYo.$][eYo.o4t.C3sBase[eYo.$].p6y$.merge]({
+eYo.o4t.BaseC3s[eYo.$][eYo.o4t.BaseC3s[eYo.$].p6y$.merge]({
   /**
    * The root application
    * @type {eYo.app}
@@ -382,7 +382,7 @@ eYo.o4t.C3sBase[eYo.$][eYo.o4t.C3sBase[eYo.$].p6y$.merge]({
 })
 
 {
-  let eyo = eYo.o4t.C3sBase[eYo.$]
+  let eyo = eYo.o4t.BaseC3s[eYo.$]
   eyo[eyo.p6y$.merge]({
     /**
      * The root application
@@ -460,7 +460,7 @@ eYo.o4t.C3sBase[eYo.$][eYo.o4t.C3sBase[eYo.$].p6y$.merge]({
   })
 }
 
-eYo.o3d.C3sBase[eYo.$].modelMerge({
+eYo.o3d.BaseC3s[eYo.$].modelMerge({
   aliases: {
     /**
      * Options

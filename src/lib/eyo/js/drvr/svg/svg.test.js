@@ -4,7 +4,7 @@ describe('Svg driver', function() {
     chai.assert(eYo.svg.Mngr)
     chai.assert(eYo.svg.newDrvrC3s)
     chai.assert(eYo.svg.makeMngr)
-    chai.assert(eYo.svg.C3sBase)
+    chai.assert(eYo.svg.BaseC3s)
   })
   it ('Svg Dlgt: Drivers', function () {
     for (let [name, Driver] of eYo.svg.Mngr[eYo.$].driverC3sMap) {

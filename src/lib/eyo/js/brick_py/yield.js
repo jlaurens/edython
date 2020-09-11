@@ -158,7 +158,7 @@ eYo.expr.newC3s('yield_expr', true, {
 
 /**
  * Populate the context menu for the given brick.
- * @param {eYo.brick.C3sBase} brick The brick.
+ * @param {eYo.brick.BaseC3s} brick The brick.
  * @param {eYo.MenuManager} mngr - mngr.menu is the menu to populate.
  * @private
  */
@@ -177,7 +177,7 @@ eYo.stmt.newC3s('yield_stmt', true, {
 
 /**
  * Populate the context menu for the given brick.
- * @param {eYo.brick.C3sBase} brick The brick.
+ * @param {eYo.brick.BaseC3s} brick The brick.
  * @param {eYo.MenuManager} mngr - mngr.menu is the menu to populate.
  * @private
  */

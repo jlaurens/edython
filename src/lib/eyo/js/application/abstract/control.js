@@ -44,7 +44,7 @@ Object.defineProperties(eYo.control._p, {
  * @property {number} MARGIN_SIDE_, Distance between trash can and right edge of board.
  *
  */
-eYo.control.makeC3sBase({
+eYo.control.makeBaseC3s({
   aliases: {
     'viewRect.y': 'top',
   },

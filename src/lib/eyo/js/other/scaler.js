@@ -19,7 +19,7 @@
  * @property {eYo.event.Motion} motion - the motion used to create this scaler
  * @property {Boolean} active - whether the receiver is active
  */
-eYo.event.newC3s('Scaler', eYo.o3d.C3sBase, {
+eYo.event.newC3s('Scaler', eYo.o3d.BaseC3s, {
   properties: {
     active: false,
   },
