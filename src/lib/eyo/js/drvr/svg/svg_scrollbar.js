@@ -18,7 +18,7 @@ eYo.forward('view.Scrollbar')
 /**
  * Svg driver for a scrollbar.
  */
-eYo.svg.newDrvrC9r('Scrollbar', {
+eYo.svg.newDrvrC3s('Scrollbar', {
   /**
    * Initializes the scrollbar SVG ressources.
    * @param {eYo.view.Scrollbar} scrollbar

@@ -13,7 +13,7 @@ describe ('Tests: many', function () {
     })
     var C3s = function () {}
     let o = new C3s()
-    dlgt.setC9r(C3s)
+    dlgt.setC3s(C3s)
     var foo1$ = dlgt.manyEnhanced('foo1', 'bar', {})
     chai.expect(() => {
       dlgt[foo1$.prepare](o)
@@ -87,7 +87,7 @@ describe ('Tests: many', function () {
         c: 3,
       }
     })
-    dlgt.setC9r(C3s)
+    dlgt.setC3s(C3s)
     var foo$ = dlgt.manyEnhanced('foo', 'bar', {
       make (model, k, object) {
         return {
@@ -133,7 +133,7 @@ describe ('Tests: many', function () {
         let dlgt = eYo.dlgt.new('Foo', {
           bar: model
         })
-        dlgt.setC9r(C3s)
+        dlgt.setC3s(C3s)
         var foo$ = dlgt.manyEnhanced('foo', 'bar', {
           make (model, k, object) {
             return {

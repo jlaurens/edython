@@ -14,7 +14,7 @@
 /**
  * Faceless driver for Focus managers.
  */
-eYo.fcls.newDrvrC9r('Focus', {
+eYo.fcls.newDrvrC3s('Focus', {
   methods: {
     /**
      * Init the main focus manager.

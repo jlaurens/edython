@@ -41,19 +41,19 @@ eYo.event.MAX_UNDO = 1024,
 //>>>
 //<<< mochai: Basics
 //... chai.assert(eYo.event)
-//... eYo.objectHasOwnProperty(chai.assert(eYo.event._p, 'C9rBase'))
+//... eYo.objectHasOwnProperty(chai.assert(eYo.event._p, 'C3sBase'))
 //... chai.assert(eYo.event.Mngr)
 //>>>
 
 // No special Base class
-eYo.event.makeC9rBase()
+eYo.event.makeC3sBase()
 
 /**
  * An event manager.
  * @name {eYo.event.Mngr}
  * @constructor
  */
-eYo.event.newC9r('Mngr', {
+eYo.event.newC3s('Mngr', {
   //<<< mochai: eYo.event.Mngr
   init (/*key, owner*/) {
     // Private attributes
@@ -226,7 +226,7 @@ eYo.event.newC9r('Mngr', {
   //>>>
 })
 
-eYo.event.Mngr[eYo.$].finalizeC9r()
+eYo.event.Mngr[eYo.$].finalizeC3s()
 
 /**
  * Create a custom event and fire it.
@@ -314,7 +314,7 @@ eYo.event.Mngr_p.filter = function(queueIn, forward) {
  * Abstract class for an event.
  * @constructor
  */
-eYo.event.newC9r('Abstract', {
+eYo.event.newC3s('Abstract', {
   /**
    * 
    * @param {*} owner - The event manager is the owner

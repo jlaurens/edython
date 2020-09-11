@@ -143,9 +143,9 @@ eYo.kv.C3s = class {
 }
 
 eYo.mixinRO(eYo.kv, {
-  //<<< mochai: eYo.kv.C9r_p
-  C9r_p: eYo.kv.C3s.prototype,
-  //... chai.expect(eYo.kv.C9r_p).equal(eYo.kv.C3s.prototype)
+  //<<< mochai: eYo.kv.C3s_p
+  C3s_p: eYo.kv.C3s.prototype,
+  //... chai.expect(eYo.kv.C3s_p).equal(eYo.kv.C3s.prototype)
   //>>>
 })
 
@@ -164,10 +164,10 @@ eYo.mixinFR(eYo, {
     //>>>
   },
   KV: eYo.kv.C3s,
-  KV_p: eYo.kv.C9r_p,
+  KV_p: eYo.kv.C3s_p,
   //<<< mochai: KV/KV_p
   //... chai.expect(eYo.KV).equal(eYo.kv.C3s)
-  //... chai.expect(eYo.KV_p).equal(eYo.kv.C9r_p)
+  //... chai.expect(eYo.KV_p).equal(eYo.kv.C3s_p)
   //>>>
 })
 

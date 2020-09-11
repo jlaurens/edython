@@ -18,7 +18,7 @@ eYo.provide('navigate')
 
 /**
  * Tab navigation.
- * @param {eYo.brick.C9rBase} [brick]  Brick.
+ * @param {eYo.brick.C3sBase} [brick]  Brick.
  * @param {Object} [opt] Optional key value arguments.
  */
 eYo.navigate.doTab = (() => {
@@ -83,7 +83,7 @@ eYo.navigate.doTab = (() => {
  * For edython.
  * @param {eYo.board} board .
  * @param {function(point): number} weight is a function.
- * @return {?eYo.brick.C9rBase}
+ * @return {?eYo.brick.C3sBase}
  */
 eYo.brick.getBestBrick = function (board, weight) {
   var smallest = Infinity
@@ -105,7 +105,7 @@ eYo.brick.getBestBrick = function (board, weight) {
  * @param {(point, point) -> number} distance is a function.
  * @return None
  */
-eYo.brick.C9rBase_p.getBestBrick = function (distance) {
+eYo.brick.C3sBase_p.getBestBrick = function (distance) {
   const box_a = this.ui.boundingBox
   var smallest = {}
   var best

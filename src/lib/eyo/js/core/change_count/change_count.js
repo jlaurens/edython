@@ -21,12 +21,12 @@ eYo.o4t.newNS('changeCount')
 eYo.o4t.changeCount.modelDeclare({
   //<<< mochai: eYo.o4t.changeCount.modelDeclare
   //... var ns = eYo.o4t.newNS()
-  //... ns.makeC9rBase()
-  //... eYo.o4t.changeCount.merge(ns.C9rBase_p)
+  //... ns.makeC3sBase()
+  //... eYo.o4t.changeCount.merge(ns.C3sBase_p)
   properties: {
     changeCount: 0,
     //<<< mochai: changeCount
-    //... var o = new ns.C9rBase('foo', onr)
+    //... var o = new ns.C3sBase('foo', onr)
     //... chai.expect(o).property('changeCount_p')
     //>>>
   },
@@ -41,11 +41,11 @@ eYo.o4t.changeCount.modelDeclare({
      */
     updateChangeCount (redo, event) {
       //<<< mochai: updateChangeCount
-      //... var o = new ns.C9rBase('foo', onr)
+      //... var o = new ns.C3sBase('foo', onr)
       //... chai.assert(o.updateChangeCount)
       if (redo === true) {
         var what = 1
-        //... var o = new ns.C9rBase('foo', onr)
+        //... var o = new ns.C3sBase('foo', onr)
         //... o.updateChangeCount(true)
         //... chai.expect(o.changeCount).equal(1)
         //... o.updateChangeCount(true)
@@ -65,7 +65,7 @@ eYo.o4t.changeCount.modelDeclare({
       if (!event || !event.isUI) {
         this.changeCount_ += what
         //... var event = {}
-        //... var o = new ns.C9rBase('foo', onr)
+        //... var o = new ns.C3sBase('foo', onr)
         //... o.updateChangeCount(event)
         //... chai.expect(o.changeCount).equal(1)
         //... o.updateChangeCount(true, event)
@@ -99,7 +99,7 @@ eYo.o4t.changeCount.modelDeclare({
      */
     resetChangeCount () {
       //<<< mochai: resetChangeCount
-      //... var o = new ns.C9rBase('foo', onr)
+      //... var o = new ns.C3sBase('foo', onr)
       //... chai.assert(o.resetChangeCount)
       //... o.updateChangeCount()
       //... chai.expect(o.changeCount).equal(1)

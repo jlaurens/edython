@@ -60,14 +60,14 @@ eYo.mixinRO(eYo.t3.stmt, {
  * create one on the first call if the module knows it.
  * @param {*} identifier
  */
-eYo.module.C9rBase_p.getProfile = function(identifier) {
+eYo.module.C3sBase_p.getProfile = function(identifier) {
   var ans = this.profiles[identifier]
   if (ans) {
     return ans
   }
   var item = this.getItem(identifier)
   if (item) {
-    ans = new eYo.t3.profile.C9rBase(this, {
+    ans = new eYo.t3.profile.C3sBase(this, {
       raw: eYo.t3.expr.known_identifier,
       expr: eYo.t3.expr.identifier,
       name: identifier,
@@ -90,7 +90,7 @@ eYo.module.C9rBase_p.getProfile = function(identifier) {
  * @param {*} model  a dictionary
  * @constructor
  */
-eYo.t3.profile.newC9r('C9rBase', {
+eYo.t3.profile.newC3s('C3sBase', {
   init (owner, model) {
     this.owner = owner
     var m = {
@@ -208,7 +208,7 @@ eYo.t3.profile.newC9r('C9rBase', {
  * @param {*} model  a dictionary of properties
  * @constructor
  */
-eYo.t3.profile.newC9r('Dotted', {
+eYo.t3.profile.newC3s('Dotted', {
   init (owner, profile, model) {
     this.profile = profile
     if (model) {
@@ -253,7 +253,7 @@ eYo.t3.profile.prototype.type = eYo.NA
  *
  * @param {String} identifier
  */
-eYo.t3.newC9r('Profiles', {
+eYo.t3.newC3s('Profiles', {
   init (identifier) {
     this.identifier = identifier
     this.profiles = {}
@@ -322,20 +322,20 @@ eYo.t3.newC9r('Profiles', {
 
 eYo.mixinRO(eYo.t3.profile, {
   /* Default void profile */
-  void: new eYo.t3.profile.C9rBase(null, {
+  void: new eYo.t3.profile.C3sBase(null, {
     isVoid: true
   }),
   /* Profile for an unset identifier */
-  unset: new eYo.t3.profile.C9rBase(null, {
+  unset: new eYo.t3.profile.C3sBase(null, {
     expr: eYo.t3.expr.identifier,
     isUnset: true
   }),
   /* Profile for an integer */
-  integer: new eYo.t3.profile.C9rBase(null, {
+  integer: new eYo.t3.profile.C3sBase(null, {
     expr: eYo.t3.expr.integer
   }),
   /* Profile for a float number */
-  floatnumber: new eYo.t3.profile.C9rBase(null, {
+  floatnumber: new eYo.t3.profile.C3sBase(null, {
     expr: eYo.t3.expr.floatnumber
   })
 })
@@ -373,7 +373,7 @@ eYo.t3.profile.getDotted = function (candidate, module) {
     var item = ans && ans.item
     var mdl = item && item.module
     mdl = mdl && (mdl.name.split('__'))[0]
-    return new eYo.t3.profile.C9rBase(null, {
+    return new eYo.t3.profile.C3sBase(null, {
       raw: m.dots
         ? eYo.t3.expr.custom_parent_module
         : m.holder
@@ -418,7 +418,7 @@ eYo.t3.profile.getIdentifier = function (candidate, module) {
       : m.valued
         ? eYo.t3.expr.identifier_valued
         : eYo.t3.expr.identifier
-    return new eYo.t3.profile.C9rBase(null, {
+    return new eYo.t3.profile.C3sBase(null, {
       raw: r,
       expr: x,
       name: m.name,
@@ -444,7 +444,7 @@ eYo.t3.profile.getAnnotatedValued = function (candidate, module) { // eslint-dis
         ? eYo.t3.expr.identifier_annotated_valued
         : eYo.t3.expr.identifier_annotated
       : eYo.t3.expr.identifier_valued
-    return new eYo.t3.profile.C9rBase(null, {
+    return new eYo.t3.profile.C3sBase(null, {
       raw: t,
       expr: t,
       name: m.name,
@@ -464,7 +464,7 @@ eYo.t3.profile.getLiteral = function (candidate) {
   // is it a number ?
   var match = XRegExp.exec(candidate, eYo.xre.integer)
   if (match) {
-    return new eYo.t3.profile.C9rBase(null, {
+    return new eYo.t3.profile.C3sBase(null, {
       raw: eYo.t3.Custom_literal,
       expr: eYo.t3.expr.integer,
       type: match.bininteger
@@ -477,13 +477,13 @@ eYo.t3.profile.getLiteral = function (candidate) {
     })
   }
   if (XRegExp.exec(candidate, eYo.xre.floatnumber)) {
-    return new eYo.t3.profile.C9rBase(null, {
+    return new eYo.t3.profile.C3sBase(null, {
       raw: eYo.t3.Custom_literal,
       expr: eYo.t3.expr.floatnumber
     })
   }
   if (XRegExp.exec(candidate, eYo.xre.imagnumber)) {
-    return new eYo.t3.profile.C9rBase(null, {
+    return new eYo.t3.profile.C3sBase(null, {
       raw: eYo.t3.Custom_literal,
       expr: eYo.t3.expr.imagnumber
     })
@@ -573,7 +573,7 @@ eYo.t3.profile.getReference = function (identifier) {
     eYo.key.STATICMETHOD,
     eYo.key.CLASSMETHOD
   ].indexOf(identifier) >= 0) {
-    return new eYo.t3.profile.C9rBase(null,  {
+    return new eYo.t3.profile.C3sBase(null,  {
       expr: eYo.t3.expr.identifier,
       raw: eYo.t3.expr.reserved_identifier,
       stmt: eYo.t3.stmt.decorator_stmt
@@ -617,7 +617,7 @@ eYo.t3.profile.getInModule = function (identifier) {
  */
 eYo.t3.profile.getShort = function (identifier) {
   if (['(', ')', '[', ']', '{', '}', ',', ':', ';'].indexOf(identifier) >= 0) {
-    return new eYo.t3.profile.C9rBase(null, {
+    return new eYo.t3.profile.C3sBase(null, {
       raw: eYo.t3.expr.const
     })
   }
@@ -665,7 +665,7 @@ eYo.t3.profile.getReserved = function (identifier) {
     eYo.do.mixin(out, {
       raw: eYo.t3.expr.reserved_keyword
     })
-    return new eYo.t3.profile.C9rBase(null, out)
+    return new eYo.t3.profile.C3sBase(null, out)
   }
   if ((out = {
     class: eYo.t3.stmt.classdef_part,
@@ -694,7 +694,7 @@ eYo.t3.profile.getReserved = function (identifier) {
       stmt: out,
       isReserved: true
     }
-    return new eYo.t3.profile.C9rBase(null, out)
+    return new eYo.t3.profile.C3sBase(null, out)
   }
   if ((out = {
     is: eYo.t3.expr.object_comparison,
@@ -709,11 +709,11 @@ eYo.t3.profile.getReserved = function (identifier) {
       expr: out,
       isReserved: true
     }
-    return new eYo.t3.profile.C9rBase(null, out)
+    return new eYo.t3.profile.C3sBase(null, out)
   }
   // reserved identifiers
   if (['True', 'False', 'None', 'Ellipsis', '...', 'NotImplemented'].indexOf(identifier) >= 0) {
-    return new eYo.t3.profile.C9rBase(null, {
+    return new eYo.t3.profile.C3sBase(null, {
       raw: eYo.t3.expr.reserved_identifier,
       expr: eYo.t3.expr.builtin__object
     })

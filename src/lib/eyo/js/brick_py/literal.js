@@ -25,7 +25,7 @@ eYo.forward('msg')
  * Class for a Delegate, number: integer, floatnumber or imagnumber.
  * For edython.
  */
-eYo.expr.newC9r('literal', {
+eYo.expr.newC3s('literal', {
   xml: {
     attr: 'literal',
   },
@@ -44,7 +44,7 @@ eYo.expr.newC9r('literal', {
  * @param {Object} [opt]
  */
 eYo.expr.literal.prototype.saveData = function (element, opt) { // eslint-disable-line
-  eYo.expr.literal.eyo$.C9r_s.saveData.apply(this, arguments)
+  eYo.expr.literal.eyo$.C3s_s.saveData.apply(this, arguments)
   if (this.Value_p == '') {
     element.setAttribute(eYo.key.PLACEHOLDER, this.value_d.model.placeholder)
   }
@@ -54,7 +54,7 @@ eYo.expr.literal.prototype.saveData = function (element, opt) { // eslint-disabl
  * Class for a Delegate, number: integer, floatnumber or imagnumber.
  * For edython.
  */
-eYo.expr.literal[eYo.$newSubC9r]('numberliteral', {
+eYo.expr.literal[eYo.$newSubC3s]('numberliteral', {
   data: {
     type: {
       all: [
@@ -126,7 +126,7 @@ eYo.expr.numberliteral.prototype.getBaseType = function () {
  * The subtype is the kind of delimiters used.
  * For edython.
  */
-eYo.expr.literal[eYo.$newSubC9r]('shortliteral', {
+eYo.expr.literal[eYo.$newSubC3s]('shortliteral', {
   data: {
     subtype: {
       all: [
@@ -135,7 +135,7 @@ eYo.expr.literal[eYo.$newSubC9r]('shortliteral', {
         eYo.t3.expr.shortbytesliteral
       ],
       init: eYo.t3.expr.shortstringliteral,
-      synchronize /** @this{eYo.data.C9rBase} */ (after) { // eslint-disable-line
+      synchronize /** @this{eYo.data.C3sBase} */ (after) { // eslint-disable-line
         // synchronize the placeholder text
         var p = this.Content_p
         if (!p || !p.length) {
@@ -147,11 +147,11 @@ eYo.expr.literal[eYo.$newSubC9r]('shortliteral', {
     delimiter: {
       all: ["'", '"'],
       init: '"',
-      didChange (builtin) /** @this{eYo.data.C9rBase} */ {
+      didChange (builtin) /** @this{eYo.data.C3sBase} */ {
         builtin()
         this.brick.value_d.consolidate()
       },
-      synchronize (builtin) /** @this{eYo.data.C9rBase} */ {
+      synchronize (builtin) /** @this{eYo.data.C3sBase} */ {
         builtin()
         var f4s = this.brick.fieldByKey
         f4s.start.text = f4s.end.text = this.toText()
@@ -163,16 +163,16 @@ eYo.expr.literal[eYo.$newSubC9r]('shortliteral', {
         'fr', 'Fr', 'fR', 'FR', 'rf', 'rF', 'Rf', 'RF',
         'b', 'B', 'br', 'Br', 'bR', 'BR', 'rb', 'rB', 'Rb', 'RB'],
       init: '',
-      didChange (builtin) /** @suppress {globalThis} */ { /** @this{eYo.data.C9rBase} */
+      didChange (builtin) /** @suppress {globalThis} */ { /** @this{eYo.data.C3sBase} */
         builtin()
         this.brick.value_d.consolidate()
       },
-      validate (after) { /** @this{eYo.data.C9rBase} */
+      validate (after) { /** @this{eYo.data.C3sBase} */
         return !eYo.isDef(this.brick.Content_p) || this.brick.validateComponents({
           prefix: after}
         ) ? after : eYo.INVALID
       },
-      synchronize (builtin, after) { /** @this{eYo.data.C9rBase} */ 
+      synchronize (builtin, after) { /** @this{eYo.data.C3sBase} */ 
         this.incog = !after || !after.length
         builtin()
       },
@@ -198,10 +198,10 @@ eYo.expr.literal[eYo.$newSubC9r]('shortliteral', {
     value: {
       init: "''",
       main: true,
-      validate (after) { /** @this{eYo.data.C9rBase} */
+      validate (after) { /** @this{eYo.data.C3sBase} */
         return eYo.isStr(after)? after: eYo.INVALID
       },
-      didChange (builtin, after) /** @suppress {globalThis} */ {/** @this{eYo.data.C9rBase} */ 
+      didChange (builtin, after) /** @suppress {globalThis} */ {/** @this{eYo.data.C3sBase} */ 
         builtin()
         var b3k = this.brick
         var F = (xre, type, formatted) => {
@@ -311,7 +311,7 @@ eYo.expr.shortliteral.prototype.validateComponents = function(kvargs) {
 
 /**
  * Get the content for the menu item.
- * @param {eYo.brick.C9rBase} brick The brick.
+ * @param {eYo.brick.C3sBase} brick The brick.
  * @param {string} op op is the operator
  * @private
  */
@@ -377,13 +377,13 @@ eYo.expr.literal.literalPopulateContextMenuFirst_ = function (mngr) {
 
 /**
  * Populate the context menu for the given brick.
- * @param {eYo.brick.C9rBase} brick The brick.
+ * @param {eYo.brick.C3sBase} brick The brick.
  * @param {eYo.MenuManager} mngr mngr.menu is the menu to populate.
  * @private
  */
 eYo.expr.shortliteral.prototype.populateContextMenuFirst_ = function (mngr) {
   eYo.expr.literal.literalPopulateContextMenuFirst_.call(this, mngr)
-  eYo.expr.shortliteral.eyo$.C9r_s.populateContextMenuFirst_.call(this, mngr)
+  eYo.expr.shortliteral.eyo$.C3s_s.populateContextMenuFirst_.call(this, mngr)
   return true
 }
 
@@ -392,7 +392,7 @@ eYo.expr.shortliteral.prototype.populateContextMenuFirst_ = function (mngr) {
  * The subtype is the kind of delimiters used.
  * For edython.
  */
-eYo.expr.shortliteral[eYo.$newSubC9r]('longliteral', {
+eYo.expr.shortliteral[eYo.$newSubC3s]('longliteral', {
   data: {
     subtype: {
       all: [

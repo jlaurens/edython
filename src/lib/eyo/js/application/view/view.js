@@ -31,13 +31,13 @@ eYo.o4t.newNS(eYo, 'view')
  * Enhance the constructor with view facilities.
  * @param {*} manyModel - The model
  */
-eYo.dlgt.C9rBase_p.viewEnhanced = function () {
+eYo.dlgt.C3sBase_p.viewEnhanced = function () {
   //<<< mochai: viewEnhanced
 
   this.p6y$ || eYo.throw(`${this.eyo$.name}/viewEnhanced: Not a p6y aware delegate.`)
 
   //<<< mochai: Basic
-  //... let Foo = eYo.view.newNS().newC9r('Foo')
+  //... let Foo = eYo.view.newNS().newC3s('Foo')
   //... chai.expect(Foo[eYo.$].viewPrepare).eyo_F
   //... chai.expect(Foo[eYo.$].viewInit).eyo_F
   //>>>
@@ -49,25 +49,25 @@ eYo.dlgt.C9rBase_p.viewEnhanced = function () {
    * @param {*} object - The object receiving the new shortcuts,
    */
   eYo.mixinFR(this._p, {
-    //<<< mochai: eYo.dlgt.C9rBase_p.viewShortcuts
+    //<<< mochai: eYo.dlgt.C3sBase_p.viewShortcuts
     viewShortcuts () {
       //<<< mochai: viewShortcuts (foo_v)
-      let _p = this.C9r_p
+      let _p = this.C3s_p
       for (let k of this.viewModelMap.keys()) {
         let k_v = k + '_v'
         eYo.objectHasOwnProperty(_p, k_v) || Object.defineProperties(_p, {
           [k_v]: eYo.descriptorR({$ () {
             return this.viewMap.get(k)
             //... let NS = eYo.o4t.newNS()
-            //... let C3s = NS.makeC9rBase(true)
+            //... let C3s = NS.makeC3sBase(true)
             //... C3s[eYo.$].viewEnhanced()
-            //... C3s[eYo.$].finalizeC9r()
+            //... C3s[eYo.$].finalizeC3s()
             //... C3s[eYo.$].viewMerge({
             //...   foo: {
             //...     chi: 421,
             //...   },
             //... })
-            //... let _p = C3s[eYo.$].C9r_p
+            //... let _p = C3s[eYo.$].C3s_p
             //... eYo.objectHasOwnProperty(chai.expect(_p, 'foo_v')).true
             //... let o = NS.new('o', onr)
             //... chai.expect(o.foo_v).instanceOf(eYo.View)
@@ -94,9 +94,9 @@ eYo.dlgt.C9rBase_p.viewEnhanced = function () {
       [eYo.model.ANY]: eYo.View[eYo.$].modelFormat,
       [eYo.model.VALIDATE]: eYo.model.validateD,
       //... let ns = eYo.o4t.newNS()
-      //... let C3s = ns.makeC9rBase(true)
+      //... let C3s = ns.makeC3sBase(true)
       //... C3s[eYo.$].viewEnhanced()
-      //... C3s[eYo.$].finalizeC9r()
+      //... C3s[eYo.$].finalizeC3s()
       //... chai.assert(C3s[eYo.$].modelFormat.get('views'))
       //>>>
     }
@@ -106,9 +106,9 @@ eYo.dlgt.C9rBase_p.viewEnhanced = function () {
     this.viewShortcuts()
     //<<< mochai: viewMerge+viewShortcuts
     //... let ns = eYo.o4t.newNS()
-    //... let C3s = ns.makeC9rBase(true)
+    //... let C3s = ns.makeC3sBase(true)
     //... C3s[eYo.$].viewEnhanced()
-    //... C3s[eYo.$].finalizeC9r()
+    //... C3s[eYo.$].finalizeC3s()
     //... C3s[eYo.$].viewMerge({
     //...   foo: {
     //...     chi: 421,
@@ -130,7 +130,7 @@ eYo.dlgt.C9rBase_p.viewEnhanced = function () {
   this.viewShortcuts()
 
   //... let ns = eYo.o4t.newNS()
-  //... let C3s = ns.makeC9rBase()
+  //... let C3s = ns.makeC3sBase()
   //... C3s[eYo.$].viewEnhanced()
   //... var o = ns.new('o', onr)
   
@@ -142,11 +142,11 @@ eYo.dlgt.C9rBase_p.viewEnhanced = function () {
     uiMerge (ui) {
       //<<< mochai: uiMerge
       let init_m = ui && ui.init
-      let C9r_p = this.C9r_p
-      let init_p = C9r_p && C9r_p.do_initUI // always exists
+      let C3s_p = this.C3s_p
+      let init_p = C3s_p && C3s_p.do_initUI // always exists
       if (init_m) {
         //<<< mochai: ui.init
-        this.C9r_p.do_initUI = XRegExp.exec(init_m.toString(), eYo.xre.function_builtin)
+        this.C3s_p.do_initUI = XRegExp.exec(init_m.toString(), eYo.xre.function_builtin)
           ? function (...$) {
             init_m.call(this, () => {
               init_p.call(this, ...$)
@@ -159,7 +159,7 @@ eYo.dlgt.C9rBase_p.viewEnhanced = function () {
         //... var key = 'x' + seed
         //... var Key = 'X' + seed
         //... var NS = eYo.view.newNS()
-        //... NS.makeC9rBase({
+        //... NS.makeC3sBase({
         //...   ui: {
         //...     init (...$) {
         //...       eYo.flag.push(1, ...$)
@@ -182,10 +182,10 @@ eYo.dlgt.C9rBase_p.viewEnhanced = function () {
       }
       // now the dispose ui
       let dispose_m = ui.dispose
-      let dispose_p = C9r_p && C9r_p.disposeUI
+      let dispose_p = C3s_p && C3s_p.disposeUI
       if (dispose_m) {
         //<<< mochai: ui.dispose
-        this.C9r_p.do_disposeUI = XRegExp.exec(dispose_m.toString(), eYo.xre.function_builtin)
+        this.C3s_p.do_disposeUI = XRegExp.exec(dispose_m.toString(), eYo.xre.function_builtin)
           ? function (...$) {
             dispose_m.call(this, () => {
               dispose_p.call(this, ...$)              
@@ -198,7 +198,7 @@ eYo.dlgt.C9rBase_p.viewEnhanced = function () {
         //... var key = 'x' + seed
         //... var Key = 'X' + seed
         //... var NS = eYo.view.newNS()
-        //... NS.makeC9rBase({
+        //... NS.makeC3sBase({
         //...   ui: {
         //...     dispose (...$) {
         //...       eYo.flag.push(3, ...$)
@@ -224,11 +224,11 @@ eYo.dlgt.C9rBase_p.viewEnhanced = function () {
     /**
      * Declare the given model for the associate constructor.
      * The default implementation calls `methodsMerge`.
-     * @param {Object} model - Object, like for |newC9r|.
+     * @param {Object} model - Object, like for |newC3s|.
      */
     modelMerge (model) {
       //<<< mochai: modelMerge
-      eYo.view.Dlgt[eYo.$SuperC9r][eYo.$].modelMerge.call(this, model)
+      eYo.view.Dlgt[eYo.$SuperC3s][eYo.$].modelMerge.call(this, model)
       model.views && this.viewMerge(model.views)
       model.ui && this.uiMerge(model.ui)
       //... chai.assert(eYo.view.Dlgt_p.modelMerge)
@@ -258,7 +258,7 @@ eYo.dlgt.C9rBase_p.viewEnhanced = function () {
     },
     /**
      * Initialize an instance with valued, cached, owned and copied properties.
-     * @param {Object} instance -  object is an instance of a subclass of the `C9r_` of the receiver
+     * @param {Object} instance -  object is an instance of a subclass of the `C3s_` of the receiver
      */
     initInstance (instance, ...$) {
       //<<< mochai: initInstance
@@ -298,7 +298,7 @@ eYo.dlgt.C9rBase_p.viewEnhanced = function () {
     },
     /**
      * Dispose of the resources declared at that level.
-     * @param {Object} instance -  instance is an instance of a subclass of the `C9r_` of the receiver
+     * @param {Object} instance -  instance is an instance of a subclass of the `C3s_` of the receiver
      */
     c9rDispose (instance, ...$) {
       //<<< mochai: c9rDispose
@@ -316,10 +316,10 @@ eYo.dlgt.C9rBase_p.viewEnhanced = function () {
 /**
  * Widgets with UI capabilities.
  * This is a pure abstract class that must be subclassed.
- * @name{eYo.view.C9rBase}
+ * @name{eYo.view.C3sBase}
  * @constructor
  */
-eYo.view.makeC9rBase(true, {
+eYo.view.makeC3sBase(true, {
   /**
    * Initializer.
    */
@@ -379,7 +379,7 @@ eYo.view.makeC9rBase(true, {
     },
     /**
      * The driver.
-     * @type {eYo.drvr.C9rBase}
+     * @type {eYo.drvr.C3sBase}
      */
     driver: {
       lazy () {
@@ -398,7 +398,7 @@ eYo.view.makeC9rBase(true, {
   },
 })
 
-eYo.View[eYo.$].finalizeC9r({
+eYo.View[eYo.$].finalizeC3s({
   //<<< mochai: model
   views: {
     [eYo.model.ANY]: {
@@ -406,21 +406,21 @@ eYo.View[eYo.$].finalizeC9r({
       [eYo.model.VALIDATE] (before, p) {  // eslint-disable-line
         if (eYo.isStr(before)) {
           var v = eYo.valueForKeyPath(before)
-          if (eYo.isSubclass(v, eYo.view.C9rBase)) {
+          if (eYo.isSubclass(v, eYo.view.C3sBase)) {
             return {
               C3s: v,
               shared: true,
             }
           } else if (!v) {
             v = eYo.view.valueForKeyPath(before)
-            if (eYo.isC9r(v)) {
+            if (eYo.isC3s(v)) {
               return {
                 C3s: v,
                 shared: true,
               }
             }
           }
-        } else if (eYo.isSubclass(before, eYo.view.C9rBase)) {
+        } else if (eYo.isSubclass(before, eYo.view.C3sBase)) {
           return {
             C3s: before,
             shared: true,
@@ -436,7 +436,7 @@ eYo.View[eYo.$].finalizeC9r({
 
 {
   // recursive definition of views inside views
-  let mf = eYo.view.C9rBase[eYo.$].modelFormat
+  let mf = eYo.view.C3sBase[eYo.$].modelFormat
   mf.get('views').get(eYo.model.ANY).fallback = mf
 }
 
@@ -449,16 +449,16 @@ eYo.mixinFR(eYo.view._p, {
    * @param {Object} model
    * @param {String} key
    */
-  modelC9rBase (model, key) {
-    if (eYo.isC9r(model.shared)) {
+  modelC3sBase (model, key) {
+    if (eYo.isC3s(model.shared)) {
       return model.shared
-    } else if (eYo.isStr(model.shared) && eYo.isC9r(eYo.view[model.shared])) {
+    } else if (eYo.isStr(model.shared) && eYo.isC3s(eYo.view[model.shared])) {
       return eYo.view[model.shared]
-    } else if (eYo.isC9r(model.C3s)) {
+    } else if (eYo.isC3s(model.C3s)) {
       return model.C3s
-    } else if (eYo.isStr(model.C3s) && eYo.isC9r(eYo.view[model.C3s])) {
+    } else if (eYo.isStr(model.C3s) && eYo.isC3s(eYo.view[model.C3s])) {
       return eYo.view[model.C3s]
-    } else if (eYo.isC9r(eYo.view[key])) {
+    } else if (eYo.isC3s(eYo.view[key])) {
       eYo.view[key]
     } else {
       return eYo.View
@@ -655,7 +655,7 @@ eYo.View[eYo.$].methodsMerge({
    * @param{*} after - the owner after the change
    */
   ownerDidChange (before, after) {
-    eYo.View[eYo.$SuperC9r_p].ownerDidChange.call(this, before, after)
+    eYo.View[eYo.$SuperC3s_p].ownerDidChange.call(this, before, after)
     if (after) {
       if (after.hasUI) {
         this.initUI()

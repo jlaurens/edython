@@ -40,7 +40,7 @@ extern int Py_DEBUG
 #endif
 */
 
-eYo.o4t.newC9r(eYo.py, 'Stack', {
+eYo.o4t.newC3s(eYo.py, 'Stack', {
   init () {
     this.s_base = []
   },

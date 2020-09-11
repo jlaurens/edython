@@ -110,12 +110,12 @@ Object.defineProperties(eYo.event._p, {
  * @constructor
  * Class for one motion.
  * There should be only one active motion at a time.
- * Actually, the topmost object, eYo.app.C9rBase, is managing this motion.
+ * Actually, the topmost object, eYo.app.C3sBase, is managing this motion.
  * 
- * @param {eYo.app.C9rBase} application - The top application where the event occured.
+ * @param {eYo.app.C3sBase} application - The top application where the event occured.
  * @constructor
  */
-eYo.event.newC9r('Motion', {
+eYo.event.newC3s('Motion', {
   /**
    * Reset and sever all links from this object.
    */
@@ -223,7 +223,7 @@ eYo.event.newC9r('Motion', {
     /**
      * The field that the motion started on,
      * or null if it did not start on a field.
-     * @type {eYo.brick.C9rBase}
+     * @type {eYo.brick.C3sBase}
      * @private
      */
     field: {
@@ -235,7 +235,7 @@ eYo.event.newC9r('Motion', {
      * The brick that the motion started on,
      * including the field's brick if it started on a field,
      * or null if it did not start on a brick.
-     * @type {eYo.brick.C9rBase}
+     * @type {eYo.brick.C3sBase}
      * @private
      */
     brick: {
@@ -252,7 +252,7 @@ eYo.event.newC9r('Motion', {
      * If the motion started in the flyout,
      * this is the root brick of the brick group
      * that was clicked or dragged.
-     * @type {eYo.brick.C9rBase}
+     * @type {eYo.brick.C3sBase}
      * @private
      */
     targetBrick: {

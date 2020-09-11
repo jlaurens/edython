@@ -14,7 +14,7 @@
 /**
  * Dom driver for boards.
  */
-eYo.dom.newDrvrC9r('Desk', {
+eYo.dom.newDrvrC3s('Desk', {
   /**
    * Initialize the desk dom ressources.
    * @param {eYo.view.Desk} desk

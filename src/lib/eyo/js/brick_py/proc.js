@@ -48,7 +48,7 @@ eYo.mixinRO(eYo.xre, {
  * Class for a Delegate, decorator.
  * For edython.
  */
-eYo.stmt.newC9r('decorator_stmt', true, {
+eYo.stmt.newC3s('decorator_stmt', true, {
   xml: {
     attr: '@'
   },
@@ -343,7 +343,7 @@ Object.defineProperties(eYo.stmt.decorator_stmt.prototype, {
 
 /**
  * Populate the context menu for the given brick.
- * @param {eYo.brick.C9rBase} brick The brick.
+ * @param {eYo.brick.C3sBase} brick The brick.
  * @param {eYo.MenuManager} mngr mngr.menu is the menu to populate.
  * @override
  */
@@ -402,14 +402,14 @@ eYo.stmt.decorator_stmt.prototype.populateContextMenuFirst_ = function (mngr) {
     })
   }
   mngr.shouldSeparate()
-  return eYo.stmt.decorator_stmt.eyo$.C9r_s.populateContextMenuFirst_.call(this, mngr)
+  return eYo.stmt.decorator_stmt.eyo$.C3s_s.populateContextMenuFirst_.call(this, mngr)
 }
 
 /**
  * Class for a Delegate, funcdef_part.
  * For edython.
  */
-eYo.stmt.group[eYo.$newSubC9r]('funcdef_part', true, {
+eYo.stmt.group[eYo.$newSubC3s]('funcdef_part', true, {
   data: {
     variant: {
       all: [null, eYo.key.TYPE],
@@ -469,7 +469,7 @@ classdef_part ::=  "class" classname [parenth_argument_list] ':'
  * Class for a Delegate, classdef_part brick.
  * For edython.
  */
-eYo.stmt.group[eYo.$newSubC9r]('classdef_part', true, {
+eYo.stmt.group[eYo.$newSubC3s]('classdef_part', true, {
   data: {
     variant: {
       all: [eYo.key.NONE, eYo.key.N_ARY],

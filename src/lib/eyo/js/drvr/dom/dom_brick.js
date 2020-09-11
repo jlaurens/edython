@@ -16,7 +16,7 @@ eYo.forward('brick')
 /**
  * Dom driver for boards.
  */
-eYo.dom.newDrvrC9r('Brick', {
+eYo.dom.newDrvrC3s('Brick', {
   /**
    * Initialize the board dom ressources.
    * @param {eYo.board} board
@@ -37,7 +37,7 @@ eYo.dom.newDrvrC9r('Brick', {
   },
   /**
    * Dispose of the desk dom resources.
-   * @param {eYo.brick.C9rBase} brick
+   * @param {eYo.brick.C3sBase} brick
    */
   disposeUI (brick) {
     if (brick.dom && brick.dom.div_) {

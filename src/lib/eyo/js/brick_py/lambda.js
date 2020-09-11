@@ -33,7 +33,7 @@ eYo.require('magnet')
  * All the inputs are connectedÒ.
  */
 // eYo.consolidator.Parameter = function() {
-//   eYo.consolidator.Parameter[eYo.$].C9r_s.constructor.call(this, eYo.consolidator.Parameter.data)
+//   eYo.consolidator.Parameter[eYo.$].C3s_s.constructor.call(this, eYo.consolidator.Parameter.data)
 // }
 // //g@@g.require(eYo.consolidator.List)
 // goog.inherits(eYo.consolidator.Parameter, eYo.consolidator.List)
@@ -44,7 +44,7 @@ eYo.require('magnet')
 //   presep: ',',
 // }
 
-eYo.consolidator.List[eYo.$newSubC9r]('parameter', {
+eYo.consolidator.List[eYo.$newSubC3s]('parameter', {
   list: {
     check: null,
     mandatory: 0,
@@ -66,16 +66,16 @@ eYo.consolidator.Parameter.prototype.consolidate_connected = function (io) {
       return false
     }
   }
-  return eYo.consolidator.Parameter[eYo.$].C9r_s.consolidate_connected.call(this, io)
+  return eYo.consolidator.Parameter[eYo.$].C3s_s.consolidate_connected.call(this, io)
 }
 
 /**
  * Prepare io, just before walking through the input list for example.
  * Subclassers may add their own stuff to io.
- * @param {eYo.brick.C9rBase} brick owner of the receiver
+ * @param {eYo.brick.C3sBase} brick owner of the receiver
  */
 eYo.consolidator.Parameter.prototype.getIO = function (brick) {
-  var io = eYo.consolidator.Parameter[eYo.$].C9r_s.getIO.call(this, brick)
+  var io = eYo.consolidator.Parameter[eYo.$].C3s_s.getIO.call(this, brick)
   io.first_star_star = io.first_star = io.first_default = io.last_default = -1
   return io
 }
@@ -158,7 +158,7 @@ eYo.consolidator.Parameter.prototype.doCleanup = (() => {
     }
   }
   return function (io) {
-    eYo.consolidator.Parameter[eYo.$].C9r_s.doCleanup.call(this, io)
+    eYo.consolidator.Parameter[eYo.$].C3s_s.doCleanup.call(this, io)
     setupFirst.call(this, io)
     // there must be an only one
     // first remove all the extra ** parameters
@@ -297,7 +297,7 @@ eYo.consolidator.Parameter.prototype.getCheck = (() => {
  * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.expr.List[eYo.$newSubC9r]('parameter_list', {
+eYo.expr.List[eYo.$newSubC3s]('parameter_list', {
   list: {
     consolidator: eYo.consolidator.Parameter
   }
@@ -354,7 +354,7 @@ eYo.expr.Parameter_list.prototype.populateContextMenuFirst_ = function (mngr) {
   F('*', 0, '*…')
   F('**', 0, '**…')
   mngr.shouldSeparateInsert()
-  eYo.expr.Parameter_list[eYo.$].C9r_s.populateContextMenuFirst_.call(this, mngr)
+  eYo.expr.Parameter_list[eYo.$].C3s_s.populateContextMenuFirst_.call(this, mngr)
   return true
 }
 
@@ -369,7 +369,7 @@ eYo.expr.Parameter_list.prototype.populateContextMenuFirst_ = function (mngr) {
  * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.expr.newC9r('lambda', true, {
+eYo.expr.newC3s('lambda', true, {
   slots: {
     parameters: {
       order: 1,
@@ -423,8 +423,8 @@ eYo.expr.newC9r('lambda', true, {
  * The output check may change depending on the content.
  * For edython.
  */
-eYo.magnet.C9rBase_p.consolidateType = function () {
-  eYo.magnet.eyo$.C9r_s.consolidateType.call(this)
+eYo.magnet.C3sBase_p.consolidateType = function () {
+  eYo.magnet.eyo$.C3s_s.consolidateType.call(this)
   var brick = this.brick
   var m4tOut = brick.out_m
   var slot = brick.getSlot(eYo.key.EXPRESSION)

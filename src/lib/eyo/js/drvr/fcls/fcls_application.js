@@ -16,7 +16,7 @@ eYo.forward('app')
 /**
  * Shared application driver.
  */
-eYo.fcls.newDrvrC9r('App')
+eYo.fcls.newDrvrC3s('App')
 
 //<<< mochai: eYo.fcls.App
 //... chai.assert(eYo.App)

@@ -86,9 +86,9 @@ eYo.o4t.newNS(eYo, 'drvr')
 
 //<<< mochai: ../
 //... let newDrvr = (NS, id, drvrModel = {}) => {
-//...   let C3s = NS.newC9r(id, drvrModel)
-//...   C3s[eYo.$].finalizeC9r()
-//...   NS.setDrvrC9r(id, C3s)
+//...   let C3s = NS.newC3s(id, drvrModel)
+//...   C3s[eYo.$].finalizeC3s()
+//...   NS.setDrvrC3s(id, C3s)
 //...   return NS.getDrvr(id)
 //... }
 //>>>
@@ -98,10 +98,10 @@ eYo.make$$('parent')
 
 {
   // private symbol
-  let $C9rMap = Symbol('C9rMap')
+  let $C3sMap = Symbol('C3sMap')
   let $map = Symbol('map')
   eYo.mixinFR(eYo.drvr, {
-    [$C9rMap]: new Map(),
+    [$C3sMap]: new Map(),
     [$map]: new Map(),
   })
   eYo.mixinFR(eYo.drvr._p, {
@@ -141,7 +141,7 @@ eYo.make$$('parent')
       //... chai.expect(mngr2.newNS).not.equal(eYo.drvr.$super.newNS)
       let NS = eYo.drvr.$super.newNS.call(this, ...$)
       eYo.mixinFR(NS, {
-        [$C9rMap]: new Map(),
+        [$C3sMap]: new Map(),
         [$map]: new Map(),
       })
       // add a reference to the parent namespace
@@ -171,58 +171,58 @@ eYo.make$$('parent')
      * Get the driver constructor for the given id.
      * @param {String} drvrId
      */
-    getDrvrC9r (drvrId) {
-      return this[$C9rMap].get(this.getDrvrId(drvrId))
+    getDrvrC3s (drvrId) {
+      return this[$C3sMap].get(this.getDrvrId(drvrId))
     },
     /**
      * Set the driver constructor for the given id.
      * @param {String} drvrId
      * @param {C3s} C3s
      */
-    setDrvrC9r (drvrId, C3s) {
-      //<<< mochai: (set|get)DrvrC9r
+    setDrvrC3s (drvrId, C3s) {
+      //<<< mochai: (set|get)DrvrC3s
       drvrId = this.getDrvrId(drvrId)
-      this[$C9rMap].set(drvrId, C3s)
+      this[$C3sMap].set(drvrId, C3s)
       C3s[eYo.$].drvrId = drvrId
       return C3s
       //... var NS0 = eYo.drvr.newNS()
-      //... var C9r0 = NS0.newDrvrC9r()
+      //... var C3s0 = NS0.newDrvrC3s()
       //... NAMES.forEach(ra => {
-      //...   NS0.setDrvrC9r(ra[0], C9r0)
-      //...   var Drvr = NS0.getDrvrC9r(ra[0])
-      //...   chai.expect(Drvr).equal(C9r0)
-      //...   chai.expect(NS0.getDrvrC9r(ra[1])).equal(Drvr)
+      //...   NS0.setDrvrC3s(ra[0], C3s0)
+      //...   var Drvr = NS0.getDrvrC3s(ra[0])
+      //...   chai.expect(Drvr).equal(C3s0)
+      //...   chai.expect(NS0.getDrvrC3s(ra[1])).equal(Drvr)
       //... })
       //... ;[eYo.drvr, NS0].forEach(NS => {
       //...   var NS1 = NS.newNS()
-      //...   var C9r1 = NS1.newDrvrC9r()
+      //...   var C3s1 = NS1.newDrvrC3s()
       //...   NAMES.forEach(ra => {
-      //...     NS1.setDrvrC9r(ra[0], C9r1)
-      //...     var Drvr = NS1.getDrvrC9r(ra[0])
-      //...     chai.expect(Drvr).equal(C9r1)
-      //...     chai.expect(Drvr).not.equal(C9r0)
-      //...     chai.expect(NS1.getDrvrC9r(ra[1])).equal(Drvr)
-      //...     NS1.setDrvrC9r(ra[1], C9r1)
-      //...     var Drvr = NS1.getDrvrC9r(ra[0])
-      //...     chai.expect(Drvr).equal(C9r1)
-      //...     chai.expect(Drvr).not.equal(C9r0)
-      //...     chai.expect(NS1.getDrvrC9r(ra[1])).equal(Drvr)
+      //...     NS1.setDrvrC3s(ra[0], C3s1)
+      //...     var Drvr = NS1.getDrvrC3s(ra[0])
+      //...     chai.expect(Drvr).equal(C3s1)
+      //...     chai.expect(Drvr).not.equal(C3s0)
+      //...     chai.expect(NS1.getDrvrC3s(ra[1])).equal(Drvr)
+      //...     NS1.setDrvrC3s(ra[1], C3s1)
+      //...     var Drvr = NS1.getDrvrC3s(ra[0])
+      //...     chai.expect(Drvr).equal(C3s1)
+      //...     chai.expect(Drvr).not.equal(C3s0)
+      //...     chai.expect(NS1.getDrvrC3s(ra[1])).equal(Drvr)
       //...   })
       //... })
       //>>>
     },
     /**
-     * Usage: `eYo.drvr.newDrvrC9r('Foo', model)`.
+     * Usage: `eYo.drvr.newDrvrC3s('Foo', model)`.
      * This is the recommanded way to create a driver constructor.
      * Actual implementation with fcls, fcfl, dom and svg drivers.
      * Convenient driver constructor maker.
      * The prototype will have eventually an `do_initUI` or `do_disposeUI`
      * wrapping the model's eponym methods, if any.
-     * The owner will have a default driver named `C9rBase`,
+     * The owner will have a default driver named `C3sBase`,
      * which is expected to be the ancestor of all drivers.
      * @param {String} id - a (titlecased) word, the name of the subclass (last component)
-     * @param {Function} [SuperC9r] - the super class of the driver constructor,
-     * defaults to the owner's super_'s key property or the owner's `C9rBase`.
+     * @param {Function} [SuperC3s] - the super class of the driver constructor,
+     * defaults to the owner's super_'s key property or the owner's `C3sBase`.
      * @param {Object} [drvrModel]
      * An object with various keys:
      * - owner: An object owning the class, basically a namespace object.
@@ -231,44 +231,44 @@ eYo.make$$('parent')
      * - do_initUI: an optional function with signature (object, ...)->eYo.NA
      * - do_disposeUI: an optional function with signature (object)->eYo.NA
      */
-    newDrvrC9r (id, SuperC9r, drvrModel) {
-      //<<< mochai: newDrvrC9r
-      //... chai.expect(eYo.drvr.newDrvrC9r).eyo_F
+    newDrvrC3s (id, SuperC3s, drvrModel) {
+      //<<< mochai: newDrvrC3s
+      //... chai.expect(eYo.drvr.newDrvrC3s).eyo_F
       //... var NS = eYo.drvr.newNS()
-      //... chai.expect(NS.newDrvrC9r('Foo')).equal(NS.Foo)
-      //... chai.expect(NS.Foo).eyo_C9r
-      if (!eYo.isSubclass(SuperC9r, eYo.Drvr)) {
-        eYo.isNA(drvrModel) || eYo.throw(`${this.name}/newDrvrC9r: Unexpected model.`)
-        ;[SuperC9r, drvrModel] = [this.$super.getDrvrC9r && this.$super.getDrvrC9r(id) || this.C9rBase, eYo.called(SuperC9r) || {}]
+      //... chai.expect(NS.newDrvrC3s('Foo')).equal(NS.Foo)
+      //... chai.expect(NS.Foo).eyo_C3s
+      if (!eYo.isSubclass(SuperC3s, eYo.Drvr)) {
+        eYo.isNA(drvrModel) || eYo.throw(`${this.name}/newDrvrC3s: Unexpected model.`)
+        ;[SuperC3s, drvrModel] = [this.$super.getDrvrC3s && this.$super.getDrvrC3s(id) || this.C3sBase, eYo.called(SuperC3s) || {}]
       }
-      let Drvr = eYo.c3s.newC9r(this, id, SuperC9r, drvrModel || {})
-      Drvr[eYo.$].finalizeC9r()
-      return this.setDrvrC9r(id, Drvr)
+      let Drvr = eYo.c3s.newC3s(this, id, SuperC3s, drvrModel || {})
+      Drvr[eYo.$].finalizeC3s()
+      return this.setDrvrC3s(id, Drvr)
       //... NAMES.forEach(ra => {
       //...   var mngr = eYo.drvr.newNS()
-      //...   var Drvr = mngr.newDrvrC9r(ra[0])
+      //...   var Drvr = mngr.newDrvrC3s(ra[0])
       //...   chai.expect(Drvr).equal(mngr[ra[0]])
       //...   var mngr = eYo.drvr.newNS()
-      //...   var Drvr = mngr.newDrvrC9r(ra[1])
+      //...   var Drvr = mngr.newDrvrC3s(ra[1])
       //...   chai.expect(Drvr).equal(mngr[ra[1]])
       //... })
       //... var mngr = eYo.drvr.newNS()
       //... var id = `X${eYo.genUID(eYo.IDENT)}`
-      //... var D1 = mngr.newDrvrC9r(id)
+      //... var D1 = mngr.newDrvrC3s(id)
       //... chai.expect(D1).equal(mngr[id])
-      //... var Drvr = mngr.getDrvrC9r(id)
+      //... var Drvr = mngr.getDrvrC3s(id)
       //... chai.expect(D1).equal(Drvr)
       //... var drvr = mngr.getDrvr(id)
       //... chai.expect(drvr).instanceOf(Drvr)
       //... var id = `X${eYo.genUID(eYo.IDENT)}`
-      //... var D2 = mngr.newDrvrC9r(id, D1)
-      //... var Drvr = mngr.getDrvrC9r(id)
+      //... var D2 = mngr.newDrvrC3s(id, D1)
+      //... var Drvr = mngr.getDrvrC3s(id)
       //... chai.expect(D2).equal(Drvr)
       //... var drvr = mngr.getDrvr(id)
       //... chai.expect(drvr).instanceOf(D1)
       //... chai.expect(drvr).instanceOf(D2)
       //... var id = eYo.genUID(eYo.IDENT)
-      //... mngr.newDrvrC9r(id, {
+      //... mngr.newDrvrC3s(id, {
       //...   do_initUI (onr, ...$) {
       //...     onr.flag(2, ...$)
       //...   },
@@ -277,7 +277,7 @@ eYo.make$$('parent')
       //... drvr.do_initUI(onr, 3, 4)
       //... eYo.flag.expect(1234)
       //... var id = eYo.genUID(eYo.IDENT)
-      //... mngr.newDrvrC9r(id, {
+      //... mngr.newDrvrC3s(id, {
       //...   do_disposeUI (onr, ...$) {
       //...     onr.flag(2, ...$)
       //...   },
@@ -291,7 +291,7 @@ eYo.make$$('parent')
      * @name{newDrvrProxy_}
      * Returns a driver proxy.
      * @param {*} target - the target.
-     * @return {eYo.drvr.C9rBase}
+     * @return {eYo.drvr.C3sBase}
      */
     newDrvrProxy_ (target) {
       let handler = new eYo.drvr[eYo.$$.Handler]('', this)
@@ -307,7 +307,7 @@ eYo.make$$('parent')
      * Returns a driver, based on the given object's constructor name.
      * If the receiver is `eYo.fcfl.mngr` and the object's constructor name is `Foo.Bar` then the returned driver is an instance of `eYo.fcfl.Foo.Bar`, `eYo.fcfl.Foo` as soon as it is a driver constructor, otherwise it is the all purpose driver.
      * @param {*} object - the object for which a driver is required.
-     * @return {eYo.drvr.C9rBase}
+     * @return {eYo.drvr.C3sBase}
      */
     getDrvr (object, ...$) {
       //<<< mochai: (get|set)Drvr
@@ -332,16 +332,16 @@ eYo.make$$('parent')
       //...   chai.expect(mngr.getDrvr(ra[0])[eYo.$$.target]).equal(drvr)
       //...   chai.expect(mngr.getDrvr(ra[1])[eYo.$$.target]).equal(drvr)
       //... })
-      //... var C9rA = eYo.drvr.newC9r()
-      //... C9rA[eYo.$].finalizeC9r()
-      //... var C9rAB = eYo.drvr.newC9r()
-      //... C9rAB[eYo.$].finalizeC9r()
-      //... var C9rABC = eYo.drvr.newC9r()
-      //... C9rABC[eYo.$].finalizeC9r()
+      //... var C3sA = eYo.drvr.newC3s()
+      //... C3sA[eYo.$].finalizeC3s()
+      //... var C3sAB = eYo.drvr.newC3s()
+      //... C3sAB[eYo.$].finalizeC3s()
+      //... var C3sABC = eYo.drvr.newC3s()
+      //... C3sABC[eYo.$].finalizeC3s()
       var drvr = this[$map].get(drvrId)
       if (drvr) {
         //... mngr = eYo.drvr.newNS()
-        //... mngr.setDrvrC9r('A', C9rA)
+        //... mngr.setDrvrC3s('A', C3sA)
         //... drvr = mngr.getDrvr('A')
         //... chai.expect(drvr).equal(mngr.getDrvr('A'))
         return drvr
@@ -349,13 +349,13 @@ eYo.make$$('parent')
       var saveId = drvrId
       // eslint-disable-next-line no-constant-condition
       while(true) {
-        var C3s = this.getDrvrC9r(drvrId)
+        var C3s = this.getDrvrC3s(drvrId)
         if (C3s) {
           //... mngr = eYo.drvr.newNS()
-          //... mngr.setDrvrC9r('A', C9rA)
-          //... chai.expect(mngr.getDrvrC9r('A')).equal(C9rA)
+          //... mngr.setDrvrC3s('A', C3sA)
+          //... chai.expect(mngr.getDrvrC3s('A')).equal(C3sA)
           //... drvr = mngr.getDrvr('A')
-          //... chai.expect(drvr.eyo$.C3s).equal(C9rA)
+          //... chai.expect(drvr.eyo$.C3s).equal(C3sA)
           //... chai.expect(drvr[eYo.$$.target]).instanceOf(eYo.Drvr)
           //... chai.expect(drvr[eYo.$$.target][eYo.$$.target]).undefined
           var drvr_t = new C3s(drvrId, this, ...$)
@@ -367,21 +367,21 @@ eYo.make$$('parent')
               break
             }
             //... mngr = eYo.drvr.newNS()
-            //... mngr.setDrvrC9r('A', C9rA)
-            //... chai.expect(mngr.getDrvrC9r('A')).equal(C9rA)
+            //... mngr.setDrvrC3s('A', C3sA)
+            //... chai.expect(mngr.getDrvrC3s('A')).equal(C3sA)
             //... drvr = mngr.getDrvr('A')
-            //... chai.expect(drvr.eyo$.C3s).equal(C9rA)
+            //... chai.expect(drvr.eyo$.C3s).equal(C3sA)
             //... mngr1 = mngr.newNS()
-            //... chai.expect(mngr1.getDrvrC9r('A')).undefined
+            //... chai.expect(mngr1.getDrvrC3s('A')).undefined
             //... drvr1 = mngr1.getDrvr('A')
             //... chai.expect(drvr1).not.equal(drvr)
-            //... chai.expect(drvr1).instanceOf(C9rA)
+            //... chai.expect(drvr1).instanceOf(C3sA)
             //... chai.expect(drvr1).eqlDrvr(drvr)
           }
         }
         if (drvr_t) {
           //... mngr = eYo.drvr.newNS()
-          //... mngr.setDrvrC9r('A', C9rA)
+          //... mngr.setDrvrC3s('A', C3sA)
           //... drvr = mngr.getDrvr('A')
           //... var drvr_t = drvr[eYo.$$.target]
           //... chai.expect(drvr.eyo$).equal(drvr_t.eyo$)
@@ -394,20 +394,20 @@ eYo.make$$('parent')
           drvr = this[$map].get(drvrId)
           if (drvr) {
             //... mngr = eYo.drvr.newNS()
-            //... mngr.setDrvrC9r('A', C9rA)
+            //... mngr.setDrvrC3s('A', C3sA)
             //... drvr = mngr.getDrvr('A')
             //... chai.expect(mngr.getDrvr('A')).eqlDrvr(drvr)
             //... chai.expect(mngr.getDrvr('A.B')).eqlDrvr(drvr)
             //... chai.expect(mngr.getDrvr('A.B.C')).eqlDrvr(drvr)
             //... mngr = eYo.drvr.newNS()
-            //... mngr.setDrvrC9r('A', C9rA)
-            //... mngr.setDrvrC9r('A.B', C9rAB)
+            //... mngr.setDrvrC3s('A', C3sA)
+            //... mngr.setDrvrC3s('A.B', C3sAB)
             //... chai.expect(mngr.getDrvr('A.B')).not.eqlDrvr(mngr.getDrvr('A'))
             //... chai.expect(mngr.getDrvr('A.B.C')).eqlDrvr(mngr.getDrvr('A.B'))
             //... mngr = eYo.drvr.newNS()
-            //... mngr.setDrvrC9r('A', C9rA)
-            //... mngr.setDrvrC9r('A.B', C9rAB)
-            //... mngr.setDrvrC9r('A.B.C', C9rABC)
+            //... mngr.setDrvrC3s('A', C3sA)
+            //... mngr.setDrvrC3s('A.B', C3sAB)
+            //... mngr.setDrvrC3s('A.B.C', C3sABC)
             //... chai.expect(mngr.getDrvr('A.B')).not.eqlDrvr(mngr.getDrvr('A'))
             //... chai.expect(mngr.getDrvr('A.B.C')).not.eqlDrvr(mngr.getDrvr('A.B'))
             return this.setDrvr(saveId, drvr[eYo.$$.target])
@@ -429,7 +429,7 @@ eYo.make$$('parent')
           return this.setDrvr(saveId, drvr_t)
         }
         //... mngr = eYo.drvr.newNS()
-        //... mngr.setDrvrC9r('A', C9rA)
+        //... mngr.setDrvrC3s('A', C3sA)
         //... var drvr = mngr.getDrvr({
         //...   eyo: {
         //...     name: `${eYo.genUID(eYo.IDENT)}.${eYo.genUID(eYo.IDENT)}`,
@@ -459,7 +459,7 @@ eYo.make$$('parent')
 
 eYo.make$$('parentId', 'Handler')
 
-eYo.o3d.newC9r(eYo.drvr, eYo.$$.Handler, {
+eYo.o3d.newC3s(eYo.drvr, eYo.$$.Handler, {
   //<<< mochai: eYo.drvr[eYo.$$.Handler]
   //<<< mochai: Basics
   //... chai.expect(eYo.drvr).property(eYo.$$.Handler)
@@ -528,9 +528,9 @@ eYo.o3d.newC9r(eYo.drvr, eYo.$$.Handler, {
         //... chai.expect(mngr.getDrvr('').mngr).equal(mngr)
         //... var mngr_mngr = mngr.newNS()
         //... chai.expect(mngr_mngr.getDrvr('').mngr).equal(mngr_mngr)
-        //... mngr.newDrvrC9r('Foo')
+        //... mngr.newDrvrC3s('Foo')
         //... chai.expect(mngr.getDrvr('Foo').mngr).equal(mngr)
-        //... mngr_mngr.newDrvrC9r('Foo')
+        //... mngr_mngr.newDrvrC3s('Foo')
         //... chai.expect(mngr_mngr.getDrvr('Foo').mngr).equal(mngr_mngr)
       }
       ans = Reflect.get(target, prop)
@@ -554,13 +554,13 @@ eYo.o3d.newC9r(eYo.drvr, eYo.$$.Handler, {
         if (!x) {
           console.error('NOT x')
         }
-        while ((x = x.$super) && x.getDrvrC9r) {
+        while ((x = x.$super) && x.getDrvrC3s) {
           nss.unshift(x)
         }
         ra = [] // enclosed
         nss.forEach(ns => {
           ids.forEach(id => {
-            var C3s = ns.getDrvrC9r(id)
+            var C3s = ns.getDrvrC3s(id)
             if (C3s) {
               if (eYo.objectHasOwnProperty(C3s.prototype, prop)) {
                 ra.push(C3s.prototype[prop])
@@ -575,7 +575,7 @@ eYo.o3d.newC9r(eYo.drvr, eYo.$$.Handler, {
               //...     },
               //...   },
               //... })
-              //... eYo.objectHasOwnProperty(chai.expect(d.eyo$.C9r_p, 'foo')).true
+              //... eYo.objectHasOwnProperty(chai.expect(d.eyo$.C3s_p, 'foo')).true
               //... d.foo(2, 3)
               //... eYo.flag.expect(123)
             }
@@ -648,19 +648,19 @@ eYo.o3d.newC9r(eYo.drvr, eYo.$$.Handler, {
     //>>>
   },
   //>>>
-})[eYo.$].finalizeC9r()
+})[eYo.$].finalizeC3s()
 
 eYo.mixinFR(eYo.drvr._p, {
   //<<< mochai: eYo driver methods
   // Registers the constructor
-  makeC9rBase (...$) {
-    //<<< mochai: makeC9rBase
-    var C3s = eYo.drvr.$super._p.makeC9rBase.call(this, ...$)
-    this.setDrvrC9r('', C3s)
+  makeC3sBase (...$) {
+    //<<< mochai: makeC3sBase
+    var C3s = eYo.drvr.$super._p.makeC3sBase.call(this, ...$)
+    this.setDrvrC3s('', C3s)
     return C3s
     //... let mngr = eYo.drvr.newNS()
-    //... let C3s = mngr.makeC9rBase()
-    //... chai.expect(C3s).equal(mngr.getDrvrC9r(''))
+    //... let C3s = mngr.makeC3sBase()
+    //... chai.expect(C3s).equal(mngr.getDrvrC3s(''))
     //>>>
   },
   /**
@@ -691,10 +691,10 @@ eYo.mixinFR(eYo.drvr._p, {
 })  
 
 /**
- * @name {eYo.drvr.C9rBase}
+ * @name {eYo.drvr.C3sBase}
  * Default convenient driver, to be subclassed.
  */
-eYo.drvr.makeC9rBase(true, {
+eYo.drvr.makeC3sBase(true, {
   //<<< mochai: eYo.Drvr
   properties: {
     //<<< mochai: properties
@@ -706,7 +706,7 @@ eYo.drvr.makeC9rBase(true, {
       //... chai.expect(() => drvr.mngr_ = 'bar').xthrow()
       //... chai.expect(() => drvr.mngr = 'bar').xthrow()
       //... let mngr = eYo.drvr.newNS()
-      //... mngr.makeC9rBase()
+      //... mngr.makeC3sBase()
       //... driver = mngr.new({}, 'foo', onr)
       //... chai.expect(drvr.owner).equal(onr)
       //... chai.expect(drvr.mngr).equal(onr)
@@ -765,7 +765,7 @@ eYo.mixinFR(eYo.Drvr$._p, {
   uiMerge (model) {
     //<<< mochai: eYo.Drvr$._p.uiMerge
     //... var mngr = eYo.drvr.newNS()
-    //... mngr.newDrvrC9r('Foo', {
+    //... mngr.newDrvrC3s('Foo', {
     //...   init (key, owner, ...$) {
     //...     owner.flag(...$, 4)
     //...   },
@@ -797,11 +797,11 @@ eYo.mixinFR(eYo.Drvr$._p, {
     //... d.do_disposeUI(onr, 2, 3)
     //... eYo.flag.expect(1234)
     model || (model = this.model)
-    let C9r_p = this.C9r_p
+    let C3s_p = this.C3s_p
     ;['do_initUI', 'do_disposeUI'].forEach(doK => {
       let f_m = model[doK]
       if (f_m) {
-        C9r_p[doK] = f_m
+        C3s_p[doK] = f_m
       }
     })
     //>>>
@@ -814,7 +814,7 @@ eYo.mixinFR(eYo.Drvr$._p, {
    * Declare the given model for the associate constructor.
    * The default implementation just calls `methodsMerge` and `CONSTsMerge`.
    * 
-   * @param {Object} model - Object, like for |newC9r|.
+   * @param {Object} model - Object, like for |newC3s|.
    */
   modelMerge (model) {
     model.methods && this.methodsMerge(model.methods)
@@ -824,7 +824,7 @@ eYo.mixinFR(eYo.Drvr$._p, {
   //>>>
 })
 
-eYo.Drvr$.finalizeC9r()
+eYo.Drvr$.finalizeC3s()
 
 eYo.mixinFR(eYo.o4t.Dlgt_p, {
   //<<< mochai: eYo.o4t.Dlgt
@@ -835,7 +835,7 @@ eYo.mixinFR(eYo.o4t.Dlgt_p, {
     //<<< mochai: drvrEnhanced
     //<<< mochai: Basics
     //... let mngr = eYo.drvr.newNS()
-    //... mngr.makeC9rBase({
+    //... mngr.makeC3sBase({
     //...   methods: {
     //...     do_push1 (instance, ...$) {
     //...       eYo.flag.push(1, ...$)
@@ -843,7 +843,7 @@ eYo.mixinFR(eYo.o4t.Dlgt_p, {
     //...   },
     //... })
     //... let drvr = mngr.getDrvr('')
-    //... chai.expect(drvr).instanceOf(mngr.C9rBase)
+    //... chai.expect(drvr).instanceOf(mngr.C3sBase)
     //... setup({
     //...   properties: {
     //...     drvr
@@ -851,17 +851,17 @@ eYo.mixinFR(eYo.o4t.Dlgt_p, {
     //... })
     //... chai.expect(onr.drvr).equal(drvr)
     //... let ns = eYo.o4t.newNS()
-    //... ns.makeC9rBase()
-    //... mngr.newDrvrC9r('Foo', {
+    //... ns.makeC3sBase()
+    //... mngr.newDrvrC3s('Foo', {
     //...   methods: {
     //...     do_push2 (instance, ...$) {
     //...       eYo.flag.push(2, ...$)
     //...     },
     //...   },
     //... })
-    //... ns.newC9r('Foo')
+    //... ns.newC3s('Foo')
     //... ns.Foo$.drvrEnhanced()
-    //... ns.Foo$.finalizeC9r()    
+    //... ns.Foo$.finalizeC3s()    
     //... mngr.makeForwarder(ns.Foo_p, 'push1')
     //... mngr.makeForwarder(ns.Foo_p, 'push2')
     //... let driven = new ns.Foo('foo', onr)
@@ -882,7 +882,7 @@ eYo.mixinFR(eYo.o4t.Dlgt_p, {
         },
       },
     })
-    let _p = this.C9r_p
+    let _p = this.C3s_p
     let f_p = _p.ownerDidChange
     /**
      * Hook for owner change
@@ -909,7 +909,7 @@ eYo.mixinFR(eYo.o4t.Dlgt_p, {
     }
     _p.ownerDidChange = model.$
     //... let mngr1 = eYo.drvr.newNS()
-    //... mngr1.makeC9rBase({
+    //... mngr1.makeC3sBase({
     //...   methods: {
     //...     do_push (instance, ...$) {
     //...       eYo.flag.push(1, ...$)
@@ -922,16 +922,16 @@ eYo.mixinFR(eYo.o4t.Dlgt_p, {
     //...   },
     //... })
     //... let ns = eYo.o4t.newNS()
-    //... ns.makeC9rBase(true)
-    //... mngr1.makeForwarder(ns.C9rBase_p, 'push')
-    //... ns.C9rBase$.drvrEnhanced()
-    //... ns.C9rBase$.finalizeC9r()    
+    //... ns.makeC3sBase(true)
+    //... mngr1.makeForwarder(ns.C3sBase_p, 'push')
+    //... ns.C3sBase$.drvrEnhanced()
+    //... ns.C3sBase$.finalizeC3s()    
     //... let foo = ns.new({}, 'foo', onr)
     //... chai.expect(foo.drvr.do_push).eyo_F
     //... foo.push(2, 3)
     //... eYo.flag.expect(123)
     //... let mngr2 = eYo.drvr.newNS()
-    //... mngr2.makeC9rBase({
+    //... mngr2.makeC3sBase({
     //...   methods: {
     //...     do_push (instance, ...$) {
     //...       eYo.flag.push(2, ...$)

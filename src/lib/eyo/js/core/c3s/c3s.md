@@ -3,7 +3,7 @@
 Class declaration has been designed to be highly flexible,
 in order to allow easy refactoring and meta programming.
 
-Various `makeC9r` function are utilities to create class objects with 
+Various `makeC3s` function are utilities to create class objects with 
 properties and methods given in an model object.
 The idea is to use a rather straightforward syntax.
 
@@ -15,7 +15,7 @@ The idea is to use a rather straightforward syntax.
 
 Each constructor is extended through a property named `eyo`.
 This name is sufficiently weird to avoid collisions.
-Each class is a descendant of `eYo.C3s.C9rBase` whereas `eyo` object is an instance of `eYo.dlgt.C9rBase`.
+Each class is a descendant of `eYo.C3s.C3sBase` whereas `eyo` object is an instance of `eYo.dlgt.C3sBase`.
 
 This extension knows the namespace owning the class.
 It also knows the unique string identifying the class: its name.
@@ -29,19 +29,19 @@ object[0] -> constructor[0] -> eyo[1] -> constructor[1] -> eyo[2] -> constructor
 
 This list is turned into an infinite loop.
 
-* object[0] is not an instance of `eYo.dlgt.C9rBase`.
-* eyo[1] is an instance of a subclass of `eYo.dlgt.C9rBase`
-* eyo[i] is the same instance of `eYo.dlgt.C9rBase` for i>1
+* object[0] is not an instance of `eYo.dlgt.C3sBase`.
+* eyo[1] is an instance of a subclass of `eYo.dlgt.C3sBase`
+* eyo[i] is the same instance of `eYo.dlgt.C3sBase` for i>1
 
-`eYo.dlgt.C9rBase` is instantiated only once.
+`eYo.dlgt.C3sBase` is instantiated only once.
 
 This means that constructor[2] does not depend on object[0]
 and that since eyo[3], all the delegates are the same.
 
 With the `eyo` property shortcut
 
-* `object.eyo` is an instance of an unexposed subclass of `eYo.dlgt.C9rBase`
-* `object.eyo.eyo` is an instance of `eYo.dlgt.C9rBase`
+* `object.eyo` is an instance of an unexposed subclass of `eYo.dlgt.C3sBase`
+* `object.eyo.eyo` is an instance of `eYo.dlgt.C3sBase`
 * `object.eyo.eyo.eyo` is another instance of this unexposed class which is the same for all objects
 * `object.eyo.eyo.eyo.eyo...` is exactly the same instance
 
@@ -78,7 +78,7 @@ If `Foo` inherits from `Bar`, then model of `Foo` also from the model of `Bar`.
 
 ## Base classes
 
-Each namespace `ns` contains `ns.C9rBase` which is the root class for all thge classes in that namespace. It also contains `ns.Dlgt` which the root class of the constructor delegats in that namespace.
+Each namespace `ns` contains `ns.C3sBase` which is the root class for all thge classes in that namespace. It also contains `ns.Dlgt` which the root class of the constructor delegats in that namespace.
 
 ## Class models for Edython
 

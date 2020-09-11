@@ -15,4 +15,4 @@ eYo.forward('view.Workspace')
 /**
  * Shared application driver.
  */
-eYo.fcls.newDrvrC9r('Workspace')
+eYo.fcls.newDrvrC3s('Workspace')

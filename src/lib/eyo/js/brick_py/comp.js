@@ -20,7 +20,7 @@ eYo.provide('brick.comprehension')
  * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.expr.newC9r('comprehension', true, {
+eYo.expr.newC3s('comprehension', true, {
   data: {
     expression: {
       order: 1,
@@ -117,7 +117,7 @@ eYo.expr.comprehension_p.xmlAttr = function () {
  * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.expr.newC9r('comp_for', true, {
+eYo.expr.newC3s('comp_for', true, {
   slots: {
     for: {
       order: 1,
@@ -141,7 +141,7 @@ eYo.expr.newC9r('comp_for', true, {
  * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.expr.newC9r('comp_if', true, {
+eYo.expr.newC3s('comp_if', true, {
   slots: {
     if: {
       order: 1,
@@ -159,7 +159,7 @@ eYo.expr.newC9r('comp_if', true, {
  * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.expr.List[eYo.$newSubC9r]('comp_iter_list', {
+eYo.expr.List[eYo.$newSubC3s]('comp_iter_list', {
   list: {
     check: eYo.t3.expr.check.comp_iter,
     mandatory: 0,

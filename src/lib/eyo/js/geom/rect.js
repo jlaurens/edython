@@ -56,7 +56,7 @@ eYo.require('geom.Size')
  * @struct
  * @constructor
  */
-eYo.geom.newC9r('Rect', {
+eYo.geom.newC3s('Rect', {
   //<<< mochai: eYo.geom.Rect
   /**
    * See the `set` function for argument description.
@@ -899,7 +899,7 @@ eYo.geom.Rect[eYo.$].modelMerge({
   //>>>
 })
 
-eYo.geom.Rect$.finalizeC9r()
+eYo.geom.Rect$.finalizeC3s()
 
 // eYo.geom.AbstractRect[eYo.$].modelMerge({
 //   aliases: {

@@ -2,12 +2,12 @@ describe('Svg driver', function() {
   it ('Svg: Basic', function () {
     chai.assert(eYo.svg)
     chai.assert(eYo.svg.Mngr)
-    chai.assert(eYo.svg.newDrvrC9r)
+    chai.assert(eYo.svg.newDrvrC3s)
     chai.assert(eYo.svg.makeMngr)
-    chai.assert(eYo.svg.C9rBase)
+    chai.assert(eYo.svg.C3sBase)
   })
   it ('Svg Dlgt: Drivers', function () {
-    for (let [name, Driver] of eYo.svg.Mngr[eYo.$].driverC9rMap) {
+    for (let [name, Driver] of eYo.svg.Mngr[eYo.$].driverC3sMap) {
       console.warn(`${name} -> ${Driver[eYo.$].name}`)
     }
   })

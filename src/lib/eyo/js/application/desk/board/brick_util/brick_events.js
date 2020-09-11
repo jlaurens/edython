@@ -15,7 +15,7 @@
 
 /**
  * Convenient shortcut.
- * @param {eYo.brick.C9rBase} brick  The newly created brick.
+ * @param {eYo.brick.C3sBase} brick  The newly created brick.
  * @param {Boolean|String} [group]  eventually set a group.
  */
 eYo.event.Mngr_p.fireBrickCreate = function (brick, group) {
@@ -27,7 +27,7 @@ eYo.event.Mngr_p.fireBrickCreate = function (brick, group) {
 
 /**
  * Convenient shortcut.
- * @param {eYo.brick.C9rBase} brick  The newly created brick.
+ * @param {eYo.brick.C3sBase} brick  The newly created brick.
  */
 eYo.event.Mngr_p.fireBrickChange = function (brick, element, name, before, after) {
   if (this.enabled) {
@@ -37,7 +37,7 @@ eYo.event.Mngr_p.fireBrickChange = function (brick, element, name, before, after
 
 /**
  * Convenient shortcut.
- * @param {eYo.brick.C9rBase} brick  The moved brick.
+ * @param {eYo.brick.C3sBase} brick  The moved brick.
  * @param {Function} move  the move action, signature: (event) -> void
  */
 eYo.event.Mngr_p.fireBrickMove = function (brick, move) {
@@ -56,11 +56,11 @@ eYo.event.Mngr_p.fireBrickMove = function (brick, move) {
 
 /**
  * Abstract class for a brick event.
- * @param {eYo.brick.C9rBase} brick The brick this event corresponds to.
+ * @param {eYo.brick.C3sBase} brick The brick this event corresponds to.
  * @extends {eYo.event.Abstract}
  * @constructor
  */
-eYo.event.Abstract[eYo.$newSubC9r]('BrickBase', {
+eYo.event.Abstract[eYo.$newSubC3s]('BrickBase', {
   init (mngr, brick) {
     /**
      * The brick id for the brick this event pertains to
@@ -80,7 +80,7 @@ eYo.event.Abstract[eYo.$newSubC9r]('BrickBase', {
 
 /**
  * Class for a brick change event.
- * @param {eYo.brick.C9rBase} brick The changed brick.
+ * @param {eYo.brick.C3sBase} brick The changed brick.
  * @param {string} element One of 'field', 'collapsed', 'disabled', etc.
  * @param {string} [name] Name of slot or field affected, or null.
  * @param {*} before - Previous value of element.
@@ -88,7 +88,7 @@ eYo.event.Abstract[eYo.$newSubC9r]('BrickBase', {
  * @extends {eYo.event.BrickBase}
  * @constructor
  */
-eYo.event.BrickBase[eYo.$newSubC9r]('BrickChange', {
+eYo.event.BrickBase[eYo.$newSubC3s]('BrickChange', {
   init (mngr, brick, element, name, before, after) {
     this.element_ = element
     this.name_ = name
@@ -166,11 +166,11 @@ eYo.event.BrickChange_p.run = function(redo) {
 
 /**
  * Class for a brick creation event.
- * @param {eYo.brick.C9rBase} brick The created brick.
+ * @param {eYo.brick.C3sBase} brick The created brick.
  * @extends {eYo.event.BrickBase}
  * @constructor
  */
-eYo.event.BrickBase[eYo.$newSubC9r]('BrickCreate', {
+eYo.event.BrickBase[eYo.$newSubC3s]('BrickCreate', {
   init(mngr, brick) {
     if (brick.board.rendered) {
       this.xml = eYo.xml.brickToDomWithWhere(brick)
@@ -217,11 +217,11 @@ eYo.event.BrickCreate_p.run = function(forward) {
 
 /**
  * Class for a brick deletion event.
- * @param {eYo.brick.C9rBase} brick The deleted brick.
+ * @param {eYo.brick.C3sBase} brick The deleted brick.
  * @extends {eYo.event.BrickBase}
  * @constructor
  */
-eYo.event.BrickBase[eYo.$newSubC9r]('BrickDelete', {
+eYo.event.BrickBase[eYo.$newSubC3s]('BrickDelete', {
   init (mngr, brick) {
     if (brick.parent) {
       throw 'Connected bricks cannot be deleted.'
@@ -271,11 +271,11 @@ eYo.event.BrickDelete_p.run = function(forward) {
 
 /**
  * Class for a brick move event.  Created before the move.
- * @param {eYo.brick.C9rBase} brick The moved brick.
+ * @param {eYo.brick.C3sBase} brick The moved brick.
  * @extends {eYo.event.BrickBase}
  * @constructor
  */
-eYo.event.BrickBase[eYo.$newSubC9r]('BrickMove', {
+eYo.event.BrickBase[eYo.$newSubC3s]('BrickMove', {
   init (mngr, brick) { // eslint-disable-line
     var location = this.currentLocation
     this.oldParentId = location.parentId
@@ -400,7 +400,7 @@ eYo.event.BrickMove_p.run = function(forward) {
   }
 }
 
-eYo.data.C9rBase[eYo.$].methodsMerge({
+eYo.data.C3sBase[eYo.$].methodsMerge({
   /**
    * set the value of the property,
    * without validation but with undo and synchronization.

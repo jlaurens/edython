@@ -17,7 +17,7 @@ eYo.forward('dnd')
  * Svg driver for DnD.
  */
 
-eYo.svg.newDrvrC9r('Dnd', {
+eYo.svg.newDrvrC3s('Dnd', {
   /**
    * Initiate the DnD manager UI.
    * @param {eYo.dnd.Mngr} mngr  The DnD manager we must init the UI.

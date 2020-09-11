@@ -75,8 +75,8 @@ eYo.mixinFR(eYo.field._p, {
    * @param {Object} model
    * @param {Object} key
    */
-  modelC9rBase (model, key) { // eslint-disable-line
-    //<<< mochai: modelC9rBase
+  modelC3sBase (model, key) { // eslint-disable-line
+    //<<< mochai: modelC3sBase
     //... ['edit', 'endEditing', 'startEditing'].forEach(K => {
     //...   let field = eYo.field.new({
     //...     [K]: true,
@@ -94,11 +94,11 @@ eYo.mixinFR(eYo.field._p, {
 
 /**
  * Abstract class for text fields.
- * @param {eYo.brick|eYo.slot.C9rBase|eYo.magnet.C9rBase} bsim The owner of the field.
+ * @param {eYo.brick|eYo.slot.C3sBase|eYo.magnet.C3sBase} bsim The owner of the field.
  * @param {string} text The initial content of the field.
  * @constructor
  */
-eYo.field.makeC9rBase(true, {
+eYo.field.makeC3sBase(true, {
   //<<< mochai: eYo.Field
   //<<< mochai: Basics
   //... chai.expect(eYo.Field).not.undefined
@@ -284,7 +284,7 @@ eYo.field.makeC9rBase(true, {
      * Will render the field.
      */
     willRender () {
-      let willRender = eYo.Field[eYo.$SuperC9r_p].willRender
+      let willRender = eYo.Field[eYo.$SuperC3s_p].willRender
       willRender && willRender.call(this) // inherited
       var d = this.drvr
       if (d) {
@@ -326,11 +326,11 @@ eYo.mixinFR(eYo.field.Dlgt_p, {
     //... let new_ns = () => {
     //...   flag.reset()
     //...   ns = eYo.field.newNS()
-    //...   ns.makeC9rBase()
-    //...   ns.C9rBase[eYo.$newSubC9r]('Label')[eYo.$].finalizeC9r()
-    //...   ns.C9rBase[eYo.$newSubC9r]('Input')[eYo.$].finalizeC9r()
+    //...   ns.makeC3sBase()
+    //...   ns.C3sBase[eYo.$newSubC3s]('Label')[eYo.$].finalizeC3s()
+    //...   ns.C3sBase[eYo.$newSubC3s]('Input')[eYo.$].finalizeC3s()
     //... }
-    //... mngr.newDrvrC9r('Field', {
+    //... mngr.newDrvrC3s('Field', {
     //...   methods: {
     //...     makePlaceholder (instance) {
     //...       eYo.flag.push(3)  
@@ -340,7 +340,7 @@ eYo.mixinFR(eYo.field.Dlgt_p, {
     //...     },
     //...   }, 
     //... })
-    let _p = this.C9r_p
+    let _p = this.C3s_p
     ;['willRender'].forEach(K => { // closure!
       //... ;['willRender'].forEach(K => {
       //...   new_ns()
@@ -365,7 +365,7 @@ eYo.mixinFR(eYo.field.Dlgt_p, {
           //...     builtin()
           //...   }
           //...   test(1234, f_m) 
-          //...   eYo.test.extend(ns.C9rBase_p, K, function() {
+          //...   eYo.test.extend(ns.C3sBase_p, K, function() {
           //...     eYo.flag.push(5)
           //...   })
           //...   test(12345, f_m)
@@ -382,7 +382,7 @@ eYo.mixinFR(eYo.field.Dlgt_p, {
             //...     this[K]()
             //...   }
             //...   test(1234, f_m)
-            //...   eYo.test.extend(ns.C9rBase_p, K, function() {
+            //...   eYo.test.extend(ns.C3sBase_p, K, function() {
             //...     eYo.flag.push(5)
             //...   })
             //...   test(12345, f_m)
@@ -425,12 +425,12 @@ eYo.mixinFR(eYo.field.Dlgt_p, {
     //... let new_ns = () => {
     //...   flag.reset()
     //...   ns = eYo.field.newNS()
-    //...   ns.makeC9rBase()
-    //...   ns.C9rBase[eYo.$newSubC9r]('Label')[eYo.$].finalizeC9r()
-    //...   ns.C9rBase[eYo.$newSubC9r]('Input')[eYo.$].finalizeC9r()
+    //...   ns.makeC3sBase()
+    //...   ns.C3sBase[eYo.$newSubC3s]('Label')[eYo.$].finalizeC3s()
+    //...   ns.C3sBase[eYo.$newSubC3s]('Input')[eYo.$].finalizeC3s()
     //... }
-    //... mngr.newDrvrC9r('Field', {})
-    let _p = this.C9r_p
+    //... mngr.newDrvrC3s('Field', {})
+    let _p = this.C3s_p
     ;[
       'didLoad',
       'startEditing',
@@ -463,7 +463,7 @@ eYo.mixinFR(eYo.field.Dlgt_p, {
           //...     builtin()
           //...   }
           //...   test(12, f_m) 
-          //...   eYo.test.extend(ns.C9rBase_p, K, function() {
+          //...   eYo.test.extend(ns.C3sBase_p, K, function() {
           //...     eYo.flag.push(3)
           //...   })
           //...   test(123, f_m)
@@ -480,7 +480,7 @@ eYo.mixinFR(eYo.field.Dlgt_p, {
             //...     this[K]()
             //...   }
             //...   test(12, f_m)
-            //...   eYo.test.extend(ns.C9rBase_p, K, function() {
+            //...   eYo.test.extend(ns.C3sBase_p, K, function() {
             //...     eYo.flag.push(3)
             //...   })
             //...   test(123, f_m)
@@ -520,7 +520,7 @@ eYo.mixinFR(eYo.field.Dlgt_p, {
     }
   }}.$
 
-  eYo.Field$.finalizeC9r([
+  eYo.Field$.finalizeC3s([
     'after', // String: field key,
     'value', // '(',
     'reserved', // : '.',
@@ -559,28 +559,28 @@ eYo.mixinFR(eYo.field.Dlgt_p, {
 /**
  * Class for a non-editable field.
  * The only purpose is to start with a different height.
- * @param {eYo.brick|eYo.slot.C9rBase} bsi The owner of the field.
+ * @param {eYo.brick|eYo.slot.C3sBase} bsi The owner of the field.
  * @param {string} name The required name of the field
  * @param {string} text The initial content of the field.
  * @extends {eYo.field}
  * @constructor
  */
-eYo.field.newC9r('Label', {
+eYo.field.newC3s('Label', {
   properties: {
     isLabel: true
   },
 })
-eYo.field.Label$.finalizeC9r()
+eYo.field.Label$.finalizeC3s()
 
 /**
  * Class for an editable code field.
- * @param {eYo.brick.C9rBase|eYo.slot.C9rBase} bs The owner of the field.
+ * @param {eYo.brick.C3sBase|eYo.slot.C3sBase} bs The owner of the field.
  * @param {string=} name
  * @param {string} text The initial content of the field.
  * @extends {eYo.field}
  * @constructor
  */
-eYo.field.newC9r('Input', {
+eYo.field.newC3s('Input', {
   properties: {
     /**
      * css class for both the text element and html input.
@@ -646,5 +646,5 @@ eYo.field.newC9r('Input', {
     },
   },
 })
-eYo.field.Input$.finalizeC9r()
+eYo.field.Input$.finalizeC3s()
 

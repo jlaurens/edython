@@ -16,4 +16,4 @@ eYo.forward('control.Zoomer')
 /**
  * Faceless driver for the zoomer.
  */
-eYo.fcls.newDrvrC9r('Zoomer')
+eYo.fcls.newDrvrC3s('Zoomer')

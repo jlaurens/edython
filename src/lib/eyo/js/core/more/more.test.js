@@ -6,16 +6,16 @@ describe ('Tests: More', function () {
   eYo.test.setup()
   it ('eYo.more.enhanceO3dValidate(, , false)', function () {
     var ns = eYo.c3s.newNS()
-    ns.makeC9rBase()
+    ns.makeC3sBase()
     chai.expect(() => {
-      eYo.more.enhanceO3dValidate(ns.C9rBase[eYo.$], 'foo', false)
+      eYo.more.enhanceO3dValidate(ns.C3sBase[eYo.$], 'foo', false)
     }).xthrow()
     ns = eYo.o3d.newNS()
-    ns.makeC9rBase()
-    eYo.more.enhanceO3dValidate(ns.C9rBase[eYo.$], 'foo', false)
-    chai.expect(ns.C9rBase_p.validate)
-    chai.expect(ns.C9rBase[eYo.$].modelHandleValidate)
-    ns.C9rBase_p.validate('<', '>')
+    ns.makeC3sBase()
+    eYo.more.enhanceO3dValidate(ns.C3sBase[eYo.$], 'foo', false)
+    chai.expect(ns.C3sBase_p.validate)
+    chai.expect(ns.C3sBase[eYo.$].modelHandleValidate)
+    ns.C3sBase_p.validate('<', '>')
     eYo.test.onr.fooValidate = function (key, before, after) {
       this.flag('v', key, before, after)
       return after
@@ -32,7 +32,7 @@ describe ('Tests: More', function () {
   })
   it ('modelHandleValidate(..., false) + inheritance', function () {
     let ns_onr = eYo.c3s.newNS()
-    ns_onr.makeC9rBase({
+    ns_onr.makeC3sBase({
       methods: {
         flag (...$) {
           eYo.flag.push('/', ...$)
@@ -45,23 +45,23 @@ describe ('Tests: More', function () {
     })
     let onr = ns_onr.new()
     var ns = eYo.o3d.newNS()
-    ns.makeC9rBase()
-    eYo.more.enhanceO3dValidate(ns.C9rBase[eYo.$], 'foo', false)
-    chai.expect(eYo.isF(ns.C9rBase_p.validate)).true
-    ns.newC9r('Foo')
-    ns.Foo[eYo.$].finalizeC9r()
+    ns.makeC3sBase()
+    eYo.more.enhanceO3dValidate(ns.C3sBase[eYo.$], 'foo', false)
+    chai.expect(eYo.isF(ns.C3sBase_p.validate)).true
+    ns.newC3s('Foo')
+    ns.Foo[eYo.$].finalizeC3s()
     var o = new ns.Foo('foo', onr)
     chai.assert(o.validate)
-    chai.assert(ns.C9rBase[eYo.$].modelHandleValidate)
-    ns.C9rBase[eYo.$].modelHandleValidate('foo', {})
+    chai.assert(ns.C3sBase[eYo.$].modelHandleValidate)
+    ns.C3sBase[eYo.$].modelHandleValidate('foo', {})
     o.validate(1, 2)
     eYo.flag.expect('/fvfoo12') // from the owner
     ////
     ns = eYo.o3d.newNS()
-    ns.makeC9rBase()
-    eYo.more.enhanceO3dValidate(ns.C9rBase[eYo.$], 'foo', false)
-    o = new (ns.newC9r('Foo'))('foo', onr)
-    ns.C9rBase[eYo.$].modelHandleValidate('foo', {
+    ns.makeC3sBase()
+    eYo.more.enhanceO3dValidate(ns.C3sBase[eYo.$], 'foo', false)
+    o = new (ns.newC3s('Foo'))('foo', onr)
+    ns.C3sBase[eYo.$].modelHandleValidate('foo', {
       validate (before, after) {
         this.owner.flag('v', before, after)
         return after
@@ -71,10 +71,10 @@ describe ('Tests: More', function () {
     eYo.flag.expect('/v<>') // from the receiver only
     ////
     ns = eYo.o3d.newNS()
-    ns.makeC9rBase()
-    eYo.more.enhanceO3dValidate(ns.C9rBase[eYo.$], 'foo', false)
-    o = new (ns.newC9r('Foo'))('foo', onr)
-    ns.C9rBase[eYo.$].modelHandleValidate('foo', {
+    ns.makeC3sBase()
+    eYo.more.enhanceO3dValidate(ns.C3sBase[eYo.$], 'foo', false)
+    o = new (ns.newC3s('Foo'))('foo', onr)
+    ns.C3sBase[eYo.$].modelHandleValidate('foo', {
       validate (before, after) {
         after = this.validate(before, after)
         this.owner.flag('v', before, after)
@@ -85,10 +85,10 @@ describe ('Tests: More', function () {
     eYo.flag.expect('/fvfoo<>/v<>')
     ////
     ns = eYo.o3d.newNS()
-    ns.makeC9rBase()
-    eYo.more.enhanceO3dValidate(ns.C9rBase[eYo.$], 'foo', false)
-    o = new (ns.newC9r('Foo'))('foo', onr)
-    ns.C9rBase[eYo.$].modelHandleValidate('foo', {
+    ns.makeC3sBase()
+    eYo.more.enhanceO3dValidate(ns.C3sBase[eYo.$], 'foo', false)
+    o = new (ns.newC3s('Foo'))('foo', onr)
+    ns.C3sBase[eYo.$].modelHandleValidate('foo', {
       validate (builtin, before, after) {
         this.owner.flag('v', before, after)
         return after
@@ -98,10 +98,10 @@ describe ('Tests: More', function () {
     eYo.flag.expect('/v<>') // from the receiver only
     ////
     ns = eYo.o3d.newNS()
-    ns.makeC9rBase()
-    eYo.more.enhanceO3dValidate(ns.C9rBase[eYo.$], 'foo', false)
-    o = new (ns.newC9r('Foo'))('foo', onr)
-    ns.C9rBase[eYo.$].modelHandleValidate('foo', {
+    ns.makeC3sBase()
+    eYo.more.enhanceO3dValidate(ns.C3sBase[eYo.$], 'foo', false)
+    o = new (ns.newC3s('Foo'))('foo', onr)
+    ns.C3sBase[eYo.$].modelHandleValidate('foo', {
       validate (builtin, before, after) {
         after = builtin(before, after)
         this.owner.flag('v', before, after)
@@ -114,7 +114,7 @@ describe ('Tests: More', function () {
   it ('eYo.more.enhanceO3dValidate(, , true)', function () {
     // `this` is the owner in validate.
     let ns_onr = eYo.c3s.newNS()
-    ns_onr.makeC9rBase({
+    ns_onr.makeC3sBase({
       methods: {
         flag (...$) {
           eYo.flag.push('/', ...$)
@@ -127,22 +127,22 @@ describe ('Tests: More', function () {
     })
     let onr = ns_onr.new()
     var ns = eYo.o3d.newNS()
-    ns.makeC9rBase()
-    eYo.more.enhanceO3dValidate(ns.C9rBase[eYo.$], 'foo', true)
-    chai.expect(eYo.isF(ns.C9rBase_p.validate)).true
-    ns.newC9r('Foo')
+    ns.makeC3sBase()
+    eYo.more.enhanceO3dValidate(ns.C3sBase[eYo.$], 'foo', true)
+    chai.expect(eYo.isF(ns.C3sBase_p.validate)).true
+    ns.newC3s('Foo')
     var o = new ns.Foo('foo', onr)
     chai.expect(o.validate)
-    chai.expect(ns.C9rBase[eYo.$].modelHandleValidate)
-    ns.C9rBase[eYo.$].modelHandleValidate('foo', {})
+    chai.expect(ns.C3sBase[eYo.$].modelHandleValidate)
+    ns.C3sBase[eYo.$].modelHandleValidate('foo', {})
     o.validate('<', '>')
     eYo.flag.expect('/fvfoo<>') // from the owner
     ////
     ns = eYo.o3d.newNS()
-    ns.makeC9rBase()
-    eYo.more.enhanceO3dValidate(ns.C9rBase[eYo.$], 'foo', true)
-    o = new (ns.newC9r('Foo'))('foo', onr)
-    ns.C9rBase[eYo.$].modelHandleValidate('foo', {
+    ns.makeC3sBase()
+    eYo.more.enhanceO3dValidate(ns.C3sBase[eYo.$], 'foo', true)
+    o = new (ns.newC3s('Foo'))('foo', onr)
+    ns.C3sBase[eYo.$].modelHandleValidate('foo', {
       validate (before, after) {
         this.flag('v', before, after)
         return after
@@ -152,10 +152,10 @@ describe ('Tests: More', function () {
     eYo.flag.expect('/v<>') // from the receiver only
     ////
     ns = eYo.o3d.newNS()
-    ns.makeC9rBase()
-    eYo.more.enhanceO3dValidate(ns.C9rBase[eYo.$], 'foo', true)
-    o = new (ns.newC9r('Foo'))('foo', onr)
-    ns.C9rBase[eYo.$].modelHandleValidate('foo', {
+    ns.makeC3sBase()
+    eYo.more.enhanceO3dValidate(ns.C3sBase[eYo.$], 'foo', true)
+    o = new (ns.newC3s('Foo'))('foo', onr)
+    ns.C3sBase[eYo.$].modelHandleValidate('foo', {
       validate (before, after) {
         after = this.validate(before, after)
       },
@@ -165,11 +165,11 @@ describe ('Tests: More', function () {
     }).xthrow()
     ////
     ns = eYo.o3d.newNS()
-    ns.makeC9rBase()
-    eYo.more.enhanceO3dValidate(ns.C9rBase[eYo.$], 'foo', true)
-    o = new (ns.newC9r('Foo'))('foo', onr)
+    ns.makeC3sBase()
+    eYo.more.enhanceO3dValidate(ns.C3sBase[eYo.$], 'foo', true)
+    o = new (ns.newC3s('Foo'))('foo', onr)
     o.flag = 9
-    ns.C9rBase[eYo.$].modelHandleValidate('foo', {
+    ns.C3sBase[eYo.$].modelHandleValidate('foo', {
       validate (builtin, before, after) {
         this.flag('v', before, after)
         return after
@@ -179,10 +179,10 @@ describe ('Tests: More', function () {
     eYo.flag.expect('/v<>') // from the receiver only
     ////
     ns = eYo.o3d.newNS()
-    ns.makeC9rBase()
-    eYo.more.enhanceO3dValidate(ns.C9rBase[eYo.$], 'foo', true)
-    o = new (ns.newC9r('Foo'))('foo', onr)
-    ns.C9rBase[eYo.$].modelHandleValidate('foo', {
+    ns.makeC3sBase()
+    eYo.more.enhanceO3dValidate(ns.C3sBase[eYo.$], 'foo', true)
+    o = new (ns.newC3s('Foo'))('foo', onr)
+    ns.C3sBase[eYo.$].modelHandleValidate('foo', {
       validate (builtin, before, after) {
         after = builtin(before, after)
         this.flag('v', before, after)

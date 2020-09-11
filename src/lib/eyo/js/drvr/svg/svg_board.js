@@ -16,7 +16,7 @@ eYo.forward('board')
 /**
  * Svg driver for boards.
  */
-eYo.svg.newDrvrC9r('Board', {
+eYo.svg.newDrvrC3s('Board', {
   /**
    * Initialize the board dom ressources.
    * @param {eYo.board} board

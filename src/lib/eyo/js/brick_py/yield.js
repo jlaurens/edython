@@ -24,7 +24,7 @@ eYo.provide('brick.yield')
  * Class for a Delegate, yield_expr.
  * For edython.
  */
-eYo.expr.newC9r('yield_expr', true, {
+eYo.expr.newC3s('yield_expr', true, {
   xml: {
     attr: 'yield'
   },
@@ -158,31 +158,31 @@ eYo.expr.newC9r('yield_expr', true, {
 
 /**
  * Populate the context menu for the given brick.
- * @param {eYo.brick.C9rBase} brick The brick.
+ * @param {eYo.brick.C3sBase} brick The brick.
  * @param {eYo.MenuManager} mngr - mngr.menu is the menu to populate.
  * @private
  */
 eYo.expr.yield_expr.prototype.populateContextMenuFirst_ = function (mngr) {
   var yorn = eYo.expr.yield_expr.populateContextMenuFirst_.call(this, mngr)
-  return eYo.expr.yield_expr.eyo$.C9r_s.populateContextMenuFirst_.call(this, mngr) || yorn
+  return eYo.expr.yield_expr.eyo$.C3s_s.populateContextMenuFirst_.call(this, mngr) || yorn
 }
 
 /**
  * Class for a Delegate, yield_stmt.
  * For edython.
  */
-eYo.stmt.newC9r('yield_stmt', true, {
+eYo.stmt.newC3s('yield_stmt', true, {
   link: eYo.t3.expr.yield_expr
 })
 
 /**
  * Populate the context menu for the given brick.
- * @param {eYo.brick.C9rBase} brick The brick.
+ * @param {eYo.brick.C3sBase} brick The brick.
  * @param {eYo.MenuManager} mngr - mngr.menu is the menu to populate.
  * @private
  */
 eYo.stmt.yield_stmt.prototype.populateContextMenuFirst_ = function (mngr) {
   eYo.expr.yield_expr.populateContextMenuFirst_.call(this, mngr)
-  return eYo.stmt.yield_stmt.eyo$.C9r_s.populateContextMenuFirst_.call(this, mngr)
+  return eYo.stmt.yield_stmt.eyo$.C3s_s.populateContextMenuFirst_.call(this, mngr)
 }
 

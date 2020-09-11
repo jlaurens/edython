@@ -18,7 +18,7 @@ eYo.forward('control.TrashCan')
  * @constructor
  * Faceless driver for the trash can.
  */
-eYo.fcls.newDrvrC9r('TrashCan', {
+eYo.fcls.newDrvrC3s('TrashCan', {
   methods: {
     /**
      * Is the given trash can open.

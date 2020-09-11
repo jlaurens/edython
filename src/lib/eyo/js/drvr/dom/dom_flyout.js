@@ -26,7 +26,7 @@ eYo.dom.newNS('flyout', {
  * @constructor
  * Dom driver for the flyout.
  */
-eYo.dom.flyout.newDrvrC9r('View', {
+eYo.dom.flyout.newDrvrC3s('View', {
   /**
    * Initialize the flyout dom ressources.
    * @param {eYo.flyout.View} flyout

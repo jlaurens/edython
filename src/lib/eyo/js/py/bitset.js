@@ -25,10 +25,10 @@ eYo.py.newNS('bitset')
 bitset */
 
 /**
- * @name {eYo.py.bitset.C9rBase}
+ * @name {eYo.py.bitset.C3sBase}
  * @namespace
  */
-eYo.py.bitset.makeC9rBase({
+eYo.py.bitset.makeC3sBase({
   init (nbits) {
     this.ra = new Uint8Array(1 + Math.floor((nbits - 1) / 8))
   }

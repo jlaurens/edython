@@ -16,7 +16,7 @@ eYo.forward('section.Search')
 /**
  * Dom driver for the search view.
  */
-eYo.dom.newDrvrC9r('Search', {
+eYo.dom.newDrvrC3s('Search', {
   /**
    * Initialize the search dom ressources.
    * @param {eYo.section.Search} search

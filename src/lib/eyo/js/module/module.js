@@ -18,12 +18,12 @@
 eYo.o3d.newNS(eYo, 'module')
 
 /**
- * @name {eYo.module.C9rBase}
+ * @name {eYo.module.C3sBase}
  * @param {String} name - the name of this constructor
  * @param {String} url - the url of the module (in the python documentation)
  * @constructor
  */
-eYo.module.makeC9rBase({
+eYo.module.makeC3sBase({
   init(name, url) {
     this.name_ = name
     this.url_ = url
@@ -52,11 +52,11 @@ eYo.module.makeC9rBase({
 
 /**
  * Item constuctor.
- * This must not inherit from `eYo.module.C9rBase` but from `eYo.o4t.C9rBase`. 
+ * This must not inherit from `eYo.module.C3sBase` but from `eYo.o4t.C3sBase`. 
  * @name{eYo.module.Item}
  * @param {Object} item_model
  */
-eYo.o4t.newC9r(eYo.module, 'Item', {
+eYo.o4t.newC3s(eYo.module, 'Item', {
   init (owner, item_model) {
     Object.keys(item_model).forEach(key => {
       Object.defineProperty(
@@ -145,7 +145,7 @@ eYo.module.Item || eYo.throw('MISSING eYo.module.Item')
 
 eYo.module._p.makeNewItem = function () {
   this === eYo.module && eYo.throw('Only derived modules can make Items')
-  var Item = this.newC9r('Item', this.Item, {
+  var Item = this.newC3s('Item', this.Item, {
     properties: {
       url: eYo.descriptorR({$ () {
         return this.href
@@ -167,7 +167,7 @@ eYo.module._p.makeNewItem = function () {
  * @param {String|Number} key  The key or index of the item
  * @return {?Object} return the model object for that item, if any.
  */
-eYo.module.C9rBase_p.getItem = function (key) {
+eYo.module.C3sBase_p.getItem = function (key) {
   if (!eYo.isNum(key)) {
     key = this.data.by_name[key]
   }
@@ -181,7 +181,7 @@ eYo.module.C9rBase_p.getItem = function (key) {
  * @param {String} key  The name of the category
  * @return {!Array} the list of item indices with the given category (possibly void).
  */
-eYo.module.C9rBase_p.getItemsInCategory = function (category, type) {
+eYo.module.C3sBase_p.getItemsInCategory = function (category, type) {
   var ra = this.data.by_category[category] || []
   if (eYo.isStr(type)) {
     type = this.data.type.indexOf(type)
@@ -204,7 +204,7 @@ eYo.module.C9rBase_p.getItemsInCategory = function (category, type) {
  * Sends a message for each ordered item with the given type
  * @param {String} key  The name of the category
  */
-eYo.module.C9rBase_p.forEachItemWithType = function (type, handler) {
+eYo.module.C3sBase_p.forEachItemWithType = function (type, handler) {
   if (eYo.isStr(type)) {
     var ra = this.items_by_type[type]
     if (!ra) {

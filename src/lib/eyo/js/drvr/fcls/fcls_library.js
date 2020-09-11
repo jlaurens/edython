@@ -16,4 +16,4 @@ eYo.forward('library')
 /**
  * Shared application driver.
  */
-eYo.fcls.newDrvrC9r('library')
+eYo.fcls.newDrvrC3s('library')

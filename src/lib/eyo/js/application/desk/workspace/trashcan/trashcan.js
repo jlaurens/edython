@@ -16,7 +16,7 @@
  * @param {eYo.Workspace} workspace The workspace to sit in.
  * @constructor
  */
-eYo.control.newC9r('TrashCan', {
+eYo.control.newC3s('TrashCan', {
   properties: {
     isOpen: {
       get () {
@@ -69,7 +69,7 @@ eYo.control.newC9r('TrashCan', {
      * Move the trash can to the bottom-right corner.
      */
     place (bottom) {
-      eYo.control.TrashCan[eYo.$].C9r_s.place.call(this, bottom)
+      eYo.control.TrashCan[eYo.$].C3s_s.place.call(this, bottom)
       this.drvr.place(this)
     },
     /**

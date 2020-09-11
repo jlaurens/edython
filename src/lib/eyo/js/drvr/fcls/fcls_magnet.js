@@ -16,7 +16,7 @@ eYo.forward('magnet')
 /**
  * Faceless driver for magnets.
  */
-eYo.fcls.newDrvrC9r('Magnet', {
+eYo.fcls.newDrvrC3s('Magnet', {
   methods: {
     /**
      * Hilight the given connection.

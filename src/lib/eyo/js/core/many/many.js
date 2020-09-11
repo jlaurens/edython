@@ -41,7 +41,7 @@ eYo.provide('many')
 //... var C3s, foo$
 //... let preparator = f => {
 //...   return model => {
-//...     C3s = eYo.c3s.newNS().makeC9rBase(true)
+//...     C3s = eYo.c3s.newNS().makeC3sBase(true)
 //...     C3s.prototype.flag = (...$) => eYo.flag.push('/', ...$)
 //...     let eyo$ = C3s[eYo.$]
 //...     eyo$._p.c9rPrepare = (object, ...$) => {
@@ -51,7 +51,7 @@ eYo.provide('many')
 //...       object.flag('i', ...$)
 //...     }
 //...     f && f(_p)
-//...     eyo$.finalizeC9r()
+//...     eyo$.finalizeC3s()
 //...   }
 //... }
 //>>>
@@ -141,7 +141,7 @@ eYo.Dlgt_p.manyEnhanced = function (id, type, path, manyModel) {
   //... preparator()()
   //... var foo$ = C3s[eYo.$].manyEnhanced('foo', 'foo')
   //... chai.expect(() => C3s[eYo.$].manyEnhanced('foo', 'foo')).xthrow()
-  //... C3s = eYo.c3s.newNS().makeC9rBase(true)
+  //... C3s = eYo.c3s.newNS().makeC3sBase(true)
   //... let dlgt = C3s[eYo.$]
   //... var foo$ = dlgt.manyEnhanced('foo', 'bar', {})
   //... ;[
@@ -168,7 +168,7 @@ eYo.Dlgt_p.manyEnhanced = function (id, type, path, manyModel) {
   //... ].forEach(k => {
   //...   var sym = foo$[k]
   //...   chai.assert(sym)
-  //...   chai.assert(dlgt.C9r_p[sym])
+  //...   chai.assert(dlgt.C3s_p[sym])
   //... })
   //... chai.assert(dlgt[foo$.modelMap])
   //... let o = new C3s()
@@ -264,7 +264,7 @@ eYo.Dlgt_p.manyEnhanced = function (id, type, path, manyModel) {
     model = this.modelValidate(path, model)
     eYo.provideFR(this[type$.modelByKey], model)
     delete this[type$.modelMap] // delete the shortcut
-    this.forEachSubC9r(C3s => C3s[eYo.$][type$.merge]({})) // delete the cache of descendants
+    this.forEachSubC3s(C3s => C3s[eYo.$][type$.merge]({})) // delete the cache of descendants
     //<<< mochai: merge
     //... preparator()()
     //... var foo$ = C3s[eYo.$].manyEnhanced('foo', 'foo')
@@ -454,7 +454,7 @@ eYo.Dlgt_p.manyEnhanced = function (id, type, path, manyModel) {
       //... eYo.flag.expect('d')
         for (let k of [...map.keys()].reverse()) {
           let attr = map.get(k)
-          eYo.isaC9r(attr) && attr.dispose()
+          eYo.isaC3s(attr) && attr.dispose()
         }
       }
       //... preparator()()
@@ -640,7 +640,7 @@ eYo.Dlgt_p.manyEnhanced = function (id, type, path, manyModel) {
     }
     //... preparator()()
     //... var ns = eYo.o3d.newNS()
-    //... ns.makeC9rBase({
+    //... ns.makeC3sBase({
     //...   init (model, k, object) {
     //...     eYo.flag.push('/i')
     //...   },
@@ -685,7 +685,7 @@ eYo.Dlgt_p.manyEnhanced = function (id, type, path, manyModel) {
     object.boundField = eYo.NA // not here
     //... preparator()()
     //... var ns = eYo.o3d.newNS()
-    //... ns.makeC9rBase({
+    //... ns.makeC3sBase({
     //...   dispose (...$) {
     //...     eYo.flag.push(1, ...$)
     //...   },
@@ -714,7 +714,7 @@ eYo.Dlgt_p.manyEnhanced = function (id, type, path, manyModel) {
     //>>>
   }
   // methods defined on the object
-  _p = this.C9r_p
+  _p = this.C3s_p
   eYo.mixinRO(_p, {
     [id$]: type$,
     //<<< mochai: id$ (instance)
@@ -734,7 +734,7 @@ eYo.Dlgt_p.manyEnhanced = function (id, type, path, manyModel) {
     }
     //... preparator()()
     //... var ns = eYo.o3d.newNS()
-    //... ns.makeC9rBase()
+    //... ns.makeC3sBase()
     //... var foo$ = C3s[eYo.$].manyEnhanced('foo', 'foo', {
     //...   make (model, k, object) {
     //...     return ns.new(model, k, object)
@@ -781,7 +781,7 @@ eYo.Dlgt_p.manyEnhanced = function (id, type, path, manyModel) {
     return false
     //... preparator()()
     //... var ns = eYo.o3d.newNS()
-    //... ns.makeC9rBase()
+    //... ns.makeC3sBase()
     //... var foo$ = C3s[eYo.$].manyEnhanced('foo', 'foo', {
     //...   make (model, k, object) {
     //...     return ns.new(model, k, object)

@@ -58,7 +58,7 @@ eYo.svg.makeMngr({
         if (dom && dom.svg) {
           f && f.apply(object, rest)
           dom.svg = null
-          eYo.svg[eYo.$SuperC9r_p].disposeUI.apply(object, ...rest)
+          eYo.svg[eYo.$SuperC3s_p].disposeUI.apply(object, ...rest)
         }
       }
     },
@@ -122,7 +122,7 @@ Object.defineProperties(eYo.svg, {
  * @param {Element} element SVG element to find the coordinates of.
  * @return {!eYo.geom.Point} Object with .x and .y properties.
  */
-eYo.svg.C9rBase_p.xyInParent = function(element) {
+eYo.svg.C3sBase_p.xyInParent = function(element) {
   var xy = new eYo.geom.Point()
   // First, check for x and y attributes.
   var x = element.getAttribute('x')
@@ -164,7 +164,7 @@ eYo.svg.C9rBase_p.xyInParent = function(element) {
  * Add tooltip to an element
  * @param {String} key
  */
-eYo.svg.C9rBase_p.addTooltip = function (el, title, options) {
+eYo.svg.C3sBase_p.addTooltip = function (el, title, options) {
   if (eYo.isStr(title)) {
     el.setAttribute('title', title)
     tippy(el, options)

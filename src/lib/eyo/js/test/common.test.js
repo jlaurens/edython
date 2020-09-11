@@ -20,7 +20,7 @@
 eYo.py && setTimeout(() => {
   describe('PREPARE', function() {
     it('toBrick', function() {
-      chai.assert(eYo.py.node.C9rBase_p.toBrick, `MISSING toBrick`)
+      chai.assert(eYo.py.node.C3sBase_p.toBrick, `MISSING toBrick`)
     })
   })
 }, 0)
@@ -248,7 +248,7 @@ eYo.test.All_variants = (d, required) => {
 eYo.test.linearizeCode_ = s => s.replace(/(?:\r\n|\r|\n)/g, '\\n').replace(/\s+/g, ' ').replace(/(\*) /g, '$1').replace(/(\s|\\n)+$/g, '').replace(/,?\s*(=|\]|\)|\})\s*/g, '$1').replace(/\s*(\[|\(|\{|:|\*\*|->|,|}|\+|-|=|#)\s*/g, '$1').replace(/(#)  +/g, '$1 ')
 
 try {
-  Object.defineProperties(eYo.brick.C9rBase_p, {
+  Object.defineProperties(eYo.brick.C3sBase_p, {
     linearizedCode: {
       get () {
         return eYo.test.linearizeCode_(this.description)

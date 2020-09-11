@@ -21,7 +21,7 @@ eYo.require('expr.List')
  * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.expr.List[eYo.$newSubC9r](eYo.t3.expr.non_void_identifier_list, {
+eYo.expr.List[eYo.$newSubC3s](eYo.t3.expr.non_void_identifier_list, {
   list: {
     check: eYo.t3.expr.check.non_void_identifier_list,
     presep: ',',
@@ -33,7 +33,7 @@ eYo.expr.List[eYo.$newSubC9r](eYo.t3.expr.non_void_identifier_list, {
  * Class for a Delegate, global_stmt.
  * For edython.
  */
-eYo.stmt.newC9r(eYo.t3.stmt.global_stmt, {
+eYo.stmt.newC3s(eYo.t3.stmt.global_stmt, {
   data: {
     variant: {
       all: [
@@ -179,7 +179,7 @@ eYo.stmt.global_stmt.prototype.xmlAttr = function () {
 
 /**
  * Populate the context menu for the given brick.
- * @param {eYo.brick.C9rBase} brick The brick.
+ * @param {eYo.brick.C3sBase} brick The brick.
  * @param {eYo.MenuManager} mngr mngr.menu is the menu to populate.
  * @private
  */
@@ -207,5 +207,5 @@ eYo.stmt.global_stmt.prototype.populateContextMenuFirst_ = function (mngr) {
   F(5)
   F(6)
   mngr.shouldSeparate()
-  return eYo.stmt.global_stmt.eyo$.C9r_s.populateContextMenuFirst_.call(this, mngr)
+  return eYo.stmt.global_stmt.eyo$.C3s_s.populateContextMenuFirst_.call(this, mngr)
 }

@@ -16,4 +16,4 @@ eYo.forward('view.Scroller')
 /**
  * Shared application driver.
  */
-eYo.fcls.newDrvrC9r('Scroller')
+eYo.fcls.newDrvrC3s('Scroller')

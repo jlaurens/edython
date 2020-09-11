@@ -2,10 +2,10 @@ describe ('Tests: audio', function () {
   this.timeout(20000)
   it ('Audio: basic', function () {
     chai.assert(eYo.audio)
-    chai.assert(eYo.audio.C9rBase)
+    chai.assert(eYo.audio.C3sBase)
   })
   it ('Audio: basic properties', function () {
-    let app = new eYo.app.C9rBase()
+    let app = new eYo.app.C3sBase()
     chai.assert(app.audio)
     chai.expect(app.audio.app).equal(app)
     chai.assert(app.driver_mngr)
@@ -18,7 +18,7 @@ describe ('Tests: audio', function () {
       media : `${eYo.path_eyo}media/`,
       UI: 'dom',
     }
-    let app = new eYo.app.C9rBase(options)
+    let app = new eYo.app.C3sBase(options)
     app.audio.play('click')
     app.audio.play('delete')
     app.audio.play('disconnect')

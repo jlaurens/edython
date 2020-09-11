@@ -16,7 +16,7 @@ eYo.forward('board')
 /**
  * Dom driver for boards.
  */
-eYo.dom.newDrvrC9r('Board', {
+eYo.dom.newDrvrC3s('Board', {
   /**
    * Initialize the board dom ressources.
    * @param {eYo.board} board

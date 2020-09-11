@@ -18,5 +18,5 @@ eYo.require('section')
  * @param {eYo.flyout.View} owner  The owning flyout.
  * @constructor
  */
-eYo.section.newC9r('Search')
+eYo.section.newC3s('Search')
 

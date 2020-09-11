@@ -22,7 +22,7 @@ eYo.brick.newNS(eYo, 'stmt')
  * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.stmt.makeC9rBase(true, {
+eYo.stmt.makeC3sBase(true, {
   left /** @suppress {globalThis} */ (type) { // eslint-disable-line
     return this.brick.head || this.brick.foot
       ? [eYo.t3.stmt.comment_stmt]
@@ -144,7 +144,7 @@ eYo.stmt.makeC9rBase(true, {
 
 eYo.brick.registerAll(eYo.t3.stmt, eYo.Stmt, true)
 
-eYo.Stmt$.finalizeC9r({
+eYo.Stmt$.finalizeC3s({
   left: ['check'],
 }, {
   right: ['check', 'fields'], 

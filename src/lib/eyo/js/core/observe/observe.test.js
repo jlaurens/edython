@@ -14,8 +14,8 @@ describe ('Tests: Observe', function () {
   })
   it (`$this`, function () {
     let ns = eYo.c3s.newNS()
-    ns.makeC9rBase()
-    ns.C9rBase[eYo.$].observeEnhanced()
+    ns.makeC3sBase()
+    ns.C3sBase[eYo.$].observeEnhanced()
     let o = ns.new()
     let oo = {
       flag(...$) {
@@ -30,27 +30,27 @@ describe ('Tests: Observe', function () {
   })
   it (`Inherited`, function () {
     let ns = eYo.c3s.newNS()
-    let SuperC9r = ns.makeC9rBase()
-    let C3s = SuperC9r[eYo.$newSubC9r]('Foo')
-    let ChildC9r = C3s[eYo.$newSubC9r]('Bar')
-    SuperC9r[eYo.$].observeEnhanced()
-    let o = new ChildC9r()
+    let SuperC3s = ns.makeC3sBase()
+    let C3s = SuperC3s[eYo.$newSubC3s]('Foo')
+    let ChildC3s = C3s[eYo.$newSubC3s]('Bar')
+    SuperC3s[eYo.$].observeEnhanced()
+    let o = new ChildC3s()
     let o_o = o.addObserver(eYo.observe.BEFORE, function (before, after) {
       eYo.flag.push(before, after)
     })
     o.willChange(1, 2)
     eYo.flag.expect(12)
-    let o_ChildC9r = ChildC9r.prototype.addObserver(eYo.observe.BEFORE, function (before, after) {
+    let o_ChildC3s = ChildC3s.prototype.addObserver(eYo.observe.BEFORE, function (before, after) {
       eYo.flag.push(7, before + 7, after + 7)
     })
     o.willChange(1, 2)
     eYo.flag.expect(78912)
-    let o_C9r = C3s.prototype.addObserver(eYo.observe.BEFORE, function (before, after) {
+    let o_C3s = C3s.prototype.addObserver(eYo.observe.BEFORE, function (before, after) {
       eYo.flag.push(4, before + 4, after + 4)
     })
     o.willChange(1, 2)
     eYo.flag.expect(45678912)
-    let o_SuperC9r = SuperC9r.prototype.addObserver(eYo.observe.BEFORE, function (before, after) {
+    let o_SuperC3s = SuperC3s.prototype.addObserver(eYo.observe.BEFORE, function (before, after) {
       eYo.flag.push(1, before+1, after+1)
     })
     o.willChange(1, 2)
@@ -58,23 +58,23 @@ describe ('Tests: Observe', function () {
     o.removeObserver(o_o)
     o.willChange(1, 2)
     eYo.flag.expect(123456789)
-    ChildC9r.prototype.removeObserver(o_ChildC9r)
+    ChildC3s.prototype.removeObserver(o_ChildC3s)
     o.willChange(1, 2)
     eYo.flag.expect(123456)
-    C3s.prototype.removeObserver(o_C9r)
+    C3s.prototype.removeObserver(o_C3s)
     o.willChange(1, 2)
     eYo.flag.expect(123)
-    SuperC9r.prototype.removeObserver(o_SuperC9r)
+    SuperC3s.prototype.removeObserver(o_SuperC3s)
     o.willChange(1, 2)
     eYo.flag.expect()
   })
   it (`Shared and inherited`, function () {
     let ns = eYo.c3s.newNS()
-    ns.makeC9rBase()
-    ns.C9rBase[eYo.$].observeEnhanced()
+    ns.makeC3sBase()
+    ns.C3sBase[eYo.$].observeEnhanced()
     ns.new().willChange(1, 2)
     eYo.flag.expect()
-    ns.C9rBase_p.addObserver(eYo.observe.BEFORE, function (before, after) {
+    ns.C3sBase_p.addObserver(eYo.observe.BEFORE, function (before, after) {
       eYo.flag.push(1, before+1, after+1)
     })
     ns.new().willChange(1, 2)

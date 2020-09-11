@@ -21,7 +21,7 @@ eYo.forward('msg')
  * Base group is subclassed into Group and Control.
  * For edython.
  */
-eYo.stmt.newC9r('group', {
+eYo.stmt.newC3s('group', {
   head (type) /** @suppress {globalThis} */ { // eslint-disable-line
     return null
   },
@@ -57,7 +57,7 @@ eYo.stmt.newC9r('group', {
  * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.stmt.group[eYo.$newSubC9r]('branch', true, {
+eYo.stmt.group[eYo.$newSubC3s]('branch', true, {
   data: {
     variant: {
       all: [
@@ -201,7 +201,7 @@ eYo.stmt.branch_p.getBaseType = function () {
  * @private
  */
 eYo.stmt.group.prototype.willRender_ = function (recorder) {
-  eYo.stmt.group.eyo$.C9r_s.willRender_.call(this, recorder)
+  eYo.stmt.group.eyo$.C3s_s.willRender_.call(this, recorder)
   var field = this.async_f
   if (field) {
     field.visible = this.async_
@@ -210,7 +210,7 @@ eYo.stmt.group.prototype.willRender_ = function (recorder) {
 
 /**
  * Populate the context menu for the given brick.
- * @param {eYo.brick.C9rBase} brick The brick.
+ * @param {eYo.brick.C3sBase} brick The brick.
  * @param {eYo.MenuManager} mngr mngr.menu is the menu to populate.
  * @private
  */
@@ -232,7 +232,7 @@ eYo.stmt.group.prototype.populateContextMenuFirst_ = function (mngr) {
       mngr.shouldSeparateInsert()
     }
   }
-  return eYo.stmt.group.eyo$.C9r_s.populateContextMenuFirst_.call(this, mngr)
+  return eYo.stmt.group.eyo$.C3s_s.populateContextMenuFirst_.call(this, mngr)
 }
 
 /**
@@ -240,7 +240,7 @@ eYo.stmt.group.prototype.populateContextMenuFirst_ = function (mngr) {
  * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.stmt.group[eYo.$newSubC9r]('for_part', true, {
+eYo.stmt.group[eYo.$newSubC3s]('for_part', true, {
   slots: {
     for: {
       order: 1,
@@ -264,7 +264,7 @@ eYo.stmt.group[eYo.$newSubC9r]('for_part', true, {
  * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.stmt.group[eYo.$newSubC9r]('with_part', true, {
+eYo.stmt.group[eYo.$newSubC3s]('with_part', true, {
   slots: {
     with: {
       order: 1,

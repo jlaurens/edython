@@ -24,13 +24,13 @@ The transition to upper case is in progress.
 ### Properties
 
 - `foo.Bar` is a constructor
-- `foo.Bar.SuperC9r_` is a constructor that `foo.Bar` directly inherits from
-- `foo.Bar.SuperC9r_p` is a shortcut to `foo.Bar.SuperC9r_.prototype`
+- `foo.Bar.SuperC3s_` is a constructor that `foo.Bar` directly inherits from
+- `foo.Bar.SuperC3s_p` is a shortcut to `foo.Bar.SuperC3s_.prototype`
 
-When constructor `foo.Bar` is created with the `makeC9r` utility,
+When constructor `foo.Bar` is created with the `makeC3s` utility,
 
 - `foo.Bar_p` is a shortcut to `foo.Bar.prototype`
-- `foo.Bar_s` is a shortcut to `foo.Bar.SuperC9r_p`
+- `foo.Bar_s` is a shortcut to `foo.Bar.SuperC3s_p`
 
 **Nota Bene:** See `eYo.inherits` 
 

@@ -16,7 +16,7 @@
  * @param {eYo.board} board The board to drag.
  * @constructor
  */
-eYo.dragger.newC9r('Board', {
+eYo.dragger.newC3s('Board', {
   aliases: {
     owner: 'board',
   },

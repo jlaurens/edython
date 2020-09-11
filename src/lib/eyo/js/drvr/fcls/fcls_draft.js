@@ -16,4 +16,4 @@ eYo.forward('section.Draft')
 /**
  * Shared application driver.
  */
-eYo.fcls.newDrvrC9r('Draft')
+eYo.fcls.newDrvrC3s('Draft')

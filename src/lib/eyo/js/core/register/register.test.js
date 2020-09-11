@@ -14,10 +14,10 @@ describe ('Tests: register', function () {
   })
   it ('Register: C3s(2)', function () {
     let ns = eYo.o4t.newNS()
-    ns.makeC9rBase()
-    eYo.register.add(ns.C9rBase, 'foo')
+    ns.makeC3sBase()
+    eYo.register.add(ns.C3sBase, 'foo')
     let onr = eYo.c3s.new()
-    let o = new ns.C9rBase('o', onr)
+    let o = new ns.C3sBase('o', onr)
     chai.assert(o.fooRegister)
     chai.assert(o.fooUnregister)
     chai.assert(o.fooForEach)

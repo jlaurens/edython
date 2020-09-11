@@ -18,7 +18,7 @@ eYo.require('brick')
 /**
  * Svg driver for brick effects
  */
-eYo.svg.newDrvrC9r('Effect')
+eYo.svg.newDrvrC3s('Effect')
 
 /**
  * Play some UI effects (sound, animation) when disposing of a brick.
@@ -68,7 +68,7 @@ eYo.svg.Effect.prototype.brickDispose = (() => {
 
 /**
  * Make the given field reserved or not, to emphasize reserved keywords.
- * @param {eYo.brick.C9rBase} brick  the brick the driver acts on
+ * @param {eYo.brick.C3sBase} brick  the brick the driver acts on
  */
 eYo.svg.Effect.prototype.brickConnect = (() => {
   /*

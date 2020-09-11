@@ -38,14 +38,14 @@ eYo.do.newNS(eYo, 'register')
 eYo.register.add = function (object, key, filter) {
   //<<< mochai: add
   let $k = Symbol(key + ' registered map')
-  if (eYo.isC9r(object)) {
+  if (eYo.isC3s(object)) {
     //<<< mochai: C3s
     //... let ns = eYo.c3s.newNS()
-    //... let C3s = ns.makeC9rBase(true)
+    //... let C3s = ns.makeC3sBase(true)
     //... let eyo = C3s[eYo.$]
     //... let p6y$ = eyo.p6yEnhanced()
     //... let $k = eYo.register.add(C3s, 'foo')
-    //... eyo.finalizeC9r()
+    //... eyo.finalizeC3s()
     //... let o = ns.new('foo')
     //... chai.expect(o.fooRegister).eyo_F
     //... chai.expect(o.fooUnregister).eyo_F
@@ -58,7 +58,7 @@ eYo.register.add = function (object, key, filter) {
     let eyo = object[eYo.$]
     var p6y$ = eyo.p6y$
     p6y$ || eYo.throw(`Not a proper subclass (unknown p6y$/1).`)
-    //... chai.expect(() => eYo.register.add(ns.C9rBase, 'foo')).xthrow()
+    //... chai.expect(() => eYo.register.add(ns.C3sBase, 'foo')).xthrow()
     eyo[p6y$.merge]({
       [$k]: {
         value () {
@@ -71,11 +71,11 @@ eYo.register.add = function (object, key, filter) {
   } else if (eYo.isaDlgt(object)) {
     //<<< mochai: Dlgt
     //... let ns = eYo.c3s.newNS()
-    //... let C3s = ns.makeC9rBase(true)
+    //... let C3s = ns.makeC3sBase(true)
     //... let eyo = C3s[eYo.$]
     //... let p6y$ = eyo.p6yEnhanced()
     //... let $k = eYo.register.add(eyo, 'foo')
-    //... eyo.finalizeC9r()
+    //... eyo.finalizeC3s()
     //... let o = ns.new('foo')
     //... chai.expect(o.fooRegister).eyo_F
     //... chai.expect(o.fooUnregister).eyo_F
@@ -93,7 +93,7 @@ eYo.register.add = function (object, key, filter) {
         },
       },
     })
-    object = object.C9r_p
+    object = object.C3s_p
     //>>>
   } else {
     //<<< mochai: else
@@ -108,11 +108,11 @@ eYo.register.add = function (object, key, filter) {
   eYo.mixinFR(object, {
     //<<< mochai: methods
     //... let ns = eYo.c3s.newNS()
-    //... let C3s = ns.makeC9rBase(true)
+    //... let C3s = ns.makeC3sBase(true)
     //... let eyo = C3s[eYo.$]
     //... let p6y$ = eyo.p6yEnhanced()
     //... let $k = eYo.register.add(eyo, 'foo')
-    //... eyo.finalizeC9r()
+    //... eyo.finalizeC3s()
     //... var o
     //... let prepare = () => {
     //...   o = new C3s('o')

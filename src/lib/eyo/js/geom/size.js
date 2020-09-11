@@ -39,7 +39,7 @@ eYo.forward('geom.Rect')
 /**
  * `Size` is like a vector, but size is a shorter name...
  */
-eYo.geom.newC9r('Size', {
+eYo.geom.newC3s('Size', {
   //<<< mochai: Size
   //<<< mochai: Basics
   //... S = new eYo.geom.Size()
@@ -47,7 +47,7 @@ eYo.geom.newC9r('Size', {
   //>>>
   /**
    * Initialize the point forwarding to `set`.
-   * @param {Boolean|eYo.geom.PointLike|eYo.p6y.C9rBase} [snap] - Defaults to true
+   * @param {Boolean|eYo.geom.PointLike|eYo.p6y.C3sBase} [snap] - Defaults to true
    * @param {*} w 
    * @param {*} h 
    */
@@ -551,14 +551,14 @@ eYo.geom.newC9r('Size', {
   //>>>
 })
 
-eYo.geom.Size$.finalizeC9r()
+eYo.geom.Size$.finalizeC3s()
 
 eYo.c3s.Dlgt_p.makeSized = function (key) {
   //<<< mochai: eYo.o4t.Dlgt.makeSized
   //... let ns = eYo.o4t.newNS()
-  //... ns.makeC9rBase(true)
-  //... ns.C9rBase[eYo.$].makeSized('size')
-  //... ns.C9rBase[eYo.$].finalizeC9r()
+  //... ns.makeC3sBase(true)
+  //... ns.C3sBase[eYo.$].makeSized('size')
+  //... ns.C3sBase[eYo.$].finalizeC3s()
   //... var R
   this.modelMerge({
     //<<< mochai: Text coordinates

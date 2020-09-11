@@ -58,7 +58,7 @@ eYo.forward('geom.Rect')
  * @constructor
  * @param {*} ... - See the implementation.
  */
-eYo.geom.newC9r('Point', {
+eYo.geom.newC3s('Point', {
   //<<< mochai: Point
   //<<< mochai: Basics
   //... P = new eYo.geom.Point()
@@ -655,7 +655,7 @@ eYo.geom.newC9r('Point', {
   //>>>
 })
 
-eYo.geom.Point$.finalizeC9r()
+eYo.geom.Point$.finalizeC3s()
 
 //<<< mochai: Util
 /**
@@ -706,9 +706,9 @@ eYo.geom.tPoint = function (snap, c, l) {
 eYo.c3s.Dlgt_p.makePointed = function (key) {
   //<<< mochai: eYo.o4t.Dlgt.makePointed
   //... let ns = eYo.o4t.newNS()
-  //... ns.makeC9rBase(true)
-  //... ns.C9rBase[eYo.$].makePointed('origin')
-  //... ns.C9rBase[eYo.$].finalizeC9r()
+  //... ns.makeC3sBase(true)
+  //... ns.C3sBase[eYo.$].makePointed('origin')
+  //... ns.C3sBase[eYo.$].finalizeC3s()
   //... var R
   this.modelMerge({
     //<<< mochai: Text coordinates

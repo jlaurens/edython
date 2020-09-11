@@ -23,7 +23,7 @@ eYo.forward('slot')
  * @param {string} [One] indentation, defaults to 4 spaces.
  * @constructor
  */
-eYo.py.newC9r('Exporter', {
+eYo.py.newC3s('Exporter', {
   init (oneIndent) {
     this.oneIndent = oneIndent || this.ns.INDENT
   },
@@ -91,7 +91,7 @@ eYo.py.Exporter_p.linePush = function (s) {
 /**
  * Convert the brick to python code.
  * For edython.
- * @param {eYo.brick.C9rBase} brick The owner of the receiver, to be converted to python.
+ * @param {eYo.brick.C3sBase} brick The owner of the receiver, to be converted to python.
  * @param {Object} [opt]  See the eponym parameter in `eYo.xml.domToBrick`.
  * @return some python code
  */
@@ -155,7 +155,7 @@ eYo.py.Exporter_p.exportAsExpression_ = function (brick, opt) {
 /**
  * Convert the brick to python code.
  * For edython.
- * @param {eYo.brick.C9rBase} eyo The owner of the receiver, to be converted to python.
+ * @param {eYo.brick.C3sBase} eyo The owner of the receiver, to be converted to python.
  * @param {Object} [opt]  flags, `is_deep` whether next bricks should be exported too.
  * @return some python code
  */
@@ -219,7 +219,7 @@ eYo.py.Exporter_p.exportBrick_ = function (brick, opt) {
 /**
  * Convert the brick to python code.
  * For edython.
- * @param {eYo.brick.C9rBase} brick The owner of the receiver, to be converted to python.
+ * @param {eYo.brick.C3sBase} brick The owner of the receiver, to be converted to python.
  * @param {Object} [opt]  flags, `is_deep` whether next bricks should be exported too.
  * @return some python code
  */
@@ -315,7 +315,7 @@ eYo.py.Exporter_p.exportField_ = function (field) {
 
 /**
  * Export the given slot in.
- * @param {eYo.slot.C9rBase} slot
+ * @param {eYo.slot.C3sBase} slot
  * @param {Object} opt
  * @private
  */
@@ -342,7 +342,7 @@ eYo.py.Exporter_p.exportSlot_ = function (slot, opt) { // eslint-disable-line
 
 /**
  * Export the given slot in.
- * @param {eYo.slot.C9rBase} slot
+ * @param {eYo.slot.C3sBase} slot
  * @private
  */
 eYo.py.Exporter_p.exportSlot_ = function (slot) {
@@ -374,7 +374,7 @@ eYo.py.Exporter_p.exportSlot_ = function (slot) {
   }
 }
 
-Object.defineProperties(eYo.brick.C9rBase_p, {
+Object.defineProperties(eYo.brick.C3sBase_p, {
   description: {
     get () {
       return new eYo.py.Exporter().export(this, {is_deep: true})
@@ -405,7 +405,7 @@ eYo.Field_p.getPythonText_ = function() {
  * @suppress{accessControls}
  */
 eYo.field.Input_p.getPythonText_ = function () {
-  var t = eYo.field.Input[eYo.$].C9r_s.getPythonText_.call(this)
+  var t = eYo.field.Input[eYo.$].C3s_s.getPythonText_.call(this)
   if (!t.length && !this.optional_) {
     if (!this.model.canEmpty && (this.placeholder || (this.data && this.data.placeholder))) {
       t = `<missing ${this.getPlaceholderText().trim()}>`.toUpperCase()

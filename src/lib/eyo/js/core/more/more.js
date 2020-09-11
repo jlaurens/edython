@@ -122,7 +122,7 @@ eYo.more.enhanceO3dValidate = function (eyo, type, thisIsOwner) {
    * @param {Object} before
    * @param {Object} after
    */
-  eyo.C9r_p.validate = function (before, after) {
+  eyo.C3s_p.validate = function (before, after) {
     var ans = after
     if (this.owner && eYo.isVALID(ans)) {
       var f_o = this.owner[type + 'Validate']
@@ -147,7 +147,7 @@ eYo.more.enhanceO3dValidate = function (eyo, type, thisIsOwner) {
   eyo._p.modelHandleValidate = thisIsOwner
     ? function(key, model) {
       let K = 'validate'
-      let _p = this.C9r_p
+      let _p = this.C3s_p
       let f_m = model[K]
       let f_p = _p[K] || eYo.doReturn2nd
       if (eYo.isF(f_m)) {
@@ -175,7 +175,7 @@ eYo.more.enhanceO3dValidate = function (eyo, type, thisIsOwner) {
       }
     } : function(key, model) {
       let K = 'validate'
-      let _p = this.C9r_p
+      let _p = this.C3s_p
       let f_p = _p[K] || function (before, after) {
         return after
       }

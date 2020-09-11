@@ -36,7 +36,7 @@ eYo.t3.stmt.turtle__setup_stmt = 'eyo:turtle__setup_stmt'
  * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.stmt.newC9r('turtle__setup_stmt', true, {
+eYo.stmt.newC3s('turtle__setup_stmt', true, {
   fields: {
     label: 'edython.turtleSetup()'
   }

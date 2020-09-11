@@ -19,7 +19,7 @@ eYo.forward('section.Search')
 /**
  * Svg driver for the search view.
  */
-eYo.svg.newDrvrC9r('Search', {
+eYo.svg.newDrvrC3s('Search', {
   /**
    * Initializes the search SVG ressources.
    * @param {eYo.dom.Search} search
@@ -28,7 +28,7 @@ eYo.svg.newDrvrC9r('Search', {
     if (search.dom) {
       return
     }
-    var dom = eYo.svg.eyo$.C9r_s.SearchInit.call(this, search)
+    var dom = eYo.svg.eyo$.C3s_s.SearchInit.call(this, search)
     var svg = dom.svg = Object.create(null)
     /*
     <svg class="eyo-search">
@@ -75,7 +75,7 @@ eYo.svg.newDrvrC9r('Search', {
     eYo.dom.removeNode(dom.svg.root_)
     dom.svg.root_ = null
     dom.svg = null
-    eYo.svg.eyo$.C9r_s.SearchDispose.call(this, search)
+    eYo.svg.eyo$.C3s_s.SearchDispose.call(this, search)
   }
 })
 
@@ -167,7 +167,7 @@ eYo.svg.Search_p.removeAllBrickListeners = function(search) {
  * Listeners work only when the search authorizes it.
  * The 'rect' listeners have been removed.
  * @param {eYo.dom.Search} search
- * @param {eYo.brick.C9rBase} brick The block to add listeners for.
+ * @param {eYo.brick.C3sBase} brick The block to add listeners for.
  */
 eYo.svg.Search_p.addListeners = function(search, brick) {
   var g = brick.dom.svg.group_
@@ -251,7 +251,7 @@ eYo.svg.Search_p.on_mousedown = function(e) {
 /**
  * Svg driver for the search tool bar.
  */
-eYo.svg.newDrvrC9r('SearchToolbar', {
+eYo.svg.newDrvrC3s('SearchToolbar', {
   /**
    * Initializes the search toolbar SVG ressources.
    * @param {eYo.dom.SearchToolbar} searchToolbar

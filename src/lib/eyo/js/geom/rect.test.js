@@ -22,7 +22,7 @@ describe ('geometry', function () {
       }).not.xthrow()
       let P = new eYo.geom.Point()
       let ns = eYo.geom.newNS()
-      ns.makeC9rBase(eYo.geom.Point, {
+      ns.makeC3sBase(eYo.geom.Point, {
         init (c_p, l_p) {
           eYo.objectHasOwnProperty(chai.expect(this, 'c_p')).false
           eYo.objectHasOwnProperty(chai.expect(this, 'l_p')).false

@@ -21,7 +21,7 @@ eYo.provide('brick.operator')
  * Abstract class.
  * For edython.
  */
-eYo.expr.newC9r('Binary', {
+eYo.expr.newC3s('Binary', {
   data: {
     operator: { // only one field with that key,
       init: '+',
@@ -284,7 +284,7 @@ eYo.t3.expr.unary = 'eyo:unary' // don't forget it !
  * u_expr.
  * For edython.
  */
-eYo.expr.newC9r('unary', {
+eYo.expr.newC3s('unary', {
   xml: {
     types: [
       eYo.t3.expr.u_expr,

@@ -31,9 +31,9 @@ There are at least 5 namespaces: `eYo.driver`, `eYo.fcls`, `eYo.fcfl`, `eYo.dom`
 
 The application owns a driver manager. Each object with a UI has a link to it, through its `app` computed property.
 
-When a constructor `eYo.Foo` is created via some `makeC9r` method, the instance's `driver` is a cached property returning the `Foo` property of the driver manager.
+When a constructor `eYo.Foo` is created via some `makeC3s` method, the instance's `driver` is a cached property returning the `Foo` property of the driver manager.
 
-All the driver classes are created with a call to some `newDriverC9r`. When created, a driver manager instance owns an instance of all the driver classes created that way.
+All the driver classes are created with a call to some `newDriverC3s`. When created, a driver manager instance owns an instance of all the driver classes created that way.
 
 ### Creating a namespace
 
@@ -63,10 +63,10 @@ These are one shot function for each namespace.
 #### Creating a driver class
 
 The `eYo.Driver.makeMngr` also creates a driver class maker. At some point, we have both
-`eYo.fcls.newDriverC9r`, 
-`eYo.fcfl.newDriverC9r`, 
-`eYo.dom.newDriverC9r ` and
-`eYo.svg.newDriverC9r `.
+`eYo.fcls.newDriverC3s`, 
+`eYo.fcfl.newDriverC3s`, 
+`eYo.dom.newDriverC3s ` and
+`eYo.svg.newDriverC3s `.
 
 #### The multiple inheritance problem.
 

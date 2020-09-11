@@ -22,7 +22,7 @@ eYo.t3.expr.builtin__range_expr = 'eyo:builtin__range_expr'
  * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.expr.newC9r('builtin__range_expr', true, {
+eYo.expr.newC3s('builtin__range_expr', true, {
   xml: {
     attr: 'range',
   },

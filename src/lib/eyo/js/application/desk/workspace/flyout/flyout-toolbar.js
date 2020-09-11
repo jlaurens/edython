@@ -15,7 +15,7 @@
  * Class for a flyout toolbar.
  * @constructor
  */
-eYo.flyout.newC9r('Toolbar', {
+eYo.flyout.newC3s('Toolbar', {
   init (flyout, switcher) {
     this.flyout_ = flyout
     this.switcher_ = switcher || this.app.flyoutToolbarSwitcher

@@ -24,7 +24,7 @@ eYo.require('stmt.group')
  */
 ;(() => {
   var creation = 0
-  eYo.stmt.group[eYo.$newSubC9r]('control', {
+  eYo.stmt.group[eYo.$newSubC3s]('control', {
     data: {
       restart: {
         init: false,
@@ -80,7 +80,7 @@ eYo.require('stmt.group')
  * Run the script exported from the brick.
  * @private
  */
-eYo.brick.C9rBase_p.runScript = function () {
+eYo.brick.C3sBase_p.runScript = function () {
   console.log('Someone should everride this method to really run some script')
 }
 
@@ -89,7 +89,7 @@ eYo.brick.C9rBase_p.runScript = function () {
  * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.stmt.control[eYo.$newSubC9r]('start_stmt', {
+eYo.stmt.control[eYo.$newSubC3s]('start_stmt', {
   xml: {
     attr: 'start'
   },

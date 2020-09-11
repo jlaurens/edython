@@ -20,7 +20,7 @@ eYo.forward('py.node')
 
 /* Scan implementation */
 
-eYo.py.parser.newC9r('Scan', {
+eYo.py.parser.newC3s('Scan', {
   properties: {
     string: {
       get () {

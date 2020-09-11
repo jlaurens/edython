@@ -164,9 +164,9 @@ chai.Assertion.addProperty('eyo_Dlgt', function () {
   )
 })
 
-chai.Assertion.addProperty('eyo_C9r', function () {
+chai.Assertion.addProperty('eyo_C3s', function () {
   this.assert(
-    eYo.isC9r(this._obj),
+    eYo.isC3s(this._obj),
     'expected #{this} to be an eYo constructor',
     'expected #{this} to not be an eYo constructor',
   )
@@ -180,11 +180,11 @@ chai.Assertion.addProperty('eyo_F', function () {
   )
 })
 
-chai.Assertion.addProperty('eyo_C9rBase', function () {
-  this.eyo_C9r
+chai.Assertion.addProperty('eyo_C3sBase', function () {
+  this.eyo_C3s
   let C3s = this._obj
   this.assert(
-    C3s[eYo.$].ns.C9rBase === C3s,
+    C3s[eYo.$].ns.C3sBase === C3s,
     'expected #{this} to be a base eYo constructor',
     'expected #{this} to not be a base eYo constructor',
   )
@@ -315,7 +315,7 @@ chai.use(function (_chai, utils) {
   chai.Assertion.addMethod('eqlSpan', function (expected) {
     var actual = this._obj
     // first, our instanceof check, shortcut
-    new chai.Assertion(actual).instanceof(eYo.span.C9rBase)
+    new chai.Assertion(actual).instanceof(eYo.span.C3sBase)
     ;[
       'c_padding',
       'header',
@@ -362,8 +362,8 @@ chai.use(function (_chai, utils) {
   })
   // language chain method
   chai.Assertion.addMethod('eyo_Subclass', function (C3s) {
-    this.eyo_C9r
-    chai.expect(C3s).eyo_C9r
+    this.eyo_C3s
+    chai.expect(C3s).eyo_C3s
     var actual = this._obj[eYo.$].name
     var expected = C3s && C3s[eYo.$].name
     this.assert(
@@ -437,7 +437,7 @@ chai.use(function (chai, utils) {
         }
       }
       if (eYo.span) {
-        if (eYo.span.C9rBase && this._obj instanceof eYo.span.C9rBase) {
+        if (eYo.span.C3sBase && this._obj instanceof eYo.span.C3sBase) {
           return this.eqlSpan(val)
         }
       }

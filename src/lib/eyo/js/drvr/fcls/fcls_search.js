@@ -16,7 +16,7 @@ eYo.forward('section.Search')
 /**
  * Faceless driver for the search view.
  */
-eYo.fcls.newDrvrC9r('Search', {
+eYo.fcls.newDrvrC3s('Search', {
   methods: {
     /**
      * Initiate the search UI.

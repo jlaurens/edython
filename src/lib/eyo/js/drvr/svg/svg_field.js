@@ -15,7 +15,7 @@ eYo.forward('field')
 
 // field management
 
-eYo.svg.newDrvrC9r('Field', {
+eYo.svg.newDrvrC3s('Field', {
   /**
    * Initializes the field SVG ressources.
    * Does nothing if the field's brick has no SVG ressources.

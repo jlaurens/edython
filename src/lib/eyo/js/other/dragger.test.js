@@ -2,7 +2,7 @@ describe('Basic  board dragger', function () {
   it ('One block', function () {
     var type = `simple`
     eYo.t3.expr[type] = type
-    eYo.expr.newC9r(type, {})
+    eYo.expr.newC3s(type, {})
     Object.defineProperty(eYo.expr[type].prototype, 'isMain', {
       value: true
     })

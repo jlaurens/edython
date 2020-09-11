@@ -14,7 +14,7 @@ class Info:
   #re_provide = re.compile(r"^\s*eYo.(?P<provide>provide)\('(?P<what>[^']+)'\)[;\s]*$")
 
   # eYo.info.newNS(ns, 'BAR')
-  #eYo.Consolidator.newC9r(ns, 'Dlgt', ...
+  #eYo.Consolidator.newC3s(ns, 'Dlgt', ...
   #eYo.dom.newDrvr('Dlgt', ...
   #eYo.dom.newSingleton('Dlgt', ...
   re_new = re.compile(r"""^\s*
@@ -24,10 +24,10 @@ class Info:
 
   assert re.match(re_new, "eYo.newNS('Brick')"), 'BAD re_new 2'
   assert re.match(re_new, "eYo.newNS('_')"), 'BAD re_new 2'
-  assert re.match(re_new, "eYo.dnd.newC9r('Mngr', {"), 'BAD re_new 3'
+  assert re.match(re_new, "eYo.dnd.newC3s('Mngr', {"), 'BAD re_new 3'
   assert re.match(re_new, "eYo.o4t.newSingleton(eYo, 'font', {"), 'BAD re_new 3a'
 
-  m = re.match(re_new, "eYo.o3d.newC9r(eYo.pane, 'WorkspaceControl', {")
+  m = re.match(re_new, "eYo.o3d.newC3s(eYo.pane, 'WorkspaceControl', {")
   assert m, 'BAD re_new 4'
   assert m.group('NS') == "eYo.o3d", 'BAD re_new 5'
   suite = m.group('suite')
@@ -41,19 +41,19 @@ class Info:
   assert m, 'BAD re_arg_ns 41'
   assert m.group('ns') == "eYo.pane", 'BAD re_arg_ns 2'
 
-   # eYo.pane.WorkspaceControl[eYo.$makeSubC9r]('TrashCan', {
-  re_newSubC9r = re.compile(r"""^\s*
+   # eYo.pane.WorkspaceControl[eYo.$makeSubC3s]('TrashCan', {
+  re_newSubC3s = re.compile(r"""^\s*
   (?P<NS>eYo(?:\.[a-z][\w0-9_]*)*)
   \.(?P<Super>[A-Z][\w0-9_]*)
-  \[eYo\.\$newSubC9r\]\s*\(\s*
+  \[eYo\.\$newSubC3s\]\s*\(\s*
   (?P<suite>.*)""", re.X)
 
-  m = re.match(re_newSubC9r, "eYo.pane.WorkspaceControl[eYo.$newSubC9r]('TrashCan', {")
-  assert m, 'BAD re_newSubC9r 1'
-  assert m.group('NS') == "eYo.pane", 'BAD re_newSubC9r 2'
-  assert m.group('Super') == "WorkspaceControl", 'BAD re_newSubC9r 3'
+  m = re.match(re_newSubC3s, "eYo.pane.WorkspaceControl[eYo.$newSubC3s]('TrashCan', {")
+  assert m, 'BAD re_newSubC3s 1'
+  assert m.group('NS') == "eYo.pane", 'BAD re_newSubC3s 2'
+  assert m.group('Super') == "WorkspaceControl", 'BAD re_newSubC3s 3'
   suite = m.group('suite')
-  assert suite == "'TrashCan', {", 'BAD re_newSubC9r 4'
+  assert suite == "'TrashCan', {", 'BAD re_newSubC3s 4'
   m = re.match(re_arg_ns, suite)
   assert not m, 'BAD re_arg_ns 3'
 
@@ -89,7 +89,7 @@ class Info:
   (?P<ns>eYo(?:\.[a-z][\w0-9_]*)*)\.(?P<key>[A-Z][\w0-9_]*)
   (?:\s*,\s*(?P<suite>.*)|\W*)?""", re.X)
   
-  m = re.match(re_new, "eYo.view.newC9r(eYo.p6y.List)")
+  m = re.match(re_new, "eYo.view.newC3s(eYo.p6y.List)")
   assert m, 'BAD re_new 7'
   assert m.group('NS') == "eYo.view", 'BAD re_new 8'
   suite = m.group('suite')
@@ -108,9 +108,9 @@ class Info:
   (?:'|")(?P<Key>[^'"]+)(?:'|")
   .*""", re.X)
 
-  # eYo.widget.makeC9rBase()
-  re_makeC9rBase = re.compile(r"""^\s*
-  (?P<ns>eYo(?:\.[a-z]\w*)*)(?:\.(?P<key>[a-z]\w*))\.makeC9rBase\s*\(.*""", re.X)
+  # eYo.widget.makeC3sBase()
+  re_makeC3sBase = re.compile(r"""^\s*
+  (?P<ns>eYo(?:\.[a-z]\w*)*)(?:\.(?P<key>[a-z]\w*))\.makeC3sBase\s*\(.*""", re.X)
 
   # eYo.drvr.makeMngr(model)
   re_makeMngr = re.compile(r"""^\s*
@@ -167,7 +167,7 @@ class Info:
 
   def __init__(self, path):
     """
-    we scan the file and look separately for provide, require, forwardDeclare, makeNS, makeClass, makeSubC9r... lines.
+    we scan the file and look separately for provide, require, forwardDeclare, makeNS, makeClass, makeSubC3s... lines.
     Build a list of 'provided' and 'required' symbols.
     """
     self.path = path
@@ -201,13 +201,13 @@ class Info:
             required.add('eYo.c3s')
       for l in f.readlines():
         base_require(l)
-        m = self.re_makeC9rBase.match(l)
+        m = self.re_makeC3sBase.match(l)
         if m:
           ns = m.group('ns')
           k = m.group('key')
           required.add(f'{ns}')
-          addProvided(f'{ns}.{k}.C9rBase')
-          print(f'addProvided({ns}.{k}.C9rBase)')
+          addProvided(f'{ns}.{k}.C3sBase')
+          print(f'addProvided({ns}.{k}.C3sBase)')
           K = k.title()
           if k != K:
             addProvided(f'{ns}.{K}')
@@ -218,7 +218,7 @@ class Info:
           ns = m.group('ns')
           required.add(f'{ns}')
           addProvided(f'{ns}.Mngr')
-          addProvided(f'{ns}.C9rBase')
+          addProvided(f'{ns}.C3sBase')
           continue
         m = self.re_makeForwarder.match(l)
         if m:
@@ -322,7 +322,7 @@ class Info:
             else:
               addProvided(f'{NS}.{superKey}')
           continue
-        m = self.re_newSubC9r.match(l)
+        m = self.re_newSubC3s.match(l)
         if m:
           required.add('eYo.c3s')
           NS = m.group('NS')

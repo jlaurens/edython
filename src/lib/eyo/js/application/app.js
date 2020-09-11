@@ -75,7 +75,7 @@ eYo.forward('audio')
  *           scaleMin: 0.1,
  *           scaleSpeed: 1.2}
  */
-eYo.app.newC9r('Options', {
+eYo.app.newC3s('Options', {
   init (options) {
     if ((this.readOnly = !!options.readOnly)) {
       var hasTrashcan = false
@@ -154,7 +154,7 @@ eYo.app._p.parseZoom_ = function (options = {}) {
  * @property {eYo.focus.Main} focus_main
  *
  */
-eYo.app.makeC9rBase({
+eYo.app.makeC3sBase({
   init (options) {
     this.options_ = new eYo.app.Options(options ?? {})
   },
@@ -291,7 +291,7 @@ eYo.app.makeC9rBase({
     },
     /**
      * Copy a brick onto the local clipboard.
-     * @param {eYo.brick.C9rBase} b3k - Brick to be copied.
+     * @param {eYo.brick.C3sBase} b3k - Brick to be copied.
      * @private
      */
     copyBrick (b3k, deep) {
@@ -312,7 +312,7 @@ eYo.app.makeC9rBase({
   },
 })
 
-eYo.o4t.C9rBase[eYo.$][eYo.o4t.C9rBase[eYo.$].p6y$.merge]({
+eYo.o4t.C3sBase[eYo.$][eYo.o4t.C3sBase[eYo.$].p6y$.merge]({
   /**
    * The root application
    * @type {eYo.app}
@@ -382,7 +382,7 @@ eYo.o4t.C9rBase[eYo.$][eYo.o4t.C9rBase[eYo.$].p6y$.merge]({
 })
 
 {
-  let eyo = eYo.o4t.C9rBase[eYo.$]
+  let eyo = eYo.o4t.C3sBase[eYo.$]
   eyo[eyo.p6y$.merge]({
     /**
      * The root application
@@ -460,7 +460,7 @@ eYo.o4t.C9rBase[eYo.$][eYo.o4t.C9rBase[eYo.$].p6y$.merge]({
   })
 }
 
-eYo.o3d.C9rBase[eYo.$].modelMerge({
+eYo.o3d.C3sBase[eYo.$].modelMerge({
   aliases: {
     /**
      * Options
@@ -542,7 +542,7 @@ console.error('In progress')
 /**
  * 
  */
-eYo.o3d.newC9r(eYo.app, 'Clipboard', {
+eYo.o3d.newC3s(eYo.app, 'Clipboard', {
   aliases: {
     'desk.board': 'board',
     'source.desk': 'desk',

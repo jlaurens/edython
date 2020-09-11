@@ -14,7 +14,7 @@
 /**
  * Svg driver for a brick dragger.
  */
-eYo.svg.newDrvrC9r('DraggerBoard', {
+eYo.svg.newDrvrC3s('DraggerBoard', {
   /**
    * Initializes the draggerBrick SVG ressources.
    * @param {eYo.dragger.Brick} draggerBrick

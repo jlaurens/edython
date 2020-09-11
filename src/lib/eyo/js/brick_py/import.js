@@ -38,7 +38,7 @@ module_name ::= identifier
  * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.expr.List[eYo.$newSubC9r]('non_void_module_as_list', {
+eYo.expr.List[eYo.$newSubC3s]('non_void_module_as_list', {
   list: {
     check: eYo.t3.expr.check.non_void_module_as_list,
     mandatory: 1,
@@ -52,7 +52,7 @@ eYo.expr.List[eYo.$newSubC9r]('non_void_module_as_list', {
  * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.expr.List[eYo.$newSubC9r]('non_void_import_identifier_as_list', {
+eYo.expr.List[eYo.$newSubC3s]('non_void_import_identifier_as_list', {
   list: {
     check: eYo.t3.expr.check.non_void_import_identifier_as_list,
     mandatory: 1,
@@ -68,7 +68,7 @@ eYo.expr.List[eYo.$newSubC9r]('non_void_import_identifier_as_list', {
  * The value property is used to store the module.
  * For edython.
  */
-eYo.stmt.newC9r('import_stmt', true, {
+eYo.stmt.newC3s('import_stmt', true, {
   data: {
     variant: {
       all: [
@@ -336,7 +336,7 @@ eYo.stmt.import_stmt.prototype.getMenuTarget = function () {
  * Class for a Delegate, future_statement.
  * For edython.
  */
-eYo.stmt.newC9r('future_statement', true, {
+eYo.stmt.newC3s('future_statement', true, {
   slots: {
     list: {
       order: 1,

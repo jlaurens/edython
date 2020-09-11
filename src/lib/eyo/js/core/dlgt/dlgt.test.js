@@ -9,7 +9,7 @@ describe ('POC', function () {
       Object.defineProperties(this, {
         ns: { value: eYo.isNS(ns) ? ns : eYo.NA },
         id__: {value: id},
-        C9r__: { value: Dlgt },
+        C3s__: { value: Dlgt },
         model__: { value: model },
       })
       let $this = this
@@ -58,8 +58,8 @@ describe ('Tests: Dlgt', function () {
     chai.assert(eYo.dlgt.new)
     let C3s = function () {}
     let dlgt = eYo.dlgt.new('Foo', {})
-    dlgt.setC9r(C3s)
-    dlgt.finalizeC9r()
+    dlgt.setC3s(C3s)
+    dlgt.finalizeC3s()
     let o = new C3s()
     eYo.dlgt.declareDlgt(C3s.prototype)
     chai.expect(o.eyo$).equal(dlgt)
@@ -67,8 +67,8 @@ describe ('Tests: Dlgt', function () {
   it ('Dlgt methodsMerge', function () {
     let C3s = function () {}
     let dlgt = eYo.dlgt.new('Foo', {})
-    dlgt.setC9r(C3s)
-    dlgt.finalizeC9r()
+    dlgt.setC3s(C3s)
+    dlgt.finalizeC3s()
     chai.expect(dlgt.model.bar).undefined
     flag.reset()
     dlgt.methodsMerge({
@@ -76,15 +76,15 @@ describe ('Tests: Dlgt', function () {
         eYo.flag.push(1)
       },
     })
-    chai.expect(dlgt.C9r_p).property('bar')
-    dlgt.C9r_p.bar()
+    chai.expect(dlgt.C3s_p).property('bar')
+    dlgt.C3s_p.bar()
     eYo.flag.expect(1)
   })
   it ('Dlgt modelMerge', function () {
     let C3s = function () {}
     let dlgt = eYo.dlgt.new('Foo', {})
-    dlgt.setC9r(C3s)
-    dlgt.finalizeC9r()
+    dlgt.setC3s(C3s)
+    dlgt.finalizeC3s()
     chai.expect(dlgt.model.bar).undefined
     flag.reset()
     dlgt.modelMerge({
@@ -94,14 +94,14 @@ describe ('Tests: Dlgt', function () {
         },
       },
     })
-    chai.expect(dlgt.C9r_p).property('bar')
-    dlgt.C9r_p.bar()
+    chai.expect(dlgt.C3s_p).property('bar')
+    dlgt.C3s_p.bar()
     eYo.flag.expect(1)
   })
   it ('Dlgt methodsMerge - overriden', function () {
     let dlgt = eYo.dlgt.new('Foo', {})
-    dlgt.setC9r(function () {})
-    dlgt.finalizeC9r()
+    dlgt.setC3s(function () {})
+    dlgt.finalizeC3s()
     chai.expect(dlgt.model.bar).undefined
     flag.reset()
     dlgt.methodsMerge({
@@ -117,7 +117,7 @@ describe ('Tests: Dlgt', function () {
         }
       },
     })
-    dlgt.C9r_p.foo()
+    dlgt.C3s_p.foo()
     eYo.flag.expect(12)
   })
 })

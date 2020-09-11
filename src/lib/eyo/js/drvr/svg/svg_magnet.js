@@ -16,11 +16,11 @@ eYo.forward('magnet')
 /**
  * Svg driver for magnets.
  */
-eYo.svg.newDrvrC9r('Magnet')
+eYo.svg.newDrvrC3s('Magnet')
 
 /**
  * Hilight the given magnet.
- * @param {eYo.magnet.C9rBase} m4t
+ * @param {eYo.magnet.C3sBase} m4t
  */
 eYo.svg.Magnet.prototype.hilight = function (m4t) {
   if (!m4t.board) {

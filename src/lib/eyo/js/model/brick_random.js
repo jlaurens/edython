@@ -33,7 +33,7 @@ eYo.t3.expr.random__randrange = 'eyo:random__randrange'
  * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.expr.builtin__range_expr[eYo.$newSubC9r]('random__randrange', true, {
+eYo.expr.builtin__range_expr[eYo.$newSubC3s]('random__randrange', true, {
   xml: {
     attr: 'randrange'
   },

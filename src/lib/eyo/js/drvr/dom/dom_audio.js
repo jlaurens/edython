@@ -17,7 +17,7 @@
  * @param {String} pathToMedia
  * @constructor
  */
-eYo.dom.newDrvrC9r('Audio', {
+eYo.dom.newDrvrC3s('Audio', {
   ui: {
     init(audio) {
       /**

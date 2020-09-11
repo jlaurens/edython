@@ -29,10 +29,10 @@ eYo.o3d.newNS(eYo, 'focus')
  * @constructor
  * The main focus manager is uniquely owned by the application.
  * It maintains a list of focus managers associated to boards.
- * @param {eYo.app.C9rBase} app -  the owning application.
+ * @param {eYo.app.C3sBase} app -  the owning application.
  * @constructor
  */
-eYo.focus.newC9r('Main', {
+eYo.focus.newC3s('Main', {
   properties: {
     /**
      * The manager that has the current focus
@@ -53,7 +53,7 @@ eYo.focus.newC9r('Main', {
     },
     /**
      * The brick that has current focus, if any
-     * @type {?eYo.brick.C9rBase}
+     * @type {?eYo.brick.C3sBase}
      */
     brick: {
       get () {
@@ -83,7 +83,7 @@ eYo.focus.newC9r('Main', {
     },
     /**
      * The magnet that has current focus, if any
-     * @type {!eYo.magnet.C9rBase}
+     * @type {!eYo.magnet.C3sBase}
      */
     magnet: {
       get () {
@@ -127,7 +127,7 @@ eYo.register.add(eYo.focus.Main, 'mngr')
  * @param {eYo.focus.Main} main -  The main focus manager.
  * @constructor
  */
-eYo.focus.newC9r('Mngr', {
+eYo.focus.newC3s('Mngr', {
   /**
    * 
    * @param {eYo.focus.Main} owner 
@@ -142,7 +142,7 @@ eYo.focus.newC9r('Mngr', {
   properties: {
     /**
      * Focus only on wrappers.
-     * @type{eYo.board.C9rBase}
+     * @type{eYo.board.C3sBase}
      */
     board: {
       willChange (before, after) {
@@ -155,7 +155,7 @@ eYo.focus.newC9r('Mngr', {
     },
     /**
      * Focus only on wrappers.
-     * @type{eYo.brick.C9rBase}
+     * @type{eYo.brick.C3sBase}
      */
     brick: {
       validate (after) {
@@ -196,7 +196,7 @@ eYo.focus.newC9r('Mngr', {
     },
     /**
      * Takes care of consistency between the magnet and the brick.
-     * @type{eYo.magnet.C9rBase}
+     * @type{eYo.magnet.C3sBase}
      */
     magnet: {
       validate(after) {
@@ -288,7 +288,7 @@ eYo.focus.Mngr_p.didRemove = eYo.doNothing
 
 /**
  * Select one of the given bricks.
- * @param {Array<eYo.brick.C9rBase>} bricks
+ * @param {Array<eYo.brick.C3sBase>} bricks
  * @param {Boolean} force
  */
 eYo.focus.Mngr_p.selectOneBrickOf = function (bricks, force) {
@@ -314,7 +314,7 @@ eYo.focus.Mngr_p.selectOneBrickOf = function (bricks, force) {
   }
 }
 
-eYo.o3d.C9rBase[eYo.$].p6yMerge({
+eYo.o3d.C3sBase[eYo.$].p6yMerge({
   focus_main: {
     get () {
       this.app.focus_main
@@ -339,7 +339,7 @@ eYo.view.Workspace[eYo.$].p6yMerge({
   },
 })
 
-eYo.board.C9rBase[eYo.$].modelMerge({
+eYo.board.C3sBase[eYo.$].modelMerge({
   properties: {
     hasFocus: {
       get() {
@@ -367,7 +367,7 @@ eYo.board.C9rBase[eYo.$].modelMerge({
   },
 })
 
-eYo.brick.C9rBase[eYo.$].modelMerge({
+eYo.brick.C3sBase[eYo.$].modelMerge({
   properties: {
     hasFocus: {
       get() {
@@ -402,7 +402,7 @@ eYo.brick.C9rBase[eYo.$].modelMerge({
   },
 })
 
-eYo.magnet.C9rBase[eYo.$].modelMerge({
+eYo.magnet.C3sBase[eYo.$].modelMerge({
   properties: {
     hasFocus: {
       get() {
@@ -438,7 +438,7 @@ eYo.magnet.C9rBase[eYo.$].modelMerge({
   },
 })
 
-eYo.field.C9rBase[eYo.$].modelMerge({
+eYo.field.C3sBase[eYo.$].modelMerge({
   properties: {
     hasFocus: {
       get() {

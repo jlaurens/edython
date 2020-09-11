@@ -20,7 +20,7 @@ console.error('NYI')
 /**
  * Svg driver for the focus.
  */
-eYo.svg.newDrvrC9r('Focus')
+eYo.svg.newDrvrC3s('Focus')
 
 /*******  Focus  *******/
 /**

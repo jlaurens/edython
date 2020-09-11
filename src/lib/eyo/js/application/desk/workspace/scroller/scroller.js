@@ -22,7 +22,7 @@ eYo.forward('board')
  * @param {eYo.board} board Board to bind the scrollbars to.
  * @constructor
  */
-eYo.view.newC9r('Scroller', {
+eYo.view.newC3s('Scroller', {
   init (board) {
     this.hScroll = new eYo.view.Scrollbar(
       this,
@@ -40,7 +40,7 @@ eYo.view.newC9r('Scroller', {
   },
   properties: {
     /**
-     * @type {eYo.board.C9rBase} The scrolled board...
+     * @type {eYo.board.C3sBase} The scrolled board...
      * @readonly
      */
     board: {
@@ -105,7 +105,7 @@ eYo.view.Scroller_p.dispose = function() {
   this.hScroll = this.hScroll.dispose()
   this.vScroll = this.vScroll.dispose()
   this.cornerRect_ = this.cornerRect_.dispose()
-  eYo.view.Scroller[eYo.$].C9r_s.dispose.call(this)
+  eYo.view.Scroller[eYo.$].C3s_s.dispose.call(this)
 }
 
 /**

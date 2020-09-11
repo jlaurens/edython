@@ -23,7 +23,7 @@ eYo.o3d.newNS(eYo, 'section')
  * @param {eYo.flyout.View} owner  The owning flyout.
  * @constructor
  */
-eYo.section.makeC9rBase({
+eYo.section.makeC3sBase({
   properties: {
     /**
      * The owning flyout
@@ -43,7 +43,7 @@ eYo.section.makeC9rBase({
       set: false,
     },
     board () {
-      return new eYo.board.C9rBase(this)
+      return new eYo.board.C3sBase(this)
     },
   },
 })

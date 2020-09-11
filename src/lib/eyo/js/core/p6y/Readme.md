@@ -5,7 +5,7 @@ This is a key concept of **edython**. It allows to store, share, observe informa
 
 ## The basic behaviour
 
-`eYo.p6y.C9rBase` is the base constructor.
+`eYo.p6y.C3sBase` is the base constructor.
 Any javascript object for which `isaP6y` returns `true` has the basic next behaviour. The remaining parts are built on top of that behaviour.
 
 ### Common attributes
@@ -14,8 +14,8 @@ Each property has 3 attributes.
 
 | key | type | usage | comment |
 |-----|------|-------|---------|
-| `key_` | String | Unique identifier within the owner's scope | From `eYo.o3d.C9rBase` |
-| `owner__` | isaC9r | The owning object | From `eYo.o3d.C9rBase` |
+| `key_` | String | Unique identifier within the owner's scope | From `eYo.o3d.C3sBase` |
+| `owner__` | isaC3s | The owning object | From `eYo.o3d.C3sBase` |
 |`stored__` | * | The stored property | Maybe unused for pure computed properties |
 
 ### Default usage
@@ -114,7 +114,7 @@ By default, `getStartValue` just returns `eYo.NA`.
 ## The model
 
 The model allows to change the basic behaviour.
-Each model creates a subclass of the `eYo.p6y.C9rBase` base constructor.
+Each model creates a subclass of the `eYo.p6y.C3sBase` base constructor.
 
 ### Initialization
 

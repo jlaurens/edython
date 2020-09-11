@@ -2,7 +2,7 @@ describe('Span expression', function () {
   this.timeout(20000)
   let flag = new eYo.test.Flag()
   let ns_span = eYo.span.newNS()
-  ns_span.makeC9rBase()
+  ns_span.makeC3sBase()
   let onr = eYo.c3s.new()
   var b
   var b_g
@@ -153,7 +153,7 @@ describe('Span expression', function () {
 //   before(function() {
 //     var type = 'test_stmt_span_reserved'
 //     eYo.t3.stmt[type] = type
-//     eYo.stmt.newC9r(type, {
+//     eYo.stmt.newC3s(type, {
 //       fields: {
 //         FIELD: {
 //           reserved: '1234'
@@ -185,7 +185,7 @@ describe('Span expression', function () {
 //   before(function() {
 //     var type = 'test_stmt_span'
 //     eYo.t3.stmt[type] = type
-//     eYo.stmt.newC9r(type, {
+//     eYo.stmt.newC3s(type, {
 //       fields: {
 //         FIELD: {
 //           reserved: '1234'

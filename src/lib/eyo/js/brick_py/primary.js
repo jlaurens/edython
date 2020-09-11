@@ -29,7 +29,7 @@ eYo.require('msg')
  * Main entry: consolidate
  * @param {String} single - the required type for a single element....
  */
-eYo.consolidator.List[eYo.$newSubC9r]('Target', {
+eYo.consolidator.List[eYo.$newSubC3s]('Target', {
   list: {
     check: null,
     mandatory: 1,
@@ -89,10 +89,10 @@ eYo.consolidator.List[eYo.$newSubC9r]('Target', {
 /**
  * Prepare io, just before walking through the input list.
  * Subclassers may add their own stuff to io.
- * @param {eYo.brick.C9rBase} brick - owner or the receiver.
+ * @param {eYo.brick.C3sBase} brick - owner or the receiver.
  */
 eYo.consolidator.Target_p.getIO = function (brick) {
-  var io = eYo.consolidator.Target[eYo.$].C9r_s.getIO.call(this, brick)
+  var io = eYo.consolidator.Target[eYo.$].C3s_s.getIO.call(this, brick)
   io.first_starred = io.last = io.max = -1
   io.annotatedInput = eYo.NA
   io.subtype = brick.subtype
@@ -155,7 +155,7 @@ eYo.consolidator.Target_p.doCleanup = (() => {
     }
   }
   return function (io) {
-    eYo.consolidator.Target[eYo.$].C9r_s.doCleanup.call(this, io)
+    eYo.consolidator.Target[eYo.$].C3s_s.doCleanup.call(this, io)
     setupFirst.call(this, io)
     if (io.first_starred >= 0) {
       // ther must be only one starred
@@ -246,7 +246,7 @@ eYo.consolidator.Target_p.getCheck = (() => {
  * @param {object} io
  */
 eYo.consolidator.Target_p.doFinalize = function (io) {
-  eYo.consolidator.Target[eYo.$].C9r_s.doFinalize.call(this, io)
+  eYo.consolidator.Target[eYo.$].C3s_s.doFinalize.call(this, io)
   if (this.setupIO(io, 0)) {
     do {
       io.m4t.incog = io.annotatedInput && io.annotatedInput !== io.slot // will ensure that there is only one annotated input
@@ -301,7 +301,7 @@ eYo.consolidator.Target_p.doFinalize = function (io) {
  * @name {eYo.expr.target_list}
  * @constructor
  */
-eYo.expr.List[eYo.$newSubC9r]('target_list', {
+eYo.expr.List[eYo.$newSubC3s]('target_list', {
   list: {
     consolidator: eYo.consolidator.Target
   }
@@ -318,8 +318,8 @@ eYo.expr.target_list_p.getSubtype = function () {
 
 /**
  * Did disconnect this brick's connection from another connection.
- * @param {eYo.magnet.C9rBase} m4t
- * @param {eYo.magnet.C9rBase} oldTargetM4t that was connected to blockConnection
+ * @param {eYo.magnet.C3sBase} m4t
+ * @param {eYo.magnet.C3sBase} oldTargetM4t that was connected to blockConnection
  */
 eYo.expr.target_list_p.xdidDisconnect = function (m4t, oldTargetM4t) {
   if (m4t.isSlot) {
@@ -350,18 +350,18 @@ eYo.expr.target_list_p.xdidDisconnect = function (m4t, oldTargetM4t) {
       (x = x.target_s) && (x.boundField.visible = true)
     }
   }
-  eYo.expr.target_list.eyo$.C9r_s.didDisconnect.call(this, m4t, oldTargetM4t)
+  eYo.expr.target_list.eyo$.C3s_s.didDisconnect.call(this, m4t, oldTargetM4t)
 }
 
 /**
  * Hook.
  * If more that 2 bricks are connected, the variant is target_valued.
- * @param {eYo.magnet.C9rBase} m4t.
- * @param {eYo.magnet.C9rBase} oldTargetM4t.
- * @param {eYo.magnet.C9rBase} targetOldM4t
+ * @param {eYo.magnet.C3sBase} m4t.
+ * @param {eYo.magnet.C3sBase} oldTargetM4t.
+ * @param {eYo.magnet.C3sBase} targetOldM4t
  */
 eYo.expr.target_list_p.xdidConnect = function (m4t, oldTargetM4t, targetOldM4t) {
-  eYo.expr.target_list.eyo$.C9r_s.didConnect.call(this, m4t, oldTargetM4t, targetOldM4t)
+  eYo.expr.target_list.eyo$.C3s_s.didConnect.call(this, m4t, oldTargetM4t, targetOldM4t)
   // BEWARE: the brick is NOT consolidated
   if (m4t.isSlot) {
     var parent = this.parent
@@ -530,7 +530,7 @@ eYo.expr.target_list_p.xdidConnect = function (m4t, oldTargetM4t, targetOldM4t) 
 
  * For edython.
  */
-eYo.expr.newC9r('primary', {
+eYo.expr.newC3s('primary', {
   xml: {
     types: [
       eYo.t3.expr.identifier,
@@ -1251,11 +1251,11 @@ eYo.register.add(eYo.expr, 'primary', function (b3k) {
  * Called from brick's init method.
  * This should be called only once.
  * The underlying model is not expected to change while running.
- * @param {eYo.brick.C9rBase} brick to be initialized.
+ * @param {eYo.brick.C3sBase} brick to be initialized.
  * For subclassers eventually
  */
 eYo.expr.primary_p.init = function () {
-  eYo.expr.primary.eyo$.C9r_s.init.call(this)
+  eYo.expr.primary.eyo$.C3s_s.init.call(this)
   this.profile_ = eYo.NA
 }
 
@@ -1425,7 +1425,7 @@ eYo.expr.primary_p.getProfile = eYo.changer.memoize(
  * the brick type has changed.
  */
 eYo.expr.primary_p.consolidateMagnets = function () {
-  eYo.expr.primary.eyo$.C9r_s.consolidateMagnets.call(this)
+  eYo.expr.primary.eyo$.C3s_s.consolidateMagnets.call(this)
   this.target_s.magnet.hidden = this.variant === eYo.key.NONE && this.Dotted_p === 0
 }
 
@@ -1763,10 +1763,10 @@ eYo.expr.primary_p.getSubtype = function () {
  * @param {Brick} brick
  * @param {String} name The name of the input.
  * @param {Boolean} [dontCreate] Whether the receiver should create inputs on the fly.
- * @return {eYo.slot.C9rBase} The slot object, or null if slot does not exist or eYo.NA for the default brick implementation.
+ * @return {eYo.slot.C3sBase} The slot object, or null if slot does not exist or eYo.NA for the default brick implementation.
  */
 eYo.expr.primary_p.getSlot = function (name) {
-  var slot = eYo.expr.primary.eyo$.C9r_s.getSlot.call(this, name)
+  var slot = eYo.expr.primary.eyo$.C3s_s.getSlot.call(this, name)
   if (!slot) {
     // we suppose that ary is set
     var f = (slot) => {
@@ -1790,7 +1790,7 @@ eYo.expr.primary_p.getSlot = function (name) {
  * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.stmt.newC9r('base_call_stmt', {
+eYo.stmt.newC3s('base_call_stmt', {
   link: eYo.t3.expr.primary
 })
 
@@ -1799,7 +1799,7 @@ eYo.stmt.newC9r('base_call_stmt', {
  * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.stmt.base_call_stmt[eYo.$newSubC9r]('call_stmt', {
+eYo.stmt.base_call_stmt[eYo.$newSubC3s]('call_stmt', {
   data: {
     variant: {
       init: eYo.key.CALL_EXPR,
@@ -1832,11 +1832,11 @@ eYo.stmt.call_stmt_p.getProfile = eYo.expr.primary_p.getProfile
  * Called from brick's init method.
  * This should be called only once.
  * The underlying model is not expected to change while running.
- * @param {eYo.brick.C9rBase} brick to be initialized.
+ * @param {eYo.brick.C3sBase} brick to be initialized.
  * For subclassers eventually
  */
 eYo.stmt.call_stmt_p.init = function () {
-  eYo.stmt.call_stmt.eyo$.C9r_s.init.call(this)
+  eYo.stmt.call_stmt.eyo$.C3s_s.init.call(this)
   this.profile = eYo.NA
 }
 

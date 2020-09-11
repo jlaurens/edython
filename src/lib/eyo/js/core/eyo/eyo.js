@@ -1229,10 +1229,10 @@ eYo.mixinFR(eYo._p, {
     return !!Super && !!Sub && eYo.isF(Super) && (Sub === Super || Sub.prototype instanceof Super)
   },
   //<<< mochai: symbols
-  $SuperC9r: Symbol('SuperC9r'),
-  $SuperC9r_p: Symbol('SuperC9r_p'),
-  //... chai.expect(!eYo.$SuperC9r).false
-  //... chai.expect(!eYo.$SuperC9r_p).false
+  $SuperC3s: Symbol('SuperC3s'),
+  $SuperC3s_p: Symbol('SuperC3s_p'),
+  //... chai.expect(!eYo.$SuperC3s).false
+  //... chai.expect(!eYo.$SuperC3s_p).false
   $: Symbol('$'),
   $_p: Symbol('$_p'),
   //... chai.expect(!eYo.$).false
@@ -1270,33 +1270,33 @@ eYo.mixinFR(eYo._p, {
     //>>>
   },
   /**
-   * Contrary to goog.inherits, does not erase the childC9r.prototype.
+   * Contrary to goog.inherits, does not erase the childC3s.prototype.
    * IE<11
    * No delegation managed yet.
-   * @param {Function} ChildC9r
-   * @param {Function} SuperC9r
+   * @param {Function} ChildC3s
+   * @param {Function} SuperC3s
    */
-  inherits (ChildC9r, SuperC9r) {
-    ChildC9r[eYo.$SuperC9r] = SuperC9r
-    let Super_p = SuperC9r.prototype
-    let Child_p = ChildC9r.prototype
-    ChildC9r[eYo.$SuperC9r_p] = Child_p[eYo.$SuperC9r_p] = Super_p
+  inherits (ChildC3s, SuperC3s) {
+    ChildC3s[eYo.$SuperC3s] = SuperC3s
+    let Super_p = SuperC3s.prototype
+    let Child_p = ChildC3s.prototype
+    ChildC3s[eYo.$SuperC3s_p] = Child_p[eYo.$SuperC3s_p] = Super_p
     Object.setPrototypeOf(Child_p, Super_p)
     Object.defineProperty(Child_p, 'constructor', {
-      value: ChildC9r
+      value: ChildC3s
     })
     //<<< mochai: eYo.isSubclass | eYo.inherits
     //... chai.assert(eYo.isSubclass)
     //... chai.expect(eYo.isSubclass()).false
     //... chai.expect(eYo.isSubclass(123)).false
     //... chai.expect(eYo.isSubclass(123, 421)).false
-    //... let SuperC9r = function () {}
-    //... chai.expect(eYo.isSubclass(SuperC9r, SuperC9r)).true
-    //... let ChildC9r = function () {}
+    //... let SuperC3s = function () {}
+    //... chai.expect(eYo.isSubclass(SuperC3s, SuperC3s)).true
+    //... let ChildC3s = function () {}
     //... chai.expect(eYo).property('inherits')
-    //... eYo.inherits(ChildC9r, SuperC9r)
-    //... chai.expect(eYo.isSubclass(ChildC9r, SuperC9r)).true
-    //... chai.expect(ChildC9r[eYo.$SuperC9r_p]).equal(ChildC9r.prototype[eYo.$SuperC9r_p]).equal(SuperC9r.prototype)
+    //... eYo.inherits(ChildC3s, SuperC3s)
+    //... chai.expect(eYo.isSubclass(ChildC3s, SuperC3s)).true
+    //... chai.expect(ChildC3s[eYo.$SuperC3s_p]).equal(ChildC3s.prototype[eYo.$SuperC3s_p]).equal(SuperC3s.prototype)
     //>>>
   },
   /**
@@ -1382,11 +1382,11 @@ eYo.mixinFR(eYo._p, {
           eYo.test && eYo.test.IN_THROW || console.error('BREAK HERE!!! parent')
           return ns
         },
-        // value: ns, // used in makeC9rBase
+        // value: ns, // used in makeC3sBase
         // writable: false,
       })
       Object.defineProperty(NS.prototype, 'parentNS', {
-        value: ns, // used in makeC9rBase
+        value: ns, // used in makeC3sBase
         writable: false,
       })
     }

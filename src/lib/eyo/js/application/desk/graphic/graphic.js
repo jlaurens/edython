@@ -18,4 +18,4 @@
  * @param {eYo.view.Desk} owner Owner desk.
  * @constructor
  */
-eYo.view.newC9r('Graphic')
+eYo.view.newC3s('Graphic')

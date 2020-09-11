@@ -17,7 +17,7 @@ eYo.forward('xre')
 eYo.forward('dom')
 eYo.forward('navigate')
 
-eYo.KHandler.newC9r('Menu')
+eYo.KHandler.newC3s('Menu')
 
 /**
  * Attempts to handle a keyboard event; returns true if the event was handled,
@@ -30,7 +30,7 @@ eYo.KHandler.newC9r('Menu')
  */
 eYo.KHandler.Menu_p.handleKeyEventInternal = function (e) {
   // Give the highlighted control the chance to handle the key event.
-  if (eYo.KHandler.Menu[eYo.$].C9r_s.handleKeyEventInternal.call(this, e)) {
+  if (eYo.KHandler.Menu[eYo.$].C3s_s.handleKeyEventInternal.call(this, e)) {
     return true
   }
   return this.handleMenuKeyEvent(e)

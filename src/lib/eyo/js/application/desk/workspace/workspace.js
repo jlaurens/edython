@@ -29,10 +29,10 @@ eYo.forward('view.Scrollbar')
  * The workspace has 3+n boards:
  * - the board one where bricks are dropped to be executed,
  * - the 2+n in the flyout,
- * @param {eYo.app.C9rBase|Object} owner Owner application.
+ * @param {eYo.app.C3sBase|Object} owner Owner application.
  * @constructor
  */
-eYo.view.newC9r('Workspace', {
+eYo.view.newC3s('Workspace', {
   properties: {
     /**
      * @type {?eYo.board.Main} 

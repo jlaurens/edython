@@ -16,7 +16,7 @@
  * @name {eYo.o3d.DB}
  * @constructor
  */
-eYo.o3d.newC9r('DB', {
+eYo.o3d.newC3s('DB', {
   //<<< mochai: Basics
   //... chai.assert(eYo.o3d.DB)
   //>>>
@@ -56,7 +56,7 @@ eYo.o3d.newC9r('DB', {
   methods: {
     /**
      * Add objects to the database.
-     * @param {eYo.c3s.C9rBase} ...$
+     * @param {eYo.c3s.C3sBase} ...$
      */
     add (...$) {
       //<<< mochai: add
@@ -105,7 +105,7 @@ eYo.o3d.newC9r('DB', {
     /**
      * Find the object with the specified ID.
      * @param {string} id ID of object to find.
-     * @return {eYo.c3s.C9rBase} The sought after object or eYo.NA if not found.
+     * @return {eYo.c3s.C3sBase} The sought after object or eYo.NA if not found.
      */
     get (id) {
       //<<< mochai: get
@@ -287,4 +287,4 @@ Object.defineProperties(eYo.o3d.DB_p, {
   }
 })
 
-eYo.o3d.DB[eYo.$].finalizeC9r()
+eYo.o3d.DB[eYo.$].finalizeC3s()

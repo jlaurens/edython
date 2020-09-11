@@ -114,10 +114,10 @@ eYo.mixinFR(eYo.p6y, {
  * of owner. Great care should be taken when editing this model.
  * @constructor
  */
-eYo.p6y.makeC9rBase(true, {
+eYo.p6y.makeC3sBase(true, {
   //<<< mochai: eYo.P6y
   //<<< mochai: Basic
-  //... chai.expect(eYo.p6y.C9rBase).equal(eYo.P6y)
+  //... chai.expect(eYo.p6y.C3sBase).equal(eYo.P6y)
   //>>>
   prepare (model, key, owner) {
     eYo.p6y.c9rPrepare(this, model, key, owner)
@@ -169,7 +169,7 @@ eYo.p6y.makeC9rBase(true, {
      */
     __disposeStored (what, ...$) {
       //<<< mochai: eYo.P6y_p.__disposeStored(what, ...$)
-      if (eYo.isaC9r(what)) {
+      if (eYo.isaC3s(what)) {
         what[eYo.$p6y] === this && what.dispose(...$)
         //... var p6y = new eYo.P6y('p6y', eYo.test.onr)
         //... what = eYo.c3s.new({
@@ -273,7 +273,7 @@ eYo.p6y.makeC9rBase(true, {
      */
     _disposeStored (...$) {
       let v = this.stored__
-      if (eYo.isaC9r(v) && v[eYo.$p6y] === this) {
+      if (eYo.isaC3s(v) && v[eYo.$p6y] === this) {
         try {
           this.__disposeStored(v, ...$)
         } finally {
@@ -389,7 +389,7 @@ eYo.mixinRO(eYo.P6y_p, {
 //... let mf = eYo.P6y[eYo.$].modelFormat
 //... model = mf.validate(model)
 //... chai.assert(eYo.isF(model.foo.get))
-eYo.P6y$.finalizeC9r([
+eYo.P6y$.finalizeC3s([
   'source',
   'change',
 ], (() => {
@@ -776,7 +776,7 @@ eYo.mixinFR(eYo.p6y.Dlgt_p, {
   modelHandleStart (key, model, io) {
     io || (io = this.modelHandleCheck(key, model))
     //<<< mochai: eYo.p6y.Dlgt_p.modelHandleStart
-    let _p = this.C9r_p
+    let _p = this.C3s_p
     let f = K => {
       //... let f = K => {
       let f_m = model[K]
@@ -807,7 +807,7 @@ eYo.mixinFR(eYo.p6y.Dlgt_p, {
         //... chai.expect(p6y[K]().after).equal(x)
         //... eYo.flag.expect('/1')
         //... chai.expect(p6y.value).equal(123)
-        //... p6y[eYo.$].C9r_p[K]= function (...$) {
+        //... p6y[eYo.$].C3s_p[K]= function (...$) {
         //...   this.owner.flag(1, ...$)
         //... }
         //... p6y[eYo.$].modelHandleStart('foo', p6y.model)
@@ -826,7 +826,7 @@ eYo.mixinFR(eYo.p6y.Dlgt_p, {
         //... }, 'foo', eYo.test.onr)
         //... chai.expect(p6y.reset(1, 2, 3).after).equal(1)
         //... eYo.flag.expect('/r123')
-        //... p6y[eYo.$].C9r_p.reset = function (...$) {
+        //... p6y[eYo.$].C3s_p.reset = function (...$) {
         //...   this.owner.flag('$r', ...$)
         //...   return {after: $[0]}
         //... }
@@ -923,12 +923,12 @@ eYo.mixinFR(eYo.p6y.Dlgt_p, {
    */
   modelHandleDispose (key, model) {
     //<<< mochai: modelHandleDispose
-    let _p = this.C9r_p
+    let _p = this.C3s_p
     let K = '_disposeStored'
     //... chai.assert(eYo.P6y_p._disposeStored)
     //... let ns = eYo.p6y.newNS()
-    //... ns.makeC9rBase()
-    //... ns.C9rBase_p._disposeStored = function(...$) {
+    //... ns.makeC3sBase()
+    //... ns.C3sBase_p._disposeStored = function(...$) {
     //...   this.owner.flag('d', ...$)
     //... }
     //... var p6y = ns.new('foo', eYo.test.onr)
@@ -953,7 +953,7 @@ eYo.mixinFR(eYo.p6y.Dlgt_p, {
    */
   modelHandleChange (key, model) {
     //<<< mochai: eYo.p6y.Dlgt_p.modelHandleChange
-    let _p = this.C9r_p
+    let _p = this.C3s_p
     ;[
       eYo.observe.BEFORE,
       eYo.observe.DURING,
@@ -974,8 +974,8 @@ eYo.mixinFR(eYo.p6y.Dlgt_p, {
               when_p.call(this, before, after)
             }}.$)
             //... var ns = eYo.p6y.newNS()
-            //... ns.makeC9rBase()
-            //... ns.C9rBase_p[when] = function (before, after) {
+            //... ns.makeC3sBase()
+            //... ns.C3sBase_p[when] = function (before, after) {
             //...   this.owner.flag('w', before, after)
             //... }
             //... let f_before_after = function (before, after) {
@@ -1001,7 +1001,7 @@ eYo.mixinFR(eYo.p6y.Dlgt_p, {
               when_m.call(this.owner, before, after)
             }}.$)
             //... var ns = eYo.p6y.newNS()
-            //... ns.makeC9rBase()
+            //... ns.makeC3sBase()
             //... var p6y = ns.new({
             //...   [when]: f_before_after,
             //... }, 'foo', eYo.test.onr)
@@ -1022,8 +1022,8 @@ eYo.mixinFR(eYo.p6y.Dlgt_p, {
               when_p.call(this, before, after)
             }}.$)
             //... var ns = eYo.p6y.newNS()
-            //... ns.makeC9rBase()
-            //... ns.C9rBase_p[when] = function (before, after) {
+            //... ns.makeC3sBase()
+            //... ns.C3sBase_p[when] = function (before, after) {
             //...   this.owner.flag('w', before, after)
             //... }
             //... var p6y = ns.new({
@@ -1037,7 +1037,7 @@ eYo.mixinFR(eYo.p6y.Dlgt_p, {
               when_m.call(this.owner, after)
             }}.$)
             //... var ns = eYo.p6y.newNS()
-            //... ns.makeC9rBase()
+            //... ns.makeC3sBase()
             //... var p6y = ns.new({
             //...   [when]: f_after,
             //... }, 'foo', eYo.test.onr)
@@ -1061,7 +1061,7 @@ eYo.mixinFR(eYo.p6y.Dlgt_p, {
   modelHandleGetSet (key, model, io) {
     io || (io = this.modelHandleCheck(key, model))
     //<<< mochai: eYo.p6y.Dlgt_p.modelHandleGetSet
-    let _p = this.C9r_p
+    let _p = this.C3s_p
     let gVRO = 'getValueRO'
     if (model.copy) {
       _p[gVRO] = eYo.decorate.reentrant(gVRO, {$ () {
@@ -1335,7 +1335,7 @@ eYo.mixinFR(eYo.p6y.Dlgt_p, {
   modelHandleStored (key, model, io) {
     io || (io = this.modelHandleCheck(key, model))
     //<<< mochai: eYo.p6y.Dlgt_p.modelHandleStored
-    let _p = this.C9r_p
+    let _p = this.C3s_p
     let getK = 'getStored'
     let get__m = model.get_
     if (io.pure_get) {
@@ -1516,11 +1516,11 @@ eYo.o3d.newNS(eYo.p6y, 'handler')
  * Beware of loops.
  * 
  * The handlers covers the target either with its own keys or its internal `cover__` object.
- * @name {eYo.p6y.handler.C9rBase}
+ * @name {eYo.p6y.handler.C3sBase}
  * @constructor
  */
-eYo.p6y.handler.makeC9rBase({
-  //<<< mochai: eYo.p6y.handler.C9rBase
+eYo.p6y.handler.makeC3sBase({
+  //<<< mochai: eYo.p6y.handler.C3sBase
   /**
    * Initialize a proxy's handler.
    * Debug note: if `foo.eyo$.name` is `eYo.p6y.handler.Changer` then `foo` is an alias to a property named `changer` (more precisely the handler of the proxy).
@@ -1747,7 +1747,7 @@ eYo.p6y.handler.makeC9rBase({
   //>>>
 })
 
-eYo.mixinRO(eYo.p6y.handler.C9rBase_p, {
+eYo.mixinRO(eYo.p6y.handler.C3sBase_p, {
   keys_RO: [
     eYo.$$.target, // expose the proxy target
     eYo.$$.handler, // expose the proxy handler
@@ -2096,7 +2096,7 @@ eYo.mixinFR(eYo.P6y_p, {
       before[eYo.$p6y] = eYo.NA
     }
     this.stored__ = after
-    if (eYo.isaC9r(after) && !eYo.isDef(after[eYo.$p6y])) {
+    if (eYo.isaC3s(after) && !eYo.isDef(after[eYo.$p6y])) {
       // gain ownership
       after[eYo.$p6y] = this
     }
