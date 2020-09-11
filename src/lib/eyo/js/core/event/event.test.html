@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Mocha Tests: event</title>
+  <script src="../../../../xregexp-all/xregexp-all.js"></script>
+  <script src="../../../../brython/www/src/brython.js"></script>
+  <script src="../../../../brython/www/src/brython_stdlib.js"></script>
+  <script src="../../../../closure-library/closure/goog/base.js"></script>
+  <script src="../../../../closure-library/closure/goog/debug/error.js"></script>
+  <script src="../../../../closure-library/closure/goog/dom/nodetype.js"></script>
+  <script src="../../../../closure-library/closure/goog/object/object.js"></script>
+  <script src="../../../../closure-library/closure/goog/reflect/reflect.js"></script>
+  <script src="../../../../closure-library/closure/goog/string/string.js"></script>
+  <script src="../../../../closure-library/closure/goog/asserts/asserts.js"></script>
+  <script src="../../../../closure-library/closure/goog/labs/useragent/util.js"></script>
+  <script src="../../../../closure-library/closure/goog/array/array.js"></script>
+  <script src="../../../../closure-library/closure/goog/labs/useragent/platform.js"></script>
+  <script src="../../../../closure-library/closure/goog/labs/useragent/browser.js"></script>
+  <script src="../../../../closure-library/closure/goog/labs/useragent/engine.js"></script>
+  <script src="../../../../closure-library/closure/goog/useragent/useragent.js"></script>
+  <script src="../../../../eyo/js/core/eyo/eyo.js"></script>
+  <script src="../../../../eyo/js/core/const/const.js"></script>
+  <script src="../../../../eyo/js/core/do/do.js"></script>
+  <script src="../../../../eyo/js/core/kv/kv.js"></script>
+  <script src="../../../../eyo/js/core/more/more.js"></script>
+  <script src="../../../../eyo/js/core/t3/t3.js"></script>
+  <script src="../../../../eyo/js/core/xre/xre.js"></script>
+  <script src="../../../../eyo/js/core/decorate/decorate.js"></script>
+  <script src="../../../../eyo/js/core/model/model.js"></script>
+  <script src="../../../../eyo/js/core/dlgt/dlgt.js"></script>
+  <script src="../../../../eyo/js/core/c9r/c9r.js"></script>
+  <script src="../../../../eyo/js/core/o3d/o3d.js"></script>
+  <script src="../../../../eyo/js/core/observe/observe.js"></script>
+  <script src="../../../../eyo/js/core/many/many.js"></script>
+  <script src="../../../../eyo/js/core/p6y/p6y.js"></script>
+  <script src="../../../../eyo/js/core/o4t/o4t.js"></script>
+  <script src="../../../../eyo/js/core/change_count/change_count.js"></script>
+  <script src="event.js"></script>
+  <script src="../../../../eyo/js/core/shared/shared.js"></script>
+  <link rel="stylesheet" href="../../../../../../node_modules/mocha/mocha.css">
+</head>
+<body style="background-color: snow">
+  <div id="eyo-desk" style="height: 95.375px; width: 412.5px;"></div>
+  <div id="mocha"></div>
+  <script src="../../../../../../node_modules/mocha/mocha.js"></script>
+  <script src="../../../../../../node_modules/chai/chai.js"></script>
+  <script  type="text/javascript">//<![CDATA[
+
+mocha.setup('bdd')
+eYo.path_root = '../../../../../../'
+eYo.path_js = '../../../../../../src/lib/eyo/js'
+
+//]]></script>
+  <script src="../../test/chai_extension.js"></script>
+  <script src="../../test/common.test.js"></script>
+  <script src="event.test.inline.js"></script>
+  <script src="event.test.js"></script>
+  <script src="../../../../eyo/debugging.js"></script>
+  <script  type="text/javascript">//<![CDATA[
+    mocha.run();//]]></script>
+</body>
+</html>
