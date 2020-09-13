@@ -664,9 +664,9 @@ eYo.mixinFR(eYo.c3s._p, {
    * The model BaseC3s used to derive a new class. Used by `modelMakeC3s`.
    * @see The `new` method.
    * @param {Object} model
-   * @param {String} key
+   * @param {String} id
    */
-  modelBaseC3s (model, key) { // eslint-disable-line
+  modelBaseC3s (model, id) { // eslint-disable-line
     return this.BaseC3s
   },
   /**
@@ -723,7 +723,7 @@ eYo.mixinFR(eYo.c3s._p, {
     //... var SuperC3s = eYo.c3s.newC3s(eYo.genUID(eYo.IDENT), model)
     //... SuperC3s[eYo.$].finalizeC3s()
     if (!eYo.isD(model)) {
-      ;[model, $] = [eYo.NA, model]
+      [model, $] = [eYo.NA, model]
       var C3s = this.BaseC3s
       return new C3s($)
       //... var o = NS.prepare(eYo.test.kv)
@@ -732,8 +732,8 @@ eYo.mixinFR(eYo.c3s._p, {
     }
     C3s = model[eYo.$C3s]
     if (!C3s) {
-      C3s = this.modelMakeC3s(model, $)
-      //... var o = NS.prepare({}, {$: 12})
+      C3s = this.modelMakeC3s(model, $ && $.id)
+      //... var o = NS.prepare({}, eYo.test.kv)
       //... chai.expect(o).instanceOf(eYo.c3s.BaseC3s)
       //... eYo.flag.expect('p$kv')
     }
