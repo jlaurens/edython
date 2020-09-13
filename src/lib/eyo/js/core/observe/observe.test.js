@@ -1,17 +1,7 @@
 describe ('Tests: Observe', function () {
   this.timeout(20000)
-  var flag, onr
-  beforeEach (function() {
-    flag = new eYo.test.Flag()
-    onr = eYo.c3s && eYo.c3s.new({
-      methods: {
-        flag (what, ...$) {
-          eYo.flag.push(1, what, ...$)
-          return what
-        },
-      },
-    }, 'onr')
-  })
+  beforeEach (function () { eYo.test.setup() })
+  eYo.test.setup()
   it (`$this`, function () {
     let ns = eYo.c3s.newNS()
     ns.makeBaseC3s()
@@ -19,14 +9,14 @@ describe ('Tests: Observe', function () {
     let o = ns.new()
     let oo = {
       flag(...$) {
-        eYo.flag.push(1, ...$)
+        eYo.flag.push('/', ...$)
       }
     }
-    o.addObserver(eYo.observe.BEFORE, oo, function (before, after) {
-      this.flag(2, before + 2, after + 2)
+    o.addObserver(eYo.observe.BEFORE, oo, function (kv) {
+      this.flag('b', kv)
     })
-    o.willChange(1, 2)
-    eYo.flag.expect(1234)
+    o.willChange(eYo.test.kv)
+    eYo.flag.expect('/b$kv')
   })
   it (`Inherited`, function () {
     let ns = eYo.c3s.newNS()
@@ -35,51 +25,51 @@ describe ('Tests: Observe', function () {
     let ChildC3s = C3s[eYo.$newSubC3s]('Bar')
     SuperC3s[eYo.$].observeEnhanced()
     let o = new ChildC3s()
-    let o_o = o.addObserver(eYo.observe.BEFORE, function (before, after) {
-      eYo.flag.push(before, after)
+    let o_o = o.addObserver(eYo.observe.BEFORE, function (...$) {
+      eYo.flag.push('1', ...$)
     })
-    o.willChange(1, 2)
-    eYo.flag.expect(12)
-    let o_ChildC3s = ChildC3s.prototype.addObserver(eYo.observe.BEFORE, function (before, after) {
-      eYo.flag.push(7, before + 7, after + 7)
+    o.willChange(eYo.test.kv)
+    eYo.flag.expect('1$kv')
+    let o_ChildC3s = ChildC3s.prototype.addObserver(eYo.observe.BEFORE, function (...$) {
+      eYo.flag.push('2', ...$)
     })
-    o.willChange(1, 2)
-    eYo.flag.expect(78912)
-    let o_C3s = C3s.prototype.addObserver(eYo.observe.BEFORE, function (before, after) {
-      eYo.flag.push(4, before + 4, after + 4)
+    o.willChange(eYo.test.kv)
+    eYo.flag.expect('2$kv1$kv')
+    let o_C3s = C3s.prototype.addObserver(eYo.observe.BEFORE, function (...$) {
+      eYo.flag.push('3', ...$)
     })
-    o.willChange(1, 2)
-    eYo.flag.expect(45678912)
-    let o_SuperC3s = SuperC3s.prototype.addObserver(eYo.observe.BEFORE, function (before, after) {
-      eYo.flag.push(1, before+1, after+1)
+    o.willChange(eYo.test.kv)
+    eYo.flag.expect('3$kv2$kv1$kv')
+    let o_SuperC3s = SuperC3s.prototype.addObserver(eYo.observe.BEFORE, function (...$) {
+      eYo.flag.push(4, ...$)
     })
-    o.willChange(1, 2)
-    eYo.flag.expect(12345678912)
+    o.willChange(eYo.test.kv)
+    eYo.flag.expect('4$kv3$kv2$kv1$kv')
     o.removeObserver(o_o)
-    o.willChange(1, 2)
-    eYo.flag.expect(123456789)
+    o.willChange(eYo.test.kv)
+    eYo.flag.expect('4$kv3$kv2$kv')
     ChildC3s.prototype.removeObserver(o_ChildC3s)
-    o.willChange(1, 2)
-    eYo.flag.expect(123456)
+    o.willChange(eYo.test.kv)
+    eYo.flag.expect('4$kv3$kv')
     C3s.prototype.removeObserver(o_C3s)
-    o.willChange(1, 2)
-    eYo.flag.expect(123)
+    o.willChange(eYo.test.kv)
+    eYo.flag.expect('4$kv')
     SuperC3s.prototype.removeObserver(o_SuperC3s)
-    o.willChange(1, 2)
+    o.willChange(eYo.test.kv)
     eYo.flag.expect()
   })
   it (`Shared and inherited`, function () {
     let ns = eYo.c3s.newNS()
     ns.makeBaseC3s()
     ns.BaseC3s[eYo.$].observeEnhanced()
-    ns.new().willChange(1, 2)
+    ns.new().willChange(eYo.test.kv)
     eYo.flag.expect()
-    ns.BaseC3s_p.addObserver(eYo.observe.BEFORE, function (before, after) {
-      eYo.flag.push(1, before+1, after+1)
+    ns.BaseC3s_p.addObserver(eYo.observe.BEFORE, function (...$) {
+      eYo.flag.push('o', ...$)
     })
-    ns.new().willChange(1, 2)
-    eYo.flag.expect(123)
-    ns.new().willChange(1, 2)
-    eYo.flag.expect(123)
+    ns.new().willChange(eYo.test.kv)
+    eYo.flag.expect('o$kv')
+    ns.new().willChange(eYo.test.kv)
+    eYo.flag.expect('o$kv')
   })
 })

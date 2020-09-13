@@ -587,6 +587,21 @@ bytesescapeseq ::=  "\" <any ASCII character>
 */
 
 eYo.mixinRO(eYo.xre, {
+  //<<< mochai: test builin
+  //... var model = {
+  //...   foo (builtin) {
+  //...     builtin()
+  //...   },
+  //...   bar (builtinX) {
+  //...     builtiniX()
+  //...   }
+  //... }
+  //... var str = model.foo.toString()
+  //... console.error(str)
+  //... chai.assert(XRegExp.match(str, /^[^(]*\([^,]*builtin\b/))
+  //... var str = model.bar.toString()
+  //... chai.assert(!XRegExp.match(str, /^[^(]*\([^,]*builtin\b/))
+  //>>>
   function_builtin_before: XRegExp('^[^(]*\\(\\s*(?<builtin>\\bbuiltin\\b)?(?:\\s*,\\s*)?(?<before>\\bbefore\\b)?'),
   //<<< mochai: function_builtin_before
   //... xre = eYo.xre.function_builtin_before

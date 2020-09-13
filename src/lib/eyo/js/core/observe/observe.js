@@ -32,6 +32,46 @@ eYo.mixinRO(eYo.observe._p, {
     eYo.observe.ANY,
   ],
 })
+eYo.mixinFR(eYo.observe._p, {
+  newKV (when, $this, callback) {
+    if (when instanceof eYo.KV) {
+      return when
+    }
+    if (!eYo.observe.HOOKS.includes(when)) {
+      eYo.isDef(callback) && eYo.throw(`${this.name}/newKV: Too many arguments ${callback} (1)`)
+      ;[when, $this, callback] = [eYo.NA, when, $this]
+    }
+    if ($this instanceof eYo.KV) {
+      eYo.isDef(callback) && eYo.throw(`${this.name}/newKV: Too many arguments ${callback} (2)`)
+      if (!eYo.isDef(when) || when === $this.when) {
+        return $this
+      }
+      [$this, callback] = [$this.$this, $this.callback_]
+    } else if (eYo.isF($this)) {
+      eYo.isDef(callback) && eYo.throw(`${this.name}/newKV: Too many arguments ${callback} (3)`)
+      ;[$this, callback] = [eYo.NA, $this]
+    }
+    return new eYo.KV({when, $this, callback})
+  },
+  newKVObserver (when, $this, callback) {
+    if (when instanceof eYo.KV) {
+      return when
+    }
+    var observer
+    if (when instanceof eYo.Observe) {
+      observer = when
+    } else if ($this instanceof eYo.Observe) {
+      if (!when || when === $this.when) {
+        observer = $this
+      } else {
+        observer = eYo.observe.new(when, $this.$this, $this.callback)
+      }
+    } else {
+      observer = eYo.observe.new(when, $this, callback)
+    }
+    return eYo.kv.new({observer})
+  },
+})
 //<<< mochai: Basics
 //... chai.assert(eYo.observe)
 //... eYo.observe.HOOKS.forEach(s => chai.expect(s).eyo_Str)
@@ -43,63 +83,33 @@ eYo.observe.makeBaseC3s({
    * @param {Object} [$this | eYo.Observe] - Self explanatory
    * @param {Function} [f] - function ([before], after) => void. arguments must ont have another name.
    */
-  prepare (when, $this, callback) {
-    this.when = when
-    this.$this = $this
-    this.callback_ = callback
+  prepare (kv) {
+    this.when = kv.when || eYo.observe.AFTER
+    this.$this = kv.$this
+    this.callback = kv.callback.bind(kv.$this)
   },
   dispose () {
-    this.$this = this.callback = this.when = eYo.NA
-  },
-  methods: {
-    /**
-     * 
-     * @param {Object} before
-     * @param {Object} after
-     */
-    callback (before, after) {
-      let f = this.callback_.length > 1
-        ? function (before, after) {
-          this.callback_.call(this.$this, before, after)
-        } : function (before, after) {
-          this.callback_.call(this.$this, after)
-        }
-      this.callback = f
-      f.call(this, before, after)
-    }
+    this.when = this.$this = this.callback_ = eYo.NA
   },
 })
 
 eYo.mixinFR(eYo.observe, {
   /**
-   * @param {String} [when] - One of the observe HOOKS
-   * @param {Object} [$this | eYo.observe.BaseC3s] - Self explanatory
-   * @param {Function} [f] - function ([before], after) => void. arguments must ont have another name.
+   * @param {eYo.KV || eYo.Observe} kv
+   * @param [kv.when] - One of the observe HOOKS
+   * @param {eYo.Observe} [kv.observe] - Self explanatory
+   * @param {Object} [kv.$this] - Self explanatory
+   * @param {Function} kv.callback - function (kv) => void.
    */
-  new (when, $this, callback) {
-    if (!eYo.observe.HOOKS.includes(when)) {
-      eYo.isDef(callback) && eYo.throw(`${this.eyo$.name}/addObserver: Too many arguments ${callback}`)
-      ;[when, $this, callback] = [eYo.NA, when, $this]
+  new (kv, ...$) {
+    if (!(kv instanceof eYo.KV)) {
+      kv = eYo.observe.newKV(kv, ...$)
     }
-    if ($this instanceof eYo.observe.BaseC3s) {
-      eYo.isDef(callback) && eYo.throw(`${this.eyo$.name}/addObserver: Too many arguments ${callback}`)
-      if (!eYo.isDef(when) || when === $this.when) {
-        return $this
-      }
-      return new eYo.observe.BaseC3s(when, $this.$this, $this.callback_)
-    }
-    if (eYo.isF($this)) {
-      eYo.isDef(callback) && eYo.throw(`${this.eyo$.name}: unexpected (last?) parameter, got ${callback}`)
-      ;[$this, callback] = [eYo.NA, $this]
-    } else {
-      eYo.isF(callback) || eYo.throw(`Callback must be a function, got ${callback}`)
-    }
-    (!when && (when = eYo.observe.AFTER)) || eYo.observe.HOOKS.includes(when) || eYo.throw(`Unexpected when, got ${when}`)
-    return new eYo.observe.BaseC3s(when, $this, callback)
+    return new eYo.Observe(kv)
   },
 })
 
-eYo.dlgt.BaseC3s_p.observeEnhanced = function () {
+eYo.dlgt.BaseC3s_p.observeEnhanced = {observeEnhanced () {
   //<<< mochai: ../observeEnhanced
   //<<< mochai: Basics
   //... let ns = eYo.c3s.newNS()
@@ -148,18 +158,18 @@ eYo.dlgt.BaseC3s_p.observeEnhanced = function () {
     eYo.observe.AFTER,
   ].forEach(when => {
     let When = eYo.do.toTitleCase(when)
-    _p[when] = function (before, after) {
+    _p[when] = function (kv) {
       try {
         this[when] = eYo.doNothing
         let o = this.owner
         if (o) {
           var f_o = o[this.key + When]
-          eYo.isF(f_o) && f_o.call(o, before, after)
+          eYo.isF(f_o) && f_o.call(o, kv)
           f_o = this.Id && o[this.key + this.Id + When]
-          eYo.isF(f_o) && f_o.call(o, before, after)
+          eYo.isF(f_o) && f_o.call(o, kv)
         }
-        this.fireObservers(eYo.observe.ANY, before, after)
-        this.fireObservers(when, before, after)
+        this.fireObservers(eYo.observe.ANY, kv)
+        this.fireObservers(when, kv)
       } finally {
         delete this[when]
       }
@@ -169,54 +179,65 @@ eYo.dlgt.BaseC3s_p.observeEnhanced = function () {
     //... ns.makeBaseC3s()
     //... ns.BaseC3s[eYo.$].observeEnhanced()
     //... for (let [k, v] of Object.entries({
-    //...   [eYo.observe.BEFORE]: [123, 0, 0,],
-    //...   [eYo.observe.DURING]: [0, 123, 0,],
-    //...   [eYo.observe.AFTER] : [0, 0, 123,],
+    //...   [eYo.observe.BEFORE]: ['1$kv', 0, 0,],
+    //...   [eYo.observe.DURING]: [0, '1$kv', 0,],
+    //...   [eYo.observe.AFTER] : [0, 0, '1$kv',],
     //... })) {
     //...   let o = ns.new()
-    //...   o.addObserver(k, function (before, after) {
-    //...     eYo.flag.push(1, before, after)
+    //...   o.addObserver(k, function (kv) {
+    //...     eYo.flag.push(1, kv)
     //...   })
-    //...   o.willChange(2, 3)
+    //...   o.willChange(eYo.test.kv)
     //...   eYo.flag.expect(v[0])
-    //...   o.atChange(2, 3)
+    //...   o.atChange(eYo.test.kv)
     //...   eYo.flag.expect(v[1])
-    //...   o.didChange(2, 3)
+    //...   o.didChange(eYo.test.kv)
     //...   eYo.flag.expect(v[2])
     //... }
     //... for (let [k, v] of Object.entries({
-    //...   [eYo.observe.BEFORE]: [123456, 123, 123],
-    //...   [eYo.observe.DURING]: [123, 123456, 123],
-    //...   [eYo.observe.AFTER] : [123, 123, 123456,],
+    //...   [eYo.observe.BEFORE]: ['1$kv2$kv', '1$kv', '1$kv'],
+    //...   [eYo.observe.DURING]: ['1$kv', '1$kv2$kv', '1$kv'],
+    //...   [eYo.observe.AFTER] : ['1$kv', '1$kv', '1$kv2$kv',],
     //... })) {
     //...   let o = ns.new()
-    //...   o.addObserver(eYo.observe.ANY, function (before, after) {
-    //...     eYo.flag.push(1, before, after)
+    //...   o.addObserver(eYo.observe.ANY, function (kv) {
+    //...     eYo.flag.push(1, kv)
     //...   })
-    //...   o.addObserver(k, function (before, after) {
-    //...     eYo.flag.push(4, 3+before, 3+after)
+    //...   o.addObserver(k, function (kv) {
+    //...     eYo.flag.push(2, kv)
     //...   })
-    //...   o.willChange(2, 3)
+    //...   o.willChange(eYo.test.kv)
     //...   eYo.flag.expect(v[0])
-    //...   o.atChange(2, 3)
+    //...   o.atChange(eYo.test.kv)
     //...   eYo.flag.expect(v[1])
-    //...   o.didChange(2, 3)
+    //...   o.didChange(eYo.test.kv)
     //...   eYo.flag.expect(v[2])
     //... }
     //>>>
   })
   /**
-   * Add the observer.
-   * The observer is a bound method.
-   * @param {String} [when] - One of the observe HOOKS
-   * @param {Object || eYo.observe.BaseC3s} [$this] - Self explanatory
-   * @param {Function} [f] - function ([before], after) => void. arguments must ont have another name. Must not be provided, when the first argument is an observer.
-   * @return {*} Private structure, to be used for removing the observer.
+   * addObserver: Add the given observer.
+   * @param {*} observer 
    */
-  _p.addObserver = function (when, $this, callback) {
+  /**
+   * addObserver: Add the given for the `when` hook.
+   * @param {*} when 
+   * @param {*} observer 
+   */
+  /**
+   * addObserver
+   * @param {*} when 
+   * @param {*} $this 
+   * @param {*} callback 
+   */
+  /**
+   * Add the observer.
+   * When the first parameter is not n observer, the arguments are the same as `eYo.observe.new`
+   */
+  _p.addObserver = function (...$) {
+    let observer = eYo.observe.newKVObserver(...$).observer
     //<<< mochai: addObserver
-    let observer = eYo.observe.new(when, $this, callback)
-    when = observer.when
+    let when = observer.when
     let byWhen = this.observersByWhen__ || (this.observersByWhen__ = {})
     let observers = byWhen[when] || (byWhen[when] = [])
     observers.push(observer)
@@ -225,22 +246,22 @@ eYo.dlgt.BaseC3s_p.observeEnhanced = function () {
     //... ns.makeBaseC3s()
     //... ns.BaseC3s[eYo.$].observeEnhanced()
     //... let o = ns.new()
-    //... let observer1 = o.addObserver(eYo.observe.BEFORE, function (before, after) {
-    //...   eYo.flag.push(1, before + 1, after + 1)
+    //... let before1 = o.addObserver(eYo.observe.BEFORE, function (kv) {
+    //...   eYo.flag.push(1, kv)
     //... })
-    //... let observer2 = o.addObserver(eYo.observe.BEFORE, function (before, after) {
-    //...   eYo.flag.push(4, before+4, after+4)
+    //... let before2 = o.addObserver(eYo.observe.BEFORE, function (kv) {
+    //...   eYo.flag.push(2, kv)
     //... })
-    //... o.willChange(1, 2)
-    //... eYo.flag.expect(123456)
-    //... o.removeObserver(observer1)
-    //... o.willChange(1, 2)
-    //... eYo.flag.expect(456)
-    //... o.addObserver(observer1)
-    //... o.willChange(1, 2)
-    //... eYo.flag.expect(456123)
+    //... o.willChange(eYo.test.kv)
+    //... eYo.flag.expect('1$kv2$kv')
+    //... o.removeObserver(before1)
+    //... o.willChange(eYo.test.kv)
+    //... eYo.flag.expect('2$kv')
+    //... o.addObserver(before1)
+    //... o.willChange(eYo.test.kv)
+    //... eYo.flag.expect('2$kv1$kv')
     //... o.removeObservers()
-    //... o.willChange(1, 2)
+    //... o.willChange(eYo.test.kv)
     //... eYo.flag.expect()
     //>>>
   }
@@ -263,33 +284,36 @@ eYo.dlgt.BaseC3s_p.observeEnhanced = function () {
     //... ns.makeBaseC3s()
     //... ns.BaseC3s[eYo.$].observeEnhanced()
     //... let o = ns.new()
-    //... let observer = o.addObserver(eYo.observe.BEFORE, function (before, after) {
-    //...   eYo.flag.push(1, before, after)
+    //... let before = o.addObserver(eYo.observe.BEFORE, function (kv) {
+    //...   eYo.flag.push('o', kv)
     //... })
-    //... o.willChange(2, 3)
-    //... eYo.flag.expect(123)
-    //... o.removeObserver(observer)
-    //... o.willChange(2, 3)
+    //... var will = eYo.kv.new({$: 'will'})
+    //... var did = eYo.kv.new({$: 'did'})
+    //... o.willChange(will)
+    //... eYo.flag.expect('o$will')
+    //... o.removeObserver(before)
+    //... o.willChange(will)
     //... eYo.flag.expect()
-    //... o.addObserver(observer)
-    //... o.willChange(2, 3)
-    //... eYo.flag.expect(123)
-    //... let after = o.addObserver(eYo.observe.AFTER, observer)
-    //... o.willChange(2, 3)
-    //... eYo.flag.expect(123)
-    //... o.didChange(3, 5)
-    //... eYo.flag.expect(135)
-    //... o.removeObserver(observer)
-    //... o.willChange(2, 3)
+    //... o.addObserver(before)
+    //... o.willChange(will)
+    //... eYo.flag.expect('o$will')
+    //... let after = o.addObserver(eYo.observe.AFTER, before)
+    //... o.willChange(will)
+    //... eYo.flag.expect('o$will')
+    //... o.didChange(did)
+    //... eYo.flag.expect('o$did')
+    //... o.removeObserver(before)
+    //... o.willChange(will)
     //... eYo.flag.expect()
-    //... o.didChange(3, 5)
-    //... eYo.flag.expect(135)
+    //... o.didChange(did)
+    //... eYo.flag.expect('o$did')
     //>>>
   }
   /**
    * Remove all the observers.
    */
   _p.removeObservers = function () {
+    //<<< mochai: removeObservers
     let byWhen = this.observersByWhen__
     if (byWhen) {
       eYo.observe.HOOKS.forEach(when => {
@@ -299,6 +323,36 @@ eYo.dlgt.BaseC3s_p.observeEnhanced = function () {
         }  
       })
     }
+    //... for (let [k, v] of Object.entries({
+    //...   [eYo.observe.BEFORE]: ['1$kv2$kv', 0, 0],
+    //...   [eYo.observe.DURING]: [0, '1$kv2$kv', 0],
+    //...   [eYo.observe.AFTER] : [0, 0, '1$kv2$kv',],
+    //... })) {
+    //...   let ns = eYo.c3s.newNS()
+    //...   ns.makeBaseC3s()
+    //...   ns.BaseC3s[eYo.$].observeEnhanced()
+    //...   let o = ns.new()
+    //...   let observer1 = o.addObserver(k, function (kv) {
+    //...     eYo.flag.push(1, kv)
+    //...   })
+    //...   let observer2 = o.addObserver(k, function (kv) {
+    //...     eYo.flag.push(2, kv)
+    //...   })
+    //...   o.willChange(eYo.test.kv)
+    //...   eYo.flag.expect(v[0])
+    //...   o.atChange(eYo.test.kv)
+    //...   eYo.flag.expect(v[1])
+    //...   o.didChange(eYo.test.kv)
+    //...   eYo.flag.expect(v[2])
+    //...   o.removeObservers()
+    //...   o.willChange(eYo.test.kv)
+    //...   eYo.flag.expect()
+    //...   o.atChange(eYo.test.kv)
+    //...   eYo.flag.expect()
+    //...   o.didChange(eYo.test.kv)
+    //...   eYo.flag.expect()
+    //... }
+    //>>>
   }
   /**
    * Fire the observers.
@@ -306,24 +360,24 @@ eYo.dlgt.BaseC3s_p.observeEnhanced = function () {
    * @param {*} before - the value before
    * @param {*} after - the value after
    */
-  _p.fireObservers = function (when, before, after) {
+  _p.fireObservers = function (when, kv) {
     try {
       this.fireObservers = eYo.doNothing // do not reenter
       this.eyo$.C3s_p_down.forEach(_p => {
         let byWhen = _p.observersByWhen__
         if (byWhen) {
           let observers = byWhen[when]
-          observers && observers.forEach(observer => observer.callback(before, after))
+          observers && observers.forEach(observer => observer.callback(kv))
         }
       })
       let byWhen = eYo.objectHasOwnProperty(this, 'observersByWhen__') && this.observersByWhen__
       if (byWhen) {
         let observers = byWhen[when]
-        observers && observers.forEach(observer => observer.callback(before, after))
+        observers && observers.forEach(observer => observer.callback(kv))
       }
     } finally {
       delete this.fireObservers
     }
   }
   //>>>
-}
+}}.observeEnhanced

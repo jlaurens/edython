@@ -1231,6 +1231,7 @@ eYo.mixinFR(eYo._p, {
   //<<< mochai: symbols
   $SuperC3s: Symbol('SuperC3s'),
   $SuperC3s_p: Symbol('SuperC3s_p'),
+  $name: Symbol('name'),
   //... chai.expect(!eYo.$SuperC3s).false
   //... chai.expect(!eYo.$SuperC3s_p).false
   $: Symbol('$'),

@@ -124,44 +124,13 @@ eYo.mixinFR(eYo.c3s._p, {
     let eyo$ = eYo.dlgt.new($.NS, $.id, SuperDlgt, $.model)
     let C3s = eyo$.newC3s($.SuperC3s)
     eYo.mixinFR(C3s, {
-      [eYo.$newSubC3s]: eYo.c3s.makeSubC3s.bind(eyo$),
+      [eYo.$newSubC3s]: eyo$.makeSubC3s.bind(eyo$),
     })
     return C3s
   },
 })
 
 eYo.mixinFR(eYo.c3s._p, {
-  /**
-   * This decorator turns f with signature
-   * function (ns, id, SuperC3s, model) {}
-   * into
-   * function ([ns], [id], [model]) {}.
-   * After decoration, a call to the resulting function is equivalent to a newC3s,
-   * the SuperC3s being the receiver's C3s.
-   * Both functions belong to the namespace context,
-   * id est `this` is a namespace.
-   * This decorator and the decorated function have a namespace as `this` object.
-   * @param{Function} f - the Dlgt constructor maker to decorate.
-   */
-  makeSubC3sDecorate (f) {
-    return function (ns, id, register, model) {
-      var SuperC3s = this.C3s
-      if (!eYo.isNS(ns)) {
-        model && eYo.throw(`Unexpected model (1): ${model}`)
-        ;[ns, id, register, model] = [this.ns, ns, id, register]
-      }
-      if (!eYo.isId(id)) {
-        model && eYo.throw(`Unexpected model (2): ${model}`)
-        ;[id, register, model] = [ns ? this.key : '?', id, register]
-      }
-      //ANCHOR: makeC3sDecorate
-      var ff = (this.ns||eYo.c3s).makeC3sDecorate(f)
-      return ff.call(this.ns||eYo.c3s, ns, id, SuperC3s, register, model)
-    }
-  },
-})
-
-eYo.mixinFR(eYo.c3s, {
   /**
    * Turns the arguments into a `eYo.KV` instance.
    * When there is a unique argument which is already an instance of
@@ -173,15 +142,15 @@ eYo.mixinFR(eYo.c3s, {
    * @param {*} register - Whther to register in the appropriate database
    * @param {*} [model] - Model
    */
-  newKV (NS, id, SuperC3s, register, model) {
-    //<<< mochai: eYo.c3s.newKV
+  newKV4C3s (NS, id, SuperC3s, register, model) {
+    //<<< mochai: eYo.c3s.newKV4C3s
     //... var NS = eYo.c3s.newNS()
     if (!eYo.isNS(NS)) {
       if(model) {
         eYo.test && eYo.test.IN_THROW || console.error('BREAK HERE!!!')
       }
-      model && eYo.throw(`eYo.c3s.newKV: Unexpected model(1/${model})`)
-      //... chai.expect(() => eYo.c3s.newKV(1, 2, 3, 4)).xthrow()
+      model && eYo.throw(`eYo.c3s.newKV4C3s: Unexpected model(1/${model})`)
+      //... chai.expect(() => eYo.c3s.newKV4C3s(1, 2, 3, 4)).xthrow()
       ;[NS, id, SuperC3s, register, model] = [this, NS, id, SuperC3s, register]
       //... ;[eYo.NA, NS].forEach(ns => {
       //...   ;[eYo.NA, 'Foo'].forEach(id => {
@@ -190,14 +159,12 @@ eYo.mixinFR(eYo.c3s, {
       //...         var $ = []
       //...         ns && $.push(ns)
       //...         id && $.push(id)
-      //...         SuperC3s && $.push(SuperC3s)
+      //...         SuperC3s  && $.push(SuperC3s)
       //...         model && $.push(model)
-      //...         $ = eYo.c3s.newKV(...$)
+      //...         $ = eYo.c3s.newKV4C3s(...$)
       //...         ns && chai.expect($.NS).equal(ns)
-      //...         console.error($.id)
-      //...         console.error(id)
       //...         $.id === 'BaseC3s' || id && chai.expect($.id).equal(id) || chai.expect($.id).eyo_Sym
-      //...         chai.expect($.SuperC3s).equal(SuperC3s)
+      //...         chai.expect($.SuperC3s).equal(SuperC3s ??= eYo.C3s)
       //...         chai.expect($.model).eql(model || {})
       //...       })
       //...     })
@@ -205,21 +172,21 @@ eYo.mixinFR(eYo.c3s, {
       //... })
     }
     if (!eYo.isId(id)) {
-      model && eYo.throw(`eYo.c3s.newKV: Unexpected model(2/${model})`)
+      model && eYo.throw(`eYo.c3s.newKV4C3s: Unexpected model(2/${model})`)
       ;[id, SuperC3s, register, model] = [eYo.NA, id, SuperC3s, register]
     }
     // Default value for SuperC3s, when there are arguments
     if (SuperC3s && !eYo.isC3s(SuperC3s)) {
-      model && eYo.throw(`eYo.c3s.newKV: Unexpected model(3/${model})`)
+      model && eYo.throw(`eYo.c3s.newKV4C3s: Unexpected model(3/${model})`)
       ;[SuperC3s, register, model] = [eYo.NA, SuperC3s, register]
     }
     if (!eYo.isBool(register)) {
-      model && eYo.throw(`eYo.c3s.newKV: Unexpected model (4/${model})`)
+      model && eYo.throw(`eYo.c3s.newKV4C3s: Unexpected model (4/${model})`)
       ;[register, model] = [false, register]
     }
     model = eYo.called(model) || {}
     if (id) {
-      SuperC3s || (SuperC3s = model[eYo.$SuperC3s] || eYo.asF(this[id]) || this.BaseC3s)
+      SuperC3s || (SuperC3s = model[eYo.$SuperC3s] || this.BaseC3s)
     } else if (SuperC3s || (SuperC3s = model[eYo.$SuperC3s])) {
       id = SuperC3s[eYo.$] && SuperC3s[eYo.$].id
       // possible id conflict here if NS is SuperC3s's namespace
@@ -236,7 +203,10 @@ eYo.mixinFR(eYo.c3s, {
       //... })[eYo.$SuperC3s]).undefined
       if (!eYo.objectHasOwnProperty(model, eYo.$SuperC3s)) {
         SuperC3s = this.BaseC3s
-      //... chai.expect(NS.newC3s()[eYo.$SuperC3s]).equal(NS.BaseC3s)
+      //... let C3s = NS.newC3s()
+      ////... console.error(C3s[eYo.$SuperC3s][eYo.$name])
+      ////... console.error(NS.BaseC3s[eYo.$name])
+      //... chai.expect(C3s[eYo.$SuperC3s]).equal(NS.BaseC3s)
       }
     }
     if (eYo.isSubclass(this.BaseC3s, SuperC3s)) {
@@ -245,78 +215,6 @@ eYo.mixinFR(eYo.c3s, {
     return eYo.kv.new({NS, id, SuperC3s, register, model})
     //>>>
   },
-  /**
-   * Turns the arguments into a `eYo.KV` instance.
-   * When there is a unique argument which is already an instance of
-   * `eYo.KV`, the argument is returned as is.
-   * 
-   * @param {Object} [NS] - Namespace
-   * @param {String | Symbol} [id] - Identifier
-   * @param {*} [model] - Model
-   */
-  newKVSub (NS, id, model) {
-    //<<< mochai: eYo.c3s.newKVSub
-    //... var NS = eYo.c3s.newNS()
-    if (!eYo.isNS(NS)) {
-      if(model) {
-        eYo.test && eYo.test.IN_THROW || console.error('BREAK HERE!!!')
-      }
-      model && eYo.throw(`eYo.c3s.newKVSub: Unexpected model(1/${model})`)
-      //... chai.expect(() => eYo.c3s.newKV(1, 2, 3, 4)).xthrow()
-      ;[NS, id, model] = [this, NS, id]
-      //... ;[eYo.NA, NS].forEach(ns => {
-      //...   ;[eYo.NA, 'Foo'].forEach(id => {
-      //...     ;[eYo.NA, {}].forEach(model => {
-      //...       var $ = []
-      //...       ns && $.push(ns)
-      //...       id && $.push(id)
-      //...       SuperC3s && $.push(SuperC3s)
-      //...       model && $.push(model)
-      //...       $ = eYo.c3s.newKV(...$)
-      //...       ns && chai.expect($.NS).equal(ns)
-      //...       console.error($.id)
-      //...       console.error(id)
-      //...       $.id === 'BaseC3s' || id && chai.expect($.id).equal(id) || chai.expect($.id).eyo_Sym
-      //...       chai.expect($.SuperC3s).equal(SuperC3s)
-      //...       chai.expect($.model).eql(model || {})
-      //...     })
-      //...   })
-      //... })
-    }
-    if (!eYo.isId(id)) {
-      model && eYo.throw(`eYo.c3s.newKV: Unexpected model(2/${model})`)
-      ;[id, model] = [eYo.NA, id]
-    }
-    // Default value for SuperC3s, when there are arguments
-    SuperC3s = this.BaseC3s
-    model = eYo.called(model) || {}
-    if (id) {
-      SuperC3s || (SuperC3s = model[eYo.$SuperC3s] || eYo.asF(this[id]) || this.BaseC3s)
-    } else {
-      id = Symbol(`${this.name}.?`)
-      //... var NS = eYo.c3s.newNS()
-      //... chai.expect(NS.BaseC3s).equal(eYo.c3s.BaseC3s)
-      //... chai.expect(NS.BaseC3s_p).equal(eYo.C3s_p)
-      //... NS.makeBaseC3s()
-      //... chai.expect(NS.BaseC3s).not.equal(eYo.c3s.BaseC3s)
-      //... chai.expect(NS.BaseC3s_p).not.equal(eYo.C3s_p)
-      //... chai.expect(NS.newC3s({
-      //...   [eYo.$SuperC3s]: eYo.NA,
-      //... })[eYo.$SuperC3s]).undefined
-      if (!eYo.objectHasOwnProperty(model, eYo.$SuperC3s)) {
-        SuperC3s = this.BaseC3s
-      //... chai.expect(NS.newC3s()[eYo.$SuperC3s]).equal(NS.BaseC3s)
-      }
-    }
-    if (eYo.isSubclass(this.BaseC3s, SuperC3s)) {
-      SuperC3s = this.BaseC3s
-    }
-    return eYo.kv.new({NS, id, SuperC3s, model})
-    //>>>
-  }
-})
-
-eYo.mixinFR(eYo.c3s._p, {
   /**
    * @name{eYo.c3s.newC3s}
    * Make a constructor with an `[eYo.$]` property.
@@ -333,9 +231,10 @@ eYo.mixinFR(eYo.c3s._p, {
    */
   newC3s (ns, id, SuperC3s, register, model) {
     //<<< mochai: newC3s
-    let $ = eYo.c3s.newKV(ns, id, SuperC3s, register, model)
+    let $ = this.newKV4C3s(ns, id, SuperC3s, register, model)
     let C3s = this.newC3sKV($)
     register && this.register($.model.register, C3s)
+    return C3s
     //... let NS = eYo.c3s.newNS()
     //... chai.expect(NS.newC3s)
     //... let C3s = NS.newC3s()
@@ -346,6 +245,7 @@ eYo.mixinFR(eYo.c3s._p, {
     //>>>
   },
 })
+
 // ANCHOR Constructor utilities
 {
   eYo.mixinRO(eYo.c3s, {
@@ -437,8 +337,81 @@ eYo.mixinFR(eYo.c3s._p, {
   })
 }
 
-// ANCHOR eYo.c3s._p.makeSubC3s
-eYo.mixinFR(eYo.c3s._p, {
+// ANCHOR eYo.dlgt._p.makeSubC3s
+eYo.mixinFR(eYo.Dlgt_p, {
+  /**
+   * Turns the arguments into a `eYo.KV` instance..
+   * 
+   * @param {Object} [NS] - Namespace where the new subclass will be stored
+   * @param {String | Symbol} [id] - Identifier
+   * @param {Boolean} [register] - Whether to register the newly created class.
+   * @param {*} [model] - Model
+   */
+  newKV4SubC3s (NS, id, register, model) {
+    //<<< mochai: eYo.dlgt.newKV4SubC3s
+    //... var NS = eYo.c3s.newNS()
+    if (!eYo.isNS(NS)) {
+      if(model) {
+        eYo.test && eYo.test.IN_THROW || console.error('BREAK HERE!!!')
+      }
+      model && eYo.throw(`eYo.Dlgt.newKV4SubC3s: Unexpected model(1/${model})`)
+      //... chai.expect(() => eYo.dlgt.newKV4SubC3s(1, 2, 3, 4)).xthrow()
+      ;[NS, id, register, model] = [this.ns, NS, id, register]
+      //... ;[eYo.NA, NS].forEach(ns => {
+      //...   ;[eYo.NA, 'Foo'].forEach(id => {
+      //...     ;[eYo.NA, {}].forEach(model => {
+      //...       var $ = []
+      //...       ns && $.push(ns)
+      //...       id && $.push(id)
+      //...       model && $.push(model)
+      //...       $ = eYo.c3s.newKV4C3s(...$)
+      //...       ns && chai.expect($.NS).equal(ns)
+      ////...       console.error($.id)
+      ////...       console.error(id)
+      //...       $.id === 'BaseC3s' || id && chai.expect($.id).equal(id) || chai.expect($.id).eyo_Sym
+      //...       chai.expect($.SuperC3s).equal((ns || eYo.c3s).BaseC3s)
+      //...       chai.expect($.model).eql(model || {})
+      //...     })
+      //...   })
+      //... })
+    }
+    if (!eYo.isId(id)) {
+      model && eYo.throw(`eYo.Dlgt.newKV4SubC3s: Unexpected model(2/${model})`)
+      ;[id, register, model] = [eYo.NA, id, register]
+    }
+    if (!eYo.isBool(register)) {
+      model && eYo.throw(`eYo.Dlgt.newKV4SubC3s: Unexpected model (3/${model})`)
+      ;[register, model] = [false, register]
+    }
+    model = eYo.called(model) || {}
+    var SuperC3s = model[eYo.$SuperC3s]
+    if (id) {
+      SuperC3s ??= this.C3s
+    } else if ((SuperC3s = model[eYo.$SuperC3s])) {
+      id = SuperC3s[eYo.$] && SuperC3s[eYo.$].id
+      // possible id conflict here if NS is SuperC3s's namespace
+    } else {
+      id = Symbol(`${this.name}.?`)
+      //... var NS = eYo.c3s.newNS()
+      //... chai.expect(NS.BaseC3s).equal(eYo.c3s.BaseC3s)
+      //... chai.expect(NS.BaseC3s_p).equal(eYo.C3s_p)
+      //... NS.makeBaseC3s()
+      //... chai.expect(NS.BaseC3s).not.equal(eYo.c3s.BaseC3s)
+      //... chai.expect(NS.BaseC3s_p).not.equal(eYo.C3s_p)
+      //... chai.expect(NS.newC3s({
+      //...   [eYo.$SuperC3s]: eYo.NA,
+      //... })[eYo.$SuperC3s]).undefined
+      if (!eYo.objectHasOwnProperty(model, eYo.$SuperC3s)) {
+        SuperC3s = this.C3s
+        //... chai.expect(NS.newC3s()[eYo.$SuperC3s]).equal(NS.BaseC3s)
+      }
+    }
+    if (eYo.isSubclass(this.C3s, SuperC3s)) {
+      SuperC3s = this.C3s
+    }
+    return eYo.kv.new({NS, id, SuperC3s, register, model})
+    //>>>
+  },
   /**
    * Convenient shortcut to create subclasses.
    * Forwards to the namespace which must exist!
@@ -450,8 +423,8 @@ eYo.mixinFR(eYo.c3s._p, {
    * @this {eYo.Dlgt}
    */
   makeSubC3s (ns, id, model) {
-    let $ = eYo.c3s.newKVSub(ns, id, model)
-    return this.newC3sKV($)
+    let $ = this.newKV4SubC3s(ns, id, model)
+    return this.ns.newC3sKV($)
   },
 })
 
@@ -478,9 +451,21 @@ eYo.mixinFR(eYo.c3s._p, {
       }
       if (eYo.isC3s(SuperC3s)) {
         model = eYo.called(model) || {}
-        //... var model = { foo: 421}
+        //... var model = { foo: 421 }
         //... var C3s = eYo.c3s.newNS().makeBaseC3s(() => model)
         //... chai.expect(C3s[eYo.$].model.foo).equal(421)
+        //... NS = eYo.c3s.newNS()
+        //... model = {
+        //...   foo: 421,
+        //...   prepare ($) {
+        //...     eYo.flag.push('p', $)
+        //...     chai.expect(this.model).eql(model)
+        //...   }
+        //... }
+        //... NS.makeBaseC3s(model)
+        //... chai.expect(NS.BaseC3s[eYo.$].model).eql(model)
+        //... new NS.BaseC3s(eYo.test.kv)
+        //... eYo.flag.expect('p$kv')
       } else {
         eYo.isNA(model) || eYo.throw(`${this.name}/makeBaseC3s: Unexpected argument (${model})`)
         //... chai.expect(() => NS.makeBaseC3s({}, 1)).xthrow()
@@ -490,7 +475,7 @@ eYo.mixinFR(eYo.c3s._p, {
       let C3s = this.newC3s(this, 'BaseC3s', SuperC3s, model)
       //... var ns = eYo.c3s.newNS()
       //... var C3s = ns.makeBaseC3s()
-      //... chai.expect(C3s).eyo_C3sBase
+      //... chai.expect(C3s).eyo_BaseC3s
       if (!this.anonymous) {
         let parentNS = this.parentNS
         if (parentNS && (eYo.objectHasOwnProperty(this._p, 'key') || eYo.objectHasOwnProperty(this, 'key'))) {
@@ -546,25 +531,22 @@ eYo.mixinFR(eYo.c3s._p, {
   eYo.mixinFR(eYo.c3s, {
     /**
      * The default implementation does nothing yet.
-     * @param{eYo.O3d} _$this - the instance to initialize
+     * @param {eYo.C3s} $this - the instance to initialize
+     * @param {eYo.KV} $ 
      */
-    c3sPrepare (_$this) {},
+    c3sPrepare ($this, $) {}, // eslint-disable-line no-unused-vars
     /**
      * The default implementation does nothing yet.
-     * @param{eYo.O3d} _$this - the instance to initialize
-     * @param{String | Symbol} key - The key in the owner
-     * @param{eYo.C3s | namespace} [owner] - Defaults to the name space
-     * @param{Boolean} [configurable] - Whether descriptors should be configurable, necessary for proxy.
+     * @param {eYo.C3s} $this - the instance to initialize
+     * @param {eYo.KV} $ 
      */
-    c3sInit (_$this) {},
+    c3sInit ($this, $) {}, // eslint-disable-line no-unused-vars
     /**
      * The default implementation does nothing  yet.
-     * @param{eYo.O3d} $this - the instance to initialize
-     * @param{String | Symbol} key - The key in the owner
-     * @param{eYo.C3s | namespace} [owner] - Defaults to the name space
-     * @param{Boolean} [configurable] - Whether descriptors should be configurable, necessary for proxy.
+     * @param {eYo.C3s} $this - the instance to initialize
+     * @param {eYo.KV} $ 
      */
-    c3sDispose ($this) {},
+    c3sDispose ($this, $) {}, // eslint-disable-line no-unused-vars
   })
     
   /**
@@ -580,18 +562,26 @@ eYo.mixinFR(eYo.c3s._p, {
      * @param {String} key - an identifier for the owner.
      * @param {eYo.c3s.BaseC3s} owner - the immediate owner of this object.
      */
-    prepare () {
-      eYo.c3s.c3sInit(this)
+    /**
+     * Prepare the receiver. Subclassers will override this.
+      * @param {eYo.KV} $ 
+    */
+    prepare ($) {
+      eYo.c3s.c3sPrepare(this, $)
     },
     /** 
-     * @param {String} key - an identifier for the owner.
-     * @param {eYo.c3s.BaseC3s} owner - the immediate owner of this object.
+     * Initialize the receiver. Subclassers will override this.
+     * @param {eYo.KV} $ 
      */
-    init () {
-      eYo.c3s.c3sInit(this)
+    init ($) {
+      eYo.c3s.c3sInit(this, $)
     },
-    dispose () {
-      eYo.c3s.c3sDispose(this)
+    /**
+     * Dispose of the receiver. Subclassers will override this.
+     * @param {eYo.KV} $ 
+     */
+    dispose ($) {
+      eYo.c3s.c3sDispose(this, $)
     },  
   })
 
@@ -676,19 +666,19 @@ eYo.mixinFR(eYo.c3s._p, {
    * @param {Object} model
    * @param {String} key
    */
-  modelC3sBase (model, key) { // eslint-disable-line
+  modelBaseC3s (model, key) { // eslint-disable-line
     return this.BaseC3s
   },
   /**
    * Create a new constructor based on the model.
    * No need to subclass.
-   * Instead, override `modelC3sBase` and `modelHandle`.
+   * Instead, override `modelBaseC3s` and `modelHandle`.
    * @param {Object} model
    * @param {*} ...$ - other arguments
    */
   modelMakeC3s (model, id) {
     //<<< mochai: modelMakeC3s
-    let C3s = this.newC3s(Symbol(''), this.modelC3sBase(model, id), model)
+    let C3s = this.newC3s(Symbol(''), this.modelBaseC3s(model, id), model)
     C3s[eYo.$].finalizeC3s()
     model = C3s[eYo.$].model
     model[eYo.$C3s] = C3s
@@ -721,49 +711,50 @@ eYo.mixinFR(eYo.c3s._p, {
    * @param {Object} [model] - Optional model, 
    * @param {...} [...] - Other arguments are passed to the constructor.
    */
-  prepare (model, ...$) {
+  prepare (model, $) {
     //<<< mochai: prepare
     //... let NS = eYo.c3s.newNS()
     //... var model = {
-    //...   prepare (...$) {
-    //...     eYo.flag.push('p', ...$)
+    //...   prepare ($) {
+    //...     eYo.flag.push('p', $)
     //...   }
     //... }
     //... NS.makeBaseC3s(model)
     //... var SuperC3s = eYo.c3s.newC3s(eYo.genUID(eYo.IDENT), model)
     //... SuperC3s[eYo.$].finalizeC3s()
     if (!eYo.isD(model)) {
+      ;[model, $] = [eYo.NA, model]
       var C3s = this.BaseC3s
-      return new C3s(...arguments)
-      //... var o = NS.prepare(1, 2)
+      return new C3s($)
+      //... var o = NS.prepare(eYo.test.kv)
       //... chai.expect(o).instanceOf(NS.BaseC3s)
-      //... eYo.flag.expect('p12')
+      //... eYo.flag.expect('p$kv')
     }
     C3s = model[eYo.$C3s]
     if (!C3s) {
-      C3s = this.modelMakeC3s(model, ...$)
-      //... var o = NS.prepare({}, 1, 2)
+      C3s = this.modelMakeC3s(model, $)
+      //... var o = NS.prepare({}, {$: 12})
       //... chai.expect(o).instanceOf(eYo.c3s.BaseC3s)
-      //... eYo.flag.expect('p12')
+      //... eYo.flag.expect('p$kv')
     }
     //... var o = eYo.c3s.prepare({
     //...   [eYo.$C3s]: NS.BaseC3s
-    //... }, 1, 2)
+    //... }, eYo.test.kv)
     //... chai.expect(o).instanceOf(NS.BaseC3s)
-    //... eYo.flag.expect('p12')
-    var ans = new C3s(...$)
+    //... eYo.flag.expect('p$kv')
+    var ans = new C3s($)
     ans.preInit = function () {
       delete this.preInit
       model[eYo.$$.starters].forEach(f => f(this))
     }
     return ans
     //... var o = eYo.c3s.prepare({
-    //...   dispose (...$) {
-    //...     eYo.flag.push('x', ...$)
+    //...   dispose ($) {
+    //...     eYo.flag.push('x', $)
     //...   }
     //... })
-    //... o.dispose(1, 2)
-    //... eYo.flag.expect('x12')
+    //... o.dispose(eYo.test.kv)
+    //... eYo.flag.expect('x$kv')
     //... var o = eYo.c3s.prepare({
     //...   methods: {
     //...     flag (...$) {
@@ -883,13 +874,13 @@ Object.assign(eYo.C3s_p, {
   /**
    * Initialize the receiver, it should not be overriden but it is still exposed for debugging purposes mainly.
    * Called by `newFoo` creator.
-   * @param  {...any} $ 
+   * @param  {eYo.KV} $ 
    */
-  init (...$) {
+  init ($) {
     //<<< mochai: eYo.C3s_p.init
     try {
       this.init = eYo.doNothing
-      this.eyo$.c3sInit(this, ...$)
+      this.eyo$.c3sInit(this, $)
     } finally {
       delete this.init
     }
@@ -897,15 +888,15 @@ Object.assign(eYo.C3s_p, {
     //>>>
   },
   /**
-   * Initialize the receiver, it should not be overriden but it is still exposed for debugging purposes mainly.
+   * Dispose of the receiver, it should not be overriden but it is still exposed for debugging purposes mainly.
    * Must be called.
-   * @param  {...any} $ 
+   * @param  {eYo.KV} $ 
    */
-  dispose (...$) {
+  dispose ($) {
     //<<< mochai: eYo.C3s_p.dispose
     try {
       this.dispose = eYo.doNothing
-      this.eyo$.c3sDispose(this, ...$)
+      this.eyo$.c3sDispose(this, $)
     } finally {
       delete this.dispose
     }

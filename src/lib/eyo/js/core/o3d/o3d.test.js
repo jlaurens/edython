@@ -4,10 +4,10 @@ describe ('Tests: Owned', function () {
     eYo.test.setup()
   })
   eYo.test.setup()
-  it ('O3d: modelC3sBase', function () {
+  it ('O3d: modelBaseC3s', function () {
     let ns = eYo.o3d.newNS()
     ns.makeBaseC3s()
-    chai.expect(ns.modelC3sBase()).equal(ns.BaseC3s)
+    chai.expect(ns.modelBaseC3s()).equal(ns.BaseC3s)
   })
   it ('O3d: modelMakeC3s', function () {
     let ns = eYo.o3d.newNS()

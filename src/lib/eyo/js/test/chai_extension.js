@@ -18,7 +18,17 @@ eYo.test.Flag = function (what) {
     },
     push (...$) {
       $.forEach(what => {
-        what && (eYo.isNum(what) || eYo.isStr(what)) && (this.v += what.toString())
+        if (what) {
+          if (eYo.isDef(what.$)) {
+            what = what.$
+            this.v += '$'
+            if (eYo.isNum(what) || eYo.isStr(what)) {
+              this.v += what.toString()
+            }
+          } else if (eYo.isNum(what) || eYo.isStr(what)) {
+            this.v += what.toString()
+          }
+        }
       })
       return this.v
     },
@@ -80,6 +90,7 @@ eYo.test.setup = function (model) {
   this.flag = new eYo.test.Flag()
   this.onr = this.makeOnr(model)
   this.IN_THROW = false
+  this.kv = eYo.kv ? eYo.kv.new({$: 'kv'}) : eYo.NA
 }
 
 eYo.flag.push = function (...$) {
@@ -180,7 +191,7 @@ chai.Assertion.addProperty('eyo_F', function () {
   )
 })
 
-chai.Assertion.addProperty('eyo_C3sBase', function () {
+chai.Assertion.addProperty('eyo_BaseC3s', function () {
   this.eyo_C3s
   let C3s = this._obj
   this.assert(

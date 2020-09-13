@@ -15,6 +15,7 @@
 eYo.require('model')
 eYo.require('xre')
 eYo.require('do')
+eYo.require('kv')
 
 /**
  * Management of class delegates.
@@ -410,6 +411,11 @@ eYo.mixinFR(eYo._p, {
         //...   eYo.dlgt.new(eYo.newNS(), 'Foo', {})
         //...   dlgt.setC3s(C3s) // raises here
         //... }).xthrow()
+        [eYo.$name] () {
+          return this[eYo.$].name
+        },
+        //... chai.expect(Foo[eYo.$name]).not.undefined
+        //... chai.expect(Foo[eYo.$name]).equal(dlgt.name)
       })
       //... chai.expect(Foo[eYo.$]).equal(dlgt)
       //... chai.expect(Foo[eYo.$_p]).equal(dlgt._p)
@@ -697,7 +703,7 @@ eYo.mixinFR(eYo._p, {
      */
     addSubC3s (C3s) {
       //<<< mochai: addSubC3s + forEachSubC3s + someSubC3s
-      eYo.isSubclass(C3s, this.C3s) || eYo.throw(`${C3s[eYo.$].name} is not a subclass of ${this.name}`)
+      eYo.isSubclass(C3s, this.C3s) || eYo.throw(`${C3s[eYo.$name]} is not a subclass of ${this.name}`)
       if (!this.subC3ss__) {
         eYo.test && eYo.test.IN_THROW || console.error('BREAK!!! !this.subC3ss__')
       }
@@ -830,15 +836,15 @@ eYo.mixinFR(eYo._p, {
         //...   superDlgt.newC3s(function() {})
         //... }).xthrow()
         // create the constructor
-        var C3s = function (...$) {
+        var C3s = function ($) {
           if (this.dispose === eYo.doNothing) {
-            SuperC3s.call(this, ...$) // top down call
-            eyo$.c3sPrepare(this, ...$)
+            SuperC3s.call(this, $) // top down call
+            eyo$.c3sPrepare(this, $)
           } else {
             try {
               this.dispose = eYo.doNothing
-              SuperC3s.call(this, ...$) // top down call
-              eyo$.c3sPrepare(this, ...$)
+              SuperC3s.call(this, $) // top down call
+              eyo$.c3sPrepare(this, $)
             } finally {
               delete this.dispose
             }
@@ -864,13 +870,13 @@ eYo.mixinFR(eYo._p, {
         }
       } else {
         // create the constructor
-        C3s = function (...$) {
+        C3s = function ($) {
           if (this.dispose === eYo.doNothing) {
-            eyo$.c3sPrepare(this, ...$)
+            eyo$.c3sPrepare(this, $)
           } else {
             try {
               this.dispose = eYo.doNothing
-              eyo$.c3sPrepare(this, ...$)
+              eyo$.c3sPrepare(this, $)
             } finally {
               delete this.dispose
             }
@@ -896,11 +902,11 @@ eYo.mixinFR(eYo._p, {
       //... let SuperC3s = superDlgt.newC3s()
       //... chai.expect(SuperC3s[eYo.$]).equal(superDlgt)
       //... chai.expect(superDlgt.C3s).equal(SuperC3s)
-      //... new SuperC3s(1, 2)
+      //... new SuperC3s({$: 12})
       //... eYo.flag.expect('P12')
       //... let dlgt = eYo.dlgt.new(NS, 'bar', {
-      //...   prepare (...$) {
-      //...     eYo.flag.push('p', ...$)
+      //...   prepare ($) {
+      //...     eYo.flag.push('p', $)
       //...   }
       //... })
       //... let C3s = dlgt.newC3s(SuperC3s)
