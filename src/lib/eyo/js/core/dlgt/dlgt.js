@@ -903,7 +903,7 @@ eYo.mixinFR(eYo._p, {
       //... chai.expect(SuperC3s[eYo.$]).equal(superDlgt)
       //... chai.expect(superDlgt.C3s).equal(SuperC3s)
       //... new SuperC3s({$: 12})
-      //... eYo.flag.expect('P12')
+      //... eYo.flag.expect('P$12')
       //... let dlgt = eYo.dlgt.new(NS, 'bar', {
       //...   prepare ($) {
       //...     eYo.flag.push('p', $)
@@ -912,8 +912,8 @@ eYo.mixinFR(eYo._p, {
       //... let C3s = dlgt.newC3s(SuperC3s)
       //... chai.expect(C3s[eYo.$]).equal(dlgt)
       //... chai.expect(dlgt.C3s).equal(C3s)
-      //... new C3s(1, 2)
-      //... eYo.flag.expect('P12p12')
+      //... new C3s({$: 12})
+      //... eYo.flag.expect('P$12p$12')
       //>>>
     }
   })  

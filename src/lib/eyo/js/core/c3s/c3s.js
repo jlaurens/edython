@@ -564,24 +564,24 @@ eYo.mixinFR(eYo.Dlgt_p, {
      */
     /**
      * Prepare the receiver. Subclassers will override this.
-      * @param {eYo.KV} $ 
+      * @param {eYo.KV} kv 
     */
-    prepare ($) {
-      eYo.c3s.c3sPrepare(this, $)
+    prepare (kv) {
+      eYo.c3s.c3sPrepare(this, kv)
     },
     /** 
      * Initialize the receiver. Subclassers will override this.
-     * @param {eYo.KV} $ 
+     * @param {eYo.KV} kv 
      */
-    init ($) {
-      eYo.c3s.c3sInit(this, $)
+    init (kv) {
+      eYo.c3s.c3sInit(this, kv)
     },
     /**
      * Dispose of the receiver. Subclassers will override this.
-     * @param {eYo.KV} $ 
+     * @param {eYo.KV} kv 
      */
-    dispose ($) {
-      eYo.c3s.c3sDispose(this, $)
+    dispose (kv) {
+      eYo.c3s.c3sDispose(this, kv)
     },  
   })
 
@@ -651,7 +651,7 @@ eYo.mixinFR(eYo.model, {
  * @param {Object} model - model object
  */
 eYo.c3s.Dlgt_p.modelHandle = {
-  modelHandle (_key, _model) {
+  modelHandle (key, model) {// eslint-disable-line no-unused-vars
   }
 }.modelHandle
 
@@ -767,13 +767,42 @@ eYo.mixinFR(eYo.c3s._p, {
     //>>>
   },
   /**
+   * Create a kv parameter set based on the arguments.
+   * @param {Object} [NS] - Optional namespace, defaults to the receiver.
+   * @param {Object} id - the id, to be used in `NS[id]`
+   */
+  kv4new (NS, id) {
+    //<<< mochai: kv4new
+    if (!eYo.isNS(NS)) {
+      eYo.isNA(id) || eYo.throw(`${this.name}/kv4new: Unexpected id (${id})`)
+      //... chai.expect(() => {
+      //...   eYo.c3s.kv4new('foo', {})
+      //... }).xthrow()
+      ;[NS, id] = [this, NS]
+      //... var ident = eYo.genUID(eYo.IDENT)
+      //... var ans = NS.kv4new(ident)
+      //... chai.expect(eYo.isaKV(ans))
+      //... chai.expect(ans.NS).equal(NS)
+      //... chai.expect(ans.id).equal(ident)
+    }
+    eYo.isId(id) || eYo.throw(`${this.name}/Singleton: Unexpected parameter ${eYo.isSym(id) ? id.toString(): id}`)
+    //... chai.expect(() => {
+    //...   eYo.c3s.kv4new(1)
+    //... }).xthrow()
+    return eYo.kv.new({NS, id})
+    //>>>
+  },
+  /**
    * Create a new BaseC3s instance based on the model
    */
-  new (...$) {
+  new (kv, ...$) {
     //<<< mochai: new
-    let ans = this.prepare(...$)
+    if (!eYo.isaKV(kv)) {
+      kv = this.kv4new(kv, ...$)
+    }
+    let ans = this.prepare(kv)
     ans.preInit && ans.preInit()
-    ans.init(...$)
+    ans.init(kv)
     return ans
     //... let foo = eYo.c3s.new('foo')
     //... chai.expect(foo).instanceOf(eYo.C3s)
@@ -806,33 +835,47 @@ eYo.mixinFR(eYo.c3s._p, {
     //>>>
   },
   /**
+   * Create a new kv parameter based on the arguments.
+   * @param {Object} [NS] - Optional namespace, defaults to the receiver.
+   * @param {Object} id - the id, to be used in `NS[id]`
+   * @param {Object} model
+   */
+  kv4newSingleton (NS, id, model) {
+    //<<< mochai: kv4newSingleton
+    if (!eYo.isNS(NS)) {
+      eYo.isNA(model) || eYo.throw(`${this.name}/kv4newSingleton: Unexpected model (${model})`)
+      //... chai.expect(() => {
+      //...   eYo.c3s.kv4newSingleton('foo', {}, 1)
+      //... }).xthrow()
+      ;[NS, id, model] = [this, NS, id]
+      //... var ident = eYo.genUID(eYo.IDENT)
+      //... var ans = NS.kv4newSingleton(ident, {})
+      //... chai.expect(ans).instanceof(eYo.C3s)
+      //... chai.expect(ans).equal(NS[ident])
+    }
+    eYo.isId(id) || eYo.throw(`${this.name}/kv4newSingleton: Unexpected parameter ${eYo.isSym(id) ? id.toString(): id}`)
+    //... chai.expect(() => {
+    //...   eYo.c3s.kv4newSingleton(1, {})
+    //... }).xthrow()
+    return eYo.kn.new({NS, id, model})
+    //>>>
+  },
+  /**
    * Create a new instance based on the model.
    * @param {Object} [NS] - Optional namespace, defaults to the receiver.
    * @param {Object} id - the result will be `NS[id]`
    * @param {Object} model
    */
-  newSingleton (NS, id, model) {
+  newSingleton (kv, ...$) {
     //<<< mochai: newSingleton
     //... let NS = eYo.c3s.newNS()
-    if (!eYo.isNS(NS)) {
-      eYo.isNA(model) || eYo.throw(`${this.name}/newSingleton: Unexpected model (${model})`)
-      //... chai.expect(() => {
-      //...   eYo.c3s.newSingleton('foo', {}, 1)
-      //... }).xthrow()
-      ;[NS, id, model] = [this, NS, id]
-      //... var ident = eYo.genUID(eYo.IDENT)
-      //... var ans = NS.newSingleton(ident, {})
-      //... chai.expect(ans).instanceof(eYo.C3s)
-      //... chai.expect(ans).equal(NS[ident])
+    if (!eYo.isaKV(kv)) {
+      kv = this.kv4newSingleton(kv, ...$)
     }
-    eYo.isId(id) || eYo.throw(`${this.name}/newSingleton: Unexpected parameter ${eYo.isSym(id) ? id.toString(): id}`)
-    //... chai.expect(() => {
-    //...   eYo.c3s.newSingleton(1, {})
-    //... }).xthrow()
-    let C3s = this.newC3s(Symbol(eYo.do.toTitleCase(id)), model)
+    let C3s = this.newC3s(Symbol(eYo.do.toTitleCase(kv.id)), kv.model)
     C3s[eYo.$].finalizeC3s()
     let ans = new C3s()
-    Object.defineProperty(NS, id, eYo.descriptorR({$ () {
+    Object.defineProperty(kv.NS, kv.id, eYo.descriptorR({$ () {
       return ans
     }}.$))
     return ans
@@ -874,13 +917,13 @@ Object.assign(eYo.C3s_p, {
   /**
    * Initialize the receiver, it should not be overriden but it is still exposed for debugging purposes mainly.
    * Called by `newFoo` creator.
-   * @param  {eYo.KV} $ 
+   * @param  {eYo.KV} kv 
    */
-  init ($) {
+  init (kv) {
     //<<< mochai: eYo.C3s_p.init
     try {
       this.init = eYo.doNothing
-      this.eyo$.c3sInit(this, $)
+      this.eyo$.c3sInit(this, kv)
     } finally {
       delete this.init
     }
@@ -890,13 +933,13 @@ Object.assign(eYo.C3s_p, {
   /**
    * Dispose of the receiver, it should not be overriden but it is still exposed for debugging purposes mainly.
    * Must be called.
-   * @param  {eYo.KV} $ 
+   * @param  {eYo.KV} kv 
    */
-  dispose ($) {
+  dispose (kv) {
     //<<< mochai: eYo.C3s_p.dispose
     try {
       this.dispose = eYo.doNothing
-      this.eyo$.c3sDispose(this, $)
+      this.eyo$.c3sDispose(this, kv)
     } finally {
       delete this.dispose
     }

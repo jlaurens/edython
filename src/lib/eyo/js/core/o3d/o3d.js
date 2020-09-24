@@ -41,6 +41,14 @@ eYo.c3s.newNS(eYo, 'o3d', {
 })
 
 eYo.mixinFR(eYo.o3d, {
+  newKV (key, owner, configurable) {
+    eYo.isId(key) || eYo.throw('eYo.o3d.newKV: Bad key')
+    if (!eYo.isOwner(owner)) {
+      eYo.isNA(configurable) || eYo.throw(`eYo.o3d.newKV: Unexpected argument (${configurable})`)
+      ;[owner, configurable] = [eYo.NA, owner]
+    }
+    return eYo.kv.new({key, owner, configurable})
+  },
   /**
    * Prepares the given instance as owned.
    * For subclassers.
@@ -49,21 +57,16 @@ eYo.mixinFR(eYo.o3d, {
    * @param{eYo.C3s | namespace} [owner] - Defaults to the name space
    * @param{Boolean} [configurable] - Whether descriptors should be configurable, necessary for proxy.
    */
-  c3sPrepare ($this, key, owner, configurable) {
-    eYo.isId(key) || eYo.throw('eYo.o3d.c3sPrepare: Bad key')
-    if (!eYo.isOwner(owner)) {
-      eYo.isNA(configurable) || eYo.throw(`eYo.o3d.c3sPrepare: Unexpected argument (${configurable})`)
-      ;[owner, configurable] = [$this.eyo.ns, owner]
-    }
-    $this.owner__ = owner
-    $this.key_ = key
+  c3sPrepare ($this, kv) {
+    $this.owner__ = kv.owner || $this.eyo.ns
+    $this.key_ = kv.key
     Object.defineProperties($this, {
       owner: eYo.descriptorR({$ () {
         return this.owner__
-      }}.$, !!configurable),
+      }}.$, !!kv.configurable),
       key: eYo.descriptorR({$ () {
         return this.key_
-      }}.$, !!configurable),
+      }}.$, !!kv.configurable),
     })
     $this.disposeUI = eYo.doNothing
   },
@@ -75,7 +78,7 @@ eYo.mixinFR(eYo.o3d, {
    * @param{eYo.C3s | namespace} [owner] - Defaults to the name space
    * @param{Boolean} [configurable] - Whether descriptors should be configurable, necessary for proxy.
    */
-  c3sInit (_$this, key, owner, configurable) {
+  c3sInit ($this, kv) { // eslint-disable-line no-unused-var 
   },
   /**
    * The default implementation does nothing.
@@ -101,24 +104,26 @@ eYo.mixinFR(eYo.o3d, {
  */
 eYo.o3d.makeBaseC3s({
   /** 
-   * @param {String} key - an identifier for the owner.
-   * @param {eYo.c3s.BaseC3s} owner - the immediate owner of this object.
+   * @param {eYo.KV} kv - named arguments.
+   * @param {String} kv.key - an identifier for the owner.
+   * @param {eYo.C3s} kv.owner - the immediate owner of this object.
    */
-  prepare (key, owner) {
-    eYo.c3s.c3sPrepare(this)
-    eYo.o3d.c3sPrepare(this, key, owner)
+  prepare (kv) {
+    eYo.c3s.c3sPrepare(this, kv)
+    eYo.o3d.c3sPrepare(this, kv)
   },
   /** 
-   * @param {String} key - an identifier for the owner.
-   * @param {eYo.c3s.BaseC3s} owner - the immediate owner of this object.
+   * @param {eYo.KV} kv - named arguments.
+   * @param {String} kv.key - an identifier for the owner.
+   * @param {eYo.C3s} kv.owner - the immediate owner of this object.
    */
-  init (key, owner) {
-    eYo.o3d.c3sInit(this, key, owner)
-    eYo.c3s.c3sInit(this)
+  init (kv) {
+    eYo.o3d.c3sInit(this, kv)
+    eYo.c3s.c3sInit(this, kv)
   },
-  dispose () {
-    eYo.o3d.c3sDispose(this)
-    eYo.c3s.c3sDispose(this)
+  dispose (kv) {
+    eYo.o3d.c3sDispose(this, kv)
+    eYo.c3s.c3sDispose(this, kv)
   },  
 })
 //<<< mochai: BaseC3s
@@ -150,12 +155,13 @@ Object.assign(eYo.O3d_p, {
   /**
    * The default implementation does nothing.
    * For subclassers.
-   * @param{*} before - the owner before the change
-   * @param{*} after - the owner after the change
+   * @param{*} kv - named arguments
+   * @param{*} kv.before - the owner before the change
+   * @param{*} kv.after - the owner after the change
    */
-  ownerDidChange (before, after) {
-    if (after) {
-      after.hasUI ? this.initUI() : this.disposeUI()
+  ownerDidChange (kv) {
+    if (kv.after) {
+      kv.after.hasUI ? this.initUI() : this.disposeUI()
     }
   },
   /**
@@ -179,9 +185,10 @@ Object.defineProperties(eYo.O3d_p, {
     set (after) {
       let before = this.owner__
       if (after !== before) {
-        this.ownerWillChange(before, after)
+        let kv = eYo.kv.new({before, after})
+        this.ownerWillChange(kv)
         this.owner__ =  after
-        this.ownerDidChange(before, after)
+        this.ownerDidChange(kv)
       }
     }
   },
@@ -201,7 +208,7 @@ eYo.mixinFR(eYo.o3d._p, {
    * @param {Object} model
    */
   singleton (model, owner) {
-    return this.newNS().new(model, 'foo', owner)
+    return this.newNS().new(model, Symbol('foo'), owner)
   },
   /**
    * Create a new singleton instance based on the given model.

@@ -15,7 +15,7 @@ The idea is to use a rather straightforward syntax.
 
 Each constructor is extended through a property named `eyo`.
 This name is sufficiently weird to avoid collisions.
-Each class is a descendant of `eYo.C3s.BaseC3s` whereas `eyo` object is an instance of `eYo.dlgt.BaseC3s`.
+Each class is a descendant of `eYo.C3s.BaseC3s` whereas `eyo` object is an instance of `eYo.Dlgt`.
 
 This extension knows the namespace owning the class.
 It also knows the unique string identifying the class: its name.
@@ -25,23 +25,23 @@ The name is exactly the string as it appears in javascript to reference the clas
 
 There is a possible infinite list :
 
-object[0] -> constructor[0] -> eyo[1] -> constructor[1] -> eyo[2] -> constructor[2] -> eyo[3] -> constructor[3] -> ...
+object[0] -> constructor[0] -> $eyo[1] -> constructor[1] -> $eyo[2] -> constructor[2] -> $eyo[3] -> constructor[3] -> ...
 
 This list is turned into an infinite loop.
 
-* object[0] is not an instance of `eYo.dlgt.BaseC3s`.
-* eyo[1] is an instance of a subclass of `eYo.dlgt.BaseC3s`
-* eyo[i] is the same instance of `eYo.dlgt.BaseC3s` for i>1
+* object[0] is not an instance of `eYo.Dlgt`.
+* eyo[1] is an instance of a subclass of `eYo.Dlgt`
+* eyo[i] is the same instance of `eYo.Dlgt` for i>1
 
-`eYo.dlgt.BaseC3s` is instantiated only once.
+`eYo.Dlgt` is instantiated only once.
 
 This means that constructor[2] does not depend on object[0]
 and that since eyo[3], all the delegates are the same.
 
 With the `eyo` property shortcut
 
-* `object.eyo` is an instance of an unexposed subclass of `eYo.dlgt.BaseC3s`
-* `object.eyo.eyo` is an instance of `eYo.dlgt.BaseC3s`
+* `object.eyo` is an instance of an unexposed subclass of `eYo.Dlgt`
+* `object.eyo.eyo` is an instance of `eYo.Dlgt`
 * `object.eyo.eyo.eyo` is another instance of this unexposed class which is the same for all objects
 * `object.eyo.eyo.eyo.eyo...` is exactly the same instance
 
@@ -84,6 +84,24 @@ Each namespace `ns` contains `ns.BaseC3s` which is the root class for all thge c
 
 In progress.
 See also the class documentation.
+
+### Initialization.
+
+This may not be an accurate documentation because the design may not be strong enough.
+
+Intializing an object is made in two steps, both following te inheritance hierarchy, but in different order:
+
+* down from the root ancestor: `prepare` methods
+* up to the root ancestor: `init` methods
+
+Each namespace created from `c3s` (a class namespace), has dedicated `c3sPrepare`, `c3sInit`, `c3sDispose` methods.
+Each method will define a behaviour specific to this namespace.
+These behaviours are meant to be independant from on another.
+
+The base class delegate also implements these methods.
+Each method will define a behaviour specific to this delegate,
+by picking up the eponym methods of the class namespaces, in the appropriate order.
+
 
 ### A model is a tree
 ```
