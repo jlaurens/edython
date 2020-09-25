@@ -554,7 +554,7 @@ eYo.mixinFR(eYo.Dlgt_p, {
         //... eyo[eyo.p6y$.init](o)
         //... chai.expect(o.foo).equal(421)      
         //>>>
-        },
+      },
       p6yAliasesMerge (...$) {
         return this[this.p6y$.aliasesMerge](...$)
       },
