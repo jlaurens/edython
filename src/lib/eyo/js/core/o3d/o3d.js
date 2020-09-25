@@ -17,7 +17,7 @@ eYo.mixinFR(eYo._p, {
    * @param {*} what 
    */
   isOwner (what) {
-    return eYo.isaC3s(what) || eYo.isNS(what)
+    return eYo.isaC3s(what) || eYo.isaNS(what)
     //<<< mochai: isOwner (what)
     //... chai.expect(eYo.isOwner(true)).false
     //... chai.expect(eYo.isOwner(new eYo.c3s.BaseC3s())).true
@@ -231,7 +231,7 @@ eYo.mixinFR(eYo.o3d._p, {
     //... chai.expect(eYo.o3d[sym]).equal(ans)
     //... chai.expect(eYo.o3d.newSingleton(sym)).equal(ans)
     //>>>
-    if (!eYo.isNS(NS)) {
+    if (!eYo.isaNS(NS)) {
       !model || eYo.throw(`${this.name}/newSingleton: Unexpected last parameter (${model})`)
       //<<< mochai: NS
       //... chai.expect(() => eYo.o3d.newSingleton(id, {}, 1)).xthrow()

@@ -110,7 +110,7 @@ eYo.mixinFR(eYo.c3s._p, {
    * @return {Function} the created constructor.
    */
   newC3sKV ($) {
-    !$.NS || $.NS === eYo.NULL_NS || eYo.isNS($.NS) || eYo.throw(`${this.name}/newC3sKV: Bad ns: ${$.NS}`)
+    !$.NS || $.NS === eYo.NULL_NS || eYo.isaNS($.NS) || eYo.throw(`${this.name}/newC3sKV: Bad ns: ${$.NS}`)
     !$.id || eYo.isId($.id) || eYo.throw(`${this.name}/newC3sKV: Bad id: ${$.id.toString()}`)
 
     !$.SuperC3s || eYo.isC3s($.SuperC3s) || eYo.throw(`${this.name}/newC3sKV: Bad SuperC3s: ${$.SuperC3s}`)
@@ -145,7 +145,7 @@ eYo.mixinFR(eYo.c3s._p, {
   newKV4C3s (NS, id, SuperC3s, register, model) {
     //<<< mochai: eYo.c3s.newKV4C3s
     //... var NS = eYo.c3s.newNS()
-    if (!eYo.isNS(NS)) {
+    if (!eYo.isaNS(NS)) {
       if(model) {
         eYo.test && eYo.test.IN_THROW || console.error('BREAK HERE!!!')
       }
@@ -350,7 +350,7 @@ eYo.mixinFR(eYo.Dlgt_p, {
   newKV4SubC3s (NS, id, register, model) {
     //<<< mochai: eYo.dlgt.newKV4SubC3s
     //... var NS = eYo.c3s.newNS()
-    if (!eYo.isNS(NS)) {
+    if (!eYo.isaNS(NS)) {
       if(model) {
         eYo.test && eYo.test.IN_THROW || console.error('BREAK HERE!!!')
       }
@@ -708,10 +708,10 @@ eYo.mixinFR(eYo.c3s._p, {
   },
   /**
    * Create a new BaseC3s instance based on the model
-   * @param {Object} [model] - Optional model, 
-   * @param {...} [...] - Other arguments are passed to the constructor.
+   * @param {eYo.KV} kv - Arguments are passed to the constructor.
+   * @param {Object} [model] - Optional model.
    */
-  prepare (model, $) {
+  prepare (kv, model) {
     //<<< mochai: prepare
     //... let NS = eYo.c3s.newNS()
     //... var model = {
@@ -722,40 +722,45 @@ eYo.mixinFR(eYo.c3s._p, {
     //... NS.makeBaseC3s(model)
     //... var SuperC3s = eYo.c3s.newC3s(eYo.genUID(eYo.IDENT), model)
     //... SuperC3s[eYo.$].finalizeC3s()
-    if (!eYo.isD(model)) {
-      [model, $] = [eYo.NA, model]
+    if (!model) {
       var C3s = this.BaseC3s
-      return new C3s($)
-      //... var o = NS.prepare(eYo.test.kv)
+      return new C3s(kv)
+      //... var o = NS.prepare(eYo.test.kv, {
+      //...   prepare ($) {
+      //...     eYo.flag.push('pp', $)
+      //...   }
+      //... })
       //... chai.expect(o).instanceOf(NS.BaseC3s)
-      //... eYo.flag.expect('p$kv')
+      //... eYo.flag.expect('p$kvpp$kv')
     }
     C3s = model[eYo.$C3s]
     if (!C3s) {
-      C3s = this.modelMakeC3s(model, $ && $.id)
-      //... var o = NS.prepare({}, eYo.test.kv)
+      C3s = this.modelMakeC3s(model, kv.id)
+      //... var o = NS.prepare(eYo.test.kv, {})
       //... chai.expect(o).instanceOf(eYo.c3s.BaseC3s)
       //... eYo.flag.expect('p$kv')
     }
-    //... var o = eYo.c3s.prepare({
+    //... var o = eYo.c3s.prepare(eYo.test.kv, {
     //...   [eYo.$C3s]: NS.BaseC3s
-    //... }, eYo.test.kv)
+    //... })
     //... chai.expect(o).instanceOf(NS.BaseC3s)
     //... eYo.flag.expect('p$kv')
-    var ans = new C3s($)
-    ans.preInit = function () {
-      delete this.preInit
-      model[eYo.$$.starters].forEach(f => f(this))
-    }
+    var ans = new C3s(kv)
+    ans.preInit = {
+      preInit () {
+        delete this.preInit
+        model[eYo.$$.starters].forEach(f => f(this))
+      }
+    }.preInit
     return ans
-    //... var o = eYo.c3s.prepare({
+    //... var o = eYo.c3s.prepare(eYo.test.kv, {
     //...   dispose ($) {
     //...     eYo.flag.push('x', $)
     //...   }
     //... })
     //... o.dispose(eYo.test.kv)
     //... eYo.flag.expect('x$kv')
-    //... var o = eYo.c3s.prepare({
+    //... var o = eYo.c3s.prepare(eYo.test.kv, {
     //...   methods: {
     //...     flag (...$) {
     //...       eYo.flag.push('/', ...$)
@@ -768,28 +773,35 @@ eYo.mixinFR(eYo.c3s._p, {
   },
   /**
    * Create a kv parameter set based on the arguments.
-   * @param {Object} [NS] - Optional namespace, defaults to the receiver.
+   * @param {Object} [model] - Optional namespace, defaults to the receiver.
    * @param {Object} id - the id, to be used in `NS[id]`
    */
-  kv4new (NS, id) {
+  kv4new (model, id) {
     //<<< mochai: kv4new
-    if (!eYo.isNS(NS)) {
+    if (!eYo.isD(model)) {
       eYo.isNA(id) || eYo.throw(`${this.name}/kv4new: Unexpected id (${id})`)
+      //... let NS = eYo.c3s.newNS()
+      //... let model = {NS}
       //... chai.expect(() => {
       //...   eYo.c3s.kv4new('foo', {})
       //... }).xthrow()
-      ;[NS, id] = [this, NS]
+      ;[model, id] = [eYo.NA, model]
       //... var ident = eYo.genUID(eYo.IDENT)
       //... var ans = NS.kv4new(ident)
       //... chai.expect(eYo.isaKV(ans))
-      //... chai.expect(ans.NS).equal(NS)
       //... chai.expect(ans.id).equal(ident)
+      //... chai.expect(ans.model).undefined
+      //... var ident = eYo.genUID(eYo.IDENT)
+      //... var ans = NS.kv4new(model, ident)
+      //... chai.expect(eYo.isaKV(ans))
+      //... chai.expect(ans.id).equal(ident)
+      //... chai.expect(ans.model).equal(model)
     }
-    eYo.isId(id) || eYo.throw(`${this.name}/Singleton: Unexpected parameter ${eYo.isSym(id) ? id.toString(): id}`)
+    eYo.isId(id) || eYo.throw(`${this.name}/Singleton: Unexpected id parameter ${eYo.isSym(id) ? id.toString(): id}`)
     //... chai.expect(() => {
     //...   eYo.c3s.kv4new(1)
     //... }).xthrow()
-    return eYo.kv.new({NS, id})
+    return eYo.kv.new({model, id})
     //>>>
   },
   /**
@@ -842,22 +854,25 @@ eYo.mixinFR(eYo.c3s._p, {
    */
   kv4newSingleton (NS, id, model) {
     //<<< mochai: kv4newSingleton
-    if (!eYo.isNS(NS)) {
+    if (!eYo.isaNS(NS)) {
       eYo.isNA(model) || eYo.throw(`${this.name}/kv4newSingleton: Unexpected model (${model})`)
       //... chai.expect(() => {
       //...   eYo.c3s.kv4newSingleton('foo', {}, 1)
       //... }).xthrow()
       ;[NS, id, model] = [this, NS, id]
       //... var ident = eYo.genUID(eYo.IDENT)
-      //... var ans = NS.kv4newSingleton(ident, {})
-      //... chai.expect(ans).instanceof(eYo.C3s)
-      //... chai.expect(ans).equal(NS[ident])
+      //... let NS = eYo.c3s.newNS()
+      //... let model = {}
+      //... var ans = NS.kv4newSingleton(ident, model)
+      //... chai.expect(eYo.isaKV(ans)).true
+      //... chai.expect(ans.id).equal(ident)
+      //... chai.expect(ans.model).equal(model)
     }
     eYo.isId(id) || eYo.throw(`${this.name}/kv4newSingleton: Unexpected parameter ${eYo.isSym(id) ? id.toString(): id}`)
     //... chai.expect(() => {
     //...   eYo.c3s.kv4newSingleton(1, {})
     //... }).xthrow()
-    return eYo.kn.new({NS, id, model})
+    return eYo.kv.new({NS, id, model})
     //>>>
   },
   /**
@@ -955,14 +970,14 @@ eYo.C3s$.finalizeC3s(
   //... ;['init', eYo.$,].forEach(K => {
   //...   eYo.c3s.new({
   //...     [K]: eYo.doNothing
-  //...   })
+  //...   }, Symbol())
   //...   eYo.c3s.new({
   //...     [K]: eYo.NA
-  //...   })
+  //...   }, Symbol())
   //...   chai.expect(() => {
   //...     eYo.c3s.new({
   //...       [K]: 421
-  //...     })
+  //...     }, Symbol())
   //...   }).xthrow()
   //... })
   eYo.model.manyDescriptorForFalse('dispose'),

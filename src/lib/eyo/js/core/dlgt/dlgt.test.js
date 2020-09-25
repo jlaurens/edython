@@ -7,7 +7,7 @@ describe ('POC', function () {
   it ('Dlgt infinite loop', function () {
     let AutoDlgt = function (ns, id, Dlgt, model) {
       Object.defineProperties(this, {
-        ns: { value: eYo.isNS(ns) ? ns : eYo.NA },
+        ns: { value: eYo.isaNS(ns) ? ns : eYo.NA },
         id__: {value: id},
         C3s__: { value: Dlgt },
         model__: { value: model },

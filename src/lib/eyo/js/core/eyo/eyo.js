@@ -1056,7 +1056,7 @@ eYo.mixinFR(eYo, {
    * @param {*} what
    * @return {!Boolean}
    */
-  isNS (what) {
+  isaNS (what) {
     return !!what && eYo.isSubclass(what.constructor, eYo.constructor)
   },
   /**
@@ -1312,10 +1312,10 @@ eYo.mixinFR(eYo._p, {
    */
   newNS (ns, id, model, getters) {
     //<<< mochai: eYo.newNS'
-    //... chai.assert(eYo.isNS)
+    //... chai.assert(eYo.isaNS)
     //... chai.expect(eYo).eyo_NS
     //... chai.assert(eYo.newNS)
-    if (ns && !eYo.isNS(ns)) {
+    if (ns && !eYo.isaNS(ns)) {
       eYo.isDef(getters) && eYo.throw(`${this.name}/newNS: Unexpected last argument: ${getters}`)
       //... chai.expect(() => {eYo.newNS(1, 2, 3, 4)}).xthrow()
       ;[ns, id, model, getters] = [this, ns, id, model]
@@ -1489,7 +1489,7 @@ eYo.mixinFR(eYo._p, {
     name.split('.').forEach(k => {
       if (eYo.isDef(ns)) {
         ns = ns[k]
-        if (eYo.isNS(ns)) {
+        if (eYo.isaNS(ns)) {
           return
         }
         if (ns) {

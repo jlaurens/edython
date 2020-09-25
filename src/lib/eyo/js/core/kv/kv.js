@@ -50,7 +50,7 @@ eYo.kv.handler = {
     return true
     //... chai.expect(() => Object.setPrototypeOf(p3y, C3s.prototype)).throw()
   },
-   getOwnPropertyDescriptor (target, prop) {
+  getOwnPropertyDescriptor (target, prop) {
     return Object.getOwnPropertyDescriptor(target, prop)
     //... target.foo = 'bar'
     //... chai.expect(target.foo).equal('bar')
@@ -111,12 +111,12 @@ eYo.kv.handler = {
     //... delete p3y.bar
     //... chai.expect(Object.getOwnPropertyNames(p3y)).members([])
   },
-  apply (target, $this, $) {
+  apply (target, $this, $) { // eslint-disable-line no-unused-vars
     eYo.throw('Not a callable pliz')
     // return target.apply($this, $)
     //... chai.expect(() => p3y(123)).throw()
   },
-  construct(target, args) {
+  construct(target, args) { // eslint-disable-line no-unused-vars
     eYo.throw('Not a constructor pliz')
     // return new target(...args);
     //... chai.expect(() => new p3y(123)).throw()
@@ -148,13 +148,13 @@ eYo.kv.handler = {
 }
 /**
  * Named arguments constructor.
- * @param {Object} kvargs - an object with named arguments
+ * @param {Object} kv - an object with named arguments
  */
 eYo.kv.C3s = class {
-  constructor (kvargs) {
+  constructor (kv) {
     //<<< mochai: constructor
     //... chai.expect(eYo.kv.C3s).eyo_F
-    kvargs && Object.assign(this, kvargs)
+    kv && Object.assign(this, kv)
     //... var $ = new eYo.kv.C3s()
     //... chai.expect($.foo).undefined
     //... $ = new eYo.kv.C3s({})
@@ -164,8 +164,8 @@ eYo.kv.C3s = class {
     //>>>
   }
   //<<< mochai: mixin
-  mixin (kvargs) {
-    Object.assign(this, kvargs)
+  mixin (kv) {
+    Object.assign(this, kv)
   }
   //... var $ = eYo.kv.new()
   //... chai.expect($.a).undefined

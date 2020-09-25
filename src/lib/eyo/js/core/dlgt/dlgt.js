@@ -101,7 +101,7 @@ eYo.mixinFR(eYo.dlgt, {
   BaseC3s: function (ns, id, model) {
     //<<< mochai: eYo.dlgt.BaseC3s
     //... chai.expect(eYo.dlgt).property('BaseC3s')
-    if (ns && !eYo.isNS(ns)) {
+    if (ns && !eYo.isaNS(ns)) {
       model && eYo.throw(`eYo.dlgt.BaseC3s: unexpected model (${model})`)
       //... chai.expect(() => {new eYo.delegate.BaseC3s(1, 2, 3, 4)}).xthrow()
       ;[ns, id, model] = [eYo.NA, ns, id]
@@ -939,11 +939,11 @@ eYo.mixinFR(eYo.dlgt._p, {
    */
   new (ns, id, SuperDlgt, model) {
     // prepare
-    if (ns && !eYo.isNS(ns)) {
+    if (ns && !eYo.isaNS(ns)) {
       model && eYo.throw(`eYo.dlgt.new: Unexpected model (1) ${model}`)
       ;[ns, id, SuperDlgt, model] = [eYo.NA, ns, id, SuperDlgt]
     } else {
-      ns === eYo.NULL_NS || eYo.isNS(ns) || eYo.throw('Bad namespace')
+      ns === eYo.NULL_NS || eYo.isaNS(ns) || eYo.throw('Bad namespace')
     }
     if (!eYo.isId(id)) {
       if (id) {
@@ -958,7 +958,7 @@ eYo.mixinFR(eYo.dlgt._p, {
       ;[SuperDlgt, model] = [eYo.Dlgt, SuperDlgt]
     }
     model || (model = {})
-    ns === eYo.NULL_NS || eYo.isNS(ns) || (ns = SuperDlgt[eYo.$].ns)
+    ns === eYo.NULL_NS || eYo.isaNS(ns) || (ns = SuperDlgt[eYo.$].ns)
     let Dlgt = function (ns, id, model) {
       SuperDlgt.call(this, ns, id, model)
     }
