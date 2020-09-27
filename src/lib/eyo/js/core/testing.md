@@ -38,3 +38,8 @@ From the simplest:
 
 - font/font.test.html
 - style/style.test.html
+
+
+## References
+
+https://journal.artfuldev.com/unit-testing-node-applications-with-typescript-using-mocha-and-chai-384ef05f32b2

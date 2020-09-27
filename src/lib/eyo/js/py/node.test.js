@@ -1,5 +1,0 @@
-describe ('Tests: node', function () {
-  it ('Node: basic', function () {
-    chai.assert(false, 'NOT YET IMPLEMENTED')
-  })
-})

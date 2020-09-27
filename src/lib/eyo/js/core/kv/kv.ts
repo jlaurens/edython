@@ -19,7 +19,9 @@
  * @namespace
  */
 
-//<<< mochai:...
+import eYo from '../eyo/eyo'
+
+//<<< mochai: ...
 //... import kv from './kv'
 //>>>
 
@@ -72,7 +74,7 @@ let handler = {
     //... chai.expect('foo' in p3y).false
     //... chai.expect('bar' in p3y).true
   },
-  get (target, prop, receiver) {
+  get (target: any, prop: string | number | symbol, receiver: any) {
     if (prop === eYo.$$.target) {
       return target
       //... chai.expect(p3y[eYo.$$.target]).equal(target)
@@ -84,7 +86,7 @@ let handler = {
     //... chai.expect(p3y.chi).equal(123)
     //... chai.expect(p3y.bar).equal('bar')
   },
-  set (target, prop, value) {
+  set (target: any, prop: string | number | symbol, value: any) {
     if (prop === eYo.$$.target) {
       eYo.throw(`Forbidden set key: prop`)
       //... chai.expect(() => {p3y[eYo.$$.target] = 421}).throw()
@@ -96,7 +98,7 @@ let handler = {
     //... p3y[s4l] = 421
     //... chai.expect(target[s4l]).equal(421)
   },
-  deleteProperty (target, prop) {
+  deleteProperty (target: any, prop: string | number | symbol) {
     if (prop in target) {
       delete target[prop]
     }
@@ -105,7 +107,7 @@ let handler = {
     //... delete p3y[s4l]
     //... chai.expect(target[s4l]).undefined
   },
-  ownKeys (target) {
+  ownKeys (target: any) {
     return Object.getOwnPropertyNames(target)
     //... p3y.chi = 421
     //... chai.expect(Object.getOwnPropertyNames(p3y)).members(['bar', 'chi'])
@@ -114,22 +116,22 @@ let handler = {
     //... delete p3y.bar
     //... chai.expect(Object.getOwnPropertyNames(p3y)).members([])
   },
-  apply (target, $this, $) { // eslint-disable-line no-unused-vars
+  apply (target: any, $this: any, $: any) { // eslint-disable-line no-unused-vars
     eYo.throw('Not a callable pliz')
     // return target.apply($this, $)
     //... chai.expect(() => p3y(123)).throw()
   },
-  construct(target, args) { // eslint-disable-line no-unused-vars
+  construct(target: any, $: any) { // eslint-disable-line no-unused-vars
     eYo.throw('Not a constructor pliz')
     // return new target(...args);
     //... chai.expect(() => new p3y(123)).throw()
   },
   //>>>
   //<<< mochai: kv.handler (extensions)
-  isExtensible (target) {
+  isExtensible (target: any) {
     return Reflect.isExtensible(target)
   },
-  preventExtensions (target) {
+  preventExtensions (target: any) {
     return Reflect.preventExtensions(target)
   },
   //... let C3s = function () {}
@@ -154,7 +156,7 @@ let handler = {
  * @param {Object} kv - an object with named arguments
  */
 let C3s = class {
-  constructor (kv) {
+  constructor (kv: any) {
     //<<< mochai: constructor
     //... chai.expect(kv.C3s).eyo_F
     kv && Object.assign(this, kv)
@@ -167,7 +169,7 @@ let C3s = class {
     //>>>
   }
   //<<< mochai: mixin
-  mixin (kv$) {
+  mixin (kv$: any) {
     Object.assign(this, kv$)
   }
   //... var $ = kv.new()
@@ -190,16 +192,16 @@ export default {
   C3s_p: C3s.prototype,
   //... chai.expect(kv.C3s_p).equal(kv.C3s.prototype)
   //>>>
-  new ($) {
+  new ($: any) {
     return new C3s($)
   },
   /**
    * Whether the argument is a named arguments object.
    * @param {*} what 
    */
-  isa (what) {
+  isa (what: any) {
     //<<< mochai: kv.isa
-    return !!what && what instanceof kv.C3s
+    return !!what && what instanceof C3s
     //... chai.expect(kv.isa()).false
     //... chai.expect(kv.isa({})).false
     //... chai.expect(kv.isa(new kv.C3s())).true

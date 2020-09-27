@@ -132,3 +132,10 @@ We get both general controllers, that define behaviours shared by all the bricks
 Webpack should updgrade to 5.
 
 https://github.com/webpack/webpack/issues/10924
+
+
+## Notes
+
+yarn add @types/mocha
+yarn add @types/chai
+yarn add ts-node

@@ -7,9 +7,15 @@ path_vue = path_src / 'vue'
 path_lib = path_src  / 'lib'
 path_eyo = path_lib  / 'eyo'
 path_js  = path_eyo  / 'js'
+path_ts  = path_eyo  / 'ts'
+
 path_core = path_js  / 'core'
+path_test = path_core / 'test'
+
 path_t3_src = path_eyo  / 't3'
 path_t3_dst = path_core / 't3'
+
+path_test = path_js / 'test'
 
 component_js = Path('eyo') / 'js'
 

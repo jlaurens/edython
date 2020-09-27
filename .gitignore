@@ -34,3 +34,4 @@ thumbs.db
 /src/lib/eyo/**/test.html
 /src/lib/eyo/**/test.xml
 /bin/helpers/bin/
+package-lock.json

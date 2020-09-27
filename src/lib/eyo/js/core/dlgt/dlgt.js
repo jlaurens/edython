@@ -12,10 +12,12 @@
  */
 'use strict'
 
+import kv from '../kv/kv.js'
+
 eYo.require('model')
 eYo.require('xre')
 eYo.require('do')
-eYo.require('kv')
+
 
 /**
  * Management of class delegates.
@@ -98,46 +100,48 @@ eYo.mixinFR(eYo.dlgt, {
     object->constructor->eyo$->contructor->eyo$->constructor->[eYo.$]...
     The BaseC3s is its own delegate's constructor
   */
-  BaseC3s: function (ns, id, model) {
-    //<<< mochai: eYo.dlgt.BaseC3s
-    //... chai.expect(eYo.dlgt).property('BaseC3s')
-    if (ns && !eYo.isaNS(ns)) {
-      model && eYo.throw(`eYo.dlgt.BaseC3s: unexpected model (${model})`)
-      //... chai.expect(() => {new eYo.delegate.BaseC3s(1, 2, 3, 4)}).xthrow()
-      ;[ns, id, model] = [eYo.NA, ns, id]
-    }
-    var anonymous = false
-    var $id // for debugging purposes mainly (2020/08)
-    if (eYo.isSym(id)) {
-      [$id, id] = [id, id.description]
-      anonymous = true
-    } else {
-      if (!eYo.isStr(id)) {
-        model && eYo.throw(`eYo.dlgt.BaseC3s: unexpected model 2 (${model})`)
-        ;[id, model] = ['?', id]
-        anonymous = true
+  BaseC3s: class {
+    constructor (ns, id, model) { 
+      //<<< mochai: eYo.dlgt.BaseC3s
+      //... chai.expect(eYo.dlgt).property('BaseC3s')
+      if (ns && !eYo.isaNS(ns)) {
+        model && eYo.throw(`eYo.dlgt.BaseC3s: unexpected model (${model})`)
+        //... chai.expect(() => {new eYo.delegate.BaseC3s(1, 2, 3, 4)}).xthrow()
+        ;[ns, id, model] = [eYo.NA, ns, id]
       }
-      $id = Symbol(`${ns ? ns.name : '(...)'}.${id}`)
+      var anonymous = false
+      var $id // for debugging purposes mainly (2020/08)
+      if (eYo.isSym(id)) {
+        [$id, id] = [id, id.description]
+        anonymous = true
+      } else {
+        if (!eYo.isStr(id)) {
+          model && eYo.throw(`eYo.dlgt.BaseC3s: unexpected model 2 (${model})`)
+          ;[id, model] = ['?', id]
+          anonymous = true
+        }
+        $id = Symbol(`${ns ? ns.name : '(...)'}.${id}`)
+      }
+      eYo.mixinRO(this, {
+        ns__: ns,
+        $id__: $id,
+        id__: id,
+        model__: model,
+        subC3ss__: new Set(), // change it to map ?
+        modelFormat__: new eYo.model.Format(),
+        anonymous__: anonymous,
+      })
+      this.makeC3sPrepare()
+      //... C3s = function () {}
+      //... dlgt = new eYo.Dlgt(NS, id, {})
+      //... dlgt.setC3s(C3s)
+      //... dlgt.finalizeC3s()
+      //... chai.expect(dlgt.ns).equal(NS)
+      //... chai.expect(dlgt.id__).equal(id)
+      //... chai.expect(dlgt.$id__.description).equal(`(eYo).${id}`)
+      //>>>
     }
-    eYo.mixinRO(this, {
-      ns__: ns,
-      $id__: $id,
-      id__: id,
-      model__: model,
-      subC3ss__: new Set(), // change it to map ?
-      modelFormat__: new eYo.model.Format(),
-      anonymous__: anonymous,
-    })
-    this.makeC3sPrepare()
-    //... C3s = function () {}
-    //... dlgt = new eYo.Dlgt(NS, id, {})
-    //... dlgt.setC3s(C3s)
-    //... dlgt.finalizeC3s()
-    //... chai.expect(dlgt.ns).equal(NS)
-    //... chai.expect(dlgt.id__).equal(id)
-    //... chai.expect(dlgt.$id__.description).equal(`(eYo).${id}`)
-    //>>>
-  },
+  }
   /**
    * Declare javascript computed properties pointing to the receiver's delegate.
    * Each namespace also have a delegate.

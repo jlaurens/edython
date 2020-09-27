@@ -12,7 +12,9 @@
 'use strict'
 
 eYo.require('xre')
-eYo.require('kv')
+
+import kv from '../kv/kv.js'
+
 eYo.require('do')
 eYo.require('dlgt')
 eYo.require('decorate')
@@ -212,7 +214,7 @@ eYo.mixinFR(eYo.c3s._p, {
     if (eYo.isSubclass(this.BaseC3s, SuperC3s)) {
       SuperC3s = this.BaseC3s
     }
-    return eYo.kv.new({NS, id, SuperC3s, register, model})
+    return kv.new({NS, id, SuperC3s, register, model})
     //>>>
   },
   /**
@@ -409,7 +411,7 @@ eYo.mixinFR(eYo.Dlgt_p, {
     if (eYo.isSubclass(this.C3s, SuperC3s)) {
       SuperC3s = this.C3s
     }
-    return eYo.kv.new({NS, id, SuperC3s, register, model})
+    return kv.new({NS, id, SuperC3s, register, model})
     //>>>
   },
   /**
@@ -788,12 +790,12 @@ eYo.mixinFR(eYo.c3s._p, {
       ;[model, id] = [eYo.NA, model]
       //... var ident = eYo.genUID(eYo.IDENT)
       //... var ans = NS.kv4new(ident)
-      //... chai.expect(eYo.isaKV(ans))
+      //... chai.expect(kv.isa(ans))
       //... chai.expect(ans.id).equal(ident)
       //... chai.expect(ans.model).undefined
       //... var ident = eYo.genUID(eYo.IDENT)
       //... var ans = NS.kv4new(model, ident)
-      //... chai.expect(eYo.isaKV(ans))
+      //... chai.expect(kv.isa(ans))
       //... chai.expect(ans.id).equal(ident)
       //... chai.expect(ans.model).equal(model)
     }
@@ -801,7 +803,7 @@ eYo.mixinFR(eYo.c3s._p, {
     //... chai.expect(() => {
     //...   eYo.c3s.kv4new(1)
     //... }).xthrow()
-    return eYo.kv.new({model, id})
+    return kv.new({model, id})
     //>>>
   },
   /**
@@ -809,7 +811,7 @@ eYo.mixinFR(eYo.c3s._p, {
    */
   new (kv, ...$) {
     //<<< mochai: new
-    if (!eYo.isaKV(kv)) {
+    if (!kv.isa(kv)) {
       kv = this.kv4new(kv, ...$)
     }
     let ans = this.prepare(kv)
@@ -864,7 +866,7 @@ eYo.mixinFR(eYo.c3s._p, {
       //... let NS = eYo.c3s.newNS()
       //... let model = {}
       //... var ans = NS.kv4newSingleton(ident, model)
-      //... chai.expect(eYo.isaKV(ans)).true
+      //... chai.expect(kv.isa(ans)).true
       //... chai.expect(ans.id).equal(ident)
       //... chai.expect(ans.model).equal(model)
     }
@@ -872,7 +874,7 @@ eYo.mixinFR(eYo.c3s._p, {
     //... chai.expect(() => {
     //...   eYo.c3s.kv4newSingleton(1, {})
     //... }).xthrow()
-    return eYo.kv.new({NS, id, model})
+    return kv.new({NS, id, model})
     //>>>
   },
   /**
@@ -881,16 +883,16 @@ eYo.mixinFR(eYo.c3s._p, {
    * @param {Object} id - the result will be `NS[id]`
    * @param {Object} model
    */
-  newSingleton (kv, ...$) {
+  newSingleton (kv$, ...$) {
     //<<< mochai: newSingleton
     //... let NS = eYo.c3s.newNS()
-    if (!eYo.isaKV(kv)) {
-      kv = this.kv4newSingleton(kv, ...$)
+    if (!kv.isa(kv$)) {
+      kv$ = this.kv4newSingleton(kv$, ...$)
     }
-    let C3s = this.newC3s(Symbol(eYo.do.toTitleCase(kv.id)), kv.model)
+    let C3s = this.newC3s(Symbol(eYo.do.toTitleCase(kv$.id)), kv$.model)
     C3s[eYo.$].finalizeC3s()
     let ans = new C3s()
-    Object.defineProperty(kv.NS, kv.id, eYo.descriptorR({$ () {
+    Object.defineProperty(kv$.NS, kv$.id, eYo.descriptorR({$ () {
       return ans
     }}.$))
     return ans
