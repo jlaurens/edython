@@ -127,7 +127,7 @@
     "karma": "^2.0.2",
     "multispinner": "^0.2.1",
     "node-loader": "^0.6.0",
-    "node-sass": "^4.9.0",
+    "node-sass": "^7.0.0",
     "postcss-import": "^11.1.0",
     "postcss-url": "^7.3.2",
     "raw-loader": "^0.5.1",
